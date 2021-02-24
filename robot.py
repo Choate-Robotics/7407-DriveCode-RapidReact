@@ -11,6 +11,7 @@ import oi
 class Robot(wpilib.TimedRobot):
     drivetrain: subsystem.Drivetrain
     shooter: subsystem.Shooter
+    turret: subsystem.Turret
     oi: oi.OI
 
     def robotInit(self):
@@ -24,6 +25,8 @@ class Robot(wpilib.TimedRobot):
         self.drivetrain.setDefaultCommand(command.drivetrain.DriveArcade(self.drivetrain, self.oi))
 
         self.shooter = subsystem.Shooter()
+
+        self.turret = subsystem.Turret()
 
         self.oi.map_controls(self.shooter)
 
