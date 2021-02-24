@@ -26,15 +26,10 @@ class Robot(wpilib.TimedRobot):
 
         self.drivetrain = subsystem.Drivetrain()
         self.drivetrain.setDefaultCommand(command.drivetrain.DriveArcade(self.drivetrain, self.oi))
-
         self.shooter = subsystem.Shooter()
-
         self.turret = subsystem.Turret()
-
         self.intake = subsystem.Intake()
-
         self.hopper = subsystem.Hopper()
-
         self.shifter = subsystem.Shifter()
 
         self.oi.map_controls(self.shooter, self.intake, self.hopper, self.shifter)

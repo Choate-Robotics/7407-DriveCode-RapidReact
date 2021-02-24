@@ -5,14 +5,14 @@ import subsystem
 
 
 class ShooterSettingsCommand(commands.CommandBase):
+    SHOOTER_SETTINGS: Tuple[float, bool]
+
     def __init__(self, shooter: subsystem.Shooter) -> None:
         super().__init__()
         self.addRequirements(shooter)
         self._shooter = shooter
 
-    def get_shooter_settings(self) -> Tuple[float, bool]: ...
-
-    def initialize(self) -> None: self._shooter.shooter_settings = self.get_shooter_settings()
+    def initialize(self) -> None: self._shooter.shooter_settings = self.SHOOTER_SETTINGS
     def execute(self) -> None: ...
     def end(self, interrupted: bool) -> None: ...
     def isFinished(self) -> bool: return True
@@ -20,20 +20,16 @@ class ShooterSettingsCommand(commands.CommandBase):
 
 
 class ShooterLowRetracted(ShooterSettingsCommand):
-    def get_shooter_settings(self) -> Tuple[float, bool]:
-        return 1000, False
+    SHOOTER_SETTINGS = (1000, False)
 
 
 class ShooterHighRetracted(ShooterSettingsCommand):
-    def get_shooter_settings(self) -> Tuple[float, bool]:
-        return 15000, False
+    SHOOTER_SETTINGS = (15000, False)
 
 
 class ShooterLowExtended(ShooterSettingsCommand):
-    def get_shooter_settings(self) -> Tuple[float, bool]:
-        return 15500, False
+    SHOOTER_SETTINGS = (15500, False)
 
 
 class ShooterHighExtended(ShooterSettingsCommand):
-    def get_shooter_settings(self) -> Tuple[float, bool]:
-        return 12000, True
+    SHOOTER_SETTINGS = (12000, True)

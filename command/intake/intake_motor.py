@@ -3,7 +3,9 @@ import commands2 as commands
 import subsystem
 
 
-class IntakeRun(commands.CommandBase):
+class IntakeMotorControlCommand(commands.CommandBase):
+    MOTOR_SPEED: float
+
     def __init__(self, intake: subsystem.Intake) -> None:
         super().__init__()
         self.addRequirements(intake)
@@ -13,7 +15,7 @@ class IntakeRun(commands.CommandBase):
         pass
 
     def execute(self) -> None:
-        self._intake.motor.set(-0.95)
+        self._intake.motor.set(self.MOTOR_SPEED)
 
     def end(self, interrupted: bool) -> None:
         self._intake.motor.set(0)
@@ -25,23 +27,9 @@ class IntakeRun(commands.CommandBase):
         return False
 
 
-class IntakeRunReverse(commands.CommandBase):
-    def __init__(self, intake: subsystem.Intake) -> None:
-        super().__init__()
-        self.addRequirements(intake)
-        self._intake = intake
+class IntakeRun(IntakeMotorControlCommand):
+    MOTOR_SPEED = -0.95
 
-    def initialize(self) -> None:
-        pass
 
-    def execute(self) -> None:
-        self._intake.motor.set(1.0)
-
-    def end(self, interrupted: bool) -> None:
-        self._intake.motor.set(0)
-
-    def isFinished(self) -> bool:
-        return False
-
-    def runsWhenDisabled(self) -> bool:
-        return False
+class IntakeRunReverse(IntakeMotorControlCommand):
+    MOTOR_SPEED = 1.0

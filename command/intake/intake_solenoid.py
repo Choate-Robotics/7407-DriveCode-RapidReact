@@ -4,14 +4,16 @@ import commands2 as commands
 import subsystem
 
 
-class IntakeUp(commands.CommandBase):
+class IntakeSolenoidControlCommand(commands.CommandBase):
+    SOLENOID_STATE: wpilib.DoubleSolenoid.Value
+
     def __init__(self, intake: subsystem.Intake) -> None:
         super().__init__()
         self.addRequirements(intake)
         self._intake = intake
 
     def initialize(self) -> None:
-        self._intake.solenoid.set(wpilib.DoubleSolenoid.Value.kForward)
+        self._intake.solenoid.set(self.SOLENOID_STATE)
 
     def execute(self) -> None:
         pass
@@ -26,23 +28,9 @@ class IntakeUp(commands.CommandBase):
         return False
 
 
-class IntakeDown(commands.CommandBase):
-    def __init__(self, intake: subsystem.Intake) -> None:
-        super().__init__()
-        self.addRequirements(intake)
-        self._intake = intake
+class IntakeUp(IntakeSolenoidControlCommand):
+    SOLENOID_STATE = wpilib.DoubleSolenoid.Value.kForward
 
-    def initialize(self) -> None:
-        self._intake.solenoid.set(wpilib.DoubleSolenoid.Value.kReverse)
 
-    def execute(self) -> None:
-        pass
-
-    def end(self, interrupted: bool) -> None:
-        pass
-
-    def isFinished(self) -> bool:
-        return True
-
-    def runsWhenDisabled(self) -> bool:
-        return False
+class IntakeDown(IntakeSolenoidControlCommand):
+    SOLENOID_STATE = wpilib.DoubleSolenoid.Value.kReverse
