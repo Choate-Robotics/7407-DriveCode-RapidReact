@@ -1,0 +1,10 @@
+A = 1
+B = 2
+X = 3
+Y = 4
+LB = 5
+RB = 6
+LT = -1
+RT = -2
+SELECT = 7
+START = 8
