@@ -1,5 +1,6 @@
 import wpilib
 import utils.logger as logger
+import commands2 as commands
 
 from utils.network import Network
 import subsystem
@@ -37,6 +38,12 @@ class Robot(wpilib.TimedRobot):
         logger.info("initialization complete")
 
     def robotPeriodic(self):
+        commands.CommandScheduler.getInstance().run()
+
+    def teleopInit(self) -> None:
+        pass
+
+    def teleopPeriodic(self) -> None:
         pass
 
     def autonomousInit(self) -> None:
