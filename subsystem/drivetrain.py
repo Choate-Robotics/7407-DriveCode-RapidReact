@@ -1,7 +1,12 @@
 import wpilib
+import wpilib.kinematics
+from wpimath.geometry import Rotation2d
 import ctre
 import commands2 as commands
 import utils.logger as logger
+from utils.math import sensor_units_to_meters
+
+import sensors
 
 
 class Drivetrain(commands.SubsystemBase):
@@ -16,6 +21,22 @@ class Drivetrain(commands.SubsystemBase):
         self.right2 = ctre.TalonFX(4)
         self.right3 = ctre.TalonFX(5)
 
+        logger.info("configuring odometry", "[drivetrain.odometry]")
+
+        self.gyro = sensors.Gyro()
+        self.odometry = wpilib.kinematics.DifferentialDriveOdometry(Rotation2d(0))
+
+        logger.info("initialization complete", "[drivetrain]")
+
+    def periodic(self) -> None:
+        self.update_odometry()
+
+    def update_odometry(self):
+        left = sensor_units_to_meters(self.left1.getSelectedSensorPosition(), True)
+        right = sensor_units_to_meters(self.right1.getSelectedSensorPosition(), True)
+        self.odometry.update(Rotation2d(self.gyro.heading * 0.0174533), left, right)
+
+    def config_motors(self):
         logger.info("configuring motor closed loop", "[drivetrain.motor]")
 
         self.left1.config_kF(0, 1023.0 / 18279.0)
@@ -42,5 +63,3 @@ class Drivetrain(commands.SubsystemBase):
         self.right1.setInverted(True)
         self.right2.setInverted(ctre.InvertType.FollowMaster)
         self.right3.setInverted(ctre.InvertType.FollowMaster)
-
-        logger.info("initialization complete", "[drivetrain]")

@@ -14,7 +14,6 @@ class Robot(wpilib.TimedRobot):
     """
     Main robot class. Initializes OI and subsystems, and runs the command scheduler.
     """
-
     drivetrain: subsystem.Drivetrain
     shooter: subsystem.Shooter
     turret: subsystem.Turret
@@ -22,7 +21,6 @@ class Robot(wpilib.TimedRobot):
     hopper: subsystem.Hopper
     shifter: subsystem.Shifter
     index: subsystem.Index
-
     oi: oi.OI
 
     def robotInit(self):
