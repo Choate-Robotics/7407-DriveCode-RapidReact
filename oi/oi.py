@@ -5,6 +5,7 @@ import commands2.button
 import utils.logger as logger
 
 import command.shooter
+import command.turret
 import command.intake
 import command.hopper
 import command.shifter
@@ -27,7 +28,7 @@ class OI:
 
         logger.info("initialization complete", "[oi]")
 
-    def map_controls(self, shooter: subsystem.Shooter, intake: subsystem.Intake, hopper: subsystem.Hopper,
+    def map_controls(self, shooter: subsystem.Shooter, turret: subsystem.Turret, intake: subsystem.Intake, hopper: subsystem.Hopper,
                      shifter: subsystem.Shifter):
         logger.info("mapping controller buttons", "[oi]")
 
@@ -42,7 +43,8 @@ class OI:
         self._get_button(Keymap.Shooter.HIGH_EXTENDED)\
             .whenPressed(command.shooter.ShooterHighExtended(shooter))
         self._get_button(Keymap.Shooter.AIM)\
-            .whenPressed(command.shooter.ShooterEnable(shooter))
+            .whenPressed(command.shooter.ShooterEnable(shooter))\
+            .whenPressed(command.turret.TurretAim(turret))
 
         # INTAKE
         logger.info("mapping intake buttons", "[oi.intake]")

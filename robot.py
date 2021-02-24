@@ -33,7 +33,7 @@ class Robot(wpilib.TimedRobot):
         self.hopper = subsystem.Hopper()
         self.shifter = subsystem.Shifter()
 
-        self.oi.map_controls(self.shooter, self.intake, self.hopper, self.shifter)
+        self.oi.map_controls(self.shooter, self.turret, self.intake, self.hopper, self.shifter)
 
         logger.info("initialization complete")
 
