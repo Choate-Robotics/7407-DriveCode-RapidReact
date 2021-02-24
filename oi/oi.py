@@ -6,6 +6,7 @@ import utils.logger as logger
 
 import command.shooter
 import command.intake
+import command.hopper
 import oi.keymap as keymap
 from oi.keymap import Keymap
 import subsystem
@@ -25,7 +26,7 @@ class OI:
 
         logger.info("initialization complete", "[oi]")
 
-    def map_controls(self, shooter: subsystem.Shooter, intake: subsystem.Intake):
+    def map_controls(self, shooter: subsystem.Shooter, intake: subsystem.Intake, hopper: subsystem.Hopper):
         logger.info("mapping controller buttons", "[oi]")
 
         # SHOOTER
@@ -52,6 +53,12 @@ class OI:
         self._get_button(Keymap.Intake.STOP)\
             .cancelWhenPressed(self._intake_run_command)\
             .cancelWhenPressed(self._intake_run_reverse_command)
+
+        # HOPPER
+        self._get_button(Keymap.Hopper.RUN)\
+            .whenPressed(command.hopper.HopperRun(hopper))
+        self._get_button(Keymap.Hopper.RUN_REVERSE)\
+            .whenPressed(command.hopper.HopperRunReverse(hopper))
 
         logger.info("mapping complete", "[oi]")
 

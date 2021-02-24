@@ -28,7 +28,8 @@ class Keymap:
         UP = (controller.Y, DRIVER)
 
     class Hopper:
-        ENABLE = (controller.RB, OPERATOR)
+        RUN = (controller.RB, OPERATOR)
+        RUN_REVERSE = (controller.LB, OPERATOR)
 
     class Shooter:
         LOW_RETRACTED = (controller.A, OPERATOR)
