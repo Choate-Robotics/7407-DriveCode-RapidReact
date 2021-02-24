@@ -5,7 +5,7 @@ import ctre
 import subsystem
 from oi import OI
 from oi.keymap import Keymap
-from utils.units import sensor_units_to_inches, inches_to_sensor_units
+from utils.math import sensor_units_to_inches, inches_to_sensor_units
 
 
 class DriveArcade(commands.CommandBase):

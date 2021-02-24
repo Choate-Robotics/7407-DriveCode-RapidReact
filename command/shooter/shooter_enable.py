@@ -27,5 +27,3 @@ class ShooterEnable(commands.CommandBase):
 
     def runsWhenDisabled(self) -> bool:
         return False
-
-

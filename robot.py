@@ -1,6 +1,7 @@
 import wpilib
 import utils.logger as logger
 
+from utils.network import Network
 import subsystem
 import command.drivetrain
 import command.shooter
@@ -14,6 +15,8 @@ class Robot(wpilib.TimedRobot):
 
     def robotInit(self):
         logger.info("initializing robot")
+
+        Network.init()
 
         self.oi = oi.OI()
 

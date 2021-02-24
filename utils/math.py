@@ -1,6 +1,14 @@
 import math
 
 
+def clamp(val, _min, _max):
+    if val < _min:
+        return _min
+    if val > _max:
+        return _max
+    return val
+
+
 def sensor_units_to_inches(sensor_units: float, low_gear: bool) -> float:
     motor_rotations = sensor_units / 2048.0
 
