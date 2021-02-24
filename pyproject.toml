@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "frc-python-test"
+name = "7407-DriveCode-2021-Python"
 version = "0.1.0"
 description = ""
 authors = ["Ethan Chapman <ethan.chapman0@outlook.com>"]
