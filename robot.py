@@ -11,6 +11,10 @@ import oi
 
 
 class Robot(wpilib.TimedRobot):
+    """
+    Main robot class. Initializes OI and subsystems, and runs the command scheduler.
+    """
+
     drivetrain: subsystem.Drivetrain
     shooter: subsystem.Shooter
     turret: subsystem.Turret
@@ -18,30 +22,41 @@ class Robot(wpilib.TimedRobot):
     hopper: subsystem.Hopper
     shifter: subsystem.Shifter
     index: subsystem.Index
+
     oi: oi.OI
 
     def robotInit(self):
+        """
+        Called on robot startup. Here the subsystems and oi are all initialized.
+        """
         logger.info("initializing robot")
 
+        # Initialize NetworkTables for communication with dashboard and limelight
         Network.init()
 
+        # Initialize OI (controller buttons are mapped later but this initialized joysticks)
         self.oi = oi.OI()
 
+        # Initialize all subsystems (motors and solenoids are initialized here)
         self.drivetrain = subsystem.Drivetrain()
-        self.drivetrain.setDefaultCommand(command.drivetrain.DriveArcade(self.drivetrain, self.oi))
         self.shooter = subsystem.Shooter()
         self.turret = subsystem.Turret()
         self.intake = subsystem.Intake()
         self.hopper = subsystem.Hopper()
         self.shifter = subsystem.Shifter()
         self.index = subsystem.Index()
+
+        # Set default commands for subsystems with them
+        self.drivetrain.setDefaultCommand(command.drivetrain.DriveArcade(self.drivetrain, self.oi))
         self.index.setDefaultCommand(command.index.index_manual_speed.IndexManualSpeedController(self.index, self.oi))
 
+        # Map the controls now that all subsystems are initialized
         self.oi.map_controls(self.shooter, self.turret, self.intake, self.hopper, self.shifter, self.index)
 
         logger.info("initialization complete")
 
     def robotPeriodic(self):
+        # Run the command scheduler
         commands.CommandScheduler.getInstance().run()
 
     def teleopInit(self) -> None:
