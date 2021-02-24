@@ -12,6 +12,7 @@ class Robot(wpilib.TimedRobot):
     drivetrain: subsystem.Drivetrain
     shooter: subsystem.Shooter
     turret: subsystem.Turret
+    intake: subsystem.Intake
     oi: oi.OI
 
     def robotInit(self):
@@ -28,7 +29,9 @@ class Robot(wpilib.TimedRobot):
 
         self.turret = subsystem.Turret()
 
-        self.oi.map_controls(self.shooter)
+        self.intake = subsystem.Intake()
+
+        self.oi.map_controls(self.shooter, self.intake)
 
         logger.info("initialization complete")
 

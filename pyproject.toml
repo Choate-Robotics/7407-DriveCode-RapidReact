@@ -6,7 +6,7 @@ authors = ["Ethan Chapman <ethan.chapman0@outlook.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8.6"
-robotpy = {extras = ["commands2", "ctre"], version = "^2021.1.9"}
+robotpy = {extras = ["commands2", "ctre", "rev"], version = "^2021.1.10"}
 
 [tool.poetry.dev-dependencies]
 

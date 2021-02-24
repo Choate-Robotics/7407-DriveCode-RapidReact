@@ -5,12 +5,16 @@ import commands2.button
 import utils.logger as logger
 
 import command.shooter
+import command.intake
 import oi.keymap as keymap
 from oi.keymap import Keymap
 import subsystem
 
 
 class OI:
+    _intake_run_command: command.intake.IntakeRun
+    _intake_run_reverse_command: command.intake.IntakeRunReverse
+
     def __init__(self) -> None:
         logger.info("initializing operator interface", "[oi]")
 
@@ -21,14 +25,33 @@ class OI:
 
         logger.info("initialization complete", "[oi]")
 
-    def map_controls(self, shooter: subsystem.Shooter):
+    def map_controls(self, shooter: subsystem.Shooter, intake: subsystem.Intake):
         logger.info("mapping controller buttons", "[oi]")
 
-        self._get_button(Keymap.Shooter.LOW_RETRACTED).whenPressed(command.shooter.ShooterLowRetracted(shooter))
-        self._get_button(Keymap.Shooter.HIGH_RETRACTED).whenPressed(command.shooter.ShooterHighRetracted(shooter))
-        self._get_button(Keymap.Shooter.LOW_EXTENDED).whenPressed(command.shooter.ShooterLowExtended(shooter))
-        self._get_button(Keymap.Shooter.HIGH_EXTENDED).whenPressed(command.shooter.ShooterHighExtended(shooter))
-        self._get_button(Keymap.Shooter.AIM).whenPressed(command.shooter.ShooterEnable(shooter))
+        # SHOOTER
+        self._get_button(Keymap.Shooter.LOW_RETRACTED)\
+            .whenPressed(command.shooter.ShooterLowRetracted(shooter))
+        self._get_button(Keymap.Shooter.HIGH_RETRACTED)\
+            .whenPressed(command.shooter.ShooterHighRetracted(shooter))
+        self._get_button(Keymap.Shooter.LOW_EXTENDED)\
+            .whenPressed(command.shooter.ShooterLowExtended(shooter))
+        self._get_button(Keymap.Shooter.HIGH_EXTENDED)\
+            .whenPressed(command.shooter.ShooterHighExtended(shooter))
+        self._get_button(Keymap.Shooter.AIM)\
+            .whenPressed(command.shooter.ShooterEnable(shooter))
+
+        # INTAKE
+        self._intake_run_command = command.intake.IntakeRun(intake)
+        self._intake_run_reverse_command = command.intake.IntakeRunReverse(intake)
+        self._get_button(Keymap.Intake.UP)\
+            .whenPressed(command.intake.IntakeUp(intake))
+        self._get_button(Keymap.Intake.DOWN)\
+            .whenPressed(command.intake.IntakeDown(intake))
+        self._get_button(Keymap.Intake.START)\
+            .whenPressed(self._intake_run_command)
+        self._get_button(Keymap.Intake.STOP)\
+            .cancelWhenPressed(self._intake_run_command)\
+            .cancelWhenPressed(self._intake_run_reverse_command)
 
         logger.info("mapping complete", "[oi]")
 
