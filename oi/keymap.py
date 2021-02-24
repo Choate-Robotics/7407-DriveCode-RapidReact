@@ -20,6 +20,9 @@ class Keymap:
     class Index:
         DOWN = (controller.LB, DRIVER)
         UP = (controller.RB, DRIVER)
+        MANUAL_INDEX_CONTROLLER = OPERATOR
+        MANUAL_INDEX_TOP_AXIS = 1
+        MANUAL_INDEX_BOTTOM_AXIS = 5
 
     class Intake:
         START = (controller.A, DRIVER)
@@ -36,7 +39,7 @@ class Keymap:
         LOW_EXTENDED = (controller.B, OPERATOR)
         HIGH_RETRACTED = (controller.X, OPERATOR)
         HIGH_EXTENDED = (controller.Y, OPERATOR)
-        ENABLE = (controller.RT, DRIVER)
+        SHOOT = (controller.RT, DRIVER)
         AIM = (controller.LT, DRIVER)
 
     class Turret:

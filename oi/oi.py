@@ -9,6 +9,7 @@ import command.turret
 import command.intake
 import command.hopper
 import command.shifter
+import command.index.index_motor
 import oi.keymap as keymap
 from oi.keymap import Keymap
 import subsystem
@@ -29,7 +30,7 @@ class OI:
         logger.info("initialization complete", "[oi]")
 
     def map_controls(self, shooter: subsystem.Shooter, turret: subsystem.Turret, intake: subsystem.Intake, hopper: subsystem.Hopper,
-                     shifter: subsystem.Shifter):
+                     shifter: subsystem.Shifter, index: subsystem.Index):
         logger.info("mapping controller buttons", "[oi]")
 
         # SHOOTER
@@ -45,6 +46,8 @@ class OI:
         self._get_button(Keymap.Shooter.AIM)\
             .whenPressed(command.shooter.ShooterEnable(shooter))\
             .whenPressed(command.turret.TurretAim(turret))
+        self._get_button(Keymap.Shooter.SHOOT)\
+            .whenPressed(command.index.index_motor.IndexShoot(index))
 
         # INTAKE
         logger.info("mapping intake buttons", "[oi.intake]")
@@ -69,10 +72,17 @@ class OI:
 
         # SHIFTER
         logger.info("mapping shifter buttons", "[oi.shifter]")
-        self._get_button(Keymap.Shifter.HIGH).\
-            whenPressed(command.shifter.ShifterHighGear(shifter))
-        self._get_button(Keymap.Shifter.LOW).\
-            whenPressed(command.shifter.ShifterLowGear(shifter))
+        self._get_button(Keymap.Shifter.HIGH)\
+            .whenPressed(command.shifter.ShifterHighGear(shifter))
+        self._get_button(Keymap.Shifter.LOW)\
+            .whenPressed(command.shifter.ShifterLowGear(shifter))
+
+        # INDEX
+        logger.info("mapping index buttons", "[oi.index]")
+        self._get_button(Keymap.Index.UP)\
+            .whenPressed(command.index.IndexUp(index))
+        self._get_button(Keymap.Index.DOWN)\
+            .whenPressed(command.index.IndexDown(index))
 
         logger.info("mapping complete", "[oi]")
 

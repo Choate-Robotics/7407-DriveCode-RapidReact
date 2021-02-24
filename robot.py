@@ -6,6 +6,7 @@ from utils.network import Network
 import subsystem
 import command.drivetrain
 import command.shooter
+import command.index.index_manual_speed
 import oi
 
 
@@ -16,6 +17,7 @@ class Robot(wpilib.TimedRobot):
     intake: subsystem.Intake
     hopper: subsystem.Hopper
     shifter: subsystem.Shifter
+    index: subsystem.Index
     oi: oi.OI
 
     def robotInit(self):
@@ -32,8 +34,10 @@ class Robot(wpilib.TimedRobot):
         self.intake = subsystem.Intake()
         self.hopper = subsystem.Hopper()
         self.shifter = subsystem.Shifter()
+        self.index = subsystem.Index()
+        self.index.setDefaultCommand(command.index.index_manual_speed.IndexManualSpeedController(self.index, self.oi))
 
-        self.oi.map_controls(self.shooter, self.turret, self.intake, self.hopper, self.shifter)
+        self.oi.map_controls(self.shooter, self.turret, self.intake, self.hopper, self.shifter, self.index)
 
         logger.info("initialization complete")
 
