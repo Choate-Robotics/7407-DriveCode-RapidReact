@@ -7,6 +7,7 @@ import utils.logger as logger
 import command.shooter
 import command.intake
 import command.hopper
+import command.shifter
 import oi.keymap as keymap
 from oi.keymap import Keymap
 import subsystem
@@ -26,10 +27,12 @@ class OI:
 
         logger.info("initialization complete", "[oi]")
 
-    def map_controls(self, shooter: subsystem.Shooter, intake: subsystem.Intake, hopper: subsystem.Hopper):
+    def map_controls(self, shooter: subsystem.Shooter, intake: subsystem.Intake, hopper: subsystem.Hopper,
+                     shifter: subsystem.Shifter):
         logger.info("mapping controller buttons", "[oi]")
 
         # SHOOTER
+        logger.info("mapping shooter buttons", "[oi.shooter]")
         self._get_button(Keymap.Shooter.LOW_RETRACTED)\
             .whenPressed(command.shooter.ShooterLowRetracted(shooter))
         self._get_button(Keymap.Shooter.HIGH_RETRACTED)\
@@ -42,6 +45,7 @@ class OI:
             .whenPressed(command.shooter.ShooterEnable(shooter))
 
         # INTAKE
+        logger.info("mapping intake buttons", "[oi.intake]")
         self._intake_run_command = command.intake.IntakeRun(intake)
         self._intake_run_reverse_command = command.intake.IntakeRunReverse(intake)
         self._get_button(Keymap.Intake.UP)\
@@ -55,10 +59,18 @@ class OI:
             .cancelWhenPressed(self._intake_run_reverse_command)
 
         # HOPPER
+        logger.info("mapping hopper buttons", "[oi.hopper]")
         self._get_button(Keymap.Hopper.RUN)\
             .whenPressed(command.hopper.HopperRun(hopper))
         self._get_button(Keymap.Hopper.RUN_REVERSE)\
             .whenPressed(command.hopper.HopperRunReverse(hopper))
+
+        # SHIFTER
+        logger.info("mapping shifter buttons", "[oi.shifter]")
+        self._get_button(Keymap.Shifter.HIGH).\
+            whenPressed(command.shifter.ShifterHighGear(shifter))
+        self._get_button(Keymap.Shifter.LOW).\
+            whenPressed(command.shifter.ShifterLowGear(shifter))
 
         logger.info("mapping complete", "[oi]")
 
