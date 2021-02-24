@@ -7,25 +7,25 @@ The code is divided up into 3 main components: Subsystems, Commands, and OI
 ## Subsystems (`subsystem/`)
 Subsystems are parts of the robot that are operated independently of one another. We currently have 7 subsystems:
 
-### Drivetrain (`subsystem/drivetrain/`)
+#### Drivetrain (`subsystem/drivetrain/`)
 The drivetrain subsystem controls the wheels.
 
-### Hopper (`subsystem/hopper/`)
+#### Hopper (`subsystem/hopper/`)
 The hopper subsystem controls the hopper, which is used to unjam balls before they are indexed.
 
-### Index (`subsystem/index/`)
+#### Index (`subsystem/index/`)
 The index subsystem controls the two index motors and the solenoid that moves the index up and down.
 
-### Intake (`subsystem/intake/`)
+#### Intake (`subsystem/intake/`)
 The intake subsystem controls the intake motor and the intake solenoid.
 
-### Shifter (`subsystem/shifter/`)
+#### Shifter (`subsystem/shifter/`)
 The shifter subsystem controls the solenoid that shifts the gears on the drivetrain.
 
-### Shooter (`subsystem/shooter/`)
+#### Shooter (`subsystem/shooter/`)
 The shooter subsystem controls the two flywheel motors and the hood solenoid.
 
-### Turret (`subsystem/turret/`)
+#### Turret (`subsystem/turret/`)
 The turret subsystem controls the turret motor that rotates the turret during auto-aiming.
 
 
