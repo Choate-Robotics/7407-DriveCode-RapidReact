@@ -9,6 +9,8 @@ import subsystem
 import utils.logger as logger
 from utils.math import meters_to_sensor_units
 
+import constants
+
 
 class FollowPath(commands.RamseteCommand):
     def __init__(self, drivetrain: subsystem.Drivetrain) -> None:
@@ -17,7 +19,7 @@ class FollowPath(commands.RamseteCommand):
 
         controller = wpilib.controller.RamseteController()
 
-        kinematics = DifferentialDriveKinematics(25.111 * 0.0254)
+        kinematics = DifferentialDriveKinematics(constants.track_width_meters)
 
         waypoints = (
             Pose2d(0, 0, 0),  # START
@@ -35,16 +37,22 @@ class FollowPath(commands.RamseteCommand):
         def output(left: float, right: float):
             left = meters_to_sensor_units(left, True) / 10  # m/s to sensor/100ms
             right = meters_to_sensor_units(right, True) / 10
-            self._drivetrain.left1.set(ctre.ControlMode.Velocity, left)
-            self._drivetrain.right1.set(ctre.ControlMode.Velocity, right)
+            self._drivetrain.set_motor_velocity(left, -right)
+
+        def get_pose():
+            pose = drivetrain.get_pose()
+            logger.info(f"{pose.X()}, {pose.Y()}")
+            return pose
 
         super().__init__(
             trajectory,
-            lambda: drivetrain.odometry.getPose(),
+            get_pose,
             controller,
             kinematics,
             output,
             [drivetrain]
         )
+
+        drivetrain.reset_pose()
 
         self._drivetrain = drivetrain

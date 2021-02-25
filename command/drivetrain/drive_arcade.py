@@ -8,6 +8,8 @@ from oi.keymap import Keymap
 from utils.math import sensor_units_to_inches, inches_to_sensor_units, clamp
 import utils.logger as logger
 
+import constants
+
 
 class DriveArcade(commands.CommandBase):
     def __init__(self, drivetrain: subsystem.Drivetrain, oi: OI) -> None:
@@ -26,8 +28,8 @@ class DriveArcade(commands.CommandBase):
         x_axis, y_axis = self._add_dead_zones(x_axis, y_axis)
 
         left, right = self._turn_radius_drive(x_axis, y_axis)
-        self._drivetrain.left1.set(ctre.ControlMode.Velocity, left)
-        self._drivetrain.right1.set(ctre.ControlMode.Velocity, -right)
+
+        self._drivetrain.set_motor_velocity(left, -right)
 
         commands.ParallelCommandGroup()
 
@@ -73,8 +75,6 @@ class DriveArcade(commands.CommandBase):
         velocity_sensor_units = 18000 * y_axis
         target_velocity = sensor_units_to_inches(velocity_sensor_units, True)
 
-        distance_between_wheels = 25.111
-
         if x_axis > 0:
             turn_radius = 120.0 * (1.05 - x_axis)
         elif x_axis < 0:
@@ -87,7 +87,7 @@ class DriveArcade(commands.CommandBase):
         elif target_velocity == 0 or turn_radius == 0:
             velocity_difference = sensor_units_to_inches(-18000.0 * x_axis, True)
         else:
-            velocity_difference = (distance_between_wheels * target_velocity) / turn_radius
+            velocity_difference = (constants.track_width_inches * target_velocity) / turn_radius
 
         left = inches_to_sensor_units(target_velocity - velocity_difference, True)
         right = inches_to_sensor_units(target_velocity + velocity_difference, True)

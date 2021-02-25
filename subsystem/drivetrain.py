@@ -3,6 +3,8 @@ import wpilib.kinematics
 from wpimath.geometry import Rotation2d
 import ctre
 import commands2 as commands
+from wpimath.geometry import Pose2d
+
 import utils.logger as logger
 from utils.math import sensor_units_to_meters
 
@@ -13,7 +15,7 @@ class Drivetrain(commands.SubsystemBase):
     def __init__(self) -> None:
         super().__init__()
         logger.info("initializing drivetrain", "[drivetrain]")
-        
+
         self.left2 = ctre.TalonFX(0)
         self.left1 = ctre.TalonFX(1)
         self.left3 = ctre.TalonFX(2)
@@ -27,6 +29,20 @@ class Drivetrain(commands.SubsystemBase):
         self.odometry = wpilib.kinematics.DifferentialDriveOdometry(Rotation2d(0))
 
         logger.info("initialization complete", "[drivetrain]")
+
+    def set_motor_percent_output(self, left: float, right: float):
+        self.left1.set(ctre.ControlMode.PercentOutput, left)
+        self.right1.set(ctre.ControlMode.PercentOutput, right)
+
+    def set_motor_velocity(self, left: float, right: float):
+        self.left1.set(ctre.ControlMode.Velocity, left)
+        self.right1.set(ctre.ControlMode.Velocity, right)
+
+    def reset_pose(self):
+        self.odometry.resetPosition(Pose2d(0, 0, 0), Rotation2d(0))
+
+    def get_pose(self):
+        return self.odometry.getPose()
 
     def periodic(self) -> None:
         self.update_odometry()
