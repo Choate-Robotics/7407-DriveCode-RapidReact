@@ -44,10 +44,10 @@ class OI:
         self._get_button(Keymap.Shooter.HIGH_EXTENDED)\
             .whenPressed(command.shooter.ShooterHighExtended(shooter))
         self._get_button(Keymap.Shooter.AIM)\
-            .whenPressed(command.shooter.ShooterEnable(shooter))\
-            .whenPressed(command.turret.TurretAim(turret))
+            .whileHeld(command.shooter.ShooterEnable(shooter))\
+            .whileHeld(command.turret.TurretAim(turret))
         self._get_button(Keymap.Shooter.SHOOT)\
-            .whenPressed(command.index.index_motor.IndexShoot(index))
+            .whileHeld(command.index.index_motor.IndexShoot(index))
 
         # INTAKE
         logger.info("mapping intake buttons", "[oi.intake]")
@@ -66,9 +66,9 @@ class OI:
         # HOPPER
         logger.info("mapping hopper buttons", "[oi.hopper]")
         self._get_button(Keymap.Hopper.RUN)\
-            .whenPressed(command.hopper.HopperRun(hopper))
+            .whileHeld(command.hopper.HopperRun(hopper))
         self._get_button(Keymap.Hopper.RUN_REVERSE)\
-            .whenPressed(command.hopper.HopperRunReverse(hopper))
+            .whileHeld(command.hopper.HopperRunReverse(hopper))
 
         # SHIFTER
         logger.info("mapping shifter buttons", "[oi.shifter]")
