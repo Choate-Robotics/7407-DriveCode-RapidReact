@@ -44,10 +44,6 @@ class Robot(wpilib.TimedRobot):
         self.shifter = subsystem.Shifter()
         self.index = subsystem.Index()
 
-        # Set default commands for subsystems with them
-        self.drivetrain.setDefaultCommand(command.drivetrain.DriveArcade(self.drivetrain, self.oi))
-        self.index.setDefaultCommand(command.index.index_manual_speed.IndexManualSpeedController(self.index, self.oi))
-
         # Map the controls now that all subsystems are initialized
         self.oi.map_controls(self.shooter, self.turret, self.intake, self.hopper, self.shifter, self.index)
 
@@ -58,7 +54,8 @@ class Robot(wpilib.TimedRobot):
         commands.CommandScheduler.getInstance().run()
 
     def teleopInit(self) -> None:
-        pass
+        commands.CommandScheduler.getInstance().schedule(command.drivetrain.DriveArcade(self.drivetrain, self.oi))
+        commands.CommandScheduler.getInstance().schedule(command.index.index_manual_speed.IndexManualSpeedController(self.index, self.oi))
 
     def teleopPeriodic(self) -> None:
         pass
