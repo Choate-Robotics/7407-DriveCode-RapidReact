@@ -32,9 +32,9 @@ class Drivetrain(commands.SubsystemBase):
         self.update_odometry()
 
     def update_odometry(self):
-        # left = sensor_units_to_meters(self.left1.getSelectedSensorPosition(), True)
-        # right = sensor_units_to_meters(self.right1.getSelectedSensorPosition(), True)
-        # self.odometry.update(Rotation2d(self.gyro.heading * 0.0174533), left, right)
+        left = sensor_units_to_meters(self.left1.getSelectedSensorPosition(), True)
+        right = sensor_units_to_meters(self.right1.getSelectedSensorPosition(), True)
+        self.odometry.update(Rotation2d(self.gyro.heading * 0.0174533), left, right)
         pass
 
     def config_motors(self):

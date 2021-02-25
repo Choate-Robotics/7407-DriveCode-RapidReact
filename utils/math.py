@@ -26,6 +26,10 @@ def sensor_units_to_meters(sensor_units: float, low_gear: bool) -> float:
     return sensor_units_to_inches(sensor_units, low_gear) * 0.0254
 
 
+def meters_to_sensor_units(meters: float, low_gear: bool) -> float:
+    return inches_to_sensor_units(meters / 0.0254, low_gear)
+
+
 def inches_to_sensor_units(inches: float, low_gear: bool) -> float:
     wheelbase_rotations = inches / (6 * math.pi)
 

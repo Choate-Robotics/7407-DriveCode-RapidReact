@@ -29,6 +29,8 @@ class DriveArcade(commands.CommandBase):
         self._drivetrain.left1.set(ctre.ControlMode.Velocity, left)
         self._drivetrain.right1.set(ctre.ControlMode.Velocity, -right)
 
+        commands.ParallelCommandGroup()
+
         # left, right = self._arcade_drive(x_axis, y_axis)
         # self._drivetrain.left1.set(ctre.ControlMode.PercentOutput, left)
         # self._drivetrain.right1.set(ctre.ControlMode.PercentOutput, -right)

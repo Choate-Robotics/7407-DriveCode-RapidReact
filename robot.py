@@ -64,7 +64,7 @@ class Robot(wpilib.TimedRobot):
         pass
 
     def autonomousInit(self) -> None:
-        pass
+        commands.CommandScheduler.getInstance().schedule(command.drivetrain.FollowPath(self.drivetrain))
 
     def autonomousPeriodic(self) -> None:
         pass
