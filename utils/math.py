@@ -9,6 +9,10 @@ def clamp(val, _min, _max):
     return val
 
 
+def ft_to_m(ft: float):
+    return ft * 0.3048
+
+
 def sensor_units_to_inches(sensor_units: float, low_gear: bool) -> float:
     motor_rotations = sensor_units / 2048.0
 

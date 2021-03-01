@@ -9,6 +9,7 @@ import utils.logger as logger
 from utils.math import sensor_units_to_meters
 
 import sensors
+from utils.network import Network
 
 
 class Drivetrain(commands.SubsystemBase):
@@ -23,10 +24,17 @@ class Drivetrain(commands.SubsystemBase):
         self.right1 = ctre.TalonFX(4)
         self.right3 = ctre.TalonFX(5)
 
+        self.origin_x = 0
+        self.origin_y = 0
+        self.origin_theta = Rotation2d(0)
+
         logger.info("configuring odometry", "[drivetrain.odometry]")
 
         self.gyro = sensors.Gyro()
+        self.gyro.reset()
         self.odometry = wpilib.kinematics.DifferentialDriveOdometry(Rotation2d(0))
+
+        self.reset_pose()
 
         logger.info("initialization complete", "[drivetrain]")
 
@@ -39,19 +47,35 @@ class Drivetrain(commands.SubsystemBase):
         self.right1.set(ctre.ControlMode.Velocity, right)
 
     def reset_pose(self):
-        self.odometry.resetPosition(Pose2d(0, 0, 0), Rotation2d(0))
+        logger.info("resetting pose....")
+        # pose = self.odometry.getPose()
+        # self.origin_x = pose.X()
+        # self.origin_y = pose.Y()
+        # self.origin_theta = pose.rotation()
+        self.gyro.reset()
+        self.odometry = wpilib.kinematics.DifferentialDriveOdometry(Rotation2d(0))
+        self.left1.setSelectedSensorPosition(0)
+        self.right1.setSelectedSensorPosition(0)
 
     def get_pose(self):
-        return self.odometry.getPose()
+        # raw_pose = self.odometry.getPose()
+        # return Pose2d(raw_pose.X() - self.origin_x, raw_pose.Y() - self.origin_y,
+        #               raw_pose.rotation().rotateBy(self.origin_theta))
+        raw_pose = self.odometry.getPose()
+        new_pose = Pose2d(raw_pose.X(), raw_pose.Y(), Rotation2d(raw_pose.rotation().radians()))
+        return raw_pose
 
     def periodic(self) -> None:
         self.update_odometry()
+        pose = self.get_pose()
+        Network.test_table.putNumber("pose_x", pose.X())
+        Network.test_table.putNumber("pose_y", pose.Y())
+        Network.test_table.putNumber("pose_degrees", pose.rotation().degrees())
 
     def update_odometry(self):
-        left = sensor_units_to_meters(self.left1.getSelectedSensorPosition(), True)
+        left = sensor_units_to_meters(-self.left1.getSelectedSensorPosition(), True)
         right = sensor_units_to_meters(self.right1.getSelectedSensorPosition(), True)
-        self.odometry.update(Rotation2d(self.gyro.heading * 0.0174533), left, right)
-        pass
+        self.odometry.update(Rotation2d(-self.gyro.heading * 0.0174533), left, right)
 
     def config_motors(self):
         logger.info("configuring motor closed loop", "[drivetrain.motor]")

@@ -6,8 +6,8 @@ class Gyro:
         self._pigeon = ctre.PigeonIMU(can_id)
         self._initial_heading = 0
 
-    def reset(self):
-        self._initial_heading = self._pigeon.getFusedHeading()
+    def reset(self, degrees: float = 0):
+        self._initial_heading = self._pigeon.getFusedHeading() - degrees
 
     @property
     def heading(self) -> float:

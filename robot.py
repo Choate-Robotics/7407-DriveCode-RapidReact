@@ -27,6 +27,9 @@ class Robot(wpilib.TimedRobot):
         """
         Called on robot startup. Here the subsystems and oi are all initialized.
         """
+        if self.isReal():
+            logger.Color = logger.NoColor  # Disable log colors when on the robot
+
         logger.info("initializing robot")
 
         # Initialize NetworkTables for communication with dashboard and limelight
@@ -36,13 +39,19 @@ class Robot(wpilib.TimedRobot):
         self.oi = oi.OI()
 
         # Initialize all subsystems (motors and solenoids are initialized here)
-        self.drivetrain = subsystem.Drivetrain()
+        if self.isReal():
+            self.drivetrain = subsystem.Drivetrain()
+        else:
+            self.drivetrain = subsystem.SimDrivetrain()
         self.shooter = subsystem.Shooter()
         self.turret = subsystem.Turret()
         self.intake = subsystem.Intake()
         self.hopper = subsystem.Hopper()
         self.shifter = subsystem.Shifter()
         self.index = subsystem.Index()
+
+        # Set default command
+        self.index.setDefaultCommand(command.index.index_manual_speed.IndexManualSpeedController(self.index, self.oi))
 
         # Map the controls now that all subsystems are initialized
         self.oi.map_controls(self.shooter, self.turret, self.intake, self.hopper, self.shifter, self.index)
@@ -55,7 +64,6 @@ class Robot(wpilib.TimedRobot):
 
     def teleopInit(self) -> None:
         commands.CommandScheduler.getInstance().schedule(command.drivetrain.DriveArcade(self.drivetrain, self.oi))
-        commands.CommandScheduler.getInstance().schedule(command.index.index_manual_speed.IndexManualSpeedController(self.index, self.oi))
 
     def teleopPeriodic(self) -> None:
         pass
@@ -67,7 +75,9 @@ class Robot(wpilib.TimedRobot):
         pass
 
     def disabledInit(self) -> None:
-        pass
+        if not self.isReal():
+            subsystem.SimDrivetrain.LEFT_VEL_METERS_PER_SECOND = 0
+            subsystem.SimDrivetrain.RIGHT_VEL_METERS_PER_SECOND = 0
 
     def disabledPeriodic(self) -> None:
         pass

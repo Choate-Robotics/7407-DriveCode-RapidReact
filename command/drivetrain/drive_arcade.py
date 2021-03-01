@@ -38,7 +38,7 @@ class DriveArcade(commands.CommandBase):
         # self._drivetrain.right1.set(ctre.ControlMode.PercentOutput, -right)
 
     def end(self, interrupted: bool) -> None:
-        pass
+        self._drivetrain.set_motor_velocity(0, 0)
 
     def isFinished(self) -> bool:
         return False

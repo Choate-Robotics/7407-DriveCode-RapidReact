@@ -2,7 +2,7 @@ import inspect
 import logging.config
 import os
 
-from utils.color import Color
+from utils.color import Color, NoColor
 
 """
 Logger utility for debugging. 
@@ -11,55 +11,60 @@ Example usage:
     utils.logger.Logger.log_info("test")
 """
 
-DEFAULT_LOGGING = {
-    "version": 1,
-    "formatters": {
-        "standard": {
-            "format": Color.RED
-            + "%(asctime)s,%(msecs)d"
-            + Color.END
-            + Color.PURPLE
-            + " %(levelname)-8s"
-            + Color.END
-            + " %(message)s",
-            "datefmt": "%Y-%m-%d:%H:%M:%S",
+
+def get_default_logging():
+    return {
+        "version": 1,
+        "formatters": {
+            "standard": {
+                "format": Color.RED
+                + "%(asctime)s,%(msecs)d"
+                + Color.END
+                + Color.PURPLE
+                + " %(levelname)-8s"
+                + Color.END
+                + " %(message)s",
+                "datefmt": "%Y-%m-%d:%H:%M:%S",
+            },
         },
-    },
-    "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-            "formatter": "standard",
-            "level": "INFO",
-            "stream": "ext://sys.stdout",
+        "handlers": {
+            "console": {
+                "class": "logging.StreamHandler",
+                "formatter": "standard",
+                "level": "INFO",
+                "stream": "ext://sys.stdout",
+            },
+            "default": {
+                "formatter": "standard",
+                "class": "logging.StreamHandler",
+                "stream": "ext://sys.stderr",
+            },
+            "access": {
+                "formatter": "standard",
+                "class": "logging.StreamHandler",
+                "stream": "ext://sys.stdout",
+            },
+            #         "asgi": {
+            #             "formatter": "standard",
+            #             "class": "logging.StreamHandler",
+            #             "stream": "ext://sys.stdout",
+            #         },
         },
-        "default": {
-            "formatter": "standard",
-            "class": "logging.StreamHandler",
-            "stream": "ext://sys.stderr",
+        "loggers": {
+            __name__: {"level": "INFO", "handlers": ["console"], "propagate": False,},
+            "": {"handlers": ["default"], "level": "INFO"},
+            "uvicorn.error": {"handlers": ["default"], "level": "INFO", "propagate": False},
+            "uvicorn.access": {"handlers": ["access"], "level": "INFO", "propagate": False},
+            #         "uvicorn.asgi": {"handlers": ["asgi"], "level": "TRACE", "propagate": False},
         },
-        "access": {
-            "formatter": "standard",
-            "class": "logging.StreamHandler",
-            "stream": "ext://sys.stdout",
-        },
-        #         "asgi": {
-        #             "formatter": "standard",
-        #             "class": "logging.StreamHandler",
-        #             "stream": "ext://sys.stdout",
-        #         },
-    },
-    "loggers": {
-        __name__: {"level": "INFO", "handlers": ["console"], "propagate": False,},
-        "": {"handlers": ["default"], "level": "INFO"},
-        "uvicorn.error": {"handlers": ["default"], "level": "INFO", "propagate": False},
-        "uvicorn.access": {"handlers": ["access"], "level": "INFO", "propagate": False},
-        #         "uvicorn.asgi": {"handlers": ["asgi"], "level": "TRACE", "propagate": False},
-    },
-}
+    }
 
 
 class Logger:
-    def __init__(self, logging_config=DEFAULT_LOGGING):
+    def __init__(self, logging_config=None):
+        if logging_config is None:
+            logging_config = get_default_logging()
+
         logging.config.dictConfig(logging_config)
 
         self.MAX_FILENAME_LENGTH = 0
