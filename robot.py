@@ -2,6 +2,7 @@ import wpilib
 import utils.logger as logger
 import commands2 as commands
 
+from utils.paths import CURRENT_PATH
 from utils.network import Network
 import subsystem
 import command.drivetrain
@@ -69,7 +70,9 @@ class Robot(wpilib.TimedRobot):
         pass
 
     def autonomousInit(self) -> None:
-        commands.CommandScheduler.getInstance().schedule(command.drivetrain.FollowPath(self.drivetrain))
+        commands.CommandScheduler.getInstance().schedule(
+            command.drivetrain.follow_path.get_command(self.drivetrain, CURRENT_PATH)
+        )
 
     def autonomousPeriodic(self) -> None:
         pass

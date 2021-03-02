@@ -3,7 +3,6 @@ import wpilib.kinematics
 from wpimath.geometry import Rotation2d
 import ctre
 import commands2 as commands
-from wpimath.geometry import Pose2d
 
 import utils.logger as logger
 from utils.math import sensor_units_to_meters
@@ -28,6 +27,8 @@ class Drivetrain(commands.SubsystemBase):
         self.origin_y = 0
         self.origin_theta = Rotation2d(0)
 
+        self.flipped = False
+
         logger.info("configuring odometry", "[drivetrain.odometry]")
 
         self.gyro = sensors.Gyro()
@@ -39,31 +40,27 @@ class Drivetrain(commands.SubsystemBase):
         logger.info("initialization complete", "[drivetrain]")
 
     def set_motor_percent_output(self, left: float, right: float):
+        if self.flipped:
+            left, right = right, left
         self.left1.set(ctre.ControlMode.PercentOutput, left)
         self.right1.set(ctre.ControlMode.PercentOutput, right)
 
     def set_motor_velocity(self, left: float, right: float):
+        if self.flipped:
+            left, right = right, left
         self.left1.set(ctre.ControlMode.Velocity, left)
         self.right1.set(ctre.ControlMode.Velocity, right)
 
-    def reset_pose(self):
-        logger.info("resetting pose....")
-        # pose = self.odometry.getPose()
-        # self.origin_x = pose.X()
-        # self.origin_y = pose.Y()
-        # self.origin_theta = pose.rotation()
-        self.gyro.reset()
+    def reset_pose(self, flipped: bool = False):
+        logger.info(f"resetting pose{' (flipped)' if flipped else ''}....")
+        self.flipped = flipped
+        self.gyro.reset(0)
         self.odometry = wpilib.kinematics.DifferentialDriveOdometry(Rotation2d(0))
         self.left1.setSelectedSensorPosition(0)
         self.right1.setSelectedSensorPosition(0)
 
     def get_pose(self):
-        # raw_pose = self.odometry.getPose()
-        # return Pose2d(raw_pose.X() - self.origin_x, raw_pose.Y() - self.origin_y,
-        #               raw_pose.rotation().rotateBy(self.origin_theta))
-        raw_pose = self.odometry.getPose()
-        new_pose = Pose2d(raw_pose.X(), raw_pose.Y(), Rotation2d(raw_pose.rotation().radians()))
-        return raw_pose
+        return self.odometry.getPose()
 
     def periodic(self) -> None:
         self.update_odometry()
@@ -75,7 +72,9 @@ class Drivetrain(commands.SubsystemBase):
     def update_odometry(self):
         left = sensor_units_to_meters(-self.left1.getSelectedSensorPosition(), True)
         right = sensor_units_to_meters(self.right1.getSelectedSensorPosition(), True)
-        self.odometry.update(Rotation2d(-self.gyro.heading * 0.0174533), left, right)
+        if self.flipped:
+            left, right = right, left
+        self.odometry.update(Rotation2d(-self.gyro.heading * 0.0174533).rotateBy(self.rotation_offset), left, right)
 
     def config_motors(self):
         logger.info("configuring motor closed loop", "[drivetrain.motor]")

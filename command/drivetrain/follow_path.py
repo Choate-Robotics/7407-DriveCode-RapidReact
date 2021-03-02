@@ -1,4 +1,5 @@
 import math
+from typing import Type
 
 import wpilib.controller
 from wpimath.kinematics import DifferentialDriveKinematics
@@ -9,16 +10,32 @@ from utils.math import meters_to_sensor_units
 
 import constants
 from utils.network import Network
-from utils.paths import CURRENT_PATH as PATH
+from utils.paths import Path, GeneratedRoute
 from utils.trajectory import generate_trajectory
 
 
+def get_command(drivetrain: subsystem.Drivetrain, path: Type[Path]):
+    command = None
+    trajectories = generate_trajectory(path)
+
+    for trajectory in trajectories:
+        current_command = FollowPath(drivetrain, trajectory, trajectory.route.flipped)
+
+        if command is None:
+            command = current_command
+        else:
+            command = command.andThen(current_command)
+
+    return command
+
+
 class FollowPath(commands.RamseteCommand):
-    def __init__(self, drivetrain: subsystem.Drivetrain) -> None:
+    def __init__(self, drivetrain: subsystem.Drivetrain, generated_trajectory: GeneratedRoute,
+                 flipped: bool = False) -> None:
         controller = wpilib.controller.RamseteController()
         kinematics = DifferentialDriveKinematics(constants.track_width_meters)
 
-        trajectory = generate_trajectory(PATH)
+        trajectory = generated_trajectory.trajectory.relativeTo(generated_trajectory.route.start_pos)
 
         def output(left: float, right: float):
             left = meters_to_sensor_units(left, True) / 10  # m/s to sensor/100ms
@@ -41,5 +58,10 @@ class FollowPath(commands.RamseteCommand):
         )
 
         self._drivetrain = drivetrain
+        self._flipped = flipped
 
-        drivetrain.reset_pose()
+    def initialize(self) -> None:
+        self._drivetrain.reset_pose(self._flipped)
+        super().initialize()
+
+
