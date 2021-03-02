@@ -31,12 +31,6 @@ class DriveArcade(commands.CommandBase):
 
         self._drivetrain.set_motor_velocity(left, -right)
 
-        commands.ParallelCommandGroup()
-
-        # left, right = self._arcade_drive(x_axis, y_axis)
-        # self._drivetrain.left1.set(ctre.ControlMode.PercentOutput, left)
-        # self._drivetrain.right1.set(ctre.ControlMode.PercentOutput, -right)
-
     def end(self, interrupted: bool) -> None:
         self._drivetrain.set_motor_velocity(0, 0)
 
