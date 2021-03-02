@@ -12,8 +12,12 @@ from utils.network import Network
 
 
 class Drivetrain(commands.SubsystemBase):
-    def __init__(self) -> None:
+    def __init__(self, sim: bool = False) -> None:
         super().__init__()
+
+        if sim:
+            return
+
         logger.info("initializing drivetrain", "[drivetrain]")
 
         self.left2 = ctre.TalonFX(0)

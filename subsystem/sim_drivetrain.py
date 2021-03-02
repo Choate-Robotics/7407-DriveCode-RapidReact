@@ -14,7 +14,7 @@ class SimDrivetrain(subsystem.drivetrain.Drivetrain):
     POSE: Pose2d = Pose2d(ft_to_m(2.5), ft_to_m(7.5), 0)
 
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__(True)
         logger.info("initializing drivetrain", "[drivetrain]")
 
         self.origin_x = 0
