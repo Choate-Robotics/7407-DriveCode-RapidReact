@@ -25,22 +25,22 @@ class Keymap:
         MANUAL_INDEX_BOTTOM_AXIS = 5
 
     class Intake:
-        START = (controller.A, OPERATOR)
-        STOP = (controller.B, OPERATOR)
-        DOWN = (controller.X, OPERATOR)
-        UP = (controller.Y, OPERATOR)
+        START = (controller.A, DRIVER)
+        STOP = (controller.B, DRIVER)
+        DOWN = (controller.X, DRIVER)
+        UP = (controller.Y, DRIVER)
 
     class Hopper:
         RUN = (controller.RB, OPERATOR)
         RUN_REVERSE = (controller.LB, OPERATOR)
 
     class Shooter:
-        LOW_RETRACTED = (controller.A, DRIVER)
-        LOW_EXTENDED = (controller.B, DRIVER)
-        HIGH_RETRACTED = (controller.X, DRIVER)
-        HIGH_EXTENDED = (controller.Y, DRIVER)
-        SHOOT = (controller.RT, OPERATOR)
-        AIM = (controller.LT, OPERATOR)
+        LOW_RETRACTED = (controller.A, OPERATOR)
+        LOW_EXTENDED = (controller.B, OPERATOR)
+        HIGH_RETRACTED = (controller.X, OPERATOR)
+        HIGH_EXTENDED = (controller.Y, OPERATOR)
+        SHOOT = (controller.RT, DRIVER)
+        AIM = (controller.LT, DRIVER)
 
     class Turret:
         TURRET_LEFT = (controller.LT, OPERATOR)
