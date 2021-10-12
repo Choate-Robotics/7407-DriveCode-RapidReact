@@ -78,7 +78,7 @@ class Drivetrain(commands.SubsystemBase):
         right = sensor_units_to_meters(self.right1.getSelectedSensorPosition(), True)
         if self.flipped:
             left, right = right, left
-        self.odometry.update(Rotation2d(-self.gyro.heading * 0.0174533).rotateBy(self.rotation_offset), left, right)
+        # self.odometry.update(Rotation2d(-self.gyro.heading * 0.0174533).rotateBy(self.rotation_offset), left, right)
 
     def config_motors(self):
         logger.info("configuring motor closed loop", "[drivetrain.motor]")
