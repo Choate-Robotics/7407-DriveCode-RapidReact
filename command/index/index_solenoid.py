@@ -3,15 +3,15 @@ import commands2 as commands
 
 import subsystem
 from robot_lib.command import Command, requires
-from robot_systems import Robot
+from robot_systems import robot
 
 
-@requires(Robot.index)
+@requires(robot.index)
 class IndexSolenoidControlCommand(Command):
     SOLENOID_STATE: wpilib.DoubleSolenoid.Value
 
     def initialize(self) -> None:
-        Robot.index.solenoid.set(self.SOLENOID_STATE)
+        robot.index.solenoid.set(self.SOLENOID_STATE)
 
     def execute(self) -> None:
         pass

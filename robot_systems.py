@@ -1,7 +1,7 @@
 import subsystem
 
 
-class Robot:
+class robot:
     drivetrain = subsystem.Drivetrain()
     shooter = subsystem.Shooter()
     turret = subsystem.Turret()

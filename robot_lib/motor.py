@@ -1,11 +1,13 @@
-class MotorType:
-    reversible: bool
-    encoder: bool
-    pos_control: bool
-    vel_control: bool
-
-
 class Motor:
-    def __init__(self, can_id: int, motor_type: MotorType):
-        self._can_id = can_id
-        self._motor_type = motor_type
+    def init(self): ...
+    def set_raw_output(self, x: float): ...
+
+
+class EncoderMotor(Motor):
+    def get_sensor_position(self) -> float: ...
+    def get_sensor_velocity(self) -> float: ...
+
+
+class PIDMotor(EncoderMotor):
+    def set_target_position(self, pos: float): ...
+    def set_target_velocity(self, vel: float): ...

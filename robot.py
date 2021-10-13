@@ -3,7 +3,7 @@ import utils.logger as logger
 import commands2 as commands
 
 from oi import OI
-from robot_systems import Robot
+from robot_systems import robot
 from utils.paths import CURRENT_PATH
 from utils.network import Network
 import subsystem
@@ -34,16 +34,16 @@ class _Robot(wpilib.TimedRobot):
         OI.init()
 
         # Initialize all subsystems (motors and solenoids are initialized here)
-        Robot.drivetrain.init()
-        Robot.shooter.init()
-        Robot.turret.init()
-        Robot.intake.init()
-        Robot.hopper.init()
-        Robot.shifter.init()
-        Robot.index.init()
+        robot.drivetrain.init()
+        robot.shooter.init()
+        robot.turret.init()
+        robot.intake.init()
+        robot.hopper.init()
+        robot.shifter.init()
+        robot.index.init()
 
         # Set default command
-        Robot.index.setDefaultCommand(command.index.index_manual_speed.IndexManualSpeedController())
+        robot.index.setDefaultCommand(command.index.index_manual_speed.IndexManualSpeedController())
 
         # Map the controls now that all subsystems are initialized
         OI.map_controls()
@@ -62,7 +62,7 @@ class _Robot(wpilib.TimedRobot):
 
     def autonomousInit(self) -> None:
         commands.CommandScheduler.getInstance().schedule(
-            command.drivetrain.follow_path.get_command(Robot.drivetrain, CURRENT_PATH)
+            command.drivetrain.follow_path.get_command(robot.drivetrain, CURRENT_PATH)
         )
 
     def autonomousPeriodic(self) -> None:

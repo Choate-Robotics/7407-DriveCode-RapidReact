@@ -2,10 +2,10 @@ import commands2 as commands
 
 import subsystem
 from robot_lib.command import requires, Command
-from robot_systems import Robot
+from robot_systems import robot
 
 
-@requires(Robot.intake)
+@requires(robot.intake)
 class IntakeMotorControlCommand(Command):
     MOTOR_SPEED: float
 
@@ -13,10 +13,10 @@ class IntakeMotorControlCommand(Command):
         pass
 
     def execute(self) -> None:
-        Robot.intake.motor.set(self.MOTOR_SPEED)
+        robot.intake.motor.set(self.MOTOR_SPEED)
 
     def end(self, interrupted: bool) -> None:
-        Robot.intake.motor.set(0)
+        robot.intake.motor.set(0)
 
     def isFinished(self) -> bool:
         return False

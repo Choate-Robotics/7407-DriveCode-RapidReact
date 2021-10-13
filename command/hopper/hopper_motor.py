@@ -3,10 +3,10 @@ import commands2 as commands
 
 import subsystem
 from robot_lib.command import Command, requires
-from robot_systems import Robot
+from robot_systems import robot
 
 
-@requires(Robot.hopper)
+@requires(robot.hopper)
 class HopperControlCommand(Command):
     MOTOR_SPEED: float
 
@@ -14,10 +14,10 @@ class HopperControlCommand(Command):
         pass
 
     def execute(self) -> None:
-        Robot.hopper.motor.set(ctre.ControlMode.PercentOutput, self.MOTOR_SPEED)
+        robot.hopper.motor.set(ctre.ControlMode.PercentOutput, self.MOTOR_SPEED)
 
     def end(self, interrupted: bool) -> None:
-        Robot.hopper.motor.set(ctre.ControlMode.PercentOutput, 0)
+        robot.hopper.motor.set(ctre.ControlMode.PercentOutput, 0)
 
     def isFinished(self) -> bool:
         return False

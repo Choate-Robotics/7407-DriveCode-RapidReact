@@ -3,14 +3,14 @@ import commands2 as commands
 
 import subsystem
 from robot_lib.command import Command, requires
-from robot_systems import Robot
+from robot_systems import robot
 
 
-@requires(Robot.shooter)
+@requires(robot.shooter)
 class ShooterSettingsCommand(Command):
     SHOOTER_SETTINGS: Tuple[float, bool]
 
-    def initialize(self) -> None: Robot.shooter.shooter_settings = self.SHOOTER_SETTINGS
+    def initialize(self) -> None: robot.shooter.shooter_settings = self.SHOOTER_SETTINGS
     def execute(self) -> None: ...
     def end(self, interrupted: bool) -> None: ...
     def isFinished(self) -> bool: return True

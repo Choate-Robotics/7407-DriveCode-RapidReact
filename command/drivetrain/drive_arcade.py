@@ -6,7 +6,7 @@ import subsystem
 from oi import OI
 from oi.joysticks import Joysticks
 from oi.keymap import Keymap
-from robot_systems import Robot
+from robot_systems import robot
 from robot_lib.command import Command, requires
 from utils.math import sensor_units_to_inches, inches_to_sensor_units, clamp
 import utils.logger as logger
@@ -14,7 +14,7 @@ import utils.logger as logger
 import constants
 
 
-@requires(Robot.drivetrain)
+# @requires(robot.drivetrain)
 class DriveArcade(Command):
     def initialize(self) -> None:
         pass
@@ -27,10 +27,10 @@ class DriveArcade(Command):
 
         left, right = self._turn_radius_drive(x_axis, y_axis)
 
-        Robot.drivetrain.set_motor_velocity(left, -right)
+        robot.drivetrain.set_motor_velocity(left, -right)
 
     def end(self, interrupted: bool) -> None:
-        Robot.drivetrain.set_motor_velocity(0, 0)
+        robot.drivetrain.set_motor_velocity(0, 0)
 
     def isFinished(self) -> bool:
         return False

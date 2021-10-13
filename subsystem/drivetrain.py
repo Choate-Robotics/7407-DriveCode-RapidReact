@@ -5,6 +5,8 @@ import ctre
 import commands2 as commands
 
 import utils.logger as logger
+from robot_lib.motor import PIDMotor
+from robot_lib.motors.talon import TalonGroup, TalonFX
 from robot_lib.subsystem import Subsystem
 from utils.math import sensor_units_to_meters
 
@@ -13,15 +15,14 @@ from utils.network import Network
 
 
 class Drivetrain(Subsystem):
+    m_left: PIDMotor = TalonGroup(TalonFX(0), TalonFX(1), TalonFX(2))
+    m_right: PIDMotor = TalonGroup(TalonFX(3), TalonFX(4), TalonFX(5))
+
     def init(self) -> None:
         logger.info("initializing drivetrain", "[drivetrain]")
 
-        self.left2 = ctre.TalonFX(0)
-        self.left1 = ctre.TalonFX(1)
-        self.left3 = ctre.TalonFX(2)
-        self.right2 = ctre.TalonFX(3)
-        self.right1 = ctre.TalonFX(4)
-        self.right3 = ctre.TalonFX(5)
+        self.m_left.init()
+        self.m_right.init()
 
         self.origin_x = 0
         self.origin_y = 0
@@ -42,22 +43,23 @@ class Drivetrain(Subsystem):
     def set_motor_percent_output(self, left: float, right: float):
         if self.flipped:
             left, right = right, left
-        self.left1.set(ctre.ControlMode.PercentOutput, left)
-        self.right1.set(ctre.ControlMode.PercentOutput, right)
+        self.m_left.set_raw_output(left)
+        self.m_right.set_raw_output(right)
 
     def set_motor_velocity(self, left: float, right: float):
         if self.flipped:
             left, right = right, left
-        self.left1.set(ctre.ControlMode.Velocity, left)
-        self.right1.set(ctre.ControlMode.Velocity, right)
+        self.m_left.set_target_velocity(left)
+        self.m_right.set_target_velocity(right)
 
     def reset_pose(self, flipped: bool = False):
-        logger.info(f"resetting pose{' (flipped)' if flipped else ''}....")
-        self.flipped = flipped
-        self.gyro.reset(0)
-        self.odometry = wpilib.kinematics.DifferentialDriveOdometry(Rotation2d(0))
-        self.left1.setSelectedSensorPosition(0)
-        self.right1.setSelectedSensorPosition(0)
+        pass
+        # logger.info(f"resetting pose{' (flipped)' if flipped else ''}....")
+        # self.flipped = flipped
+        # self.gyro.reset(0)
+        # self.odometry = wpilib.kinematics.DifferentialDriveOdometry(Rotation2d(0))
+        # self.left1.setSelectedSensorPosition(0)
+        # self.right1.setSelectedSensorPosition(0)
 
     def get_pose(self):
         return self.odometry.getPose()
@@ -70,10 +72,11 @@ class Drivetrain(Subsystem):
         Network.test_table.putNumber("pose_degrees", pose.rotation().degrees())
 
     def update_odometry(self):
-        left = sensor_units_to_meters(-self.left1.getSelectedSensorPosition(), True)
-        right = sensor_units_to_meters(self.right1.getSelectedSensorPosition(), True)
-        if self.flipped:
-            left, right = right, left
+        pass
+        # left = sensor_units_to_meters(-self.left1.getSelectedSensorPosition(), True)
+        # right = sensor_units_to_meters(self.right1.getSelectedSensorPosition(), True)
+        # if self.flipped:
+        #     left, right = right, left
         # self.odometry.update(Rotation2d(-self.gyro.heading * 0.0174533).rotateBy(self.rotation_offset), left, right)
 
     def config_motors(self):
