@@ -4,35 +4,33 @@ import ctre
 
 import subsystem
 from oi import OI
+from oi.joysticks import Joysticks
 from oi.keymap import Keymap
+from robot_systems import Robot
+from robot_lib.command import Command, requires
 from utils.math import sensor_units_to_inches, inches_to_sensor_units, clamp
 import utils.logger as logger
 
 import constants
 
 
-class DriveArcade(commands.CommandBase):
-    def __init__(self, drivetrain: subsystem.Drivetrain, oi: OI) -> None:
-        super().__init__()
-        self.addRequirements(drivetrain)
-        self._drivetrain = drivetrain
-        self._oi = oi
-
+@requires(Robot.drivetrain)
+class DriveArcade(Command):
     def initialize(self) -> None:
         pass
 
     def execute(self) -> None:
-        x_axis = self._oi.joysticks[Keymap.Drivetrain.DRIVE_CONTROLLER].getRawAxis(Keymap.Drivetrain.DRIVE_X_AXIS)
-        y_axis = self._oi.joysticks[Keymap.Drivetrain.DRIVE_CONTROLLER].getRawAxis(Keymap.Drivetrain.DRIVE_Y_AXIS)
+        x_axis = Joysticks.joysticks[Keymap.Drivetrain.DRIVE_CONTROLLER].getRawAxis(Keymap.Drivetrain.DRIVE_X_AXIS)
+        y_axis = Joysticks.joysticks[Keymap.Drivetrain.DRIVE_CONTROLLER].getRawAxis(Keymap.Drivetrain.DRIVE_Y_AXIS)
 
         x_axis, y_axis = self._add_dead_zones(x_axis, y_axis)
 
         left, right = self._turn_radius_drive(x_axis, y_axis)
 
-        self._drivetrain.set_motor_velocity(left, -right)
+        Robot.drivetrain.set_motor_velocity(left, -right)
 
     def end(self, interrupted: bool) -> None:
-        self._drivetrain.set_motor_velocity(0, 0)
+        Robot.drivetrain.set_motor_velocity(0, 0)
 
     def isFinished(self) -> bool:
         return False

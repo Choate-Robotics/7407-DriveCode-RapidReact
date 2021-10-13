@@ -5,19 +5,15 @@ import ctre
 import commands2 as commands
 
 import utils.logger as logger
+from robot_lib.subsystem import Subsystem
 from utils.math import sensor_units_to_meters
 
 import sensors
 from utils.network import Network
 
 
-class Drivetrain(commands.SubsystemBase):
-    def __init__(self, sim: bool = False) -> None:
-        super().__init__()
-
-        if sim:
-            return
-
+class Drivetrain(Subsystem):
+    def init(self) -> None:
         logger.info("initializing drivetrain", "[drivetrain]")
 
         self.left2 = ctre.TalonFX(0)

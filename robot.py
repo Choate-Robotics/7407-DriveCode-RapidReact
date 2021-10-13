@@ -2,6 +2,8 @@ import wpilib
 import utils.logger as logger
 import commands2 as commands
 
+from oi import OI
+from robot_systems import Robot
 from utils.paths import CURRENT_PATH
 from utils.network import Network
 import subsystem
@@ -11,18 +13,10 @@ import command.index.index_manual_speed
 import oi
 
 
-class Robot(wpilib.TimedRobot):
+class _Robot(wpilib.TimedRobot):
     """
     Main robot class. Initializes OI and subsystems, and runs the command scheduler.
     """
-    drivetrain: subsystem.Drivetrain
-    shooter: subsystem.Shooter
-    turret: subsystem.Turret
-    intake: subsystem.Intake
-    hopper: subsystem.Hopper
-    shifter: subsystem.Shifter
-    index: subsystem.Index
-    oi: oi.OI
 
     def robotInit(self):
         """
@@ -37,25 +31,22 @@ class Robot(wpilib.TimedRobot):
         Network.init()
 
         # Initialize OI (controller buttons are mapped later but this initialized joysticks)
-        self.oi = oi.OI()
+        OI.init()
 
         # Initialize all subsystems (motors and solenoids are initialized here)
-        if self.isReal():
-            self.drivetrain = subsystem.Drivetrain()
-        else:
-            self.drivetrain = subsystem.SimDrivetrain()
-        self.shooter = subsystem.Shooter()
-        self.turret = subsystem.Turret()
-        self.intake = subsystem.Intake()
-        self.hopper = subsystem.Hopper()
-        self.shifter = subsystem.Shifter()
-        self.index = subsystem.Index()
+        Robot.drivetrain.init()
+        Robot.shooter.init()
+        Robot.turret.init()
+        Robot.intake.init()
+        Robot.hopper.init()
+        Robot.shifter.init()
+        Robot.index.init()
 
         # Set default command
-        self.index.setDefaultCommand(command.index.index_manual_speed.IndexManualSpeedController(self.index, self.oi))
+        Robot.index.setDefaultCommand(command.index.index_manual_speed.IndexManualSpeedController())
 
         # Map the controls now that all subsystems are initialized
-        self.oi.map_controls(self.shooter, self.turret, self.intake, self.hopper, self.shifter, self.index)
+        OI.map_controls()
 
         logger.info("initialization complete")
 
@@ -64,14 +55,14 @@ class Robot(wpilib.TimedRobot):
         commands.CommandScheduler.getInstance().run()
 
     def teleopInit(self) -> None:
-        commands.CommandScheduler.getInstance().schedule(command.drivetrain.DriveArcade(self.drivetrain, self.oi))
+        commands.CommandScheduler.getInstance().schedule(command.drivetrain.DriveArcade())
 
     def teleopPeriodic(self) -> None:
         pass
 
     def autonomousInit(self) -> None:
         commands.CommandScheduler.getInstance().schedule(
-            command.drivetrain.follow_path.get_command(self.drivetrain, CURRENT_PATH)
+            command.drivetrain.follow_path.get_command(Robot.drivetrain, CURRENT_PATH)
         )
 
     def autonomousPeriodic(self) -> None:
@@ -90,4 +81,4 @@ class Robot(wpilib.TimedRobot):
 
 
 if __name__ == "__main__":
-    wpilib.run(Robot)
+    wpilib.run(_Robot)

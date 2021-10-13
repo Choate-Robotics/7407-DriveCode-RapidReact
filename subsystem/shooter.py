@@ -2,11 +2,11 @@ import wpilib
 import ctre
 import commands2 as commands
 import utils.logger as logger
+from robot_lib.subsystem import Subsystem
 
 
-class Shooter(commands.SubsystemBase):
-    def __init__(self) -> None:
-        super().__init__()
+class Shooter(Subsystem):
+    def init(self) -> None:
         logger.info("initializing shooter", "[shooter]")
         
         self.shooter1 = ctre.TalonFX(6)

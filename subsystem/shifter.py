@@ -2,9 +2,10 @@ import wpilib
 import commands2 as commands
 
 import utils.logger as logger
+from robot_lib.subsystem import Subsystem
 
 
-class Shifter(commands.SubsystemBase):
+class Shifter(Subsystem):
     def __init__(self) -> None:
         super().__init__()
         logger.info("initializing shifter", "[shifter]")

@@ -3,34 +3,30 @@ import commands2 as commands
 
 import subsystem
 from oi import OI
+from oi.joysticks import Joysticks
 from oi.keymap import Keymap
+from robot_lib.command import Command, requires
+from robot_systems import Robot
 
 
-class IndexManualSpeedController(commands.CommandBase):
-    def __init__(self, index: subsystem.Index, oi: OI) -> None:
-        super().__init__()
-        self.addRequirements(index)
-        self._index = index
-        self._oi = oi
-
+@requires(Robot.index)
+class IndexManualSpeedController(Command):
     def initialize(self) -> None:
         pass
 
     def execute(self) -> None:
-        self._index.top_motor.set(
-            self._oi.joysticks[Keymap.Index.MANUAL_INDEX_CONTROLLER]
-                .getRawAxis(Keymap.Index.MANUAL_INDEX_TOP_AXIS) * 0.5
+        Robot.index.top_motor.set(
+            Joysticks.joysticks[Keymap.Index.MANUAL_INDEX_CONTROLLER].getRawAxis(Keymap.Index.MANUAL_INDEX_TOP_AXIS) * 0.5
         )
 
-        self._index.bottom_motor.set(
+        Robot.index.bottom_motor.set(
             ctre.ControlMode.PercentOutput,
-            self._oi.joysticks[Keymap.Index.MANUAL_INDEX_CONTROLLER]
-                .getRawAxis(Keymap.Index.MANUAL_INDEX_BOTTOM_AXIS) * -0.5
+            Joysticks.joysticks[Keymap.Index.MANUAL_INDEX_CONTROLLER].getRawAxis(Keymap.Index.MANUAL_INDEX_BOTTOM_AXIS) * -0.5
         )
 
     def end(self, interrupted: bool) -> None:
-        self._index.top_motor.set(0)
-        self._index.bottom_motor.set(ctre.ControlMode.PercentOutput, 0)
+        Robot.index.top_motor.set(0)
+        Robot.index.bottom_motor.set(ctre.ControlMode.PercentOutput, 0)
 
     def isFinished(self) -> bool:
         return False

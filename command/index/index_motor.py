@@ -2,24 +2,22 @@ import ctre
 import commands2 as commands
 
 import subsystem
+from robot_lib.command import Command, requires
+from robot_systems import Robot
 
 
-class IndexShoot(commands.CommandBase):
-    def __init__(self, index: subsystem.Index) -> None:
-        super().__init__()
-        self.addRequirements(index)
-        self._index = index
-
+@requires(Robot.index)
+class IndexShoot(Command):
     def initialize(self) -> None:
         pass
 
     def execute(self) -> None:
-        self._index.top_motor.set(-0.3)
-        self._index.bottom_motor.set(ctre.ControlMode.PercentOutput, 0.5)
+        Robot.index.top_motor.set(-0.3)
+        Robot.index.bottom_motor.set(ctre.ControlMode.PercentOutput, 0.5)
 
     def end(self, interrupted: bool) -> None:
-        self._index.top_motor.set(0)
-        self._index.bottom_motor.set(ctre.ControlMode.PercentOutput, 0)
+        Robot.index.top_motor.set(0)
+        Robot.index.bottom_motor.set(ctre.ControlMode.PercentOutput, 0)
 
     def isFinished(self) -> bool:
         return False

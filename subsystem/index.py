@@ -4,11 +4,11 @@ import wpilib
 import commands2 as commands
 
 import utils.logger as logger
+from robot_lib.subsystem import Subsystem
 
 
-class Index(commands.SubsystemBase):
-    def __init__(self) -> None:
-        super().__init__()
+class Index(Subsystem):
+    def init(self) -> None:
         logger.info("initializing index", "[index]")
 
         self.top_motor = rev.CANSparkMax(10, rev.CANSparkMax.MotorType.kBrushless)

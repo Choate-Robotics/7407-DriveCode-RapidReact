@@ -3,11 +3,11 @@ import wpilib
 import commands2 as commands
 
 import utils.logger as logger
+from robot_lib.subsystem import Subsystem
 
 
-class Intake(commands.SubsystemBase):
-    def __init__(self) -> None:
-        super().__init__()
+class Intake(Subsystem):
+    def init(self) -> None:
         logger.info("initializing intake", "[intake]")
 
         self.motor = rev.CANSparkMax(12, rev.CANSparkMax.MotorType.kBrushless)

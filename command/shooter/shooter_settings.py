@@ -2,17 +2,15 @@ from typing import Tuple
 import commands2 as commands
 
 import subsystem
+from robot_lib.command import Command, requires
+from robot_systems import Robot
 
 
-class ShooterSettingsCommand(commands.CommandBase):
+@requires(Robot.shooter)
+class ShooterSettingsCommand(Command):
     SHOOTER_SETTINGS: Tuple[float, bool]
 
-    def __init__(self, shooter: subsystem.Shooter) -> None:
-        super().__init__()
-        self.addRequirements(shooter)
-        self._shooter = shooter
-
-    def initialize(self) -> None: self._shooter.shooter_settings = self.SHOOTER_SETTINGS
+    def initialize(self) -> None: Robot.shooter.shooter_settings = self.SHOOTER_SETTINGS
     def execute(self) -> None: ...
     def end(self, interrupted: bool) -> None: ...
     def isFinished(self) -> bool: return True

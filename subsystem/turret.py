@@ -2,11 +2,11 @@ import wpilib
 import ctre
 import commands2 as commands
 import utils.logger as logger
+from robot_lib.subsystem import Subsystem
 
 
-class Turret(commands.SubsystemBase):
-    def __init__(self) -> None:
-        super().__init__()
+class Turret(Subsystem):
+    def init(self) -> None:
         logger.info("initializing turret", "[turret]")
 
         self.motor = ctre.TalonSRX(8)

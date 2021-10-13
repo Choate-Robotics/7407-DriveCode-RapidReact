@@ -6,6 +6,7 @@ from wpimath.kinematics import DifferentialDriveKinematics
 import commands2 as commands
 
 import subsystem
+from robot_systems import Robot
 from utils.math import meters_to_sensor_units
 
 import constants
@@ -14,12 +15,12 @@ from utils.paths import Path, GeneratedRoute
 from utils.trajectory import generate_trajectory
 
 
-def get_command(drivetrain: subsystem.Drivetrain, path: Type[Path]):
+def get_command(path: Type[Path]):
     command = None
     trajectories = generate_trajectory(path)
 
     for trajectory in trajectories:
-        current_command = FollowPath(drivetrain, trajectory, trajectory.route.flipped)
+        current_command = FollowPath(Robot.drivetrain, trajectory, trajectory.route.flipped)
 
         if command is None:
             command = current_command
@@ -30,8 +31,7 @@ def get_command(drivetrain: subsystem.Drivetrain, path: Type[Path]):
 
 
 class FollowPath(commands.RamseteCommand):
-    def __init__(self, drivetrain: subsystem.Drivetrain, generated_trajectory: GeneratedRoute,
-                 flipped: bool = False) -> None:
+    def __init__(self, generated_trajectory: GeneratedRoute, flipped: bool = False) -> None:
         controller = wpilib.controller.RamseteController()
         kinematics = DifferentialDriveKinematics(constants.track_width_meters)
 
@@ -45,7 +45,7 @@ class FollowPath(commands.RamseteCommand):
             self._drivetrain.set_motor_velocity(-left, right)
 
         def get_pose():
-            pose = drivetrain.get_pose()
+            pose = Robot.drivetrain.get_pose()
             return pose
 
         super().__init__(
@@ -54,14 +54,13 @@ class FollowPath(commands.RamseteCommand):
             controller,
             kinematics,
             output,
-            [drivetrain]
+            [Robot.drivetrain]
         )
 
-        self._drivetrain = drivetrain
         self._flipped = flipped
 
     def initialize(self) -> None:
-        self._drivetrain.reset_pose(self._flipped)
+        Robot.drivetrain.reset_pose(self._flipped)
         super().initialize()
 
 

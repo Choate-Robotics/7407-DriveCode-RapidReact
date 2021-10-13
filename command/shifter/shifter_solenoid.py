@@ -2,18 +2,16 @@ import wpilib
 import commands2 as commands
 
 import subsystem
+from robot_lib.command import requires, Command
+from robot_systems import Robot
 
 
-class ShifterSolenoidControlCommand(commands.CommandBase):
+@requires(Robot.shifter)
+class ShifterSolenoidControlCommand(Command):
     SOLENOID_STATE: bool
 
-    def __init__(self, shifter: subsystem.Shifter) -> None:
-        super().__init__()
-        self.addRequirements(shifter)
-        self._shifter = shifter
-
     def initialize(self) -> None:
-        self._shifter.solenoid.set(self.SOLENOID_STATE)
+        Robot.shifter.solenoid.set(self.SOLENOID_STATE)
 
     def execute(self) -> None:
         pass
