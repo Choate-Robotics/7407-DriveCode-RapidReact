@@ -8,7 +8,7 @@ from utils.paths import Path, Route, GeneratedRoute
 import constants
 
 
-def generate_trajectory(path: Type[Path]) -> List[GeneratedRoute]:
+def generate_trajectory(path: Type[Path]) -> list[GeneratedRoute]:
     return list(generate_route(path, r) for r in path.routes)
 
 

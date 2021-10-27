@@ -1,7 +1,7 @@
 import subsystem
 
 
-class robot:
+class Robot:
     drivetrain = subsystem.Drivetrain()
     shooter = subsystem.Shooter()
     turret = subsystem.Turret()
@@ -9,3 +9,4 @@ class robot:
     hopper = subsystem.Hopper()
     shifter = subsystem.Shifter()
     index = subsystem.Index()
+    hanger = subsystem.Hanger()

@@ -3,15 +3,15 @@ import commands2 as commands
 
 import subsystem
 from robot_lib.command import requires, Command
-from robot_systems import robot
+from robot_systems import Robot
 
 
-@requires(robot.shifter)
+@requires(Robot.shifter)
 class ShifterSolenoidControlCommand(Command):
     SOLENOID_STATE: bool
 
     def initialize(self) -> None:
-        robot.shifter.solenoid.set(self.SOLENOID_STATE)
+        Robot.shifter.solenoid.set(self.SOLENOID_STATE)
 
     def execute(self) -> None:
         pass

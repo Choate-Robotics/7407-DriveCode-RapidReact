@@ -2,24 +2,21 @@ import wpilib
 import ctre
 import commands2 as commands
 import utils.logger as logger
+from robot_lib.motor import PIDMotor
+from robot_lib.motors.ctre_motors import TalonFX, TalonGroup, TalonConfig
 from robot_lib.subsystem import Subsystem
 
 
 class Shooter(Subsystem):
+    _config: TalonConfig = TalonConfig(k_F=1023.0/19930.0, neutral_brake=True)
+    motor: PIDMotor = TalonGroup(TalonFX(6, False), TalonFX(7, True), config=_config)
+    hood: wpilib.DoubleSolenoid
+    shooter_settings: tuple[float, bool]
+
     def init(self) -> None:
         logger.info("initializing shooter", "[shooter]")
         
-        self.shooter1 = ctre.TalonFX(6)
-        self.shooter2 = ctre.TalonFX(7)
-
-        self.shooter1.setNeutralMode(ctre.NeutralMode.Brake)
-        self.shooter2.setNeutralMode(ctre.NeutralMode.Brake)
-
-        self.shooter1.config_kF(0, 1023.0 / 19930.0)
-        self.shooter2.config_kF(0, 1023.0 / 19930.0)
-
-        self.shooter2.follow(self.shooter1)
-        self.shooter2.setInverted(True)
+        self.motor.init()
 
         self.hood = wpilib.DoubleSolenoid(1, 6)
 

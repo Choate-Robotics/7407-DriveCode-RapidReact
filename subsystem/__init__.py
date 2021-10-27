@@ -5,3 +5,4 @@ from subsystem.intake import Intake
 from subsystem.hopper import Hopper
 from subsystem.shifter import Shifter
 from subsystem.index import Index
+from subsystem.hanger import Hanger

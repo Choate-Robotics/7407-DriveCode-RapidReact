@@ -6,8 +6,9 @@ from robot_lib.subsystem import Subsystem
 
 
 class Shifter(Subsystem):
-    def __init__(self) -> None:
-        super().__init__()
+    solenoid: wpilib.Solenoid
+
+    def init(self) -> None:
         logger.info("initializing shifter", "[shifter]")
 
         self.solenoid = wpilib.Solenoid(4)

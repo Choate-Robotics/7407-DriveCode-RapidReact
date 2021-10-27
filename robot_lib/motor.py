@@ -1,4 +1,7 @@
-class Motor:
+from robot_lib.i_init import IInit
+
+
+class Motor(IInit):
     def init(self): ...
     def set_raw_output(self, x: float): ...
 

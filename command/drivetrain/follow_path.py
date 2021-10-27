@@ -6,7 +6,7 @@ from wpimath.kinematics import DifferentialDriveKinematics
 import commands2 as commands
 
 import subsystem
-from robot_systems import robot
+from robot_systems import Robot
 from utils.math import meters_to_sensor_units
 
 import constants
@@ -20,7 +20,7 @@ def get_command(path: Type[Path]):
     trajectories = generate_trajectory(path)
 
     for trajectory in trajectories:
-        current_command = FollowPath(robot.drivetrain, trajectory, trajectory.route.flipped)
+        current_command = FollowPath(Robot.drivetrain, trajectory, trajectory.route.flipped)
 
         if command is None:
             command = current_command
@@ -45,7 +45,7 @@ class FollowPath(commands.RamseteCommand):
             self._drivetrain.set_motor_velocity(-left, right)
 
         def get_pose():
-            pose = robot.drivetrain.get_pose()
+            pose = Robot.drivetrain.get_pose()
             return pose
 
         super().__init__(
@@ -54,13 +54,13 @@ class FollowPath(commands.RamseteCommand):
             controller,
             kinematics,
             output,
-            [robot.drivetrain]
+            [Robot.drivetrain]
         )
 
         self._flipped = flipped
 
     def initialize(self) -> None:
-        robot.drivetrain.reset_pose(self._flipped)
+        Robot.drivetrain.reset_pose(self._flipped)
         super().initialize()
 
 

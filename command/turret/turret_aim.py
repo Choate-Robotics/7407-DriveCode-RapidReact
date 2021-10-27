@@ -3,13 +3,13 @@ import wpilib
 import commands2 as commands
 
 from robot_lib.command import requires, Command
-from robot_systems import robot
+from robot_systems import Robot
 from utils.math import clamp
 from utils.network import Network
 import subsystem
 
 
-@requires(robot.turret)
+@requires(Robot.turret)
 class TurretAim(Command):
     def __init__(self) -> None:
         super().__init__()
@@ -22,7 +22,7 @@ class TurretAim(Command):
         Network.limelight_table.putNumber("camMode", 0)
 
     def execute(self) -> None:
-        self.start_position = robot.turret.motor.getSelectedSensorPosition()
+        self.start_position = Robot.turret.motor.get_sensor_position()
         self.target_heading = Network.limelight_table.getNumber("tx", 0.0)
         self.target_position = self.start_position + self.target_heading * (4096.0 / 360.0) * (120.0 / 16.0)
 
@@ -32,10 +32,10 @@ class TurretAim(Command):
             80.0 * (4096.0 / 360.0) * (120.0 / 16.0)
         )
 
-        robot.turret.motor.set(ctre.ControlMode.MotionMagic, self.target_position)
+        Robot.turret.motor.set_target_position(self.target_position)
 
     def end(self, interrupted: bool) -> None:
-        robot.turret.motor.set(ctre.ControlMode.MotionMagic, 0)
+        Robot.turret.motor.set_target_position(0)
         Network.limelight_table.putNumber("ledMode", 1)
         Network.limelight_table.putNumber("camMode", 1)
 

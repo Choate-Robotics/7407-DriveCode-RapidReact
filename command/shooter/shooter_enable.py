@@ -4,21 +4,21 @@ import commands2 as commands
 
 import subsystem
 from robot_lib.command import requires, Command
-from robot_systems import robot
+from robot_systems import Robot
 
 
-@requires(robot.shooter)
+@requires(Robot.shooter)
 class ShooterEnable(Command):
     def initialize(self) -> None:
-        robot.shooter.hood.set(wpilib.DoubleSolenoid.Value.kForward
-                               if robot.shooter.shooter_settings[1]
+        Robot.shooter.hood.set(wpilib.DoubleSolenoid.Value.kForward
+                               if Robot.shooter.shooter_settings[1]
                                else wpilib.DoubleSolenoid.Value.kReverse)
 
     def execute(self) -> None:
-        robot.shooter.shooter1.set(ctre.ControlMode.Velocity, robot.shooter.shooter_settings[0])
+        Robot.shooter.motor.set_target_velocity(Robot.shooter.shooter_settings[0])
 
     def end(self, interrupted: bool) -> None:
-        robot.shooter.shooter1.set(ctre.ControlMode.Velocity, 0)
+        Robot.shooter.motor.set_target_velocity(0)
 
     def isFinished(self) -> bool:
         return False

@@ -6,7 +6,7 @@ import subsystem
 from oi import OI
 from oi.joysticks import Joysticks
 from oi.keymap import Keymap
-from robot_systems import robot
+from robot_systems import Robot
 from robot_lib.command import Command, requires
 from utils.math import sensor_units_to_inches, inches_to_sensor_units, clamp
 import utils.logger as logger
@@ -14,7 +14,7 @@ import utils.logger as logger
 import constants
 
 
-# @requires(robot.drivetrain)
+@requires(Robot.drivetrain)
 class DriveArcade(Command):
     def initialize(self) -> None:
         pass
@@ -27,10 +27,10 @@ class DriveArcade(Command):
 
         left, right = self._turn_radius_drive(x_axis, y_axis)
 
-        robot.drivetrain.set_motor_velocity(left, -right)
+        Robot.drivetrain.set_motor_velocity(left, -right)
 
     def end(self, interrupted: bool) -> None:
-        robot.drivetrain.set_motor_velocity(0, 0)
+        Robot.drivetrain.set_motor_velocity(0, 0)
 
     def isFinished(self) -> bool:
         return False
@@ -39,7 +39,7 @@ class DriveArcade(Command):
         return False
 
     @staticmethod
-    def _add_dead_zones(x_axis: float, y_axis: float) -> Tuple[float, float]:
+    def _add_dead_zones(x_axis: float, y_axis: float) -> tuple[float, float]:
         if abs(x_axis) < 0.2:
             x_axis = 0
         if abs(y_axis) < 0.2:
@@ -48,7 +48,7 @@ class DriveArcade(Command):
         return x_axis, y_axis
 
     @staticmethod
-    def _arcade_drive(x_axis: float, y_axis: float) -> Tuple[float, float]:
+    def _arcade_drive(x_axis: float, y_axis: float) -> tuple[float, float]:
         left = clamp(y_axis + x_axis, -1, 1)
         right = clamp(y_axis - x_axis, -1, 1)
 
@@ -58,7 +58,7 @@ class DriveArcade(Command):
         return left, right
 
     @staticmethod
-    def _turn_radius_drive(x_axis: float, y_axis: float) -> Tuple[float, float]:
+    def _turn_radius_drive(x_axis: float, y_axis: float) -> tuple[float, float]:
         if y_axis > 0:
             x_axis = -x_axis
 

@@ -9,11 +9,11 @@ import math
 
 class Route:
     start_pos: Pose2d
-    waypoints: List[Translation2d]
+    waypoints: list[Translation2d]
     end_pos: Pose2d
     flipped: bool
 
-    def __init__(self, start_pos: Pose2d, waypoints: List[Translation2d], end_pos: Pose2d, flipped: bool):
+    def __init__(self, start_pos: Pose2d, waypoints: list[Translation2d], end_pos: Pose2d, flipped: bool):
         self.start_pos, self.waypoints, self.end_pos, self.flipped = start_pos, waypoints, end_pos, flipped
 
 
@@ -26,11 +26,11 @@ class GeneratedRoute:
 
 
 class Path:
-    routes: List[Route]
-    cones: List[str]
-    special_cones: List[str]
-    start_zone: Tuple[str, str]
-    end_zone: Tuple[str, str]
+    routes: list[Route]
+    cones: list[str]
+    special_cones: list[str]
+    start_zone: tuple[str, str]
+    end_zone: tuple[str, str]
     max_velocity: float
     max_acceleration: float
 

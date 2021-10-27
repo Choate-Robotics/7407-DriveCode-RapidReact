@@ -3,12 +3,14 @@ import utils.logger as logger
 import commands2 as commands
 
 from oi import OI
-from robot_systems import robot
+from robot_systems import Robot
 from utils.paths import CURRENT_PATH
 from utils.network import Network
 import subsystem
 import command.drivetrain
 import command.shooter
+import command.turret
+import command.drivetrain
 import command.index.index_manual_speed
 import oi
 
@@ -34,16 +36,17 @@ class _Robot(wpilib.TimedRobot):
         OI.init()
 
         # Initialize all subsystems (motors and solenoids are initialized here)
-        robot.drivetrain.init()
-        robot.shooter.init()
-        robot.turret.init()
-        robot.intake.init()
-        robot.hopper.init()
-        robot.shifter.init()
-        robot.index.init()
+        Robot.drivetrain.init()
+        Robot.shooter.init()
+        Robot.turret.init()
+        Robot.intake.init()
+        Robot.hopper.init()
+        Robot.shifter.init()
+        Robot.index.init()
+        Robot.hanger.init()
 
         # Set default command
-        robot.index.setDefaultCommand(command.index.index_manual_speed.IndexManualSpeedController())
+        Robot.index.setDefaultCommand(command.index.index_manual_speed.IndexManualSpeedController())
 
         # Map the controls now that all subsystems are initialized
         OI.map_controls()
@@ -61,17 +64,17 @@ class _Robot(wpilib.TimedRobot):
         pass
 
     def autonomousInit(self) -> None:
-        commands.CommandScheduler.getInstance().schedule(
-            command.drivetrain.follow_path.get_command(robot.drivetrain, CURRENT_PATH)
-        )
+        drive_forward = command.drivetrain.DriveStraight(5000).as_timed(1)
+        aim = commands.ParallelDeadlineGroup(commands.WaitCommand(5), command.turret.TurretAim(), command.shooter.ShooterEnable())
+        shoot = commands.ParallelDeadlineGroup(commands.WaitCommand(5), command.index.IndexShoot(), command.shooter.ShooterEnable())
+        cmd = commands.SequentialCommandGroup(command.shooter.ShooterHighExtended(), aim, shoot, drive_forward)
+        commands.CommandScheduler.getInstance().schedule(cmd)
 
     def autonomousPeriodic(self) -> None:
         pass
 
     def disabledInit(self) -> None:
-        if not self.isReal():
-            subsystem.SimDrivetrain.LEFT_VEL_METERS_PER_SECOND = 0
-            subsystem.SimDrivetrain.RIGHT_VEL_METERS_PER_SECOND = 0
+        pass
 
     def disabledPeriodic(self) -> None:
         pass
