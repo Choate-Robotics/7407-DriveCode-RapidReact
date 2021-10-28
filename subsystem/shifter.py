@@ -11,8 +11,8 @@ class Shifter(Subsystem):
     def init(self) -> None:
         logger.info("initializing shifter", "[shifter]")
 
-        self.solenoid = wpilib.Solenoid(4)
+        # self.solenoid = wpilib.Solenoid(4)
 
-        self.solenoid.set(False)
+        # self.solenoid.set(False)
 
         logger.info("initialization complete", "[shifter]")

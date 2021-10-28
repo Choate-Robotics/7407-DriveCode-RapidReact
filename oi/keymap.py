@@ -9,7 +9,7 @@ from oi.buttons import DefaultButton, AxisButton
 from oi.joysticks import Joysticks
 
 
-controller = controllers.LogitechController
+controller = controllers.XBoxController
 
 
 class Controllers:
@@ -59,3 +59,4 @@ class Keymap:
     class Hanger:
         HANGER_INIT = DefaultButton(Controllers.OPERATOR, controller.START)
         HANGER_CLIMB = DefaultButton(Controllers.OPERATOR, controller.SELECT)
+        HANGER_RESET = DefaultButton(Controllers.DRIVER, controller.SELECT)

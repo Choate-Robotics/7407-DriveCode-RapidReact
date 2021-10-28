@@ -11,7 +11,8 @@ class ShifterSolenoidControlCommand(Command):
     SOLENOID_STATE: bool
 
     def initialize(self) -> None:
-        Robot.shifter.solenoid.set(self.SOLENOID_STATE)
+        # Robot.shifter.solenoid.set(self.SOLENOID_STATE)
+        pass
 
     def execute(self) -> None:
         pass

@@ -73,10 +73,10 @@ class OI:
 
         # SHIFTER
         logger.info("mapping shifter buttons", "[oi.shifter]")
-        Keymap.Shifter.HIGH()\
-            .whenPressed(command.shifter.ShifterHighGear())
-        Keymap.Shifter.LOW()\
-            .whenPressed(command.shifter.ShifterLowGear())
+        # Keymap.Shifter.HIGH()\
+        #     .whenPressed(command.shifter.ShifterHighGear())
+        # Keymap.Shifter.LOW()\
+        #     .whenPressed(command.shifter.ShifterLowGear())
 
         # INDEX
         logger.info("mapping index buttons", "[oi.index]")
@@ -91,5 +91,7 @@ class OI:
             .whenPressed(commands.ParallelDeadlineGroup(commands.WaitCommand(1), command.hanger.HangerControl(-0.3)))
         Keymap.Hanger.HANGER_CLIMB()\
             .whileHeld(command.hanger.HangerControl(-1))
+        Keymap.Hanger.HANGER_RESET()\
+            .whileHeld(command.hanger.HangerControl(0.6))
 
         logger.info("mapping complete", "[oi]")
