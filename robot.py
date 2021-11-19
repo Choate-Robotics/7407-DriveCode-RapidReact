@@ -2,16 +2,6 @@ import wpilib
 import utils.logger as logger
 import commands2 as commands
 
-from oi import OI
-from robot_systems import Robot
-from utils.paths import CURRENT_PATH
-from utils.network import Network
-import subsystem
-import command.drivetrain
-import command.shooter
-import command.turret
-import command.drivetrain
-import command.index.index_manual_speed
 import oi
 
 
