@@ -2,63 +2,46 @@ import wpilib
 import utils.logger as logger
 import commands2
 
-import oi
+from lib.subsystem import Subsystem
+from lib.subsystem_templates.drivetrain.differential_drivetrain_commands import DriveArcade
+from robot_systems import Robot
+from utils.network import Network
 
 
 class _Robot(wpilib.TimedRobot):
     """
-    Main robot class. Initializes OI and subsystem_templates, and runs the commands scheduler.
+    Main robot class. Initializes OI and subsystems, and runs the commands scheduler.
     """
 
     def robotInit(self):
         """
-        Called on robot startup. Here the subsystem_templates and oi are all initialized.
+        Called on robot startup. Here the subsystems and oi are all initialized.
         """
         if self.isReal():
             logger.Color = logger.NoColor  # Disable log colors when on the robot
 
         logger.info("initializing robot")
 
-        # Initialize NetworkTables for communication with dashboard and limelight
         Network.init()
 
-        # Initialize OI (controller buttons are mapped later but this initialized joysticks)
-        OI.init()
+        subsystems: list[Subsystem] = list({k: v for k, v in Robot.__dict__.items() if isinstance(v, Subsystem)}.values())
 
-        # Initialize all subsystem_templates (motors and solenoids are initialized here)
-        Robot.drivetrain.init()
-        Robot.shooter.init()
-        Robot.turret.init()
-        Robot.intake.init()
-        Robot.hopper.init()
-        Robot.shifter.init()
-        Robot.index.init()
-        Robot.hanger.init()
-
-        # Set default commands
-        Robot.index.setDefaultCommand(command.index.index_manual_speed.IndexManualSpeedController())
-
-        # Map the controls now that all subsystem_templates are initialized
-        OI.map_controls()
+        for s in subsystems:
+            s.init()
 
         logger.info("initialization complete")
 
     def robotPeriodic(self):
-        # Run the commands scheduler
         commands2.CommandScheduler.getInstance().run()
 
     def teleopInit(self) -> None:
-        commands2.CommandScheduler.getInstance().schedule(command.drivetrain.DriveArcade())
+        commands2.CommandScheduler.getInstance().schedule(DriveArcade(Robot.drivetrain))
 
     def teleopPeriodic(self) -> None:
         pass
 
     def autonomousInit(self) -> None:
-        drive_forward = command.drivetrain.DriveStraight(5000).as_timed(1)
-        aim = commands2.ParallelDeadlineGroup(commands2.WaitCommand(5), command.turret.TurretAim(), command.shooter.ShooterEnable())
-        shoot = commands2.ParallelDeadlineGroup(commands2.WaitCommand(5), command.index.IndexShoot(), command.shooter.ShooterEnable())
-        cmd = commands2.SequentialCommandGroup(command.shooter.ShooterHighExtended(), aim, shoot, drive_forward)
-        commands2.CommandScheduler.getInstance().schedule(cmd)
+        pass
 
     def autonomousPeriodic(self) -> None:
         pass

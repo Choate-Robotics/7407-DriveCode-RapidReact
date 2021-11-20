@@ -1,17 +1,17 @@
 from typing import Generic, TypeVar
 import commands2
 
-from lib.base_subsystem import BaseSubsystem
+from lib.subsystem import Subsystem
 
 
-T = TypeVar("T", bound=BaseSubsystem)
+T = TypeVar("T", bound=Subsystem)
 
 
-class BaseCommand(commands2.CommandBase):
+class Command(commands2.CommandBase):
     pass
 
 
-class SubsystemCommand(BaseCommand, Generic[T]):
+class SubsystemCommand(Command, Generic[T]):
     def __init__(self, subsystem: T):
         super().__init__()
         self.subsystem = subsystem
