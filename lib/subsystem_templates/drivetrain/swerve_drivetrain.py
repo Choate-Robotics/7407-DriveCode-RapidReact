@@ -66,8 +66,8 @@ class SwerveDrivetrain(Subsystem):
     def _swerve_displacement(node_x: float, node_y: float, dx: float, dy: float, d_theta: float) -> tuple[float, float]:
         sin_theta = math.sin(d_theta)
         cos_theta = math.cos(d_theta)
-        sx = dx + node_x * cos_theta - node_y * sin_theta
-        sy = dy + node_x * sin_theta + node_y * cos_theta
+        sx = dx + node_x * cos_theta - node_y * sin_theta - node_x
+        sy = dy + node_x * sin_theta + node_y * cos_theta - node_y
         theta = math.atan2(sy, sx)
         magnitude = math.sqrt(sx * sx + sy * sy) / 2
         return magnitude, theta
