@@ -1,4 +1,5 @@
 from lib.motor import Motor, PIDMotor
+from lib.oi.joysticks import JoystickAxis
 from lib.subsystem import Subsystem
 from utils import logger
 
@@ -6,6 +7,8 @@ from utils import logger
 class DifferentialDrivetrain(Subsystem):
     m_left: PIDMotor = None
     m_right: PIDMotor = None
+    axis_x: JoystickAxis = None
+    axis_y: JoystickAxis = None
 
     def init(self):
         logger.info("initializing differential drivetrain", "[differential_drivetrain]")

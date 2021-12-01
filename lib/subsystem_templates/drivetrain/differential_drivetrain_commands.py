@@ -9,8 +9,7 @@ class DriveArcade(SubsystemCommand[DifferentialDrivetrain]):
         pass
 
     def execute(self) -> None:
-        # TODO Joysticks
-        x_axis, y_axis = 0, 0
+        x_axis, y_axis = self.subsystem.axis_x.value, self.subsystem.axis_y.value
 
         x_axis, y_axis = self._add_dead_zones(x_axis, y_axis)
 
