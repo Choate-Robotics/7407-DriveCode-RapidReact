@@ -1,9 +1,12 @@
+import math
+
 import wpilib
 import utils.logger as logger
 import commands2
 
 from lib.subsystem import Subsystem
 from lib.subsystem_templates.drivetrain.differential_drivetrain_commands import DriveArcade
+from lib.subsystem_templates.drivetrain.swerve_drivetrain_commands import DriveSwerve
 from robot_systems import Robot
 from utils.network import Network
 
@@ -35,7 +38,7 @@ class _Robot(wpilib.TimedRobot):
         commands2.CommandScheduler.getInstance().run()
 
     def teleopInit(self) -> None:
-        commands2.CommandScheduler.getInstance().schedule(DriveArcade(Robot.drivetrain))
+        commands2.CommandScheduler.getInstance().schedule(DriveSwerve(Robot.drivetrain))
 
     def teleopPeriodic(self) -> None:
         pass

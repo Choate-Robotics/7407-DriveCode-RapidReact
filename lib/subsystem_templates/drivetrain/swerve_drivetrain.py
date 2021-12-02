@@ -6,22 +6,25 @@ from utils import logger
 
 
 class SwerveNode:
-    def __init__(self):
-        self._old_radians = 0
+    old_theta: float = 0
 
     def init(self): ...
 
     def set(self, vel_tw_per_second: float, angle_radians: float):
-        self.set_angle_radians(angle_radians, self._old_radians)
+        logger.info(f"node {vel_tw_per_second} {angle_radians}")
+        self.set_angle_radians(angle_radians, self.old_theta)
         self.set_velocity_raw(vel_tw_per_second)
-        self._old_radians = angle_radians
 
     # pos=0 - facing right, counter-clockwise around, pos=1 - facing right
     def set_angle_raw(self, pos: float): ...
 
     # 0 degrees is facing right
-    def set_angle_radians(self, pos_radians: float, old_radians: float):
-        self.set_angle_raw((pos_radians / 360) % 1)
+    def set_angle_radians(self, target_radians: float, initial_radians: float):
+        diff = math.fmod(target_radians, 2 * math.pi) - math.fmod(initial_radians, 2 * math.pi)
+        theta_f = initial_radians + diff if diff <= math.pi else initial_radians - (2 * math.pi - diff)
+        self.old_theta = theta_f
+        logger.info(f"final theta {theta_f * (180 / math.pi)}")
+        self.set_angle_raw(theta_f)
 
     def set_velocity_raw(self, vel_tw_per_second: float): ...
 
@@ -36,10 +39,11 @@ class SwerveDrivetrain(Subsystem):
     n_01: SwerveNode  # Bottom Left
     n_10: SwerveNode  # Top Right
     n_11: SwerveNode  # Bottom Right
-    odometry: SwerveOdometry
+    # odometry: SwerveOdometry
     axis_dx: JoystickAxis
     axis_dy: JoystickAxis
     axis_rotation: JoystickAxis
+    track_width: float
 
     def init(self):
         logger.info("initializing swerve drivetrain", "[swerve_drivetrain]")
@@ -47,14 +51,16 @@ class SwerveDrivetrain(Subsystem):
         self.n_01.init()
         self.n_10.init()
         self.n_11.init()
-        self.odometry.init()
+        # self.odometry.init()
         logger.info("initialization complete", "[swerve_drivetrain]")
 
     def set(self, vel_tw_per_second: tuple[float, float], angular_vel: float):
-        self.n_00.set(*self._swerve_displacement(-1, -1, vel_tw_per_second[0], vel_tw_per_second[1], angular_vel))
-        self.n_01.set(*self._swerve_displacement(-1, 1, vel_tw_per_second[0], vel_tw_per_second[1], angular_vel))
-        self.n_10.set(*self._swerve_displacement(1, -1, vel_tw_per_second[0], vel_tw_per_second[1], angular_vel))
-        self.n_11.set(*self._swerve_displacement(1, 1, vel_tw_per_second[0], vel_tw_per_second[1], angular_vel))
+        angular_vel = 1
+        vel_tw_per_second = (0, 1.5)
+        self.n_00.set(*self._swerve_displacement(-1, -1, vel_tw_per_second[0], vel_tw_per_second[1], angular_vel, 0))
+        self.n_01.set(*self._swerve_displacement(-1, 1, vel_tw_per_second[0], vel_tw_per_second[1], angular_vel, math.pi))
+        self.n_10.set(*self._swerve_displacement(1, -1, vel_tw_per_second[0], vel_tw_per_second[1], angular_vel, math.pi))
+        self.n_11.set(*self._swerve_displacement(1, 1, vel_tw_per_second[0], vel_tw_per_second[1], angular_vel, 0))
 
     def stop(self):
         self.n_00.set(0, 0)
@@ -63,11 +69,16 @@ class SwerveDrivetrain(Subsystem):
         self.n_11.set(0, 0)
 
     @staticmethod
-    def _swerve_displacement(node_x: float, node_y: float, dx: float, dy: float, d_theta: float) -> tuple[float, float]:
-        sin_theta = math.sin(d_theta)
-        cos_theta = math.cos(d_theta)
-        sx = dx + node_x * cos_theta - node_y * sin_theta - node_x
-        sy = dy + node_x * sin_theta + node_y * cos_theta - node_y
+    def _swerve_displacement(node_x: float, node_y: float, dx: float, dy: float, d_theta: float, angle_offset: float) -> tuple[float, float]:
+        tangent_x, tangent_y = -node_y, node_x
+        tangent_m = math.sqrt(tangent_x*tangent_x + tangent_y*tangent_y)
+        tangent_x /= tangent_m
+        tangent_y /= tangent_m
+
+        r = math.sqrt(2) / 2
+        sx = dx + r * d_theta * tangent_x
+        sy = dy + r * d_theta * tangent_y
+
         theta = math.atan2(sy, sx)
         magnitude = math.sqrt(sx * sx + sy * sy) / 2
-        return magnitude, theta
+        return magnitude, theta + angle_offset

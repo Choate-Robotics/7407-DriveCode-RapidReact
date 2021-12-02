@@ -4,6 +4,7 @@ from typing import Optional
 import rev
 
 from lib.motor import Motor, PIDMotor
+from utils import logger
 
 
 @dataclass
@@ -33,6 +34,7 @@ class SparkMax(PIDMotor):
         )
         self.__pid_controller = self._motor.getPIDController()
         self.__encoder = self._motor.getEncoder()
+        self._set_config(self._config)
 
     def set_raw_output(self, x: float):
         self._motor.set(x)
@@ -55,10 +57,10 @@ class SparkMax(PIDMotor):
         if config.k_P is not None:
             self.__pid_controller.setP(config.k_P)
         if config.k_I is not None:
-            self.__pid_controller.setP(config.k_I)
+            self.__pid_controller.setI(config.k_I)
         if config.k_D is not None:
-            self.__pid_controller.setP(config.k_D)
+            self.__pid_controller.setD(config.k_D)
         if config.k_F is not None:
-            self.__pid_controller.setP(config.k_F)
+            self.__pid_controller.setFF(config.k_F)
         if config.output_range is not None:
             self.__pid_controller.setOutputRange(config.output_range[0], config.output_range[1])
