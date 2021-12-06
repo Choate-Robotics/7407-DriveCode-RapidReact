@@ -4,8 +4,9 @@ from dataclasses import dataclass
 import ctre
 
 from lib.motors.rev_motors import SparkMax, SparkMaxConfig
+from lib.sensors.gyro.ADIS16448 import GyroADIS16448
 from lib.subsystem_templates.drivetrain.differential_drivetrain import DifferentialDrivetrain
-from lib.subsystem_templates.drivetrain.swerve_drivetrain import SwerveDrivetrain, SwerveNode
+from lib.subsystem_templates.drivetrain.swerve_drivetrain import SwerveDrivetrain, SwerveNode, SwerveOdometry
 from oi.keymap import Keymap
 from utils import logger
 
@@ -29,6 +30,20 @@ class SparkMaxSwerveNode(SwerveNode):
 
     def set_velocity_raw(self, vel_tw_per_second: float):
         self.m_move.set_raw_output(vel_tw_per_second / 8)
+
+
+class GyroOdometry(SwerveOdometry):
+    def __init__(self):
+        self._gyro = GyroADIS16448()
+
+    def init(self):
+        self._gyro.reset()
+
+    def get_robot_angle_degrees(self) -> float:
+        return self._gyro.angle
+
+    def reset_angle(self):
+        self._gyro.reset()
 
 
 class Drivetrain(SwerveDrivetrain):
@@ -55,3 +70,4 @@ class Drivetrain(SwerveDrivetrain):
     axis_dx = Keymap.Drivetrain.DRIVE_X_AXIS
     axis_dy = Keymap.Drivetrain.DRIVE_Y_AXIS
     axis_rotation = Keymap.Drivetrain.DRIVE_ROTATION_AXIS
+    odometry = GyroOdometry()

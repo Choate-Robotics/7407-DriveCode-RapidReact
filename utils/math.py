@@ -1,6 +1,13 @@
 import math
 
 
+def rotate_vector(x: float, y: float, theta: float) -> tuple[float, float]:
+    return (
+        x * math.cos(theta) - y * math.sin(theta),
+        x * math.sin(theta) + y * math.cos(theta)
+    )
+
+
 def clamp(val, _min, _max):
     if val < _min:
         return _min

@@ -3,6 +3,7 @@ import math
 from lib.oi.joysticks import JoystickAxis
 from lib.subsystem import Subsystem
 from utils import logger
+from utils.math import rotate_vector
 
 
 class SwerveNode:
@@ -20,6 +21,7 @@ class SwerveNode:
 
     # 0 degrees is facing right
     def set_angle_radians(self, target_radians: float, initial_radians: float):
+        # TODO sometimes off by 2pi
         diff = math.fmod(target_radians, 2 * math.pi) - math.fmod(initial_radians, 2 * math.pi)
         theta_f = initial_radians + diff if diff <= math.pi else initial_radians - (2 * math.pi - diff)
         self.old_theta = theta_f
@@ -32,6 +34,7 @@ class SwerveNode:
 class SwerveOdometry:
     def init(self): ...
     def get_robot_angle_degrees(self) -> float: ...
+    def reset_angle(self): ...
 
 
 class SwerveDrivetrain(Subsystem):
@@ -39,7 +42,7 @@ class SwerveDrivetrain(Subsystem):
     n_01: SwerveNode  # Bottom Left
     n_10: SwerveNode  # Top Right
     n_11: SwerveNode  # Bottom Right
-    # odometry: SwerveOdometry
+    odometry: SwerveOdometry
     axis_dx: JoystickAxis
     axis_dy: JoystickAxis
     axis_rotation: JoystickAxis
@@ -51,12 +54,15 @@ class SwerveDrivetrain(Subsystem):
         self.n_01.init()
         self.n_10.init()
         self.n_11.init()
-        # self.odometry.init()
+        self.odometry.init()
         logger.info("initialization complete", "[swerve_drivetrain]")
 
     def set(self, vel_tw_per_second: tuple[float, float], angular_vel: float):
-        angular_vel = 1
-        vel_tw_per_second = (0, 1.5)
+        vel_tw_per_second = rotate_vector(
+            vel_tw_per_second[0],
+            vel_tw_per_second[1],
+            self.odometry.get_robot_angle_degrees() * (math.pi / 180)
+        )
         self.n_00.set(*self._swerve_displacement(-1, -1, vel_tw_per_second[0], vel_tw_per_second[1], angular_vel, 0))
         self.n_01.set(*self._swerve_displacement(-1, 1, vel_tw_per_second[0], vel_tw_per_second[1], angular_vel, math.pi))
         self.n_10.set(*self._swerve_displacement(1, -1, vel_tw_per_second[0], vel_tw_per_second[1], angular_vel, math.pi))
