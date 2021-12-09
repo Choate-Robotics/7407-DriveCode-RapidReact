@@ -7,28 +7,49 @@ from utils.math import rotate_vector
 
 
 class SwerveNode:
-    old_theta: float = 0
+    motor_reversed: bool
+    motor_flip_diff: float
 
-    def init(self): ...
+    def init(self):
+        self.motor_reversed = False
+        self.motor_flip_diff = 0
 
     def set(self, vel_tw_per_second: float, angle_radians: float):
-        logger.info(f"node {vel_tw_per_second} {angle_radians}")
-        self.set_angle_radians(angle_radians, self.old_theta)
+        self.set_angle_radians(angle_radians, self.get_current_angle_raw())
         self.set_velocity_raw(vel_tw_per_second)
 
     # pos=0 - facing right, counter-clockwise around, pos=1 - facing right
     def set_angle_raw(self, pos: float): ...
 
+    def get_current_angle_raw(self) -> float: ...
+
     # 0 degrees is facing right
     def set_angle_radians(self, target_radians: float, initial_radians: float):
-        # TODO sometimes off by 2pi
+        # Actual angle difference in radians
         diff = math.fmod(target_radians, 2 * math.pi) - math.fmod(initial_radians, 2 * math.pi)
-        theta_f = initial_radians + diff if diff <= math.pi else initial_radians - (2 * math.pi - diff)
-        self.old_theta = theta_f
-        logger.info(f"final theta {theta_f * (180 / math.pi)}")
+        if diff > math.pi:
+            diff -= 2 * math.pi
+        if diff < -math.pi:
+            diff += 2 * math.pi
+
+        # Should we flip the motor
+        if abs(diff) > math.pi / 2:
+            if diff < 0:
+                self.motor_flip_diff += math.pi
+                diff += math.pi
+            else:
+                self.motor_flip_diff -= math.pi
+                diff -= math.pi
+            self.motor_reversed = not self.motor_reversed
+
+        # Add diff to theta f
+        theta_f = initial_radians + diff
+
         self.set_angle_raw(theta_f)
 
     def set_velocity_raw(self, vel_tw_per_second: float): ...
+
+    def get_current_velocity(self) -> float: ...
 
 
 class SwerveOdometry:
@@ -61,8 +82,16 @@ class SwerveDrivetrain(Subsystem):
         vel_tw_per_second = rotate_vector(
             vel_tw_per_second[0],
             vel_tw_per_second[1],
-            self.odometry.get_robot_angle_degrees() * (math.pi / 180)
+            -self.odometry.get_robot_angle_degrees() * (math.pi / 180)
         )
+
+        if abs(vel_tw_per_second[0]) < 0.1 and abs(vel_tw_per_second[1]) < 0.1 and abs(angular_vel) < 0.1:
+            self.n_00.set_velocity_raw(0)
+            self.n_01.set_velocity_raw(0)
+            self.n_10.set_velocity_raw(0)
+            self.n_11.set_velocity_raw(0)
+            return
+
         self.n_00.set(*self._swerve_displacement(-1, -1, vel_tw_per_second[0], vel_tw_per_second[1], angular_vel, 0))
         self.n_01.set(*self._swerve_displacement(-1, 1, vel_tw_per_second[0], vel_tw_per_second[1], angular_vel, math.pi))
         self.n_10.set(*self._swerve_displacement(1, -1, vel_tw_per_second[0], vel_tw_per_second[1], angular_vel, math.pi))
@@ -86,5 +115,5 @@ class SwerveDrivetrain(Subsystem):
         sy = dy + r * d_theta * tangent_y
 
         theta = math.atan2(sy, sx)
-        magnitude = math.sqrt(sx * sx + sy * sy) / 2
+        magnitude = math.sqrt(sx * sx + sy * sy)
         return magnitude, theta + angle_offset

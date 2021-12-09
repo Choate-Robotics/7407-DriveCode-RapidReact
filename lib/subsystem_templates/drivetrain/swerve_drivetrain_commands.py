@@ -11,8 +11,8 @@ class DriveSwerve(SubsystemCommand[SwerveDrivetrain]):
     def execute(self) -> None:
         dx, dy, d_theta = self.subsystem.axis_dx.value, self.subsystem.axis_dy.value, self.subsystem.axis_rotation.value
 
-        dx *= -4
-        dy *= 4
+        dx *= 4
+        dy *= -4
         d_theta *= -4 * math.pi / 3
 
         self.subsystem.set((dx, dy), d_theta)

@@ -14,6 +14,7 @@ class SparkMaxConfig:
     k_D: Optional[float] = None
     k_F: Optional[float] = None
     output_range: Optional[tuple[float, float]] = None
+    idle_mode: Optional[rev.IdleMode] = None
 
 
 class SparkMax(PIDMotor):
@@ -64,3 +65,5 @@ class SparkMax(PIDMotor):
             self.__pid_controller.setFF(config.k_F)
         if config.output_range is not None:
             self.__pid_controller.setOutputRange(config.output_range[0], config.output_range[1])
+        if config.idle_mode is not None:
+            self._motor.setIdleMode(config.idle_mode)

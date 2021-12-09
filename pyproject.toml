@@ -5,10 +5,11 @@ description = ""
 authors = ["Ethan Chapman <ethan.chapman0@outlook.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.8.6"
+python = "^3.9"
 robotpy = {extras = ["commands2", "ctre", "rev"], version = "^2021.1.10"}
 
 [tool.poetry.dev-dependencies]
+pygame = "^2.1.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

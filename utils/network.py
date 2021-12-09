@@ -9,4 +9,4 @@ class Network:
     def init():
         NetworkTables.initialize("10.74.7.2")
         Network.limelight_table = NetworkTables.getTable("limelight")
-        Network.test_table = NetworkTables.getTable("test")
+        Network.test_table = NetworkTables.getTable("testing")
