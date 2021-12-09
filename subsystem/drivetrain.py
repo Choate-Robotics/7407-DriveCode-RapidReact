@@ -31,7 +31,10 @@ class SparkMaxSwerveNode(SwerveNode):
         self.m_rotate.set_target_position(pos * 12.8 / (2 * math.pi))
 
     def set_velocity_raw(self, vel_tw_per_second: float):
-        self.m_move.set_raw_output(vel_tw_per_second / 8)
+        if self.motor_reversed:
+            self.m_move.set_raw_output(-vel_tw_per_second / 8)
+        else:
+            self.m_move.set_raw_output(vel_tw_per_second / 8)
 
     def get_current_angle_raw(self) -> float:
         return self.motor_flip_diff + self.m_rotate.get_sensor_position() / (12.8 / (2 * math.pi))
