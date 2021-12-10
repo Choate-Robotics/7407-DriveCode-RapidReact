@@ -1,14 +1,11 @@
-import math
-
 import wpilib
 import utils.logger as logger
 import commands2
 
 from lib.subsystem import Subsystem
-from lib.subsystem_templates.drivetrain.differential_drivetrain_commands import DriveArcade
 from lib.subsystem_templates.drivetrain.swerve_drivetrain_commands import DriveSwerve
 from robot_systems import Robot
-from utils.network import Network
+from lib.network.network import Network
 
 
 class _Robot(wpilib.TimedRobot):
@@ -44,7 +41,10 @@ class _Robot(wpilib.TimedRobot):
         pass
 
     def autonomousInit(self) -> None:
-        pass
+        Robot.drivetrain.n_00.m_rotate.set_target_position(0)
+        Robot.drivetrain.n_01.m_rotate.set_target_position(0)
+        Robot.drivetrain.n_10.m_rotate.set_target_position(0)
+        Robot.drivetrain.n_11.m_rotate.set_target_position(0)
 
     def autonomousPeriodic(self) -> None:
         pass

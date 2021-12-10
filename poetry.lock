@@ -281,6 +281,7 @@ python-versions = ">=3.6"
 pyfrc = {version = ">=2021.1.2,<2022.0.0.0", markers = "platform_machine != \"armv7l\""}
 pynetworktables = ">=2021.0.0,<2022.0.0.0"
 pyntcore = ">=2021.2.1.1,<2022.0.0.0"
+robotpy-adi = {version = ">=2021.0.0,<2022.0.0", optional = true, markers = "extra == \"adi\""}
 robotpy-commands-v2 = {version = ">=2021.3.1.0,<2022.0.0", optional = true, markers = "extra == \"commands2\""}
 robotpy-ctre = {version = ">=2021.2.2,<2022.0.0", optional = true, markers = "extra == \"ctre\""}
 robotpy-hal = ">=2021.3.1.0,<2022.0.0.0"
@@ -303,6 +304,17 @@ navx = ["robotpy-navx (>=2021.1.0,<2022.0.0)"]
 playingwithfusion = ["robotpy-playingwithfusion (>=2021.0.0,<2022.0.0)"]
 rev = ["robotpy-rev (>=2021.0.2,<2022.0.0)", "robotpy-rev-color (>=2021.1.2.0,<2022.0.0)"]
 sim = ["robotpy-halsim-ds-socket (>=2021.2.2.0,<2022.0.0.0)", "robotpy-halsim-ws (>=2021.3.1.0,<2022.0.0.0)"]
+
+[[package]]
+name = "robotpy-adi"
+version = "2021.0.0"
+description = "RobotPy wrappers for Analog Devices IMU"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+wpilib = ">=2021.1.2.0,<2022.0.0"
 
 [[package]]
 name = "robotpy-commands-v2"
@@ -451,7 +463,7 @@ robotpy-wpiutil = ">=2021.2.2.0,<2022.0.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "da9ab1c76c028a4aca83209d7079bb348b50e957c696a8585b4cabd893437135"
+content-hash = "24e9ca32f8a24be86bd489ff5dffcd4e22e81ec35d0ce145996bbfe4b89d1c50"
 
 [metadata.files]
 atomicwrites = [
@@ -703,6 +715,25 @@ pytest = [
 robotpy = [
     {file = "robotpy-2021.2.9-py3-none-any.whl", hash = "sha256:f9db809a6278546b10fbdbbfab769eade6c7801ab1c90825030ba7151caaf972"},
     {file = "robotpy-2021.2.9.tar.gz", hash = "sha256:dd805372d3f49d42eb6e11a2496f0e9f9a79a9edb3d2c5c700714e87df0aa3af"},
+]
+robotpy-adi = [
+    {file = "robotpy-adi-2021.0.0.tar.gz", hash = "sha256:abc8c9828b752c267ac0324cba82ecb3abc19c58d0be8752bb8e75b0072c83e7"},
+    {file = "robotpy_adi-2021.0.0-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:77ad267ae24054c0c200d9b7abc3af2a30dc67ade5c7e2d2fa57ac1ab246a1b8"},
+    {file = "robotpy_adi-2021.0.0-cp36-cp36m-manylinux_2_27_x86_64.whl", hash = "sha256:cfa7a4df5d0776fcaa97d93eb6b0b1cab3dbdcb15e07dcfb1f54d7f5ab52f0b2"},
+    {file = "robotpy_adi-2021.0.0-cp36-cp36m-win32.whl", hash = "sha256:46227f26f802ffdfe4ad8c99996df0242e8fa0b6d87aa23795be74104c6d3d28"},
+    {file = "robotpy_adi-2021.0.0-cp36-cp36m-win_amd64.whl", hash = "sha256:544591a24c63905290c2259ea9b32d4991a028f509365b5be75f40612c326a00"},
+    {file = "robotpy_adi-2021.0.0-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:2cfc796a38c0d3bbfbea3525739af2045f514bbb299a68bde196310c3bd654d4"},
+    {file = "robotpy_adi-2021.0.0-cp37-cp37m-manylinux_2_27_x86_64.whl", hash = "sha256:d8b3d01ac9f3c61eb9b47f266314e7d1a99647667f7d31d601a910bf3cd9e392"},
+    {file = "robotpy_adi-2021.0.0-cp37-cp37m-win32.whl", hash = "sha256:8a94625cb879785cc4f27777e05ed38b56baf222132fdf45706444503df7ddfc"},
+    {file = "robotpy_adi-2021.0.0-cp37-cp37m-win_amd64.whl", hash = "sha256:860570b77dd66beeca4623b9779b4c47acbd799b00ab0b8aba08dc18b34ef2ec"},
+    {file = "robotpy_adi-2021.0.0-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:ee8c7e82fe848b6d7eee3e0b2981d61db0038ef19c43bc39b768591c57cd8a3f"},
+    {file = "robotpy_adi-2021.0.0-cp38-cp38-manylinux_2_27_x86_64.whl", hash = "sha256:68d160c2dac20536cfe138f4ffa739b6498345198701ed5002a8e79fec86ac8d"},
+    {file = "robotpy_adi-2021.0.0-cp38-cp38-win32.whl", hash = "sha256:9983ba5294f029e7787d1203541e5af5183e738a9774a7a35ee94d75a8675c78"},
+    {file = "robotpy_adi-2021.0.0-cp38-cp38-win_amd64.whl", hash = "sha256:54ceb6d7fa49470b0afb04bf5148045cac76ac904cc13f0e9196ffdd780cfa88"},
+    {file = "robotpy_adi-2021.0.0-cp39-cp39-macosx_10_14_x86_64.whl", hash = "sha256:1f95431e024a8ef6b4c321fa09215313f450f9b6755715af896677a5ec85cd14"},
+    {file = "robotpy_adi-2021.0.0-cp39-cp39-manylinux_2_27_x86_64.whl", hash = "sha256:6899b4d649ac1cba929aaea8a2b2e9ba1b6cf5c0e0cfee73a65fddc95240c736"},
+    {file = "robotpy_adi-2021.0.0-cp39-cp39-win32.whl", hash = "sha256:128d586ea664e057f5e42a5fc1878fea5d2bcc091f31f6bd8d7d94593c5ca40a"},
+    {file = "robotpy_adi-2021.0.0-cp39-cp39-win_amd64.whl", hash = "sha256:d2b5b89889b9b363d9ea604842dd2c48157ee15e779f2f4bfcb01a68c1958486"},
 ]
 robotpy-commands-v2 = [
     {file = "robotpy-commands-v2-2021.3.1.0.tar.gz", hash = "sha256:55333cc99a7aba319b5656e4ce3a068db70d1620e601ce4ae334a834b661966e"},

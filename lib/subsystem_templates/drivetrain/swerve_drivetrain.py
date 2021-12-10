@@ -27,9 +27,9 @@ class SwerveNode:
     def set_angle_radians(self, target_radians: float, initial_radians: float):
         # Actual angle difference in radians
         diff = math.fmod(target_radians, 2 * math.pi) - math.fmod(initial_radians, 2 * math.pi)
-        if diff > math.pi:
+        while diff > math.pi:
             diff -= 2 * math.pi
-        if diff < -math.pi:
+        while diff < -math.pi:
             diff += 2 * math.pi
 
         # Should we flip the motor

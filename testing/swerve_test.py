@@ -79,7 +79,7 @@ while cv2.waitKey(int(20 * frame_scale)) != ord("q"):
     drivetrain.n_10.update(0.02 * time_scale)
     drivetrain.n_11.update(0.02 * time_scale)
     img.fill(0)
-    drivetrain.axis_dx.val = math.sin(x)
+    # drivetrain.axis_dx.val = math.sin(x)
     # drivetrain.axis_dy.val = math.cos(x)
     # drivetrain.axis_rotation.val = math.sin(x)
     x += 0.1 * time_scale
