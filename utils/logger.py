@@ -8,7 +8,7 @@ from utils.color import Color, NoColor
 Logger utility for debugging. 
 
 Example usage:
-    utils.logger.Logger.log_info("test")
+    utils.logger.Logger.log_info("testing")
 """
 
 

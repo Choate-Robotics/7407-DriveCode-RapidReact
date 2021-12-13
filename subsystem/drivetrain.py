@@ -1,103 +1,84 @@
-import wpilib
-import wpilib.kinematics
-from wpimath.geometry import Rotation2d
+import math
+from dataclasses import dataclass
+
 import ctre
-import commands2 as commands
+import rev
 
-import utils.logger as logger
-from utils.math import sensor_units_to_meters
+from lib.motors.rev_motors import SparkMax, SparkMaxConfig
+from lib.sensors.gyro.ADIS16448 import GyroADIS16448
+from lib.subsystem_templates.drivetrain.differential_drivetrain import DifferentialDrivetrain
+from lib.subsystem_templates.drivetrain.swerve_drivetrain import SwerveDrivetrain, SwerveNode, SwerveOdometry
+from oi.keymap import Keymap
+from utils import logger
 
-import sensors
-from utils.network import Network
+TURN_CONFIG = SparkMaxConfig(0.2, 0, 0.003, 0.00015, (-0.5, 0.5), rev.IdleMode.kBrake)
+MOVE_CONFIG = SparkMaxConfig(0.00005, 0, 0.0004, 0.00017, idle_mode=rev.IdleMode.kBrake)
 
 
-class Drivetrain(commands.SubsystemBase):
-    def __init__(self, sim: bool = False) -> None:
-        super().__init__()
+@dataclass
+class SparkMaxSwerveNode(SwerveNode):
+    m_move: SparkMax
+    m_rotate: SparkMax
+    encoder: ctre.CANCoder
 
-        if sim:
-            return
+    def init(self):
+        super().init()
+        self.m_move.init()
+        self.m_rotate.init()
 
-        logger.info("initializing drivetrain", "[drivetrain]")
+    def set_angle_raw(self, pos: float):
+        pos -= self.motor_flip_diff
+        self.m_rotate.set_target_position(pos * 12.8 / (2 * math.pi))
 
-        self.left2 = ctre.TalonFX(0)
-        self.left1 = ctre.TalonFX(1)
-        self.left3 = ctre.TalonFX(2)
-        self.right2 = ctre.TalonFX(3)
-        self.right1 = ctre.TalonFX(4)
-        self.right3 = ctre.TalonFX(5)
+    def set_velocity_raw(self, vel_tw_per_second: float):
+        if self.motor_reversed:
+            self.m_move.set_raw_output(-vel_tw_per_second / 8)
+        else:
+            self.m_move.set_raw_output(vel_tw_per_second / 8)
 
-        self.origin_x = 0
-        self.origin_y = 0
-        self.origin_theta = Rotation2d(0)
+    def get_current_angle_raw(self) -> float:
+        return self.motor_flip_diff + self.m_rotate.get_sensor_position() / (12.8 / (2 * math.pi))
 
-        self.flipped = False
+    def get_current_velocity(self) -> float:
+        return self.m_move.get_sensor_velocity()
 
-        logger.info("configuring odometry", "[drivetrain.odometry]")
 
-        self.gyro = sensors.Gyro()
-        self.gyro.reset()
-        self.odometry = wpilib.kinematics.DifferentialDriveOdometry(Rotation2d(0))
+class GyroOdometry(SwerveOdometry):
+    def __init__(self):
+        self._gyro = GyroADIS16448()
 
-        self.reset_pose()
+    def init(self):
+        self._gyro.reset()
 
-        logger.info("initialization complete", "[drivetrain]")
+    def get_robot_angle_degrees(self) -> float:
+        return -self._gyro.angle
 
-    def set_motor_percent_output(self, left: float, right: float):
-        if self.flipped:
-            left, right = right, left
-        self.left1.set(ctre.ControlMode.PercentOutput, left)
-        self.right1.set(ctre.ControlMode.PercentOutput, right)
+    def reset_angle(self):
+        self._gyro.reset()
 
-    def set_motor_velocity(self, left: float, right: float):
-        if self.flipped:
-            left, right = right, left
-        self.left1.set(ctre.ControlMode.Velocity, left)
-        self.right1.set(ctre.ControlMode.Velocity, right)
 
-    def reset_pose(self, flipped: bool = False):
-        logger.info(f"resetting pose{' (flipped)' if flipped else ''}....")
-        self.flipped = flipped
-        self.gyro.reset(0)
-        self.odometry = wpilib.kinematics.DifferentialDriveOdometry(Rotation2d(0))
-        self.left1.setSelectedSensorPosition(0)
-        self.right1.setSelectedSensorPosition(0)
-
-    def get_pose(self):
-        return self.odometry.getPose()
-
-    def periodic(self) -> None:
-        self.update_odometry()
-        pose = self.get_pose()
-        Network.test_table.putNumber("pose_x", pose.X())
-        Network.test_table.putNumber("pose_y", pose.Y())
-        Network.test_table.putNumber("pose_degrees", pose.rotation().degrees())
-
-    def update_odometry(self):
-        left = sensor_units_to_meters(-self.left1.getSelectedSensorPosition(), True)
-        right = sensor_units_to_meters(self.right1.getSelectedSensorPosition(), True)
-        if self.flipped:
-            left, right = right, left
-        # self.odometry.update(Rotation2d(-self.gyro.heading * 0.0174533).rotateBy(self.rotation_offset), left, right)
-
-    def config_motors(self):
-        logger.info("configuring motor closed loop", "[drivetrain.motor]")
-
-        self.left1.config_kF(0, 1023.0 / 20132.0)
-        self.right1.config_kF(0, 1023.0 / 20162.0)
-
-        def _config_pid(motor: ctre.TalonFX):
-            motor.config_kP(1, 0.5)
-            motor.config_kI(1, 0.0)
-            motor.config_kD(1, 0.0)
-            motor.configClosedLoopPeakOutput(1, 1.0)
-            motor.configMotionCruiseVelocity(15000)
-            motor.configMotionAcceleration(10000)
-
-        _config_pid(self.left1)
-        _config_pid(self.right1)
-
-        self.left2.follow(self.left1)
-        self.left3.follow(self.left1)
-        self.right2.follow(self.right1)
-        self.right3.follow(self.right1)
+class Drivetrain(SwerveDrivetrain):
+    n_00 = SparkMaxSwerveNode(
+        SparkMax(7, config=MOVE_CONFIG),
+        SparkMax(8, config=TURN_CONFIG),
+        ctre.CANCoder(12)
+    )
+    n_01 = SparkMaxSwerveNode(
+        SparkMax(1, config=MOVE_CONFIG),
+        SparkMax(2, config=TURN_CONFIG),
+        ctre.CANCoder(9)
+    )
+    n_10 = SparkMaxSwerveNode(
+        SparkMax(5, config=MOVE_CONFIG),
+        SparkMax(6, config=TURN_CONFIG),
+        ctre.CANCoder(11)
+    )
+    n_11 = SparkMaxSwerveNode(
+        SparkMax(3, config=MOVE_CONFIG),
+        SparkMax(4, config=TURN_CONFIG),
+        ctre.CANCoder(10)
+    )
+    axis_dx = Keymap.Drivetrain.DRIVE_X_AXIS
+    axis_dy = Keymap.Drivetrain.DRIVE_Y_AXIS
+    axis_rotation = Keymap.Drivetrain.DRIVE_ROTATION_AXIS
+    odometry = GyroOdometry()
