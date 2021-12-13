@@ -5,7 +5,7 @@ import commands2
 from lib.subsystem import Subsystem
 from lib.subsystem_templates.drivetrain.swerve_drivetrain_commands import DriveSwerve
 from robot_systems import Robot
-from lib.network.network import Network
+from lib.network.network_system import Network
 
 
 class _Robot(wpilib.TimedRobot):
@@ -22,9 +22,9 @@ class _Robot(wpilib.TimedRobot):
 
         logger.info("initializing robot")
 
-        Network.init()
-
         subsystems: list[Subsystem] = list({k: v for k, v in Robot.__dict__.items() if isinstance(v, Subsystem)}.values())
+
+        Network.robot_init(subsystems)
 
         for s in subsystems:
             s.init()
