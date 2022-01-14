@@ -1,8 +1,6 @@
 import pickle
 import socket
 
-import websockets
-
 from lib.subsystem import Subsystem
 from lib.network.objects import RobotStatusPacket, NetworkObject
 from utils import logger

@@ -4,6 +4,7 @@ import commands2
 
 from lib.subsystem import Subsystem
 from lib.subsystem_templates.drivetrain.swerve_drivetrain_commands import DriveSwerve
+from oi.OI import OI
 from robot_systems import Robot
 from lib.network.network_system import Network
 
@@ -33,6 +34,9 @@ class _Robot(wpilib.TimedRobot):
 
         for s in subsystems:
             s.init()
+
+        OI.init()
+        OI.map_controls()
 
         logger.info("initialization complete")
 
