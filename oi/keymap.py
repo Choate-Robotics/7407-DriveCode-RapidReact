@@ -18,7 +18,11 @@ class Keymap:
         DRIVE_ROTATION_AXIS = JoystickAxis(Controllers.DRIVER, controller.R_JOY[0])
 
     class Grabber:
-        UP = DefaultButton(Controllers.DRIVER, controller.A)
-        DOWN = DefaultButton(Controllers.DRIVER, controller.B)
-        OPEN = DefaultButton(Controllers.DRIVER, controller.X)
-        CLOSE = DefaultButton(Controllers.DRIVER, controller.Y)
+        UP = DefaultButton(Controllers.DRIVER, controller.Y)
+        DOWN = DefaultButton(Controllers.DRIVER, controller.A)
+        OPEN = DefaultButton(Controllers.DRIVER, controller.B)
+        CLOSE = DefaultButton(Controllers.DRIVER, controller.X)
+
+    class Intake:
+        IN = DefaultButton(Controllers.DRIVER, controller.LB)
+        OUT = DefaultButton(Controllers.DRIVER, controller.RB)

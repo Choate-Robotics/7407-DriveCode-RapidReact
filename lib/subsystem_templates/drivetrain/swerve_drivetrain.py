@@ -85,6 +85,9 @@ class SwerveDrivetrain(Subsystem):
             -self.odometry.get_robot_angle_degrees() * (math.pi / 180)
         )
 
+        # logger.info(f"ROBOT AT {self.odometry.get_robot_angle_degrees()} degrees offset")
+        # logger.info(f"({vel_tw_per_second[0]} tw/sec, {vel_tw_per_second[1]} tw/sec, {angular_vel} rad/sec)")
+
         if abs(vel_tw_per_second[0]) < 0.1 and abs(vel_tw_per_second[1]) < 0.1 and abs(angular_vel) < 0.1:
             self.n_00.set_velocity_raw(0)
             self.n_01.set_velocity_raw(0)

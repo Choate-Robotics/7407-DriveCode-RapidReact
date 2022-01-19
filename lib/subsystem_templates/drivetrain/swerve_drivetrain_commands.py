@@ -2,6 +2,7 @@ import math
 
 from lib.command import SubsystemCommand
 from lib.subsystem_templates.drivetrain.swerve_drivetrain import SwerveDrivetrain
+from utils import logger
 
 
 class DriveSwerve(SubsystemCommand[SwerveDrivetrain]):
@@ -10,6 +11,13 @@ class DriveSwerve(SubsystemCommand[SwerveDrivetrain]):
 
     def execute(self) -> None:
         dx, dy, d_theta = self.subsystem.axis_dx.value, self.subsystem.axis_dy.value, self.subsystem.axis_rotation.value
+
+        if abs(dx) < 0.1:
+            dx = 0
+        if abs(dy) < 0.1:
+            dy = 0
+        if abs(d_theta) < 0.1:
+            d_theta = 0
 
         dx *= 4
         dy *= -4
@@ -25,12 +33,3 @@ class DriveSwerve(SubsystemCommand[SwerveDrivetrain]):
 
     def runsWhenDisabled(self) -> bool:
         return False
-
-    @staticmethod
-    def _add_dead_zones(x_axis: float, y_axis: float) -> tuple[float, float]:
-        if abs(x_axis) < 0.2:
-            x_axis = 0
-        if abs(y_axis) < 0.2:
-            y_axis = 0
-
-        return x_axis, y_axis
