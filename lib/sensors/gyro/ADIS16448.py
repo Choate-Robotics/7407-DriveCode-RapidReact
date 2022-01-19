@@ -1,4 +1,4 @@
-from wpilib import ADIS16448_IMU
+from adis16448 import ADIS16448_IMU
 
 
 class GyroADIS16448:

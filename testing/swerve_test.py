@@ -3,6 +3,7 @@ from typing import Union
 
 import cv2
 
+from oi.keymap import Keymap
 from swerve_sim_subsystem import drivetrain, drive_command, TestSwerveNode
 
 import numpy as np
@@ -89,12 +90,12 @@ while cv2.waitKey(int(20 * frame_scale)) != ord("q"):
             joystick.init()
             joystick_init = False
         drivetrain.axis_dx.val = joystick.get_axis(0)
-        drivetrain.axis_dy.val = joystick.get_axis(1)
-        drivetrain.axis_rotation.val = joystick.get_axis(3)
+        drivetrain.axis_dy.val = -joystick.get_axis(1)
+        drivetrain.axis_rotation.val = -joystick.get_axis(3)
     except pygame.error:
         joystick_init = False
-    drivetrain.odometry.angle_radians -= (drivetrain.axis_rotation.val / (4 * math.pi / 3)) * time_scale * frame_scale
+    drivetrain.odometry.angle_radians += (drivetrain.axis_rotation.val / (4 * math.pi / 3)) * time_scale * frame_scale
     robot_x += (drivetrain.axis_dx.val / 3) * time_scale * frame_scale
-    robot_y -= (drivetrain.axis_dy.val / 3) * time_scale * frame_scale
+    robot_y += (drivetrain.axis_dy.val / 3) * time_scale * frame_scale
     draw_robot(robot_x, robot_y, drivetrain.odometry.angle_radians)
     cv2.imshow("swerve", img)
