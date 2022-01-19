@@ -1,19 +1,12 @@
 import math
-from dataclasses import dataclass
 
-import ctre
-
-from lib.motors.rev_motors import SparkMax, SparkMaxConfig
 from lib.motors.test_motors import TestMotor
 from lib.oi.joysticks import JoystickAxis
-from lib.sensors.gyro.ADIS16448 import GyroADIS16448
-from lib.subsystem_templates.drivetrain.differential_drivetrain import DifferentialDrivetrain
 from lib.subsystem_templates.drivetrain.swerve_drivetrain import SwerveDrivetrain, SwerveNode, SwerveOdometry
 from lib.subsystem_templates.drivetrain.swerve_drivetrain_commands import DriveSwerve
-from oi.keymap import Keymap
-from utils import logger
 
 
+#   ----   DIRECT CONTROL   ----
 # class TestSwerveNode(SwerveNode):
 #     vel: float
 #     angle: float
@@ -41,6 +34,7 @@ from utils import logger
 #         return self.vel
 
 
+#   ----   REALISTIC CONTROL   ----
 class TestSwerveNode(SwerveNode):
     m_turn: TestMotor
     m_move: TestMotor
