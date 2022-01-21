@@ -15,7 +15,7 @@ class SwerveNode:
         self.motor_flip_diff = 0
 
     def set(self, vel_tw_per_second: float, angle_radians: float):
-        self.set_angle_radians(angle_radians, self.get_current_angle_raw())
+        self.set_angle_radians(angle_radians, self.get_current_angle_raw() + self.motor_flip_diff)
         self.set_velocity_raw(vel_tw_per_second)
 
     # pos=0 - facing right, counter-clockwise around, pos=1 - facing right
@@ -45,7 +45,7 @@ class SwerveNode:
         # Add diff to theta f
         theta_f = initial_radians + diff
 
-        self.set_angle_raw(theta_f)
+        self.set_angle_raw(theta_f - self.motor_flip_diff)
 
     def set_velocity_raw(self, vel_tw_per_second: float): ...
 

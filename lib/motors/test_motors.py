@@ -11,16 +11,19 @@ class TestMotor(PIDMotor):
     control_mode: float
     set_point: float
     current_pos: float
+    current_vel: float
     prev_pos: float
     prev_dt: float
 
-    def __init__(self, max_vel: float = 1000):
+    def __init__(self, max_vel: float = 1000, max_accel: float = 50):
         self.max_vel = max_vel
+        self.max_accel = max_accel
 
     def init(self):
         self.control_mode = self.ControlMode.PERCENT
         self.set_point = 0
         self.current_pos = 0
+        self.current_vel = 0
         self.prev_pos = 0
         self.prev_dt = 0
 
@@ -28,12 +31,16 @@ class TestMotor(PIDMotor):
         self.prev_pos = self.current_pos
         self.prev_dt = dt
         if self.control_mode == self.ControlMode.PERCENT:
-            self.current_pos += self.set_point * self.max_vel * dt
+            diff = self.set_point * self.max_vel - self.current_vel
+            self.current_vel += clamp(diff, -self.max_accel * dt, self.max_accel * dt)
+            self.current_pos += self.current_vel * dt
         if self.control_mode == self.ControlMode.POSITION:
             diff = self.set_point - self.current_pos
             self.current_pos += clamp(diff, -self.max_vel * dt, self.max_vel * dt)
         if self.control_mode == self.ControlMode.VELOCITY:
-            self.current_pos += self.set_point * dt
+            diff = self.set_point - self.current_vel
+            self.current_vel += clamp(diff, -self.max_accel * dt, self.max_accel * dt)
+            self.current_pos += self.current_vel * dt
 
     def set_raw_output(self, x: float):
         self.control_mode = self.ControlMode.PERCENT
@@ -52,7 +59,7 @@ class TestMotor(PIDMotor):
 
     def get_sensor_velocity(self) -> float:
         if self.control_mode == self.ControlMode.VELOCITY:
-            return self.set_point
+            return self.current_vel
         if self.prev_dt == 0:
             return 0
         return (self.current_pos - self.prev_pos) / self.prev_dt
