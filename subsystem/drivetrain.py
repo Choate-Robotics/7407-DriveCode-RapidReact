@@ -6,13 +6,11 @@ import rev
 
 from lib.motors.rev_motors import SparkMax, SparkMaxConfig
 from lib.sensors.gyro.ADIS16448 import GyroADIS16448
-from lib.subsystem_templates.drivetrain.differential_drivetrain import DifferentialDrivetrain
 from lib.subsystem_templates.drivetrain.swerve_drivetrain import SwerveDrivetrain, SwerveNode, SwerveOdometry
 from oi.keymap import Keymap
-from utils import logger
 
-TURN_CONFIG = SparkMaxConfig(0.2, 0, 0.003, 0.00015, (-0.5, 0.5), rev.IdleMode.kBrake)
-MOVE_CONFIG = SparkMaxConfig(0.00005, 0, 0.0004, 0.00017, idle_mode=rev.IdleMode.kBrake)
+TURN_CONFIG = SparkMaxConfig(0.2, 0, 0.003, 0.00015, (-0.5, 0.5), rev.CANSparkMax.IdleMode.kBrake)
+MOVE_CONFIG = SparkMaxConfig(0.00005, 0, 0.0004, 0.00017, idle_mode=rev.CANSparkMax.IdleMode.kBrake)
 
 
 @dataclass
