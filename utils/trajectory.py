@@ -1,6 +1,5 @@
 from typing import Type, List
 
-from wpimath.geometry import Pose2d
 from wpimath.kinematics import DifferentialDriveKinematics
 from wpimath.trajectory import TrajectoryConfig, TrajectoryGenerator
 

@@ -1,6 +1,5 @@
 import wpilib
-
-from lib.subsystem import Subsystem
+from robotpy_toolkit_7407 import Subsystem
 
 
 class Grabber(Subsystem):
@@ -8,8 +7,8 @@ class Grabber(Subsystem):
     grab_solenoid: wpilib.DoubleSolenoid
 
     def init(self):
-        self.move_solenoid = wpilib.DoubleSolenoid(2, 3)
-        self.grab_solenoid = wpilib.DoubleSolenoid(6, 7)
+        self.move_solenoid = wpilib.DoubleSolenoid(wpilib.PneumaticsModuleType.CTREPCM, 2, 3)
+        self.grab_solenoid = wpilib.DoubleSolenoid(wpilib.PneumaticsModuleType.CTREPCM, 6, 7)
 
     def set_move(self, closed: bool = True):
         self.move_solenoid.set(wpilib.DoubleSolenoid.Value.kForward if not closed else wpilib.DoubleSolenoid.Value.kReverse)

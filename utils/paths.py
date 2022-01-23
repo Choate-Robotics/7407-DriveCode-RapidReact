@@ -1,9 +1,9 @@
 from typing import List, Tuple, Type
 
+from robotpy_toolkit_7407.utils.math import ft_to_m
 from wpimath.geometry import Pose2d, Translation2d
 from wpimath.trajectory import Trajectory
 
-from utils.math import ft_to_m
 import math
 
 

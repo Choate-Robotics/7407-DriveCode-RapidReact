@@ -1,9 +1,6 @@
-import lib.oi.controllermap as controllers
-from lib.oi.buttons import DefaultButton
+from robotpy_toolkit_7407.oi import XBoxController, LogitechController, JoystickAxis, DefaultButton
 
-from lib.oi.joysticks import JoystickAxis
-
-controller = controllers.XBoxController
+controller = XBoxController
 
 
 class Controllers:

@@ -1,12 +1,12 @@
 import wpilib
-import utils.logger as logger
 import commands2
+from robotpy_toolkit_7407 import Subsystem
+from robotpy_toolkit_7407.network.network_system import Network
+from robotpy_toolkit_7407.subsystem_templates.drivetrain import DriveSwerve
+from robotpy_toolkit_7407.utils import logger
 
-from lib.subsystem import Subsystem
-from lib.subsystem_templates.drivetrain.swerve_drivetrain_commands import DriveSwerve
 from oi.OI import OI
 from robot_systems import Robot
-from lib.network.network_system import Network
 
 
 class _Robot(wpilib.TimedRobot):

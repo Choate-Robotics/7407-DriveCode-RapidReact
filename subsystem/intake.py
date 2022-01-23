@@ -1,7 +1,5 @@
-import wpilib
-
-from lib.motors.ctre_motors import TalonSRX
-from lib.subsystem import Subsystem
+from robotpy_toolkit_7407 import Subsystem
+from robotpy_toolkit_7407.motors import TalonSRX
 
 
 class Intake(Subsystem):

@@ -1,17 +1,9 @@
 import math
-from dataclasses import dataclass
 
-import ctre
-
-from lib.motors.rev_motors import SparkMax, SparkMaxConfig
-from lib.motors.test_motors import TestMotor
-from lib.oi.joysticks import JoystickAxis
-from lib.sensors.gyro.ADIS16448 import GyroADIS16448
-from lib.subsystem_templates.drivetrain.differential_drivetrain import DifferentialDrivetrain
-from lib.subsystem_templates.drivetrain.swerve_drivetrain import SwerveDrivetrain, SwerveNode, SwerveOdometry
-from lib.subsystem_templates.drivetrain.swerve_drivetrain_commands import DriveSwerve
-from oi.keymap import Keymap
-from utils import logger
+from robotpy_toolkit_7407.motors import TestMotor
+from robotpy_toolkit_7407.oi import JoystickAxis
+from robotpy_toolkit_7407.subsystem_templates.drivetrain import SwerveNode, SwerveOdometry, SwerveDrivetrain, \
+    DriveSwerve
 
 
 # class TestSwerveNode(SwerveNode):
