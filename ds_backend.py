@@ -1,10 +1,9 @@
 import asyncio
 
 import websockets
-from robotpy_toolkit_7407.network import Network
+from robotpy_toolkit_7407.network.network_system import Network
+from robotpy_toolkit_7407.utils import logger
 from websockets.exceptions import ConnectionClosedError
-
-from utils import logger
 
 Network.ds_init()
 
