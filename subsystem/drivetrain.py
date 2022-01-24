@@ -3,21 +3,26 @@ from dataclasses import dataclass
 
 import ctre
 import rev
-from robotpy_toolkit_7407.motors import SparkMaxConfig, SparkMax
+from robotpy_toolkit_7407.motors import SparkMaxConfig, SparkMax, TalonFX
 from robotpy_toolkit_7407.sensors.gyro import GyroADIS16448
 from robotpy_toolkit_7407.subsystem_templates.drivetrain import SwerveNode, SwerveOdometry, SwerveDrivetrain
 
 from oi.keymap import Keymap
 
-TURN_CONFIG = SparkMaxConfig(0.2, 0, 0.003, 0.00015, (-0.5, 0.5), rev.CANSparkMax.IdleMode.kBrake)
-MOVE_CONFIG = SparkMaxConfig(0.00005, 0, 0.0004, 0.00017, idle_mode=rev.CANSparkMax.IdleMode.kBrake)
+TURN_FF = 20818
+TURN_kF = 1023 / TURN_FF
+TURN_Cruise_Vel = TURN_FF / 2
+TURN_kP = 0.0957142857
 
+MOVE_FF = 21273
+MOVE_kP = 1023 / MOVE_FF
 
 @dataclass
-class SparkMaxSwerveNode(SwerveNode):
-    m_move: SparkMax
-    m_rotate: SparkMax
-    encoder: ctre.CANCoder
+class TalonFXSwerveNode(SwerveNode):
+    m_move: TalonFX
+    m_rotate: TalonFX
+
+    __gear_ratio = (1023 / 2 * math.pi) / 7.84
 
     def init(self):
         super().init()
@@ -25,7 +30,7 @@ class SparkMaxSwerveNode(SwerveNode):
         self.m_rotate.init()
 
     def set_angle_raw(self, pos: float):
-        self.m_rotate.set_target_position(pos * 12.8 / (2 * math.pi))
+        self.m_rotate.set_target_position(pos * TalonFXSwerveNode.__gear_ratio)
 
     def set_velocity_raw(self, vel_tw_per_second: float):
         if self.motor_reversed:
@@ -34,7 +39,7 @@ class SparkMaxSwerveNode(SwerveNode):
             self.m_move.set_raw_output(vel_tw_per_second / 8)
 
     def get_current_angle_raw(self) -> float:
-        return self.m_rotate.get_sensor_position() / (12.8 / (2 * math.pi))
+        return self.m_rotate.get_sensor_position() / TalonFXSwerveNode.__gear_ratio
 
     def get_current_velocity(self) -> float:
         return self.m_move.get_sensor_velocity()
@@ -42,38 +47,38 @@ class SparkMaxSwerveNode(SwerveNode):
 
 class GyroOdometry(SwerveOdometry):
     def __init__(self):
-        self._gyro = GyroADIS16448()
+        # self._gyro = GyroADIS16448()
+        pass
 
     def init(self):
-        self._gyro.reset()
+        # self._gyro.reset()
+        pass
 
     def get_robot_angle_degrees(self) -> float:
-        return -self._gyro.angle
+        # return -self._gyro.angle
+        return 0
 
     def reset_angle(self):
-        self._gyro.reset()
+        # self._gyro.reset()
+        pass
 
 
 class Drivetrain(SwerveDrivetrain):
-    n_00 = SparkMaxSwerveNode(
-        SparkMax(7, config=MOVE_CONFIG),
-        SparkMax(8, config=TURN_CONFIG),
-        ctre.CANCoder(12)
+    n_00 = TalonFXSwerveNode(
+        TalonFX(7),
+        TalonFX(8)
     )
-    n_01 = SparkMaxSwerveNode(
-        SparkMax(1, config=MOVE_CONFIG),
-        SparkMax(2, config=TURN_CONFIG),
-        ctre.CANCoder(9)
+    n_01 = TalonFXSwerveNode(
+        TalonFX(1),
+        TalonFX(2)
     )
-    n_10 = SparkMaxSwerveNode(
-        SparkMax(5, config=MOVE_CONFIG),
-        SparkMax(6, config=TURN_CONFIG),
-        ctre.CANCoder(11)
+    n_10 = TalonFXSwerveNode(
+        TalonFX(5),
+        TalonFX(6)
     )
-    n_11 = SparkMaxSwerveNode(
-        SparkMax(3, config=MOVE_CONFIG),
-        SparkMax(4, config=TURN_CONFIG),
-        ctre.CANCoder(10)
+    n_11 = TalonFXSwerveNode(
+        TalonFX(3),
+        TalonFX(4)
     )
     axis_dx = Keymap.Drivetrain.DRIVE_X_AXIS
     axis_dy = Keymap.Drivetrain.DRIVE_Y_AXIS
