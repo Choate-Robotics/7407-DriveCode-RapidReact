@@ -1,36 +1,37 @@
 import math
 from dataclasses import dataclass
 
-import ctre
-import rev
-from robotpy_toolkit_7407.motors import SparkMaxConfig, SparkMax, TalonFX
-from robotpy_toolkit_7407.sensors.gyro import GyroADIS16448
+from robotpy_toolkit_7407.motors import TalonFX, TalonConfig
 from robotpy_toolkit_7407.subsystem_templates.drivetrain import SwerveNode, SwerveOdometry, SwerveDrivetrain
 
 from oi.keymap import Keymap
+
 
 TURN_FF = 20818
 TURN_kF = 1023 / TURN_FF
 TURN_Cruise_Vel = TURN_FF / 2
 TURN_kP = 0.0957142857
+TURN_CONFIG = TalonConfig(TURN_kP, 0, 0, TURN_kF, neutral_brake=True)
 
 MOVE_FF = 21273
-MOVE_kP = 1023 / MOVE_FF
+MOVE_kF = 1023 / MOVE_FF
+MOVE_CONFIG = TalonConfig(0, 0, 0, MOVE_kF, neutral_brake=True)
+
 
 @dataclass
 class TalonFXSwerveNode(SwerveNode):
     m_move: TalonFX
-    m_rotate: TalonFX
+    m_turn: TalonFX
 
     __gear_ratio = (1023 / 2 * math.pi) / 7.84
 
     def init(self):
         super().init()
         self.m_move.init()
-        self.m_rotate.init()
+        self.m_turn.init()
 
     def set_angle_raw(self, pos: float):
-        self.m_rotate.set_target_position(pos * TalonFXSwerveNode.__gear_ratio)
+        self.m_turn.set_target_position(pos * TalonFXSwerveNode.__gear_ratio)
 
     def set_velocity_raw(self, vel_tw_per_second: float):
         if self.motor_reversed:
@@ -39,12 +40,13 @@ class TalonFXSwerveNode(SwerveNode):
             self.m_move.set_raw_output(vel_tw_per_second / 8)
 
     def get_current_angle_raw(self) -> float:
-        return self.m_rotate.get_sensor_position() / TalonFXSwerveNode.__gear_ratio
+        return self.m_turn.get_sensor_position() / TalonFXSwerveNode.__gear_ratio
 
     def get_current_velocity(self) -> float:
         return self.m_move.get_sensor_velocity()
 
 
+# TODO Add Pigeon IMU
 class GyroOdometry(SwerveOdometry):
     def __init__(self):
         # self._gyro = GyroADIS16448()
@@ -65,20 +67,20 @@ class GyroOdometry(SwerveOdometry):
 
 class Drivetrain(SwerveDrivetrain):
     n_00 = TalonFXSwerveNode(
-        TalonFX(7),
-        TalonFX(8)
+        TalonFX(7, config=MOVE_CONFIG),
+        TalonFX(8, config=TURN_CONFIG)
     )
     n_01 = TalonFXSwerveNode(
-        TalonFX(1),
-        TalonFX(2)
+        TalonFX(1, config=MOVE_CONFIG),
+        TalonFX(2, config=TURN_CONFIG)
     )
     n_10 = TalonFXSwerveNode(
-        TalonFX(5),
-        TalonFX(6)
+        TalonFX(5, config=MOVE_CONFIG),
+        TalonFX(6, config=TURN_CONFIG)
     )
     n_11 = TalonFXSwerveNode(
-        TalonFX(3),
-        TalonFX(4)
+        TalonFX(3, config=MOVE_CONFIG),
+        TalonFX(4, config=TURN_CONFIG)
     )
     axis_dx = Keymap.Drivetrain.DRIVE_X_AXIS
     axis_dy = Keymap.Drivetrain.DRIVE_Y_AXIS
