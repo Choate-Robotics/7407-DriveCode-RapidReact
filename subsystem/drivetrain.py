@@ -33,11 +33,13 @@ class TalonFXSwerveNode(SwerveNode):
         super().init()
         self.m_move.init()
         self.m_turn.init()
+        self.m_turn._motor.setInverted(True)
 
     def set_angle_raw(self, pos: float):
+        logger.info(f"delta={pos - self.setpoint}")
         self.setpoint = pos
         pos_sensor_units = pos * TalonFXSwerveNode.__gear_ratio
-        self.m_turn.set_target_position(-pos_sensor_units)
+        self.m_turn.set_target_position(pos_sensor_units)
 
     def set_velocity_raw(self, vel_tw_per_second: float):
         if self.motor_reversed:
