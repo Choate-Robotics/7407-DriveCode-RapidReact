@@ -57,17 +57,21 @@ class _Robot(wpilib.TimedRobot):
         pass
 
     def autonomousInit(self) -> None:
-        # Robot.drivetrain.n_00.set_angle_raw(math.pi / 2)
-        # Robot.drivetrain.n_01.set_angle_raw(math.pi / 2)
-        # Robot.drivetrain.n_10.set_angle_raw(2 * math.pi)
-        # Robot.drivetrain.n_11.set_angle_raw(2 * math.pi)
         Robot.drivetrain.n_00.set_angle_raw(0)
         Robot.drivetrain.n_01.set_angle_raw(0)
         Robot.drivetrain.n_10.set_angle_raw(0)
         Robot.drivetrain.n_11.set_angle_raw(0)
 
+    x = 0
+
     def autonomousPeriodic(self) -> None:
-        pass
+        Robot.drivetrain.n_00.set_angle_raw(self.x)
+        Robot.drivetrain.n_01.set_angle_raw(self.x)
+        Robot.drivetrain.n_10.set_angle_raw(self.x)
+        Robot.drivetrain.n_11.set_angle_raw(self.x)
+        self.x += 0.005
+        logger.info(f"x={self.x}")
+        logger.info(f"sensor_pos={Robot.drivetrain.n_00.get_current_angle_raw()}")
 
     def disabledInit(self) -> None:
         pass
