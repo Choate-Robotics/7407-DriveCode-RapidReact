@@ -16,9 +16,9 @@ class GrabberMoveControl(SubsystemCommand[Grabber]):
 
 
 class GrabberGrabControl(SubsystemCommand[Grabber]):
-    def __init__(self, subsystem: Grabber, closed: bool = True):
+    def __init__(self, subsystem: Grabber, on: bool = True):
         super().__init__(subsystem)
-        self.on = closed
+        self.on = on
 
     def initialize(self) -> None:
         self.subsystem.set_grab(self.on)
