@@ -59,8 +59,14 @@ class _Robot(wpilib.TimedRobot):
         Robot.drivetrain.n_10.m_rotate.set_target_position(0)
         Robot.drivetrain.n_11.m_rotate.set_target_position(0)
 
+    x = 0
+
     def autonomousPeriodic(self) -> None:
-        pass
+        Robot.drivetrain.n_00.m_rotate.set_target_position(self.x)
+        Robot.drivetrain.n_01.m_rotate.set_target_position(self.x)
+        Robot.drivetrain.n_10.m_rotate.set_target_position(self.x)
+        Robot.drivetrain.n_11.m_rotate.set_target_position(self.x)
+        self.x += 0.01
 
     def disabledInit(self) -> None:
         pass
