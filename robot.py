@@ -1,5 +1,8 @@
+import math
+
 import wpilib
 import commands2
+from ctre import ControlMode
 from robotpy_toolkit_7407 import Subsystem
 from robotpy_toolkit_7407.network.network_system import Network
 from robotpy_toolkit_7407.subsystem_templates.drivetrain import DriveSwerve
@@ -54,10 +57,14 @@ class _Robot(wpilib.TimedRobot):
         pass
 
     def autonomousInit(self) -> None:
-        Robot.drivetrain.n_00.m_turn.set_target_position(0)
-        Robot.drivetrain.n_01.m_turn.set_target_position(0)
-        Robot.drivetrain.n_10.m_turn.set_target_position(0)
-        Robot.drivetrain.n_11.m_turn.set_target_position(0)
+        # Robot.drivetrain.n_00.set_angle_raw(math.pi / 2)
+        # Robot.drivetrain.n_01.set_angle_raw(math.pi / 2)
+        # Robot.drivetrain.n_10.set_angle_raw(2 * math.pi)
+        # Robot.drivetrain.n_11.set_angle_raw(2 * math.pi)
+        Robot.drivetrain.n_00.set_angle_raw(0)
+        Robot.drivetrain.n_01.set_angle_raw(0)
+        Robot.drivetrain.n_10.set_angle_raw(0)
+        Robot.drivetrain.n_11.set_angle_raw(0)
 
     def autonomousPeriodic(self) -> None:
         pass
