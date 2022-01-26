@@ -1,10 +1,11 @@
 import math
 from dataclasses import dataclass
 
-from ctre import ControlMode
+from ctre import ControlMode, CANCoder
 from robotpy_toolkit_7407.motors import TalonFX, TalonConfig
 from robotpy_toolkit_7407.subsystem_templates.drivetrain import SwerveNode, SwerveOdometry, SwerveDrivetrain
 from robotpy_toolkit_7407.utils import logger
+from robotpy_toolkit_7407.utils.math import bounded_angle_diff
 
 from oi.keymap import Keymap
 
@@ -25,6 +26,10 @@ MOVE_CONFIG = TalonConfig(0, 0, 0, MOVE_kF, neutral_brake=True)
 class TalonFXSwerveNode(SwerveNode):
     m_move: TalonFX
     m_turn: TalonFX
+    encoder: CANCoder
+    encoder_zeroed_absolute_pos_radians: float = 0
+    _setpoint: float = 0
+    _zero_offset: float = 0
 
     __gear_ratio = (2048 / (2 * math.pi)) * 6.55
 
@@ -32,8 +37,16 @@ class TalonFXSwerveNode(SwerveNode):
         super().init()
         self.m_move.init()
         self.m_turn.init()
+        current_absolute_pos_radians = self.encoder.getAbsolutePosition() * 0.017453292519943295  # degrees to radians
+        current_sensor_pos_radians = self.m_turn.get_sensor_position() / TalonFXSwerveNode.__gear_ratio
+        self._zero_offset = bounded_angle_diff(
+            current_absolute_pos_radians - current_sensor_pos_radians,
+            self.encoder_zeroed_absolute_pos_radians
+        )
 
     def set_angle_raw(self, pos: float):
+        pos += self._zero_offset
+        self._setpoint = pos
         self.m_turn.set_target_position(pos * TalonFXSwerveNode.__gear_ratio)
 
     def set_velocity_raw(self, vel_tw_per_second: float):
@@ -43,7 +56,8 @@ class TalonFXSwerveNode(SwerveNode):
             self.m_move.set_raw_output(vel_tw_per_second / 8)
 
     def get_current_angle_raw(self) -> float:
-        return self.m_turn.get_sensor_position() / TalonFXSwerveNode.__gear_ratio
+        return self._setpoint - self._zero_offset
+        # return (self.m_turn.get_sensor_position() / TalonFXSwerveNode.__gear_ratio) - self.encoder_zero_offset_radians
 
     def get_current_velocity(self) -> float:
         return self.m_move.get_sensor_velocity()
@@ -71,19 +85,23 @@ class GyroOdometry(SwerveOdometry):
 class Drivetrain(SwerveDrivetrain):
     n_00 = TalonFXSwerveNode(
         TalonFX(7, config=MOVE_CONFIG),
-        TalonFX(8, inverted=True, config=TURN_CONFIG)
+        TalonFX(8, inverted=True, config=TURN_CONFIG),
+        CANCoder(12)
     )
     n_01 = TalonFXSwerveNode(
-        TalonFX(1, config=MOVE_CONFIG),
-        TalonFX(2, inverted=True, config=TURN_CONFIG)
+        TalonFX(1, inverted=True, config=MOVE_CONFIG),
+        TalonFX(2, inverted=True, config=TURN_CONFIG),
+        CANCoder(9)
     )
     n_10 = TalonFXSwerveNode(
         TalonFX(5, config=MOVE_CONFIG),
-        TalonFX(6, inverted=True, config=TURN_CONFIG)
+        TalonFX(6, inverted=True, config=TURN_CONFIG),
+        CANCoder(11)
     )
     n_11 = TalonFXSwerveNode(
-        TalonFX(3, config=MOVE_CONFIG),
-        TalonFX(4, inverted=True, config=TURN_CONFIG)
+        TalonFX(3, inverted=True, config=MOVE_CONFIG),
+        TalonFX(4, inverted=True, config=TURN_CONFIG),
+        CANCoder(10)
     )
     axis_dx = Keymap.Drivetrain.DRIVE_X_AXIS
     axis_dy = Keymap.Drivetrain.DRIVE_Y_AXIS
