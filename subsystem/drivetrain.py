@@ -33,7 +33,7 @@ class TalonFXSwerveNode(SwerveNode):
     encoder_zeroed_absolute_pos_radians: float = 0
     _setpoint: float = 0
 
-    __gear_ratio = (2048 / (2 * math.pi)) * 6.55
+    __gear_ratio = 3353.33
 
     def init(self):
         super().init()
