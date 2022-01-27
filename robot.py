@@ -57,13 +57,13 @@ class _Robot(wpilib.TimedRobot):
         pass
 
     def autonomousInit(self) -> None:
+        pass
+
+    def autonomousPeriodic(self) -> None:
         Robot.drivetrain.n_00.set_angle_raw(0)
         Robot.drivetrain.n_01.set_angle_raw(0)
         Robot.drivetrain.n_10.set_angle_raw(0)
         Robot.drivetrain.n_11.set_angle_raw(0)
-
-    def autonomousPeriodic(self) -> None:
-        pass
 
     def disabledInit(self) -> None:
         pass
