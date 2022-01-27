@@ -18,6 +18,7 @@ class SparkMaxSwerveNode(SwerveNode):
     m_move: SparkMax
     m_rotate: SparkMax
     encoder: ctre.CANCoder
+    flipped: bool
 
     def init(self):
         super().init()
@@ -28,10 +29,12 @@ class SparkMaxSwerveNode(SwerveNode):
         self.m_rotate.set_target_position(pos * 12.8 / (2 * math.pi))
 
     def set_velocity_raw(self, vel_tw_per_second: float):
+        v = vel_tw_per_second / 8
         if self.motor_reversed:
-            self.m_move.set_raw_output(-vel_tw_per_second / 8)
-        else:
-            self.m_move.set_raw_output(vel_tw_per_second / 8)
+            v *= -1
+        if self.flipped:
+            v *= -1
+        self.m_move.set_raw_output(v)
 
     def get_current_angle_raw(self) -> float:
         return self.m_rotate.get_sensor_position() / (12.8 / (2 * math.pi))
@@ -58,22 +61,22 @@ class Drivetrain(SwerveDrivetrain):
     n_00 = SparkMaxSwerveNode(
         SparkMax(7, config=MOVE_CONFIG),
         SparkMax(8, config=TURN_CONFIG),
-        ctre.CANCoder(12)
+        ctre.CANCoder(12), False
     )
     n_01 = SparkMaxSwerveNode(
         SparkMax(1, config=MOVE_CONFIG),
         SparkMax(2, config=TURN_CONFIG),
-        ctre.CANCoder(9)
+        ctre.CANCoder(9), True
     )
     n_10 = SparkMaxSwerveNode(
         SparkMax(5, config=MOVE_CONFIG),
         SparkMax(6, config=TURN_CONFIG),
-        ctre.CANCoder(11)
+        ctre.CANCoder(11), True
     )
     n_11 = SparkMaxSwerveNode(
         SparkMax(3, config=MOVE_CONFIG),
         SparkMax(4, config=TURN_CONFIG),
-        ctre.CANCoder(10)
+        ctre.CANCoder(10), False
     )
     axis_dx = Keymap.Drivetrain.DRIVE_X_AXIS
     axis_dy = Keymap.Drivetrain.DRIVE_Y_AXIS
