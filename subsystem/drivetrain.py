@@ -18,7 +18,12 @@ TURN_kF = 1023 / TURN_FF
 TURN_Cruise_Vel = TURN_FF / 2
 TURN_kP = 1.1
 TURN_kD = 5
-TURN_CONFIG = TalonConfig(TURN_kP, TURN_kI, TURN_kD, TURN_kF, motion_cruise_velocity=17000, motion_acceleration=170000, neutral_brake=True)
+TURN_CONFIG = TalonConfig(
+    TURN_kP, TURN_kI, TURN_kD, TURN_kF,
+    motion_cruise_velocity=17000, motion_acceleration=170000,
+    neutral_brake=True,
+    integral_zone=TURN_IZone, max_integral_accumulator=TURN_I_MaxAccum
+)
 TURN_GEAR_RATIO = 3353.33  # sensor units per radian
 
 MOVE_FF = 21273
@@ -38,18 +43,16 @@ class TalonFXSwerveNode(SwerveNode):
         super().init()
         self.m_move.init()
         self.m_turn.init()
-        self.m_turn._motor.config_IntegralZone(0, TURN_IZone)
-        self.m_turn._motor.configMaxIntegralAccumulator(0, TURN_I_MaxAccum)
         self.zero()
 
     def zero(self):
         current_absolute_pos_radians = self.encoder.getAbsolutePosition() * 0.017453292519943295  # degrees to radians
         new_sensor_pos_radians = current_absolute_pos_radians - self.encoder_zeroed_absolute_pos_radians
-        self.m_turn._motor.setSelectedSensorPosition(new_sensor_pos_radians * TURN_GEAR_RATIO)
+        self.m_turn.set_sensor_position(new_sensor_pos_radians * TURN_GEAR_RATIO)
 
     def set_angle_raw(self, pos: float):
         self._setpoint = pos
-        self.m_turn._motor.set(ControlMode.MotionMagic, pos * TURN_GEAR_RATIO)
+        self.m_turn.set_target_position(pos * TURN_GEAR_RATIO)
 
     def set_velocity_raw(self, vel_tw_per_second: float):
         if self.motor_reversed:
