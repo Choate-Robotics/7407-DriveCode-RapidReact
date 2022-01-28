@@ -1,7 +1,7 @@
 import math
 from dataclasses import dataclass
 
-from ctre import ControlMode, CANCoder
+from ctre import ControlMode, CANCoder, PigeonIMU
 from robotpy_toolkit_7407.motors import TalonFX, TalonConfig
 from robotpy_toolkit_7407.subsystem_templates.drivetrain import SwerveNode, SwerveOdometry, SwerveDrivetrain
 from robotpy_toolkit_7407.utils import logger
@@ -19,6 +19,7 @@ TURN_Cruise_Vel = TURN_FF / 2
 TURN_kP = 1.1
 TURN_kD = 5
 TURN_CONFIG = TalonConfig(TURN_kP, TURN_kI, TURN_kD, TURN_kF, motion_cruise_velocity=17000, motion_acceleration=170000, neutral_brake=True)
+TURN_GEAR_RATIO = 3353.33  # sensor units per radian
 
 MOVE_FF = 21273
 MOVE_kF = 1023 / MOVE_FF
@@ -33,8 +34,6 @@ class TalonFXSwerveNode(SwerveNode):
     encoder_zeroed_absolute_pos_radians: float = 0
     _setpoint: float = 0
 
-    __gear_ratio = 3353.33
-
     def init(self):
         super().init()
         self.m_move.init()
@@ -46,11 +45,11 @@ class TalonFXSwerveNode(SwerveNode):
     def zero(self):
         current_absolute_pos_radians = self.encoder.getAbsolutePosition() * 0.017453292519943295  # degrees to radians
         new_sensor_pos_radians = current_absolute_pos_radians - self.encoder_zeroed_absolute_pos_radians
-        self.m_turn._motor.setSelectedSensorPosition(new_sensor_pos_radians * self.__gear_ratio)
+        self.m_turn._motor.setSelectedSensorPosition(new_sensor_pos_radians * TURN_GEAR_RATIO)
 
     def set_angle_raw(self, pos: float):
         self._setpoint = pos
-        self.m_turn._motor.set(ControlMode.MotionMagic, pos * TalonFXSwerveNode.__gear_ratio)
+        self.m_turn._motor.set(ControlMode.MotionMagic, pos * TURN_GEAR_RATIO)
 
     def set_velocity_raw(self, vel_tw_per_second: float):
         if self.motor_reversed:
@@ -66,23 +65,19 @@ class TalonFXSwerveNode(SwerveNode):
         return self.m_move.get_sensor_velocity()
 
 
-# TODO Add Pigeon IMU
+# TODO Add status checks
 class GyroOdometry(SwerveOdometry):
     def __init__(self):
-        # self._gyro = GyroADIS16448()
-        pass
+        self._gyro = PigeonIMU(13)
 
     def init(self):
-        # self._gyro.reset()
-        pass
+        self.reset_angle()
 
     def get_robot_angle_degrees(self) -> float:
-        # return -self._gyro.angle
-        return 0
+        return self._gyro.getFusedHeading()
 
     def reset_angle(self):
-        # self._gyro.reset()
-        pass
+        self._gyro.setFusedHeading(0)
 
 
 class Drivetrain(SwerveDrivetrain):
