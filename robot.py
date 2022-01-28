@@ -8,6 +8,7 @@ from robotpy_toolkit_7407.network.network_system import Network
 from robotpy_toolkit_7407.subsystem_templates.drivetrain import DriveSwerve
 from robotpy_toolkit_7407.utils import logger
 
+from command.shooter_control import ShooterControlCommand
 from oi.OI import OI
 from robot_systems import Robot
 
@@ -51,7 +52,7 @@ class _Robot(wpilib.TimedRobot):
             Network.robot_send_status()
 
     def teleopInit(self) -> None:
-        commands2.CommandScheduler.getInstance().schedule(DriveSwerve(Robot.drivetrain))
+        commands2.CommandScheduler.getInstance().schedule(ShooterControlCommand(Robot.shooter))
 
     def teleopPeriodic(self) -> None:
         pass
@@ -60,10 +61,7 @@ class _Robot(wpilib.TimedRobot):
         pass
 
     def autonomousPeriodic(self) -> None:
-        Robot.drivetrain.n_00.set_angle_raw(0)
-        Robot.drivetrain.n_01.set_angle_raw(0)
-        Robot.drivetrain.n_10.set_angle_raw(0)
-        Robot.drivetrain.n_11.set_angle_raw(0)
+        pass
 
     def disabledInit(self) -> None:
         pass

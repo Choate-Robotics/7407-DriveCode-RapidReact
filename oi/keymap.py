@@ -1,15 +1,15 @@
 from robotpy_toolkit_7407.oi import XBoxController, LogitechController, JoystickAxis, DefaultButton
 
-controller = XBoxController
+controller = LogitechController
 
 
 class Controllers:
     DRIVER = 0
-    OPERATOR = 1
 
 
 class Keymap:
-    class Drivetrain:
-        DRIVE_X_AXIS = JoystickAxis(Controllers.DRIVER, controller.L_JOY[0])
-        DRIVE_Y_AXIS = JoystickAxis(Controllers.DRIVER, controller.L_JOY[1])
-        DRIVE_ROTATION_AXIS = JoystickAxis(Controllers.DRIVER, controller.R_JOY[0])
+    class Shooter:
+        DECREASE_INCREMENT = DefaultButton(Controllers.DRIVER, controller.LB)
+        INCREASE_INCREMENT = DefaultButton(Controllers.DRIVER, controller.RB)
+        INCREMENT_STICK = JoystickAxis(Controllers.DRIVER, controller.R_JOY[1])
+        DECREMENT_STICK = JoystickAxis(Controllers.DRIVER, controller.L_JOY[1])
