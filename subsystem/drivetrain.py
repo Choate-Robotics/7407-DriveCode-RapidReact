@@ -26,9 +26,17 @@ TURN_CONFIG = TalonConfig(
 )
 TURN_GEAR_RATIO = 3353.33  # sensor units per radian
 
-MOVE_FF = 21273
+MOVE_IZone = 10001
+MOVE_I_MaxAccum = 10000
+MOVE_kP = 0.018
+MOVE_kI = 0.0005
+MOVE_kD = 0.5
+MOVE_FF = 22365
 MOVE_kF = 1023 / MOVE_FF
-MOVE_CONFIG = TalonConfig(0, 0, 0, MOVE_kF, neutral_brake=True)
+MOVE_CONFIG = TalonConfig(
+    MOVE_kP, MOVE_kI, MOVE_kD, MOVE_kF, neutral_brake=True,
+    integral_zone=MOVE_IZone, max_integral_accumulator=MOVE_I_MaxAccum
+)
 
 
 @dataclass
@@ -55,14 +63,14 @@ class TalonFXSwerveNode(SwerveNode):
         self.m_turn.set_target_position(pos * TURN_GEAR_RATIO)
 
     def set_velocity_raw(self, vel_tw_per_second: float):
+        vel_sensor_units = 3000 * vel_tw_per_second
         if self.motor_reversed:
-            self.m_move.set_raw_output(-vel_tw_per_second / 8)
-        else:
-            self.m_move.set_raw_output(vel_tw_per_second / 8)
+            vel_sensor_units *= -1
+        self.m_move.set_target_velocity(vel_sensor_units)
 
     def get_current_angle_raw(self) -> float:
-        return self._setpoint
-        # return (self.m_turn.get_sensor_position() / TalonFXSwerveNode.__gear_ratio) - self.encoder_zero_offset_radians
+        # return self._setpoint
+        return self.m_turn.get_sensor_position() / TURN_GEAR_RATIO
 
     def get_current_velocity(self) -> float:
         return self.m_move.get_sensor_velocity()
