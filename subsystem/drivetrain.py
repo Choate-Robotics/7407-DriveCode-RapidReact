@@ -6,6 +6,7 @@ import rev
 from robotpy_toolkit_7407.motors import SparkMaxConfig, SparkMax
 from robotpy_toolkit_7407.sensors.gyro import GyroADIS16448
 from robotpy_toolkit_7407.subsystem_templates.drivetrain import SwerveNode, SwerveOdometry, SwerveDrivetrain
+from robotpy_toolkit_7407.utils import logger
 
 from oi.keymap import Keymap
 
@@ -26,7 +27,7 @@ class SparkMaxSwerveNode(SwerveNode):
         self.m_rotate.init()
 
     def set_angle_raw(self, pos: float):
-        self.m_rotate.set_target_position(pos * 12.8 / (2 * math.pi))
+        self.m_rotate.set_target_position(-pos * 12.8 / (2 * math.pi))
 
     def set_velocity_raw(self, vel_tw_per_second: float):
         v = vel_tw_per_second / 8
@@ -37,7 +38,7 @@ class SparkMaxSwerveNode(SwerveNode):
         self.m_move.set_raw_output(v)
 
     def get_current_angle_raw(self) -> float:
-        return self.m_rotate.get_sensor_position() / (12.8 / (2 * math.pi))
+        return -self.m_rotate.get_sensor_position() / (12.8 / (2 * math.pi))
 
     def get_current_velocity(self) -> float:
         return self.m_move.get_sensor_velocity()
@@ -61,22 +62,22 @@ class Drivetrain(SwerveDrivetrain):
     n_00 = SparkMaxSwerveNode(
         SparkMax(7, config=MOVE_CONFIG),
         SparkMax(8, config=TURN_CONFIG),
-        ctre.CANCoder(12), False
+        ctre.CANCoder(12), True
     )
     n_01 = SparkMaxSwerveNode(
         SparkMax(1, config=MOVE_CONFIG),
         SparkMax(2, config=TURN_CONFIG),
-        ctre.CANCoder(9), True
+        ctre.CANCoder(9), False
     )
     n_10 = SparkMaxSwerveNode(
         SparkMax(5, config=MOVE_CONFIG),
         SparkMax(6, config=TURN_CONFIG),
-        ctre.CANCoder(11), True
+        ctre.CANCoder(11), False
     )
     n_11 = SparkMaxSwerveNode(
         SparkMax(3, config=MOVE_CONFIG),
         SparkMax(4, config=TURN_CONFIG),
-        ctre.CANCoder(10), False
+        ctre.CANCoder(10), True
     )
     axis_dx = Keymap.Drivetrain.DRIVE_X_AXIS
     axis_dy = Keymap.Drivetrain.DRIVE_Y_AXIS
