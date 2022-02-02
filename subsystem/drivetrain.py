@@ -63,7 +63,7 @@ class TalonFXSwerveNode(SwerveNode):
         self.m_turn.set_target_position(pos * TURN_GEAR_RATIO)
 
     def set_velocity_raw(self, vel_tw_per_second: float):
-        vel_sensor_units = 3000 * vel_tw_per_second
+        vel_sensor_units = 5000 * vel_tw_per_second
         if self.motor_reversed:
             vel_sensor_units *= -1
         self.m_move.set_target_velocity(vel_sensor_units)
