@@ -61,22 +61,22 @@ class Drivetrain(SwerveDrivetrain):
     n_00 = SparkMaxSwerveNode(
         SparkMax(7, config=MOVE_CONFIG),
         SparkMax(8, config=TURN_CONFIG),
-        ctre.CANCoder(12)
+        ctre.CANCoder(12), True
     )
     n_01 = SparkMaxSwerveNode(
         SparkMax(1, config=MOVE_CONFIG),
         SparkMax(2, config=TURN_CONFIG),
-        ctre.CANCoder(9)
+        ctre.CANCoder(9), False
     )
     n_10 = SparkMaxSwerveNode(
         SparkMax(5, config=MOVE_CONFIG),
         SparkMax(6, config=TURN_CONFIG),
-        ctre.CANCoder(11)
+        ctre.CANCoder(11), False
     )
     n_11 = SparkMaxSwerveNode(
         SparkMax(3, config=MOVE_CONFIG),
         SparkMax(4, config=TURN_CONFIG),
-        ctre.CANCoder(10)
+        ctre.CANCoder(10), True
     )
     axis_dx = Keymap.Drivetrain.DRIVE_X_AXIS
     axis_dy = Keymap.Drivetrain.DRIVE_Y_AXIS
