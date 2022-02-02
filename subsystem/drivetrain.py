@@ -18,6 +18,7 @@ class SparkMaxSwerveNode(SwerveNode):
     m_move: SparkMax
     m_rotate: SparkMax
     encoder: ctre.CANCoder
+    flipped: bool
 
     def init(self):
         super().init()
@@ -25,16 +26,18 @@ class SparkMaxSwerveNode(SwerveNode):
         self.m_rotate.init()
 
     def set_angle_raw(self, pos: float):
-        self.m_rotate.set_target_position(pos * 12.8 / (2 * math.pi))
+        self.m_rotate.set_target_position(-pos * 12.8 / (2 * math.pi))
 
     def set_velocity_raw(self, vel_tw_per_second: float):
+        v = vel_tw_per_second / 4
         if self.motor_reversed:
-            self.m_move.set_raw_output(-vel_tw_per_second / 8)
-        else:
-            self.m_move.set_raw_output(vel_tw_per_second / 8)
+            v *= -1
+        if self.flipped:
+            v *= -1
+        self.m_move.set_raw_output(v)
 
     def get_current_angle_raw(self) -> float:
-        return self.m_rotate.get_sensor_position() / (12.8 / (2 * math.pi))
+        return -self.m_rotate.get_sensor_position() / (12.8 / (2 * math.pi))
 
     def get_current_velocity(self) -> float:
         return self.m_move.get_sensor_velocity()
