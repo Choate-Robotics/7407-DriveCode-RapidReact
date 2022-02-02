@@ -3,6 +3,7 @@ from dataclasses import dataclass
 
 import ctre
 import rev
+from ctre import PigeonIMU
 from robotpy_toolkit_7407.motors import SparkMaxConfig, SparkMax
 from robotpy_toolkit_7407.sensors.gyro import GyroADIS16448
 from robotpy_toolkit_7407.subsystem_templates.drivetrain import SwerveNode, SwerveOdometry, SwerveDrivetrain
@@ -46,16 +47,16 @@ class SparkMaxSwerveNode(SwerveNode):
 
 class GyroOdometry(SwerveOdometry):
     def __init__(self):
-        self._gyro = GyroADIS16448()
+        self._gyro = PigeonIMU(13)
 
     def init(self):
-        self._gyro.reset()
+        self.reset_angle()
 
     def get_robot_angle_degrees(self) -> float:
-        return -self._gyro.angle
+        return self._gyro.getFusedHeading()
 
     def reset_angle(self):
-        self._gyro.reset()
+        self._gyro.setFusedHeading(0)
 
 
 class Drivetrain(SwerveDrivetrain):
