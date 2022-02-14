@@ -2,6 +2,7 @@ import math
 
 from robotpy_toolkit_7407.command import SubsystemCommand
 from robotpy_toolkit_7407.subsystem_templates.drivetrain.swerve_drivetrain import SwerveDrivetrain
+from robotpy_toolkit_7407.utils.units import m, s
 
 
 class DriveSwerveCustom(SubsystemCommand[SwerveDrivetrain]):
@@ -10,12 +11,6 @@ class DriveSwerveCustom(SubsystemCommand[SwerveDrivetrain]):
 
     def execute(self) -> None:
         dx, dy, d_theta = self.subsystem.axis_dx.value, self.subsystem.axis_dy.value, self.subsystem.axis_rotation.value
-
-        # if abs(dx * dx + dy * dy) < 0.00025:
-        #     dx = 0
-        #     dy = 0
-        if abs(d_theta) < 0.1:
-            d_theta = 0
 
         def curve_abs(x):
             return x ** 2
@@ -28,11 +23,11 @@ class DriveSwerveCustom(SubsystemCommand[SwerveDrivetrain]):
         dx = curve(dx)
         dy = curve(dy)
 
-        dx *= 4
-        dy *= -4
-        d_theta *= -4 * math.pi / 3
+        # TODO normalize this to circle somehow
+        dx *= self.subsystem.max_vel.asUnit(m/s)
+        dy *= -self.subsystem.max_vel.asUnit(m/s)
 
-        self.subsystem.set((dx, dy), d_theta)
+        self.subsystem.set((dx, dy), d_theta * self.subsystem.max_angular_vel)
 
     def end(self, interrupted: bool) -> None:
         self.subsystem.stop()
