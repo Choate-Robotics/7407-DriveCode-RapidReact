@@ -1,7 +1,7 @@
 import math
 
 import wpilib
-#import commands2
+import commands2
 from ctre import ControlMode
 from robotpy_toolkit_7407 import Subsystem
 from robotpy_toolkit_7407.network.network_system import Network
@@ -44,7 +44,7 @@ class _Robot(wpilib.TimedRobot):
         logger.info("initialization complete")
 
     def robotPeriodic(self):
-        #commands2.CommandScheduler.getInstance().run()
+        commands2.CommandScheduler.getInstance().run()
         self.network_counter -= 1
         if self.network_counter == 0:
             self.network_counter = self.loops_per_net_update
@@ -62,9 +62,10 @@ class _Robot(wpilib.TimedRobot):
         pass
 
     def autonomousPeriodic(self) -> None:
-        Robot.intake.set(.45)
-        Robot.index.set(.50)
+        #Robot.intake.set(.45)
+        #Robot.index.set(.50)
         #Robot.elevator.up()
+        pass
 
     def disabledInit(self) -> None:
         pass

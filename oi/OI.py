@@ -2,6 +2,7 @@ from robotpy_toolkit_7407.utils import logger
 
 from oi.keymap import Keymap
 from robot_systems import Robot
+import command
 
 
 class OI:
@@ -26,5 +27,5 @@ class OI:
 
         logger.info("mapping complete", "[oi]")
 
-        Keymap.Elevator.ELEVATOR_UP().whenPressed(lambda: Robot.elevator.up())
-        Keymap.Elevator.ELEVATOR_DOWN().whenPressed(lambda: Robot.elevator.down())
+        Keymap.Elevator.ELEVATOR_UP().whileHeld(command.ElevatorUp(Robot.elevator))
+        Keymap.Elevator.ELEVATOR_DOWN().whileHeld(command.ElevatorDown(Robot.elevator))
