@@ -2,3 +2,4 @@ from color_sensor import Color_Sensor
 from magnetic_limit_switch import Magnetic_Limit_Switch
 from limit_switch import Limit_Switch
 from photoelectric_switch import Photoelectric_Switch
+from analog_pressure_sensor import Analog_Pressure_Sensor
