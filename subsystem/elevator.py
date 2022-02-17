@@ -1,6 +1,5 @@
 from robotpy_toolkit_7407 import Subsystem
 from robotpy_toolkit_7407.motors import TalonFX, TalonGroup
-import time
 
 
 class Elevator(Subsystem):
@@ -12,11 +11,7 @@ class Elevator(Subsystem):
 
     def up(self):
         self.motors.set_raw_output(self.speed)
-        time.sleep(.5)
-        self.motors.set_raw_output(0)
     def down(self):
         self.motors.set_raw_output(-self.speed)
-        time.sleep(.5)
-        self.motors.set_raw_output(0)
     def stop(self):
         self.motors.set_raw_output(0)

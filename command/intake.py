@@ -1,10 +1,10 @@
 from robotpy_toolkit_7407.command import SubsystemCommand
 
-from subsystem import Index
+from subsystem import Intake
 
 
-class IndexOn(SubsystemCommand[Index]):
-    def __init__(self, subsystem: Index) -> None:  
+class IntakeOn(SubsystemCommand[Intake]):
+    def __init__(self, subsystem: Intake) -> None:  
         super().__init__(subsystem)
     
     def execute(self) -> None:
@@ -13,8 +13,8 @@ class IndexOn(SubsystemCommand[Index]):
     def isFinished(self) -> bool:
         return True
 
-class IndexOff(SubsystemCommand[Index]):
-    def __init__(self, subsystem: Index) -> None:  
+class IntakeOff(SubsystemCommand[Intake]):
+    def __init__(self, subsystem: Intake) -> None:  
         super().__init__(subsystem)
     
     def execute(self) -> None:
