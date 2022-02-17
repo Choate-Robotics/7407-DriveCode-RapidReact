@@ -1,15 +1,10 @@
-import math
-
 import wpilib
 import commands2
-from ctre import ControlMode
 from robotpy_toolkit_7407 import Subsystem
 from robotpy_toolkit_7407.network.network_system import Network
-from robotpy_toolkit_7407.subsystem_templates.drivetrain import DriveSwerve
 from robotpy_toolkit_7407.utils import logger
 from oi.OI import OI
 from robot_systems import Robot
-import time
 
 
 class _Robot(wpilib.TimedRobot):
@@ -59,6 +54,7 @@ class _Robot(wpilib.TimedRobot):
         pass
 
     def autonomousInit(self) -> None:
+        #Robot.intake.down()
         pass
 
     def autonomousPeriodic(self) -> None:
