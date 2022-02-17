@@ -19,3 +19,9 @@ class Keymap:
     class Elevator:
         ELEVATOR_UP = DefaultButton(Controllers.DRIVER, controller.RT)
         ELEVATOR_DOWN = DefaultButton(Controllers.DRIVER, controller.LT)
+    class Intake:
+        INTAKE_ON = DefaultButton(Controllers.DRIVER, controller.R_BUMPER)
+        INTAKE_OFF = DefaultButton(Controllers.DRIVER, controller.L_BUMPER)
+    class Index:
+        INDEX_ON = DefaultButton(Controllers.DRIVER, controller.Y)
+        INDEX_OFF = DefaultButton(Controllers.DRIVER, controller.X)
