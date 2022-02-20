@@ -20,4 +20,4 @@ shooter_top_gear_ratio = 1 * rad/m  # TODO Find this
 shooter_bottom_gear_ratio = 1 * rad/m  # TODO Find this
 
 # Shooter angle to motor angle
-shooter_angle_gear_ratio = 1 * rad/rad  # TODO Find this
+shooter_angle_gear_ratio = (266 / 10) * (36 / 12) * rad/rad  # TODO Find this

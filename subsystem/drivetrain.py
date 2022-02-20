@@ -7,7 +7,7 @@ from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit, talon_sen
 from robotpy_toolkit_7407.subsystem_templates.drivetrain import SwerveNode, SwerveDrivetrain, SwerveGyro
 from robotpy_toolkit_7407.utils import logger
 from robotpy_toolkit_7407.utils.units import rad, rev, inch, deg, m, mile, hour, s, ft, minute
-from unum import Unum
+from robotpy_toolkit_7407.unum import Unum
 from wpimath.geometry import Pose2d
 
 import constants
