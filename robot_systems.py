@@ -1,4 +1,6 @@
+from ctre import SensorTimeBase
 import subsystem
+import sensors
 import wpilib
 
 
@@ -8,7 +10,8 @@ class Robot:
     index = subsystem.Index()
     elevator = subsystem.Elevator()
     shooter = subsystem.Shooter()
-    limelight = subsystem.Limelight()
+
+    limelight = sensors.Limelight()
 
 
 class Pneumatics:
