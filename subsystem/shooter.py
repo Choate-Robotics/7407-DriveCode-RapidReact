@@ -11,9 +11,8 @@ class Shooter(Subsystem):
         self.fly_wheels.init()
         self.angle_adjustment_motors.init()
 
-    def setFlyWheels(self, motor_speed: float):
+    def set_fly_wheels(self, motor_speed: float):
         self.fly_wheels.set_raw_output(motor_speed)
-    def setAngle(self, motor_speed: float):
+
+    def set_angle(self, motor_speed: float):
         self.angle_adjustment_motors.set_raw_output(motor_speed)
-    
-    

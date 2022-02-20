@@ -13,6 +13,7 @@ class IntakeOn(SubsystemCommand[Intake]):
     def isFinished(self) -> bool:
         return True
 
+
 class IntakeOff(SubsystemCommand[Intake]):
     def __init__(self, subsystem: Intake) -> None:  
         super().__init__(subsystem)
@@ -23,22 +24,24 @@ class IntakeOff(SubsystemCommand[Intake]):
     def isFinished(self) -> bool:
         return True
 
+
 class IntakeLeftSolenoidToggle(SubsystemCommand[Intake]):
     def __init__(self, subsystem: Intake) -> None:  
         super().__init__(subsystem)
     
     def execute(self) -> None:
-        self.subsystem.toggleLeftIntake()
+        self.subsystem.toggle_left_intake()
 
     def isFinished(self) -> bool:
         return True
+
 
 class IntakeRightSolenoidToggle(SubsystemCommand[Intake]):
     def __init__(self, subsystem: Intake) -> None:  
         super().__init__(subsystem)
     
     def execute(self) -> None:
-        self.subsystem.toggleRightIntake()
+        self.subsystem.toggle_right_intake()
 
     def isFinished(self) -> bool:
         return True

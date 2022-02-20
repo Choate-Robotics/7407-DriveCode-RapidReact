@@ -4,7 +4,7 @@ import wpilib
 
 
 class Elevator(Subsystem):
-    motors: TalonGroup = TalonGroup(TalonFX(17, inverted=True), TalonFX(18, inverted=False)) # TODO: Test inversion
+    motors: TalonGroup = TalonGroup(TalonFX(17, inverted=True), TalonFX(18, inverted=False))  # TODO: Test inversion
     ElevatorSolenoid = wpilib.DoubleSolenoid(1, wpilib.PneumaticsModuleType.REVPH, 4, 5)
     speed = .2
 
@@ -13,12 +13,14 @@ class Elevator(Subsystem):
 
     def up(self):
         self.motors.set_raw_output(self.speed)
+
     def down(self):
         self.motors.set_raw_output(-self.speed)
+
     def stop(self):
         self.motors.set_raw_output(0)
 
-    def toggleElevator(self):
+    def toggle_elevator(self):
         if self.ElevatorSolenoid.get() == wpilib.DoubleSolenoid.Value.kOff:
             self.ElevatorSolenoid.set(wpilib.DoubleSolenoid.Value.kForward)
         else:

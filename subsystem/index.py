@@ -11,5 +11,3 @@ class Index(Subsystem):
 
     def set(self, motor_speed: float):
         self.motors.set_raw_output(motor_speed)
-    
-    

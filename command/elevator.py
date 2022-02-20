@@ -14,6 +14,7 @@ class ElevatorUp(SubsystemCommand[Elevator]):
     def isFinished(self) -> bool:
         return True
 
+
 class ElevatorDown(SubsystemCommand[Elevator]):
     def __init__(self, subsystem: Elevator) -> None:  
         super().__init__(subsystem)
@@ -23,6 +24,7 @@ class ElevatorDown(SubsystemCommand[Elevator]):
 
     def isFinished(self) -> bool:
         return True
+
 
 class ElevatorStop(SubsystemCommand[Elevator]):
     def __init__(self, subsystem: Elevator) -> None:  
@@ -34,12 +36,13 @@ class ElevatorStop(SubsystemCommand[Elevator]):
     def isFinished(self) -> bool:
         return True
 
+
 class ElevatorSolenoidToggle(SubsystemCommand[Elevator]):
     def __init__(self, subsystem: Elevator) -> None:  
         super().__init__(subsystem)
     
     def execute(self) -> None:
-        self.subsystem.toggleElevator()
+        self.subsystem.toggle_elevator()
 
     def isFinished(self) -> bool:
         return True
