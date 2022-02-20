@@ -13,6 +13,7 @@ class ElevatorUp(SubsystemCommand[Elevator]):
     def isFinished(self) -> bool:
         return True
 
+
 class ElevatorDown(SubsystemCommand[Elevator]):
     def __init__(self, subsystem: Elevator) -> None:  
         super().__init__(subsystem)
