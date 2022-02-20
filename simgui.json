@@ -1,8 +1,0 @@
-{
-  "NTProvider": {
-    "types": {
-      "/FMSInfo": "FMSInfo",
-      "/LiveWindow/Ungrouped/class frc2::SubsystemBase": "Subsystem"
-    }
-  }
-}
