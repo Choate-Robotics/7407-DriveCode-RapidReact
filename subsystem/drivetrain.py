@@ -30,7 +30,7 @@ TURN_CONFIG = TalonConfig(
     integral_zone=TURN_IZone, max_integral_accumulator=TURN_I_MaxAccum
 )
 
-MOVE_IZone = 10001
+MOVE_IZone = 1000
 MOVE_I_MaxAccum = 10000
 MOVE_kP = 0.018
 MOVE_kI = 0.0005
