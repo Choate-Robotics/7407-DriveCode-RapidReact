@@ -1,9 +1,9 @@
 import math
 from dataclasses import dataclass
 
-from ctre import CANCoder, Pigeon2
+from ctre import CANCoder, Pigeon2, StatusFrameEnhanced
 from robotpy_toolkit_7407.motors import TalonFX, TalonConfig
-from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit, talon_sensor_vel_unit, talon_sensor_accel_unit
+from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit, talon_sensor_vel_unit, talon_sensor_accel_unit, hundred_ms
 from robotpy_toolkit_7407.subsystem_templates.drivetrain import SwerveNode, SwerveDrivetrain, SwerveGyro
 from robotpy_toolkit_7407.utils import logger
 from robotpy_toolkit_7407.utils.units import rad, rev, inch, deg, m, mile, hour, s, ft, minute
@@ -12,7 +12,7 @@ from wpimath.geometry import Pose2d
 
 import constants
 from oi.keymap import Keymap
-
+from constants import optimize_talon
 
 TURN_IZone = 1000
 TURN_kI = 0.01
@@ -54,6 +54,8 @@ class TalonFXSwerveNode(SwerveNode):
         super().init()
         self.m_move.init()
         self.m_turn.init()
+        optimize_talon(self.m_move._motor)
+        optimize_talon(self.m_turn._motor)
         self.zero()
 
     def zero(self):
@@ -77,6 +79,7 @@ class TalonFXSwerveNode(SwerveNode):
 class PigeonIMUGyro(SwerveGyro):
     def __init__(self):
         self._gyro = Pigeon2(13)
+        self._gyro.configMountPose(0, 0, 0)
 
     def init(self):
         self.reset_angle()

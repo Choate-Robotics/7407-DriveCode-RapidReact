@@ -7,6 +7,9 @@ from robotpy_toolkit_7407 import Subsystem
 from robotpy_toolkit_7407.network.network_system import Network
 from robotpy_toolkit_7407.subsystem_templates.drivetrain import DriveSwerve
 from robotpy_toolkit_7407.utils import logger
+from robotpy_toolkit_7407.utils.units import deg
+
+from command.drivetrain import DriveSwerveCustom
 from oi.OI import OI
 from robot_systems import Robot, Pneumatics
 import time
@@ -58,7 +61,7 @@ class _Robot(wpilib.TimedRobot):
         Robot.shooter.target(Robot.limelight.calculate_distance())
 
     def teleopPeriodic(self) -> None:
-        pass
+        commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
 
     def autonomousInit(self) -> None:
         pass
@@ -77,4 +80,4 @@ class _Robot(wpilib.TimedRobot):
 
 
 if __name__ == "__main__":
-    wpilib.run(_Robot)
+    wpilib.run(_Robot, period=0.05)

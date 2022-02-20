@@ -1,6 +1,6 @@
 from robotpy_toolkit_7407 import Subsystem
 from robotpy_toolkit_7407.motors import TalonFX, TalonGroup, TalonConfig
-from robotpy_toolkit_7407.utils.units import rad, m, s
+from robotpy_toolkit_7407.utils.units import rad, m, s, deg
 from robotpy_toolkit_7407.unum import Unum
 import math
 
@@ -9,20 +9,25 @@ import shooter_targeting
 
 
 class Shooter(Subsystem):
-    # TODO Add PID constants
     m_top = TalonFX(21, inverted=False, config=TalonConfig(
-        0.125, 0.002, 7.5, 1023 / 20369, integral_zone=1000, max_integral_accumulator=100000,
+        0.09, 0.001, 7.5, 1023 / 20369, integral_zone=1000, max_integral_accumulator=100000,
         neutral_brake=False))
     m_bottom = TalonFX(19, inverted=True, config=TalonConfig(
+        0.26, 0.002, 11.6, 1023 / 20101, integral_zone=1000, max_integral_accumulator=100000,
         neutral_brake=False))
-    m_angle = TalonFX(20, inverted=True, config=TalonConfig(neutral_brake=True))
+    m_angle = TalonFX(20, inverted=True, config=TalonConfig(
+        0.3, 0.005, 1, 1023 * 0.1 / 917, integral_zone=1000, max_integral_accumulator=10000,
+        neutral_brake=True))
+
+    sensor_zero_angle = 15 * deg
 
     def init(self):
         self.m_top.init()
         self.m_bottom.init()
         self.m_angle.init()
 
-    def set_angle(self, theta: Unum):
+    def set_launch_angle(self, theta: Unum):
+        theta = 90 * deg - theta - self.sensor_zero_angle
         self.m_angle.set_target_position(theta * constants.shooter_angle_gear_ratio)
 
     def set_flywheels(self, top_vel: Unum, bottom_vel: Unum):

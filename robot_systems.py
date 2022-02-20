@@ -17,4 +17,3 @@ class Pneumatics:
 
     def get_compressor(self):
         return self.compressor.enabled(), self.compressor.getCurrent()
-

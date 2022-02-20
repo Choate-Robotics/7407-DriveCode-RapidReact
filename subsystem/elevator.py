@@ -2,6 +2,8 @@ from robotpy_toolkit_7407 import Subsystem
 from robotpy_toolkit_7407.motors import TalonFX, TalonGroup
 import wpilib
 
+from constants import optimize_talon
+
 
 # TODO Motion magic
 class Elevator(Subsystem):
@@ -11,6 +13,8 @@ class Elevator(Subsystem):
 
     def init(self):
         self.motors.init()
+        optimize_talon(self.motors.motors[0]._motor)
+        optimize_talon(self.motors.motors[1]._motor)
 
     def up(self):
         self.motors.set_raw_output(self.speed)

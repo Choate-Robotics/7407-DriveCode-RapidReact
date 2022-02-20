@@ -2,7 +2,7 @@ import math
 
 from robotpy_toolkit_7407.command import SubsystemCommand
 from robotpy_toolkit_7407.subsystem_templates.drivetrain.swerve_drivetrain import SwerveDrivetrain
-from robotpy_toolkit_7407.utils.units import m, s
+from robotpy_toolkit_7407.utils.units import m, s, rad
 
 
 class DriveSwerveCustom(SubsystemCommand[SwerveDrivetrain]):
@@ -30,7 +30,10 @@ class DriveSwerveCustom(SubsystemCommand[SwerveDrivetrain]):
         self.subsystem.set((dx, dy), d_theta * self.subsystem.max_angular_vel)
 
     def end(self, interrupted: bool) -> None:
-        self.subsystem.stop()
+        self.subsystem.n_00.set(0 * m/s, 0 * rad)
+        self.subsystem.n_01.set(0 * m/s, 0 * rad)
+        self.subsystem.n_10.set(0 * m/s, 0 * rad)
+        self.subsystem.n_11.set(0 * m/s, 0 * rad)
 
     def isFinished(self) -> bool:
         return False
