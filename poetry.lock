@@ -384,15 +384,16 @@ wpilib = ">=2022.2.1.3,<2023.0.0"
 
 [[package]]
 name = "robotpy-toolkit-7407"
-version = "0.1.8"
+version = "0.2.1"
 description = ""
 category = "main"
 optional = false
-python-versions = ">=3.9,<4.0"
+python-versions = ">=3.10,<4.0"
 
 [package.dependencies]
 pydantic = ">=1.9.0,<2.0.0"
-robotpy = {version = ">=2022.0.33,<2023.0.0", extras = ["commands2", "ctre", "rev"]}
+robotpy = {version = ">=2022.0.54,<2023.0.0", extras = ["commands2", "ctre", "rev"]}
+Unum = ">=4.2.1,<5.0.0"
 
 [[package]]
 name = "robotpy-wpilib-utilities"
@@ -450,6 +451,14 @@ optional = false
 python-versions = ">=3.6"
 
 [[package]]
+name = "unum"
+version = "4.2.1"
+description = "Units in Python"
+category = "main"
+optional = false
+python-versions = ">=2.4, <4"
+
+[[package]]
 name = "wpilib"
 version = "2022.3.1.1"
 description = "Binary wrapper for FRC WPILib"
@@ -465,8 +474,8 @@ robotpy-wpiutil = ">=2022.3.1.0,<2023.0.0"
 
 [metadata]
 lock-version = "1.1"
-python-versions = "^3.9"
-content-hash = "7952d09b665e0339f241076c86e5186c37dd374ec7485dd8f57397e0098d900c"
+python-versions = "^3.10"
+content-hash = "e25b700cae0c7437fb6720135aba7b3729427c7be86201684461c8dd4b19d81d"
 
 [metadata.files]
 atomicwrites = [
@@ -784,8 +793,8 @@ robotpy-rev = [
     {file = "robotpy_rev-2022.0.1-cp39-cp39-win_amd64.whl", hash = "sha256:fec101c8a66f278925010a046f75379d2a37d0e6ba681b1ceff493591efbf91b"},
 ]
 robotpy-toolkit-7407 = [
-    {file = "robotpy-toolkit-7407-0.1.8.tar.gz", hash = "sha256:d23b5c596e8f5d605080112571b1f8453a4a659552e7d2ef8282ad06d987d07e"},
-    {file = "robotpy_toolkit_7407-0.1.8-py3-none-any.whl", hash = "sha256:0209f1477da2cd9cf7c624faaddcb3970991ebeebd5bd1c849f951169e8d556d"},
+    {file = "robotpy-toolkit-7407-0.2.1.tar.gz", hash = "sha256:fe02344bac97e176f08b334b7f249b8464d33926434f3856f74d98dcd7c7355d"},
+    {file = "robotpy_toolkit_7407-0.2.1-py3-none-any.whl", hash = "sha256:3dee01b38f941704a2b55945775ee916bf50e3c59f3342bbf341424931b5b1d5"},
 ]
 robotpy-wpilib-utilities = [
     {file = "robotpy-wpilib-utilities-2022.0.2.tar.gz", hash = "sha256:24e3a4cc5164be69466b62e6d7804e562936bcd24d3a306964bbfb2a9e7c6326"},
@@ -838,6 +847,9 @@ tomli = [
 typing-extensions = [
     {file = "typing_extensions-4.1.1-py3-none-any.whl", hash = "sha256:21c85e0fe4b9a155d0799430b0ad741cdce7e359660ccbd8b530613e8df88ce2"},
     {file = "typing_extensions-4.1.1.tar.gz", hash = "sha256:1a9462dcc3347a79b1f1c0271fbe79e844580bb598bafa1ed208b94da3cdcd42"},
+]
+unum = [
+    {file = "Unum-4.2.1.tar.gz", hash = "sha256:96591615235eb1ef08434c8221fb042c6999a519b0a7d4f57d49cd2d39ef21e5"},
 ]
 wpilib = [
     {file = "wpilib-2022.3.1.1-cp310-cp310-macosx_10_15_x86_64.whl", hash = "sha256:68ddcf1a9828ac2b8ca198483d6f5b9f12aa8048936a48752821ff74e487c96e"},
