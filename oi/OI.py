@@ -16,7 +16,7 @@ class OI:
     def map_controls():
         logger.info("mapping controller buttons", "[oi]")
 
-        #Keymap.Drivetrain.RESET_GYRO().whenPressed(lambda: Robot.drivetrain.odometry.reset_angle())
+        # Keymap.Drivetrain.RESET_GYRO().whenPressed(lambda: Robot.drivetrain.odometry.reset_angle())
 
         # def zero_motors():
         #     Robot.drivetrain.n_00.zero()
@@ -24,8 +24,6 @@ class OI:
         #     Robot.drivetrain.n_10.zero()
         #     Robot.drivetrain.n_11.zero()
         # Keymap.Drivetrain.REZERO_MOTORS().whenPressed(zero_motors)
-
-        logger.info("mapping complete", "[oi]")
 
         Keymap.Elevator.ELEVATOR_UP().whileHeld(command.ElevatorUp(Robot.elevator))
         Keymap.Elevator.ELEVATOR_UP().whenReleased(command.ElevatorStop(Robot.elevator))
@@ -38,6 +36,7 @@ class OI:
         Keymap.Intake.INTAKE_LEFT_SOLENOID_TOGGLE().whenPressed(command.IntakeLeftSolenoidToggle(Robot.intake))
         Keymap.Intake.INTAKE_RIGHT_SOLENOID_TOGGLE().whenPressed(command.IntakeRightSolenoidToggle(Robot.intake))
 
-
         Keymap.Index.INDEX_ON().whenPressed(command.IndexOn(Robot.index))
         Keymap.Index.INDEX_OFF().whenPressed(command.IndexOff(Robot.index))
+
+        logger.info("mapping complete", "[oi]")

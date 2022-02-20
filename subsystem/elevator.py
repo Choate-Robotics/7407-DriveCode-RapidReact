@@ -3,9 +3,10 @@ from robotpy_toolkit_7407.motors import TalonFX, TalonGroup
 import wpilib
 
 
+# TODO Motion magic
 class Elevator(Subsystem):
     motors: TalonGroup = TalonGroup(TalonFX(17, inverted=True), TalonFX(18, inverted=False))  # TODO: Test inversion
-    ElevatorSolenoid = wpilib.DoubleSolenoid(1, wpilib.PneumaticsModuleType.REVPH, 4, 5)
+    solenoid = wpilib.DoubleSolenoid(1, wpilib.PneumaticsModuleType.REVPH, 4, 5)
     speed = .2
 
     def init(self):
@@ -20,8 +21,8 @@ class Elevator(Subsystem):
     def stop(self):
         self.motors.set_raw_output(0)
 
-    def toggle_elevator(self):
-        if self.ElevatorSolenoid.get() == wpilib.DoubleSolenoid.Value.kOff:
-            self.ElevatorSolenoid.set(wpilib.DoubleSolenoid.Value.kForward)
+    def toggle_solenoid(self):
+        if self.solenoid.get() == wpilib.DoubleSolenoid.Value.kOff:
+            self.solenoid.set(wpilib.DoubleSolenoid.Value.kForward)
         else:
-            self.ElevatorSolenoid.toggle()
+            self.solenoid.toggle()

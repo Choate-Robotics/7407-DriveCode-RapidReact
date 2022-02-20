@@ -1,47 +1,9 @@
-from robotpy_toolkit_7407.command import SubsystemCommand
+from commands2 import InstantCommand
 
-from subsystem import Intake
-
-
-class IntakeOn(SubsystemCommand[Intake]):
-    def __init__(self, subsystem: Intake) -> None:  
-        super().__init__(subsystem)
-    
-    def execute(self) -> None:
-        self.subsystem.set(.5)
-
-    def isFinished(self) -> bool:
-        return True
+from robot_systems import Robot
 
 
-class IntakeOff(SubsystemCommand[Intake]):
-    def __init__(self, subsystem: Intake) -> None:  
-        super().__init__(subsystem)
-    
-    def execute(self) -> None:
-        self.subsystem.set(0)
-
-    def isFinished(self) -> bool:
-        return True
-
-
-class IntakeLeftSolenoidToggle(SubsystemCommand[Intake]):
-    def __init__(self, subsystem: Intake) -> None:  
-        super().__init__(subsystem)
-    
-    def execute(self) -> None:
-        self.subsystem.toggle_left_intake()
-
-    def isFinished(self) -> bool:
-        return True
-
-
-class IntakeRightSolenoidToggle(SubsystemCommand[Intake]):
-    def __init__(self, subsystem: Intake) -> None:  
-        super().__init__(subsystem)
-    
-    def execute(self) -> None:
-        self.subsystem.toggle_right_intake()
-
-    def isFinished(self) -> bool:
-        return True
+IntakeOn = InstantCommand(Robot.intake.set(.5), Robot.intake)
+IntakeOff = InstantCommand(Robot.intake.set(0), Robot.intake)
+IntakeLeftSolenoidToggle = InstantCommand(Robot.intake.toggle_left_intake(), Robot.intake)
+IntakeRightSolenoidToggle = InstantCommand(Robot.intake.toggle_right_intake(), Robot.intake)

@@ -55,23 +55,15 @@ class _Robot(wpilib.TimedRobot):
             Network.robot_send_status()
 
     def teleopInit(self) -> None:
-        #Robot.index.down()
-        #commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
-        #Robot.shooter.setFlyWheels(.3)
         pass
 
     def teleopPeriodic(self) -> None:
-        # Robot.drivetrain.set((0, 1), 0)
-#print(Pneumatics.getCompressor())
         pass
 
     def autonomousInit(self) -> None:
         pass
 
     def autonomousPeriodic(self) -> None:
-        #Robot.intake.set(.45)
-        #Robot.index.set(.50)
-        #Robot.elevator.up()
         pass
 
     def disabledInit(self) -> None:

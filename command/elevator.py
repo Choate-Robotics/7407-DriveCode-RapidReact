@@ -1,48 +1,13 @@
 from telnetlib import EL
+
+from commands2 import InstantCommand
 from robotpy_toolkit_7407.command import SubsystemCommand
 
+from robot_systems import Robot
 from subsystem import Elevator
 
 
-class ElevatorUp(SubsystemCommand[Elevator]):
-    def __init__(self, subsystem: Elevator) -> None:  
-        super().__init__(subsystem)
-    
-    def execute(self) -> None:
-        self.subsystem.up()
-
-    def isFinished(self) -> bool:
-        return True
-
-
-class ElevatorDown(SubsystemCommand[Elevator]):
-    def __init__(self, subsystem: Elevator) -> None:  
-        super().__init__(subsystem)
-    
-    def execute(self) -> None:
-        self.subsystem.down()
-
-    def isFinished(self) -> bool:
-        return True
-
-
-class ElevatorStop(SubsystemCommand[Elevator]):
-    def __init__(self, subsystem: Elevator) -> None:  
-        super().__init__(subsystem)
-    
-    def execute(self) -> None:
-        self.subsystem.stop()
-
-    def isFinished(self) -> bool:
-        return True
-
-
-class ElevatorSolenoidToggle(SubsystemCommand[Elevator]):
-    def __init__(self, subsystem: Elevator) -> None:  
-        super().__init__(subsystem)
-    
-    def execute(self) -> None:
-        self.subsystem.toggle_elevator()
-
-    def isFinished(self) -> bool:
-        return True
+ElevatorUp = InstantCommand(Robot.elevator.up(), Robot.elevator)
+ElevatorDown = InstantCommand(Robot.elevator.down(), Robot.elevator)
+ElevatorStop = InstantCommand(Robot.elevator.stop(), Robot.elevator)
+ElevatorSolenoidToggle = InstantCommand(Robot.elevator.toggle_solenoid(), Robot.elevator)

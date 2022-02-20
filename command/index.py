@@ -1,25 +1,7 @@
-from robotpy_toolkit_7407.command import SubsystemCommand
+from commands2 import InstantCommand
 
-from subsystem import Index
-
-
-class IndexOn(SubsystemCommand[Index]):
-    def __init__(self, subsystem: Index) -> None:  
-        super().__init__(subsystem)
-    
-    def execute(self) -> None:
-        self.subsystem.set(.5)
-
-    def isFinished(self) -> bool:
-        return True
+from robot_systems import Robot
 
 
-class IndexOff(SubsystemCommand[Index]):
-    def __init__(self, subsystem: Index) -> None:  
-        super().__init__(subsystem)
-    
-    def execute(self) -> None:
-        self.subsystem.set(0)
-
-    def isFinished(self) -> bool:
-        return True
+IndexOn = InstantCommand(Robot.index.set(.5), Robot.index)
+IndexOff = InstantCommand(Robot.index.set(0), Robot.index)
