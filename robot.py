@@ -8,7 +8,7 @@ from robotpy_toolkit_7407.network.network_system import Network
 from robotpy_toolkit_7407.subsystem_templates.drivetrain import DriveSwerve
 from robotpy_toolkit_7407.utils import logger
 from oi.OI import OI
-from robot_systems import Robot
+from robot_systems import Robot, Pneumatics
 import time
 
 
@@ -38,8 +38,12 @@ class _Robot(wpilib.TimedRobot):
         for s in subsystems:
             s.init()
 
+        # OI
         OI.init()
         OI.map_controls()
+
+        # Pneumatics
+        Pneumatics.compressor.enableAnalog(90, 120)
 
         logger.info("initialization complete")
 
@@ -51,20 +55,15 @@ class _Robot(wpilib.TimedRobot):
             Network.robot_send_status()
 
     def teleopInit(self) -> None:
-        #commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
         pass
 
     def teleopPeriodic(self) -> None:
-        # Robot.drivetrain.set((0, 1), 0)
         pass
 
     def autonomousInit(self) -> None:
         pass
 
     def autonomousPeriodic(self) -> None:
-        #Robot.intake.set(.45)
-        #Robot.index.set(.50)
-        #Robot.elevator.up()
         pass
 
     def disabledInit(self) -> None:
