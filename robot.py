@@ -55,7 +55,7 @@ class _Robot(wpilib.TimedRobot):
             Network.robot_send_status()
 
     def teleopInit(self) -> None:
-        pass
+        Robot.shooter.target(Robot.limelight.calculate_distance())
 
     def teleopPeriodic(self) -> None:
         pass

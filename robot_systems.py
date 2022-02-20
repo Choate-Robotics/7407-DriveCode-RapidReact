@@ -8,6 +8,7 @@ class Robot:
     index = subsystem.Index()
     elevator = subsystem.Elevator()
     shooter = subsystem.Shooter()
+    limelight = subsystem.Limelight()
 
 
 class Pneumatics:

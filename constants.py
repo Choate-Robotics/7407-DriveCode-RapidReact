@@ -21,3 +21,7 @@ shooter_bottom_gear_ratio = 1 * rad/m  # TODO Find this
 
 # Shooter angle to motor angle
 shooter_angle_gear_ratio = (266 / 10) * (36 / 12) * rad/rad  # TODO Find this
+
+air_resistance_constant = 0.048187
+height_difference = 6
+gravity = 9.80665
