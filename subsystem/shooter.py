@@ -3,13 +3,7 @@ from robotpy_toolkit_7407.motors import TalonFX, TalonGroup, TalonConfig
 from robotpy_toolkit_7407.utils.units import rad, m, s
 from unum import Unum
 
-
-# For m/s (ball exit velocity) to rad/s (motor velocity)
-TOP_GEAR_RATIO = 1 * rad/m  # TODO Find this
-BOTTOM_GEAR_RATIO = 1 * rad/m  # TODO Find this
-
-# Shooter angle to motor angle
-ANGLE_GEAR_RATIO = 1 * rad/rad  # TODO Find this
+import constants
 
 
 class Shooter(Subsystem):
@@ -24,8 +18,8 @@ class Shooter(Subsystem):
         self.m_angle.init()
 
     def set_angle(self, theta: Unum):
-        self.m_angle.set_target_position(theta * ANGLE_GEAR_RATIO)
+        self.m_angle.set_target_position(theta * constants.shooter_angle_gear_ratio)
 
     def set_flywheels(self, top_vel: Unum, bottom_vel: Unum):
-        self.m_top.set_target_velocity(top_vel * TOP_GEAR_RATIO)
-        self.m_bottom.set_target_velocity(bottom_vel * BOTTOM_GEAR_RATIO)
+        self.m_top.set_target_velocity(top_vel * constants.shooter_top_gear_ratio)
+        self.m_bottom.set_target_velocity(bottom_vel * constants.shooter_bottom_gear_ratio)
