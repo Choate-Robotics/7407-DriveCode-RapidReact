@@ -1,0 +1,3 @@
+.deploy_cfg
+*.cpython-310.pyc
+.installer_config

@@ -19,9 +19,12 @@ class Keymap:
     class Elevator:
         ELEVATOR_UP = DefaultButton(Controllers.DRIVER, controller.RT)
         ELEVATOR_DOWN = DefaultButton(Controllers.DRIVER, controller.LT)
+        ELEVATOR_SOLENOID_TOGGLE = DefaultButton(Controllers.DRIVER, controller.START)
     class Intake:
         INTAKE_ON = DefaultButton(Controllers.DRIVER, controller.A)
         INTAKE_OFF = DefaultButton(Controllers.DRIVER, controller.B)
+        INTAKE_LEFT_SOLENOID_TOGGLE = DefaultButton(Controllers.DRIVER, controller.LB)
+        INTAKE_RIGHT_SOLENOID_TOGGLE = DefaultButton(Controllers.DRIVER, controller.RB)
     class Index:
         INDEX_ON = DefaultButton(Controllers.DRIVER, controller.X)
         INDEX_OFF = DefaultButton(Controllers.DRIVER, controller.Y)

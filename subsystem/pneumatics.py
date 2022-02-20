@@ -1,18 +1,18 @@
 from robotpy_toolkit_7407 import Subsystem
-from robotpy_toolkit_7407.motors import TalonFX, TalonGroup
 import wpilib
 
-class Intake(Subsystem):
-    motors: TalonGroup = TalonGroup(TalonFX(13, inverted=True), TalonFX(14, inverted=False))
+class Pneumatics(Subsystem):
+    pneumatic_hub = wpilib.PneumaticHub(1)
     LeftIntakeSolenoid = wpilib.DoubleSolenoid(1, wpilib.PneumaticsModuleType.REVPH, 0, 1)
     RightIntakeSolenoid = wpilib.DoubleSolenoid(1, wpilib.PneumaticsModuleType.REVPH, 2, 3)
-    #motors: TalonGroup = TalonGroup(TalonFX(14, inverted=False))
+    ElevatorSolenoid = wpilib.DoubleSolenoid(1, wpilib.PneumaticsModuleType.REVPH, 4, 5)
+    compressor = wpilib.Compressor(1, wpilib.PneumaticsModuleType.REVPH)
+
+
+    current_speed = 0
 
     def init(self):
-        self.motors.init()
-
-    def set(self, motor_speed: float):
-        self.motors.set_raw_output(motor_speed)
+        self.compressor.enableAnalog(90, 120)
 
     def toggleLeftIntake(self):
         if self.LeftIntakeSolenoid.get() == wpilib.DoubleSolenoid.Value.kOff:
@@ -24,3 +24,10 @@ class Intake(Subsystem):
             self.RightIntakeSolenoid.set(wpilib.DoubleSolenoid.Value.kForward)
         else:
             self.RightIntakeSolenoid.toggle()
+    def toggleElevator(self):
+        if self.ElevatorSolenoid.get() == wpilib.DoubleSolenoid.Value.kOff:
+            self.ElevatorSolenoid.set(wpilib.DoubleSolenoid.Value.kForward)
+        else:
+            self.ElevatorSolenoid.toggle()
+    def getCompressor(self):
+        return self.compressor.enabled(), self.compressor.getCurrent()
