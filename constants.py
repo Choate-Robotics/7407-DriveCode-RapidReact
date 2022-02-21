@@ -1,4 +1,3 @@
-from ctre import StatusFrameEnhanced, TalonFX
 from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit, talon_sensor_vel_unit, talon_sensor_accel_unit
 from robotpy_toolkit_7407.utils.units import rad, rev, inch, deg, m, mile, hour, s, ft
 
@@ -30,3 +29,13 @@ shooter_angle_gear_ratio = (266 / 10) * (36 / 12) * rad/rad
 air_resistance_constant = 0.048187
 height_difference = 6
 gravity = 9.80665
+
+
+# --- ELEVATOR ---
+
+elevator_gear_ratio = 1 * (rad/inch)  # TODO Determine this
+
+elevator_extended_height = 30 * inch
+elevator_min_bar_contact_height = 27 * inch
+elevator_latch_height = 5 * inch
+elevator_swing_height = 10 * inch
