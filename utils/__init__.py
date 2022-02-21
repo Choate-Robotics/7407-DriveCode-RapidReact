@@ -1,1 +1,1 @@
-from utils.shooter_targeting import Shooter_Targeting
+from utils.shooter_targeting import ShooterTargeting

@@ -1,5 +1,5 @@
 from robotpy_toolkit_7407 import Subsystem
-from robotpy_toolkit_7407.motors import TalonFX, TalonGroup
+from robotpy_toolkit_7407.motors import TalonFX, TalonGroup, TalonConfig
 import wpilib
 from robotpy_toolkit_7407.unum import Unum
 
@@ -7,8 +7,11 @@ import constants
 from utils.can_optimizations import optimize_leader_talon, optimize_normal_talon
 
 
+_MOTOR_CFG = TalonConfig(neutral_brake=True)  # TODO add pid constants to this
+
+
 class Elevator(Subsystem):
-    motors: TalonGroup = TalonGroup(TalonFX(17, inverted=True), TalonFX(18, inverted=False))
+    motors: TalonGroup = TalonGroup(TalonFX(17, inverted=True), TalonFX(18, inverted=False), config=_MOTOR_CFG)
     solenoid = wpilib.DoubleSolenoid(1, wpilib.PneumaticsModuleType.REVPH, 4, 5)
     l_climb_1 = wpilib.DigitalInput(0)  # TODO find ids
     l_climb_2 = wpilib.DigitalInput(1)

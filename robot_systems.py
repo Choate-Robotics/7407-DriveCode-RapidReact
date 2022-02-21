@@ -20,8 +20,9 @@ class Pneumatics:
     compressor = wpilib.Compressor(1, wpilib.PneumaticsModuleType.REVPH)
     # ADD PNEUMATIC HUB AND GET EVERYTHING FROM THAT
 
-    def get_compressor(self):
-        return self.compressor.enabled(), self.compressor.getCurrent()
+    @classmethod
+    def get_compressor(cls):
+        return cls.compressor.enabled(), cls.compressor.getCurrent()
 
 
 class Sensors:
