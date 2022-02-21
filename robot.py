@@ -5,11 +5,11 @@ import commands2
 from ctre import ControlMode
 from robotpy_toolkit_7407 import Subsystem
 from robotpy_toolkit_7407.network.network_system import Network
-from robotpy_toolkit_7407.subsystem_templates.drivetrain import DriveSwerve
+#from robotpy_toolkit_7407.subsystem_templates.drivetrain import DriveSwerve
 from robotpy_toolkit_7407.utils import logger
 from robotpy_toolkit_7407.utils.units import deg
 
-from command.drivetrain import DriveSwerveCustom
+#from command.drivetrain import DriveSwerveCustom
 from oi.OI import OI
 from robot_systems import Robot, Pneumatics
 import time
@@ -58,10 +58,13 @@ class _Robot(wpilib.TimedRobot):
             Network.robot_send_status()
 
     def teleopInit(self) -> None:
-        Robot.shooter.target(Robot.limelight.calculate_distance())
+        #Robot.shooter.target(10)
+        pass
 
     def teleopPeriodic(self) -> None:
-        commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
+        #commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
+        print(Pneumatics.get_compressor())
+        pass
 
     def autonomousInit(self) -> None:
         pass

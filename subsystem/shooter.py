@@ -5,7 +5,7 @@ from robotpy_toolkit_7407.unum import Unum
 import math
 
 import constants
-from subsystem import shooter_targeting
+from utils import Shooter_Targeting
 
 
 class Shooter(Subsystem):
@@ -35,7 +35,7 @@ class Shooter(Subsystem):
         self.m_bottom.set_target_velocity(bottom_vel * constants.shooter_bottom_gear_ratio)
 
     def target(self, limelight_dist):
-        horizontal_v, vertical_v = shooter_targeting.gradient_velocity(limelight_dist)
+        horizontal_v, vertical_v = Shooter_Targeting.gradient_velocity(limelight_dist)
         final_velocity = (horizontal_v**2 + vertical_v**2)**.5
         final_angle = math.atan(vertical_v / horizontal_v)
         self.set_angle(final_angle)
