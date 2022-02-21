@@ -12,7 +12,7 @@ from wpimath.geometry import Pose2d
 
 import constants
 from oi.keymap import Keymap
-from constants import optimize_talon
+from utils.can_optimizations import optimize_normal_talon
 
 TURN_IZone = 1000
 TURN_kI = 0.01
@@ -54,8 +54,8 @@ class TalonFXSwerveNode(SwerveNode):
         super().init()
         self.m_move.init()
         self.m_turn.init()
-        optimize_talon(self.m_move._motor)
-        optimize_talon(self.m_turn._motor)
+        optimize_normal_talon(self.m_move)
+        optimize_normal_talon(self.m_turn)
         self.zero()
 
     def zero(self):

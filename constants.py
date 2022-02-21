@@ -30,9 +30,3 @@ shooter_angle_gear_ratio = (266 / 10) * (36 / 12) * rad/rad
 air_resistance_constant = 0.048187
 height_difference = 6
 gravity = 9.80665
-
-
-# TODO MOVE THIS
-def optimize_talon(t: TalonFX):
-    t.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 255, 0)
-    t.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 255, 0)

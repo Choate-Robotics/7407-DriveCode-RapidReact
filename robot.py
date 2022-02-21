@@ -7,12 +7,15 @@ from robotpy_toolkit_7407 import Subsystem
 from robotpy_toolkit_7407.network.network_system import Network
 from robotpy_toolkit_7407.subsystem_templates.drivetrain import DriveSwerve
 from robotpy_toolkit_7407.utils import logger
-from robotpy_toolkit_7407.utils.units import deg
+from robotpy_toolkit_7407.utils.units import deg, s, m
 
 from command.drivetrain import DriveSwerveCustom
 from oi.OI import OI
-from robot_systems import Robot, Pneumatics
+from oi.keymap import Keymap
+from robot_systems import Robot, Pneumatics, Sensors
 import time
+
+from sensors.color_sensors import ColorSensors
 
 
 class _Robot(wpilib.TimedRobot):
@@ -48,25 +51,32 @@ class _Robot(wpilib.TimedRobot):
         # Pneumatics
         Pneumatics.compressor.enableAnalog(90, 120)
 
+        Sensors.color_sensors = ColorSensors()
+
         logger.info("initialization complete")
 
     def robotPeriodic(self):
         commands2.CommandScheduler.getInstance().run()
+        # logger.info(f"{Sensors.color_sensors.get_val()}")
         self.network_counter -= 1
         if self.network_counter == 0:
             self.network_counter = self.loops_per_net_update
             Network.robot_send_status()
 
     def teleopInit(self) -> None:
-        Robot.shooter.target(Robot.limelight.calculate_distance())
+        # Robot.shooter.target(Robot.limelight.calculate_distance()
+        pass
 
     def teleopPeriodic(self) -> None:
-        commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
+        Robot.shooter.set_flywheels(10 * m/s, 10 * m/s)
+        Robot.shooter.set_launch_angle(75 * deg)
+        Robot.index.set(Keymap.Drivetrain.DRIVE_Y_AXIS.value)
 
     def autonomousInit(self) -> None:
         pass
 
     def autonomousPeriodic(self) -> None:
+        # Robot.elevator.motors.set_raw_output(1)
         pass
 
     def disabledInit(self) -> None:

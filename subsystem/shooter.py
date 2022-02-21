@@ -5,14 +5,15 @@ from robotpy_toolkit_7407.unum import Unum
 import math
 
 import constants
-from subsystem import shooter_targeting
+from utils import shooter_targeting
+from utils.can_optimizations import optimize_normal_talon
 
 
 class Shooter(Subsystem):
-    m_top = TalonFX(21, inverted=False, config=TalonConfig(
+    m_top = TalonFX(21, inverted=True, config=TalonConfig(
         0.09, 0.001, 7.5, 1023 / 20369, integral_zone=1000, max_integral_accumulator=100000,
         neutral_brake=False))
-    m_bottom = TalonFX(19, inverted=True, config=TalonConfig(
+    m_bottom = TalonFX(19, inverted=False, config=TalonConfig(
         0.26, 0.002, 11.6, 1023 / 20101, integral_zone=1000, max_integral_accumulator=100000,
         neutral_brake=False))
     m_angle = TalonFX(20, inverted=True, config=TalonConfig(
@@ -25,6 +26,9 @@ class Shooter(Subsystem):
         self.m_top.init()
         self.m_bottom.init()
         self.m_angle.init()
+        optimize_normal_talon(self.m_top)
+        optimize_normal_talon(self.m_bottom)
+        optimize_normal_talon(self.m_angle)
 
     def set_launch_angle(self, theta: Unum):
         theta = 90 * deg - theta - self.sensor_zero_angle

@@ -2,10 +2,9 @@ from robotpy_toolkit_7407 import Subsystem
 from robotpy_toolkit_7407.motors import TalonFX, TalonGroup
 import wpilib
 
-from constants import optimize_talon
+from utils.can_optimizations import optimize_leader_talon, optimize_normal_talon
 
 
-# TODO Motion magic
 class Elevator(Subsystem):
     motors: TalonGroup = TalonGroup(TalonFX(17, inverted=True), TalonFX(18, inverted=False))  # TODO: Test inversion
     solenoid = wpilib.DoubleSolenoid(1, wpilib.PneumaticsModuleType.REVPH, 4, 5)
@@ -13,8 +12,8 @@ class Elevator(Subsystem):
 
     def init(self):
         self.motors.init()
-        optimize_talon(self.motors.motors[0]._motor)
-        optimize_talon(self.motors.motors[1]._motor)
+        optimize_leader_talon(self.motors.motors[0])
+        optimize_normal_talon(self.motors.motors[1])
 
     def up(self):
         self.motors.set_raw_output(self.speed)
