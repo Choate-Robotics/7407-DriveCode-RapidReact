@@ -11,9 +11,9 @@ class Elevator(Subsystem):
     motors: TalonGroup = TalonGroup(TalonFX(17, inverted=True), TalonFX(18, inverted=False))
     solenoid = wpilib.DoubleSolenoid(1, wpilib.PneumaticsModuleType.REVPH, 4, 5)
     l_climb_1 = wpilib.DigitalInput(0)  # TODO find ids
-    l_climb_2 = wpilib.DigitalInput(0)
-    l_grab_1 = wpilib.DigitalInput(0)
-    l_grab_2 = wpilib.DigitalInput(0)
+    l_climb_2 = wpilib.DigitalInput(1)
+    l_grab_1 = wpilib.DigitalInput(2)
+    l_grab_2 = wpilib.DigitalInput(3)
 
     def init(self):
         self.motors.init()

@@ -33,9 +33,9 @@ gravity = 9.80665
 
 # --- ELEVATOR ---
 
-elevator_gear_ratio = 1 * (rad/inch)  # TODO Determine this
+elevator_gear_ratio = 20 * rev / (4.084070449666731 * inch)
 
-elevator_extended_height = 30 * inch
-elevator_min_bar_contact_height = 27 * inch
+elevator_extended_height = 20 * inch
+elevator_min_bar_contact_height = 16 * inch
 elevator_latch_height = 5 * inch
 elevator_swing_height = 10 * inch

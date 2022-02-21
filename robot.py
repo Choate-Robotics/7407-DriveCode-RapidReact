@@ -10,6 +10,7 @@ from robotpy_toolkit_7407.utils import logger
 from robotpy_toolkit_7407.utils.units import deg, s, m
 
 from command.drivetrain import DriveSwerveCustom
+from command.elevator import ElevatorSetupCommand, ElevatorClimbCommand
 from oi.OI import OI
 from oi.keymap import Keymap
 from robot_systems import Robot, Pneumatics, Sensors
@@ -64,16 +65,14 @@ class _Robot(wpilib.TimedRobot):
             Network.robot_send_status()
 
     def teleopInit(self) -> None:
-        # Robot.shooter.target(Robot.limelight.calculate_distance()
+        commands2.CommandScheduler.getInstance().schedule(ElevatorSetupCommand)
         pass
 
     def teleopPeriodic(self) -> None:
-        Robot.shooter.set_flywheels(10 * m/s, 10 * m/s)
-        Robot.shooter.set_launch_angle(75 * deg)
-        Robot.index.set(Keymap.Drivetrain.DRIVE_Y_AXIS.value)
+        pass
 
     def autonomousInit(self) -> None:
-        pass
+        commands2.CommandScheduler.getInstance().schedule(ElevatorClimbCommand)
 
     def autonomousPeriodic(self) -> None:
         # Robot.elevator.motors.set_raw_output(1)
