@@ -1,6 +1,6 @@
 from telnetlib import EL
 
-from commands2 import InstantCommand
+from commands2 import CommandScheduler, InstantCommand
 from robotpy_toolkit_7407.command import SubsystemCommand
 
 from robot_systems import Robot

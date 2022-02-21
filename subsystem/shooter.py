@@ -38,7 +38,7 @@ class Shooter(Subsystem):
         horizontal_v, vertical_v = Shooter_Targeting.gradient_velocity(limelight_dist)
         final_velocity = (horizontal_v**2 + vertical_v**2)**.5
         final_angle = math.atan(vertical_v / horizontal_v)
-        self.set_angle(final_angle)
+        self.set_launch_angle(final_angle)
         self.set_flywheels(final_velocity, final_velocity)
 
 
