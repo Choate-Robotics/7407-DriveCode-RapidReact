@@ -1,6 +1,6 @@
 import wpilib
 
-class Limit_Switch:
+class LimitSwitch:
     def __init__(self, port, reverse=True):
         self.limit_switch = wpilib.DigitalInput(port)
         self.reverse = reverse
