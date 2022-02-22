@@ -1,3 +1,5 @@
+from commands2 import InstantCommand
+
 import utils
 
 import wpilib
@@ -68,14 +70,14 @@ class _Robot(wpilib.TimedRobot):
         pass
 
     def teleopPeriodic(self) -> None:
-        #commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
-        print(Pneumatics.get_compressor())
-        for i in range(10):
-            print(f"Limit Switch {i}: {Robot.limit_switches[i].get_value()}")
-        pass
+        commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
+        # print(Pneumatics.get_compressor())
+        # for i in range(10):
+        #     print(f"Limit Switch {i}: {Robot.limit_switches[i].get_value()}")
+        # pass
 
     def autonomousInit(self) -> None:
-        #commands2.CommandScheduler.getInstance().schedule(ElevatorClimbCommand)
+        pass
 
     def autonomousPeriodic(self) -> None:
         # Robot.elevator.motors.set_raw_output(1)

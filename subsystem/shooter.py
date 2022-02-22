@@ -39,8 +39,13 @@ class Shooter(Subsystem):
         self.m_bottom.set_target_velocity(bottom_vel * constants.shooter_bottom_gear_ratio)
 
     def target(self, limelight_dist):
-        vx, vy = ShooterTargeting.gradient_velocity(limelight_dist)
+        # vx, vy = ShooterTargeting.gradient_velocity(limelight_dist)
+        vx, vy = 5, 5
         final_velocity = (vx**2 + vy**2)**.5 * m/s
         final_angle = math.atan(vy / vx) * rad
         self.set_launch_angle(final_angle)
         self.set_flywheels(final_velocity, final_velocity)
+
+    def stop(self):
+        self.m_top.set_raw_output(0)
+        self.m_bottom.set_raw_output(0)

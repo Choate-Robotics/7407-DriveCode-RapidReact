@@ -11,6 +11,7 @@ from subsystem import Elevator
 
 ElevatorSolenoidExtend = InstantCommand(Robot.elevator.extend_solenoid, Robot.elevator)
 ElevatorSolenoidRetract = InstantCommand(Robot.elevator.extend_solenoid, Robot.elevator)
+ElevatorSolenoidToggle = InstantCommand(Robot.elevator.solenoid.toggle(), Robot.elevator)
 
 ElevatorSetupCommand = ParallelCommandGroup(
     InstantCommand(lambda: Robot.elevator.set_height(constants.elevator_extended_height)),

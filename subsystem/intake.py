@@ -8,18 +8,22 @@ _MOTOR_CFG = TalonConfig(neutral_brake=False)
 
 
 class Intake(Subsystem):
-    motors: TalonGroup = TalonGroup(TalonFX(13, inverted=True), TalonFX(14, inverted=False), config=_MOTOR_CFG)
+    m_bottom: TalonGroup = TalonGroup(TalonFX(13, inverted=True), TalonFX(14, inverted=False), config=_MOTOR_CFG)
+    m_top: TalonFX = TalonFX(15, inverted=True, config=_MOTOR_CFG)
     s_left = wpilib.DoubleSolenoid(1, wpilib.PneumaticsModuleType.REVPH, 0, 1)
     s_right = wpilib.DoubleSolenoid(1, wpilib.PneumaticsModuleType.REVPH, 2, 3)
 
     def init(self):
-        self.motors.init()
-        optimize_leader_talon(self.motors.motors[0])
-        optimize_normal_talon(self.motors.motors[1])
+        self.m_bottom.init()
+        self.m_top.init()
+        optimize_leader_talon(self.m_bottom.motors[0])
+        optimize_normal_talon(self.m_bottom.motors[1])
+        optimize_normal_talon(self.m_top)
 
-    def set(self, motor_speed: float):
+    def set(self, bottom_speed: float, top_speed: float):
         # TODO Velocity control
-        self.motors.set_raw_output(motor_speed)
+        self.m_bottom.set_raw_output(bottom_speed)
+        self.m_top.set_raw_output(top_speed)
 
     def toggle_left_intake(self):
         if self.s_left.get() == wpilib.DoubleSolenoid.Value.kOff:

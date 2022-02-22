@@ -30,3 +30,6 @@ class Keymap:
     class Index:
         INDEX_ON = DefaultButton(Controllers.DRIVER, controller.X)
         INDEX_OFF = DefaultButton(Controllers.DRIVER, controller.Y)
+
+    class Shooter:
+        SHOOTER_ENABLE = DefaultButton(Controllers.DRIVER, controller.RT)
