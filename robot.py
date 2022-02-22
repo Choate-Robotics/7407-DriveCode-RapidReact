@@ -46,7 +46,7 @@ class _Robot(wpilib.TimedRobot):
         OI.map_controls()
 
         # Pneumatics
-        #Pneumatics.compressor.enableAnalog(90, 120)
+        Pneumatics.compressor.enableAnalog(90, 120)
 
         logger.info("initialization complete")
 
