@@ -5,14 +5,15 @@ from robotpy_toolkit_7407.unum import Unum
 import math
 
 import constants
-from utils import Shooter_Targeting
+from utils.can_optimizations import optimize_normal_talon
+from utils.shooter_targeting import ShooterTargeting
 
 
 class Shooter(Subsystem):
-    m_top = TalonFX(21, inverted=False, config=TalonConfig(
+    m_top = TalonFX(21, inverted=True, config=TalonConfig(
         0.09, 0.001, 7.5, 1023 / 20369, integral_zone=1000, max_integral_accumulator=100000,
         neutral_brake=False))
-    m_bottom = TalonFX(19, inverted=True, config=TalonConfig(
+    m_bottom = TalonFX(19, inverted=False, config=TalonConfig(
         0.26, 0.002, 11.6, 1023 / 20101, integral_zone=1000, max_integral_accumulator=100000,
         neutral_brake=False))
     m_angle = TalonFX(20, inverted=True, config=TalonConfig(
@@ -25,6 +26,9 @@ class Shooter(Subsystem):
         self.m_top.init()
         self.m_bottom.init()
         self.m_angle.init()
+        optimize_normal_talon(self.m_top)
+        optimize_normal_talon(self.m_bottom)
+        optimize_normal_talon(self.m_angle)
 
     def set_launch_angle(self, theta: Unum):
         theta = 90 * deg - theta - self.sensor_zero_angle
@@ -35,10 +39,8 @@ class Shooter(Subsystem):
         self.m_bottom.set_target_velocity(bottom_vel * constants.shooter_bottom_gear_ratio)
 
     def target(self, limelight_dist):
-        horizontal_v, vertical_v = Shooter_Targeting.gradient_velocity(limelight_dist)
-        final_velocity = (horizontal_v**2 + vertical_v**2)**.5
-        final_angle = math.atan(vertical_v / horizontal_v)
+        vx, vy = ShooterTargeting.gradient_velocity(limelight_dist)
+        final_velocity = (vx**2 + vy**2)**.5 * m/s
+        final_angle = math.atan(vy / vx) * rad
         self.set_launch_angle(final_angle)
         self.set_flywheels(final_velocity, final_velocity)
-
-

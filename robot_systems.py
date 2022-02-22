@@ -4,6 +4,8 @@ import subsystem
 import sensors
 import wpilib
 
+from sensors.color_sensors import ColorSensors
+
 
 class Robot:
     drivetrain = subsystem.Drivetrain()
@@ -34,3 +36,7 @@ class Pneumatics:
     @classmethod
     def get_compressor(cls):
         return cls.compressor.enabled(), cls.compressor.getCurrent()
+
+
+class Sensors:
+    color_sensors: ColorSensors

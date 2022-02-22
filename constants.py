@@ -1,4 +1,3 @@
-from ctre import StatusFrameEnhanced, TalonFX
 from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit, talon_sensor_vel_unit, talon_sensor_accel_unit
 from robotpy_toolkit_7407.utils.units import rad, rev, inch, deg, m, mile, hour, s, ft
 
@@ -32,7 +31,11 @@ height_difference = 6
 gravity = 9.80665
 
 
-# TODO MOVE THIS
-def optimize_talon(t: TalonFX):
-    t.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 255, 0)
-    t.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 255, 0)
+# --- ELEVATOR ---
+
+elevator_gear_ratio = 20 * rev / (4.084070449666731 * inch)
+
+elevator_extended_height = 20 * inch
+elevator_min_bar_contact_height = 16 * inch
+elevator_latch_height = 5 * inch
+elevator_swing_height = 10 * inch

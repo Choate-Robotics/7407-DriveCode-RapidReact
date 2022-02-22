@@ -7,13 +7,16 @@ from robotpy_toolkit_7407 import Subsystem
 from robotpy_toolkit_7407.network.network_system import Network
 from robotpy_toolkit_7407.subsystem_templates.drivetrain import DriveSwerve
 from robotpy_toolkit_7407.utils import logger
-from robotpy_toolkit_7407.utils.units import deg
+from robotpy_toolkit_7407.utils.units import deg, s, m
 
 from command.drivetrain import DriveSwerveCustom
+from command.elevator import ElevatorSetupCommand, ElevatorClimbCommand
 from oi.OI import OI
 from oi.keymap import Keymap
-from robot_systems import Robot, Pneumatics
+from robot_systems import Robot, Pneumatics, Sensors
 import time
+
+from sensors.color_sensors import ColorSensors
 
 
 class _Robot(wpilib.TimedRobot):
@@ -49,6 +52,8 @@ class _Robot(wpilib.TimedRobot):
         # Pneumatics
         Pneumatics.compressor.enableAnalog(90, 120)
 
+        Sensors.color_sensors = ColorSensors()
+
         logger.info("initialization complete")
 
     def robotPeriodic(self):
@@ -59,7 +64,7 @@ class _Robot(wpilib.TimedRobot):
             Network.robot_send_status()
 
     def teleopInit(self) -> None:
-        #Robot.shooter.target(10)
+        #commands2.CommandScheduler.getInstance().schedule(ElevatorSetupCommand)
         pass
 
     def teleopPeriodic(self) -> None:
@@ -70,9 +75,10 @@ class _Robot(wpilib.TimedRobot):
         pass
 
     def autonomousInit(self) -> None:
-        pass
+        #commands2.CommandScheduler.getInstance().schedule(ElevatorClimbCommand)
 
     def autonomousPeriodic(self) -> None:
+        # Robot.elevator.motors.set_raw_output(1)
         pass
 
     def disabledInit(self) -> None:

@@ -25,18 +25,18 @@ class OI:
         #     Robot.drivetrain.n_11.zero()
         # Keymap.Drivetrain.REZERO_MOTORS().whenPressed(zero_motors)
 
-        Keymap.Elevator.ELEVATOR_UP().whileHeld(command.ElevatorUp)
-        Keymap.Elevator.ELEVATOR_UP().whenReleased(command.ElevatorStop)
-        Keymap.Elevator.ELEVATOR_DOWN().whileHeld(command.ElevatorDown)
-        Keymap.Elevator.ELEVATOR_DOWN().whenReleased(command.ElevatorStop)
-        Keymap.Elevator.ELEVATOR_SOLENOID_TOGGLE().whenPressed(command.ElevatorSolenoidToggle)
-        
-        Keymap.Intake.INTAKE_ON().whenPressed(command.IntakeOn)
-        Keymap.Intake.INTAKE_OFF().whenPressed(command.IntakeOff)
-        Keymap.Intake.INTAKE_LEFT_SOLENOID_TOGGLE().whenPressed(command.IntakeLeftSolenoidToggle)
-        Keymap.Intake.INTAKE_RIGHT_SOLENOID_TOGGLE().whenPressed(command.IntakeRightSolenoidToggle)
-        
-        Keymap.Index.INDEX_ON().whenPressed(command.IndexOn)
-        Keymap.Index.INDEX_OFF().whenPressed(command.IndexOff)
+        # Keymap.Elevator.ELEVATOR_UP().whileHeld(command.ElevatorUp)
+        # Keymap.Elevator.ELEVATOR_UP().whenReleased(command.ElevatorStop)
+        # Keymap.Elevator.ELEVATOR_DOWN().whileHeld(command.ElevatorDown)
+        # Keymap.Elevator.ELEVATOR_DOWN().whenReleased(command.ElevatorStop)
+        # Keymap.Elevator.ELEVATOR_SOLENOID_TOGGLE().whenPressed(command.ElevatorSolenoidToggle)
+        #
+        # Keymap.Intake.INTAKE_ON().whenPressed(command.IntakeOn)
+        # Keymap.Intake.INTAKE_OFF().whenPressed(command.IntakeOff)
+        # Keymap.Intake.INTAKE_LEFT_SOLENOID_TOGGLE().whenPressed(command.IntakeLeftSolenoidToggle)
+        # Keymap.Intake.INTAKE_RIGHT_SOLENOID_TOGGLE().whenPressed(command.IntakeRightSolenoidToggle)
+        #
+        # Keymap.Index.INDEX_ON().whenPressed(command.IndexOn)
+        # Keymap.Index.INDEX_OFF().whenPressed(command.IndexOff)
 
         logger.info("mapping complete", "[oi]")
