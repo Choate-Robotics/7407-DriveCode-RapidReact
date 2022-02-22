@@ -5,12 +5,13 @@ import commands2
 from ctre import ControlMode
 from robotpy_toolkit_7407 import Subsystem
 from robotpy_toolkit_7407.network.network_system import Network
-#from robotpy_toolkit_7407.subsystem_templates.drivetrain import DriveSwerve
+from robotpy_toolkit_7407.subsystem_templates.drivetrain import DriveSwerve
 from robotpy_toolkit_7407.utils import logger
 from robotpy_toolkit_7407.utils.units import deg
 
-#from command.drivetrain import DriveSwerveCustom
+from command.drivetrain import DriveSwerveCustom
 from oi.OI import OI
+from oi.keymap import Keymap
 from robot_systems import Robot, Pneumatics
 import time
 
@@ -64,6 +65,8 @@ class _Robot(wpilib.TimedRobot):
     def teleopPeriodic(self) -> None:
         #commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
         print(Pneumatics.get_compressor())
+        for i in range(10):
+            print(f"Limit Switch {i}: {Robot.limit_switches[i].get_value()}")
         pass
 
     def autonomousInit(self) -> None:
