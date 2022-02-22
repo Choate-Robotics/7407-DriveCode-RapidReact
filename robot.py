@@ -58,21 +58,24 @@ class _Robot(wpilib.TimedRobot):
 
     def robotPeriodic(self):
         commands2.CommandScheduler.getInstance().run()
-        # logger.info(f"{Sensors.color_sensors.get_val()}")
         self.network_counter -= 1
         if self.network_counter == 0:
             self.network_counter = self.loops_per_net_update
             Network.robot_send_status()
 
     def teleopInit(self) -> None:
-        commands2.CommandScheduler.getInstance().schedule(ElevatorSetupCommand)
+        #commands2.CommandScheduler.getInstance().schedule(ElevatorSetupCommand)
         pass
 
     def teleopPeriodic(self) -> None:
+        #commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
+        print(Pneumatics.get_compressor())
+        for i in range(10):
+            print(f"Limit Switch {i}: {Robot.limit_switches[i].get_value()}")
         pass
 
     def autonomousInit(self) -> None:
-        commands2.CommandScheduler.getInstance().schedule(ElevatorClimbCommand)
+        #commands2.CommandScheduler.getInstance().schedule(ElevatorClimbCommand)
 
     def autonomousPeriodic(self) -> None:
         # Robot.elevator.motors.set_raw_output(1)
