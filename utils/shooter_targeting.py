@@ -105,8 +105,8 @@ class ShooterTargeting:
 
         return shooter_setting, orientation_setting
 
-    @classmethod
-    def convert_position(cls,robot_angle, new_position):
+    @staticmethod
+    def convert_position(robot_angle, new_position):
         """
         converts between the different coordinate systems used for shooting
 
@@ -128,8 +128,8 @@ class ShooterTargeting:
 
         return (new_dist, new_angle)
 
-    @classmethod
-    def convert_velocity(cls,new_position, velocity):
+    @staticmethod
+    def convert_velocity(new_position, velocity):
         """
         converts velocity from an old coordinate system into a new coordinate system
 
@@ -152,7 +152,7 @@ class ShooterTargeting:
 
         return new_velocity
 
-    @classmethod
+    @staticmethod
     def new_position(distance_to_hub, velocity, time=1):
         """
         calculates the expected new position of the robot given a constant velocity
@@ -258,7 +258,8 @@ class ShooterTargeting:
 
         return ball_error <= acceptable_error
 
-    def real_velocity_to_shooting(cls,real_velocity, robot_orientation, angle_to_hub):  # Incomplete
+    @staticmethod
+    def real_velocity_to_shooting(real_velocity, robot_orientation, angle_to_hub):
         """
         converts the actual velocity of the robot into the velocity in the coordinate system used for shooting
 
