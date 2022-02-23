@@ -40,18 +40,37 @@ class ShooterTargeting:
         return energy
 
     @classmethod
-    def gradient_velocity(cls, distance_to_hub, velocity_up=10.0, step_size=0.1):
+    def stationary_aim(cls, distance_to_hub, velocity_up=10, step_size=0.1):
+        """
+        calculates how to orient the robot and what velocity to give the ball to make a shot while stationary
+        distance_to_hub is the distance from the shooter to the hub in meters
+        velocity_up is an initial guess for the vertical component of velocity
+        step_size is the size of the steps in gradient descent
+        The returned value is a tuple with the horizontal and vertical components of velocity
+        """
+
         try:
             current_energy = cls.calculate_energy(cls.calculate_velocity(velocity_up, distance_to_hub))
-            increase_energy = cls.calculate_energy(cls.calculate_velocity(velocity_up + step_size, distance_to_hub))
-            decrease_energy = cls.calculate_energy(cls.calculate_velocity(velocity_up - step_size, distance_to_hub))
-
-            if increase_energy < current_energy:
-                return cls.gradient_velocity(distance_to_hub, velocity_up + step_size, step_size)
-
-            if decrease_energy < current_energy:
-                return cls.gradient_velocity(distance_to_hub, velocity_up - step_size, step_size)
-
-            return cls.calculate_velocity(velocity_up, distance_to_hub)
         except:
-            return cls.gradient_velocity(distance_to_hub, velocity_up + step_size, step_size)
+            # If the ball doesn't go high enough with this velocity, try a higher one
+            return cls.stationary_aim(distance_to_hub, velocity_up + step_size, step_size)
+
+        increase_energy = cls.calculate_energy(cls.calculate_velocity(velocity_up + step_size, distance_to_hub))
+
+        # If increasing the velocity up yields lower energy, then increase velocity up
+        if increase_energy < current_energy:
+            return cls.stationary_aim(distance_to_hub, velocity_up + step_size, step_size)
+
+        # If increasing the velocity up does not yield lower energy, then either we are at a minimum or we need to decrease
+        try:
+            decrease_energy = cls.calculate_energy(cls.calculate_velocity(velocity_up - step_size, distance_to_hub))
+        except:
+            # If we cannot decrease the velocity up, then we have reached a minimum
+            return cls.calculate_velocity(velocity_up, distance_to_hub)
+
+        # If decreasing the velocity up will yield lower energy, then we should decrease the velocity up
+        if decrease_energy < current_energy:
+            return cls.stationary_aim(distance_to_hub, velocity_up - step_size, step_size)
+
+        # If it is not better to increase and it is not better to decrease, then we have reached a min
+        return cls.calculate_velocity(velocity_up, distance_to_hub)

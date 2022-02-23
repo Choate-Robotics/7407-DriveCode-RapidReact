@@ -28,8 +28,10 @@ shooter_angle_gear_ratio = (266 / 10) * (36 / 12) * rad/rad
 
 # Targeting constants
 air_resistance_constant = 0.048187
-height_difference = 6
-gravity = 9.80665
+height_difference = 2 #meters
+gravity = 9.80665 # m/s^2
+shooter_delay = 0.5 # seconds
+acceptable_error = 0.25 #meters
 
 
 # --- ELEVATOR ---
