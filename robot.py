@@ -9,7 +9,7 @@ from robotpy_toolkit_7407 import Subsystem
 from robotpy_toolkit_7407.network.network_system import Network
 from robotpy_toolkit_7407.subsystem_templates.drivetrain import DriveSwerve
 from robotpy_toolkit_7407.utils import logger
-from robotpy_toolkit_7407.utils.units import deg, s, m
+from robotpy_toolkit_7407.utils.units import deg, s, m, inch
 
 from command.drivetrain import DriveSwerveCustom
 from command.elevator import ElevatorSetupCommand, ElevatorClimbCommand
@@ -66,22 +66,26 @@ class _Robot(wpilib.TimedRobot):
             Network.robot_send_status()
 
     def teleopInit(self) -> None:
-        #commands2.CommandScheduler.getInstance().schedule(ElevatorSetupCommand)
+        commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
         pass
 
     def teleopPeriodic(self) -> None:
-        commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
         # print(Pneumatics.get_compressor())
         # for i in range(10):
         #     print(f"Limit Switch {i}: {Robot.limit_switches[i].get_value()}")
-        # pass
+        pass
 
     def autonomousInit(self) -> None:
+        Robot.elevator.set_height(0 * inch)
         pass
 
     def autonomousPeriodic(self) -> None:
-        # Robot.elevator.motors.set_raw_output(1)
-        pass
+        c = ""
+        for i, sw in enumerate(Robot.limit_switches):
+            if sw.get_value():
+                c += f"{i} "
+        if c != "":
+            logger.info(c)
 
     def disabledInit(self) -> None:
         pass

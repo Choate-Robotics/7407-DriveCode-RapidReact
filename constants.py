@@ -1,4 +1,5 @@
 from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit, talon_sensor_vel_unit, talon_sensor_accel_unit
+from robotpy_toolkit_7407.unum.units import cm
 from robotpy_toolkit_7407.utils.units import rad, rev, inch, deg, m, mile, hour, s, ft
 
 # --- DRIVETRAIN ---
@@ -33,9 +34,10 @@ gravity = 9.80665
 
 # --- ELEVATOR ---
 
-elevator_gear_ratio = 20 * rev / (4.084070449666731 * inch)
+elevator_gear_ratio = 20 * rev / (5.501 * inch)
 
-elevator_extended_height = 20 * inch
-elevator_min_bar_contact_height = 16 * inch
-elevator_latch_height = 5 * inch
-elevator_swing_height = 10 * inch
+elevator_extended_height = 27.75 * inch
+elevator_min_bar_contact_height = 23 * inch
+elevator_pull_down_height = 0.5 * cm
+elevator_latch_height = 2.5 * inch
+elevator_fire_height = 5.5 * inch

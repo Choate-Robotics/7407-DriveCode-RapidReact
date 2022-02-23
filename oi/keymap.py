@@ -1,6 +1,6 @@
 from robotpy_toolkit_7407.oi import XBoxController, LogitechController, JoystickAxis, DefaultButton
 
-controller = LogitechController
+controller = XBoxController
 
 
 class Controllers:
@@ -17,8 +17,8 @@ class Keymap:
         # REZERO_MOTORS = DefaultButton(Controllers.DRIVER, controller.B)
 
     class Elevator:
-        ELEVATOR_UP = DefaultButton(Controllers.DRIVER, controller.RT)
-        ELEVATOR_DOWN = DefaultButton(Controllers.DRIVER, controller.LT)
+        ELEVATOR_INIT = DefaultButton(Controllers.DRIVER, controller.A)
+        ELEVATOR_CLIMB = DefaultButton(Controllers.DRIVER, controller.B)
         ELEVATOR_SOLENOID_TOGGLE = DefaultButton(Controllers.DRIVER, controller.START)
 
     class Intake:
