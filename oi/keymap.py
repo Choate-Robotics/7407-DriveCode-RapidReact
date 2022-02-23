@@ -1,6 +1,6 @@
 from robotpy_toolkit_7407.oi import XBoxController, LogitechController, JoystickAxis, DefaultButton
 
-controllerDRIVER = LogitechController
+controllerDRIVER = XBoxController
 controllerOPERATOR = LogitechController
 
 
@@ -8,14 +8,13 @@ class Controllers:
     DRIVER = 1
     OPERATOR = 0
 
-
 class Keymap:
     class Drivetrain:
-        DRIVE_X_AXIS = JoystickAxis(Controllers.OPERATOR, controllerDRIVER.L_JOY[0])
-        DRIVE_Y_AXIS = JoystickAxis(Controllers.OPERATOR, controllerDRIVER.L_JOY[1])
-        DRIVE_ROTATION_AXIS = JoystickAxis(Controllers.OPERATOR, controllerDRIVER.R_JOY[0])
-        # RESET_GYRO = DefaultButton(Controllers.DRIVER, controller.A)
-        # REZERO_MOTORS = DefaultButton(Controllers.DRIVER, controller.B)
+        DRIVE_X_AXIS = JoystickAxis(Controllers.DRIVER, controllerDRIVER.L_JOY[0])
+        DRIVE_Y_AXIS = JoystickAxis(Controllers.DRIVER, controllerDRIVER.L_JOY[1])
+        DRIVE_ROTATION_AXIS = JoystickAxis(Controllers.DRIVER, controllerDRIVER.R_JOY[0])
+        RESET_GYRO = DefaultButton(Controllers.DRIVER, controllerDRIVER.A)
+        REZERO_MOTORS = DefaultButton(Controllers.DRIVER, controllerDRIVER.B)
 
     class Elevator:
         ELEVATOR_INIT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.A)
