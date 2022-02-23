@@ -1,4 +1,5 @@
 from commands2 import InstantCommand
+from sensors import limelight
 
 import utils
 
@@ -73,6 +74,8 @@ class _Robot(wpilib.TimedRobot):
         # print(Pneumatics.get_compressor())
         # for i in range(10):
         #     print(f"Limit Switch {i}: {Robot.limit_switches[i].get_value()}")
+        z = Robot.limelight.calculate_distance()
+        print(f"Limelight: {z}")
         pass
 
     def autonomousInit(self) -> None:

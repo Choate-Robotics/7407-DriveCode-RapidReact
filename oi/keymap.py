@@ -1,35 +1,36 @@
 from robotpy_toolkit_7407.oi import XBoxController, LogitechController, JoystickAxis, DefaultButton
 
-controller = LogitechController
+controllerDRIVER = LogitechController
+controllerOPERATOR = LogitechController
 
 
 class Controllers:
-    DRIVER = 0
-    OPERATOR = 1
+    DRIVER = 1
+    OPERATOR = 0
 
 
 class Keymap:
     class Drivetrain:
-        DRIVE_X_AXIS = JoystickAxis(Controllers.DRIVER, controller.L_JOY[0])
-        DRIVE_Y_AXIS = JoystickAxis(Controllers.DRIVER, controller.L_JOY[1])
-        DRIVE_ROTATION_AXIS = JoystickAxis(Controllers.DRIVER, controller.R_JOY[0])
+        DRIVE_X_AXIS = JoystickAxis(Controllers.OPERATOR, controllerDRIVER.L_JOY[0])
+        DRIVE_Y_AXIS = JoystickAxis(Controllers.OPERATOR, controllerDRIVER.L_JOY[1])
+        DRIVE_ROTATION_AXIS = JoystickAxis(Controllers.OPERATOR, controllerDRIVER.R_JOY[0])
         # RESET_GYRO = DefaultButton(Controllers.DRIVER, controller.A)
         # REZERO_MOTORS = DefaultButton(Controllers.DRIVER, controller.B)
 
     class Elevator:
-        ELEVATOR_INIT = DefaultButton(Controllers.DRIVER, controller.A)
-        ELEVATOR_CLIMB = DefaultButton(Controllers.DRIVER, controller.B)
-        ELEVATOR_SOLENOID_TOGGLE = DefaultButton(Controllers.DRIVER, controller.START)
+        ELEVATOR_INIT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.A)
+        ELEVATOR_CLIMB = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.B)
+        ELEVATOR_SOLENOID_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.START)
 
     class Intake:
-        INTAKE_ON = DefaultButton(Controllers.DRIVER, controller.A)
-        INTAKE_OFF = DefaultButton(Controllers.DRIVER, controller.B)
-        INTAKE_LEFT_SOLENOID_TOGGLE = DefaultButton(Controllers.DRIVER, controller.LB)
-        INTAKE_RIGHT_SOLENOID_TOGGLE = DefaultButton(Controllers.DRIVER, controller.RB)
+        INTAKE_ON = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.A)
+        INTAKE_OFF = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.B)
+        INTAKE_LEFT_SOLENOID_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.LB)
+        INTAKE_RIGHT_SOLENOID_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.RB)
 
     class Index:
-        INDEX_ON = DefaultButton(Controllers.DRIVER, controller.X)
-        INDEX_OFF = DefaultButton(Controllers.DRIVER, controller.Y)
+        INDEX_ON = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.X)
+        INDEX_OFF = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.Y)
 
     class Shooter:
-        SHOOTER_ENABLE = DefaultButton(Controllers.DRIVER, controller.RT)
+        SHOOTER_ENABLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.RT)
