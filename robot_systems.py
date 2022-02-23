@@ -18,7 +18,7 @@ class Robot:
 
     limit_switches = [
         sensors.LimitSwitch(0),
-        sensors.LimitSwitch(1),
+        sensors.LimitSwitch(1), # SHOOTER LEFT
         sensors.LimitSwitch(8),
         sensors.LimitSwitch(9)
     ]

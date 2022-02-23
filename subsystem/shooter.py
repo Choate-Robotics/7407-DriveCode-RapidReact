@@ -7,6 +7,7 @@ import math
 import constants
 from utils.can_optimizations import optimize_normal_talon
 from utils.shooter_targeting import ShooterTargeting
+import sensors
 
 
 class Shooter(Subsystem):
@@ -46,4 +47,6 @@ class Shooter(Subsystem):
         self.set_flywheels(final_velocity, final_velocity)
 
     def stop(self):
-        self.set_flywheels(0, 0)
+        self.m_top.set_raw_output(0)
+        self.m_bottom.set_raw_output(0)
+
