@@ -76,7 +76,8 @@ class _Robot(wpilib.TimedRobot):
         pass
 
     def autonomousInit(self) -> None:
-        Robot.elevator.set_height(0 * inch)
+        #Robot.elevator.set_height(0 * inch)
+        Robot.shooter.target(5)
         pass
 
     def autonomousPeriodic(self) -> None:

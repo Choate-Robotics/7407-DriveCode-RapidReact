@@ -47,5 +47,5 @@ class Shooter(Subsystem):
         self.set_flywheels(final_velocity, final_velocity)
 
     def stop(self):
-        self.m_top.set_raw_output(0)
-        self.m_bottom.set_raw_output(0)
+        self.set_flywheels(0, 0)
+        self.set_launch_angle(0*rad)
