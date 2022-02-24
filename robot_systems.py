@@ -4,7 +4,7 @@ import subsystem
 import sensors
 import wpilib
 
-#from sensors.color_sensors import ColorSensors
+from sensors.color_sensors import ColorSensors
 
 
 class Robot:
@@ -33,5 +33,4 @@ class Pneumatics:
 
 
 class Sensors:
-    #color_sensors: ColorSensors
-    pass
+    color_sensors: ColorSensors

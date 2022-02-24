@@ -2,8 +2,6 @@ from robotpy_toolkit_7407.command import SubsystemCommand
 from robotpy_toolkit_7407.subsystem_templates.drivetrain.swerve_drivetrain import SwerveDrivetrain
 from robotpy_toolkit_7407.utils.units import m, s, rad
 
-from robotpy_toolkit_7407.utils import logger
-
 
 class DriveSwerveCustom(SubsystemCommand[SwerveDrivetrain]):
     def initialize(self) -> None:

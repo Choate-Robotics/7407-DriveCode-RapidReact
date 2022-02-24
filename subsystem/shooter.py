@@ -7,7 +7,6 @@ import math
 import constants
 from utils.can_optimizations import optimize_normal_talon
 from utils.shooter_targeting import ShooterTargeting
-import sensors
 
 
 class Shooter(Subsystem):
