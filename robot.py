@@ -1,3 +1,9 @@
+from commands2 import InstantCommand
+
+import command
+import constants
+from sensors import limelight
+
 import utils
 
 import wpilib
@@ -7,7 +13,7 @@ from robotpy_toolkit_7407 import Subsystem
 from robotpy_toolkit_7407.network.network_system import Network
 from robotpy_toolkit_7407.subsystem_templates.drivetrain import DriveSwerve
 from robotpy_toolkit_7407.utils import logger
-from robotpy_toolkit_7407.utils.units import deg, s, m
+from robotpy_toolkit_7407.utils.units import deg, s, m, inch
 
 from command.drivetrain import DriveSwerveCustom
 from command.elevator import ElevatorSetupCommand, ElevatorClimbCommand
@@ -17,14 +23,20 @@ from robot_systems import Robot, Pneumatics, Sensors
 import time
 
 from sensors.color_sensors import ColorSensors
+from utils.shooter_data import ShooterDataCollectCommand
 
 
 class _Robot(wpilib.TimedRobot):
     """
-    Main robot class. Initializes OI and subsystems, and runs the commands scheduler.
+    Main robot class. Initializes OI and subsystems, and runs the command scheduler.
     """
     loops_per_net_update: int = 10
     network_counter: int
+
+    def __init__(self):
+        super().__init__(constants.period)
+
+        self.test_command = ShooterDataCollectCommand(Robot.shooter).alongWith(command.IndexOn)
 
     def robotInit(self):
         """
@@ -42,17 +54,19 @@ class _Robot(wpilib.TimedRobot):
         Network.robot_init(subsystems)
         self.network_counter = self.loops_per_net_update
 
-        for s in subsystems:
-            s.init()
+        for subsystem in subsystems:
+            subsystem.init()
 
         # OI
-        OI.init()
-        OI.map_controls()
+        # OI.init()
+        # OI.map_controls()
 
         # Pneumatics
         Pneumatics.compressor.enableAnalog(90, 120)
 
         Sensors.color_sensors = ColorSensors()
+
+        commands2.CommandScheduler.getInstance().setPeriod(constants.period)
 
         logger.info("initialization complete")
 
@@ -64,21 +78,30 @@ class _Robot(wpilib.TimedRobot):
             Network.robot_send_status()
 
     def teleopInit(self) -> None:
-        #commands2.CommandScheduler.getInstance().schedule(ElevatorSetupCommand)
+        # commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
+        commands2.CommandScheduler.getInstance().schedule(self.test_command)
         pass
 
     def teleopPeriodic(self) -> None:
-        #commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
-        print(Pneumatics.get_compressor())
-        for i in range(10):
-            print(f"Limit Switch {i}: {Robot.limit_switches[i].get_value()}")
+        # print(Pneumatics.get_compressor())
+        # for i in range(10):
+        #     print(f"Limit Switch {i}: {Robot.limit_switches[i].get_value()}")
+        # z = Robot.limelight.calculate_distance()
+        # print(f"Limelight: {z}")
         pass
 
     def autonomousInit(self) -> None:
-        #commands2.CommandScheduler.getInstance().schedule(ElevatorClimbCommand)
+        # Robot.elevator.set_height(0 * inch)
+        # Robot.shooter.target(5)
+        pass
 
     def autonomousPeriodic(self) -> None:
-        # Robot.elevator.motors.set_raw_output(1)
+        # c = ""
+        # for i, sw in enumerate(Robot.limit_switches):
+        #     if sw.get_value():
+        #         c += f"{i} "
+        # if c != "":
+        #     logger.info(c)
         pass
 
     def disabledInit(self) -> None:
@@ -92,4 +115,4 @@ class _Robot(wpilib.TimedRobot):
 
 
 if __name__ == "__main__":
-    wpilib.run(_Robot, period=0.05)
+    wpilib.run(_Robot)

@@ -1,12 +1,16 @@
 from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit, talon_sensor_vel_unit, talon_sensor_accel_unit
+from robotpy_toolkit_7407.unum.units import cm
 from robotpy_toolkit_7407.utils.units import rad, rev, inch, deg, m, mile, hour, s, ft
+
+
+period = 0.04
 
 # --- DRIVETRAIN ---
 
 drivetrain_turn_gear_ratio = 3353.33 * talon_sensor_unit/rad
 drivetrain_move_gear_ratio = (544318 * talon_sensor_unit) / (511 * inch)
 
-track_width = 29 * inch  # TODO Verify
+track_width = 24.2 * inch
 
 # TODO Maybe change these
 drivetrain_max_vel = 20 * mile/hour
@@ -27,17 +31,18 @@ shooter_angle_gear_ratio = (266 / 10) * (36 / 12) * rad/rad
 
 # Targeting constants
 air_resistance_constant = 0.048187
-height_difference = 2 #meters
-gravity = 9.80665 # m/s^2
-shooter_delay = 0.5 # seconds
-acceptable_error = 0.25 #meters
+height_difference = 2  # meters
+gravity = 9.80665  # m/s^2
+shooter_delay = 0.5  # seconds
+acceptable_error = 0.25  # meters
 
 
 # --- ELEVATOR ---
 
-elevator_gear_ratio = 20 * rev / (4.084070449666731 * inch)
+elevator_gear_ratio = 20 * rev / (5.501 * inch)
 
-elevator_extended_height = 20 * inch
-elevator_min_bar_contact_height = 16 * inch
-elevator_latch_height = 5 * inch
-elevator_swing_height = 10 * inch
+elevator_extended_height = 27.75 * inch
+elevator_min_bar_contact_height = 23 * inch
+elevator_pull_down_height = 0.5 * cm
+elevator_latch_height = 2.5 * inch
+elevator_fire_height = 5.5 * inch
