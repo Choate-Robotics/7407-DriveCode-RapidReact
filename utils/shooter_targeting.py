@@ -1,4 +1,4 @@
-import math,numpy
+import math, numpy
 from constants import air_resistance_constant, height_difference, gravity, acceptable_error, shooter_delay
 
 

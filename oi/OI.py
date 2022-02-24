@@ -43,7 +43,7 @@ class OI:
         Keymap.Index.INDEX_ON().whenPressed(command.IndexOn)
         Keymap.Index.INDEX_OFF().whenPressed(command.IndexOff)
 
-        Keymap.Shooter.SHOOTER_ENABLE().whileHeld(command.ShooterEnable)
-        Keymap.Shooter.SHOOTER_ENABLE().whenReleased(command.ShooterStop)
+        Keymap.Shooter.SHOOTER_ENABLE().whileHeld(command.ShooterEnable(Robot.shooter))
+        # Keymap.Shooter.SHOOTER_ENABLE().whenReleased(command.ShooterStop)
 
         logger.info("mapping complete", "[oi]")

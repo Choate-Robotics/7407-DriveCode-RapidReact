@@ -1,5 +1,6 @@
 from commands2 import InstantCommand
 
+import command
 import constants
 from sensors import limelight
 
@@ -22,6 +23,7 @@ from robot_systems import Robot, Pneumatics, Sensors
 import time
 
 from sensors.color_sensors import ColorSensors
+from utils.shooter_data import ShooterDataCollectCommand
 
 
 class _Robot(wpilib.TimedRobot):
@@ -33,6 +35,8 @@ class _Robot(wpilib.TimedRobot):
 
     def __init__(self):
         super().__init__(constants.period)
+
+        self.test_command = ShooterDataCollectCommand(Robot.shooter).alongWith(command.IndexOn)
 
     def robotInit(self):
         """
@@ -54,13 +58,15 @@ class _Robot(wpilib.TimedRobot):
             subsystem.init()
 
         # OI
-        OI.init()
-        OI.map_controls()
+        # OI.init()
+        # OI.map_controls()
 
         # Pneumatics
         Pneumatics.compressor.enableAnalog(90, 120)
 
         Sensors.color_sensors = ColorSensors()
+
+        commands2.CommandScheduler.getInstance().setPeriod(constants.period)
 
         logger.info("initialization complete")
 
@@ -72,7 +78,8 @@ class _Robot(wpilib.TimedRobot):
             Network.robot_send_status()
 
     def teleopInit(self) -> None:
-        commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
+        # commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
+        commands2.CommandScheduler.getInstance().schedule(self.test_command)
         pass
 
     def teleopPeriodic(self) -> None:

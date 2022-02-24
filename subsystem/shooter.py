@@ -5,7 +5,7 @@ from robotpy_toolkit_7407.unum import Unum
 import math
 
 import constants
-from utils.can_optimizations import optimize_normal_talon
+from utils.can_optimizations import optimize_normal_talon, optimize_leader_talon
 from utils.shooter_targeting import ShooterTargeting
 
 
@@ -26,8 +26,8 @@ class Shooter(Subsystem):
         self.m_top.init()
         self.m_bottom.init()
         self.m_angle.init()
-        optimize_normal_talon(self.m_top)
-        optimize_normal_talon(self.m_bottom)
+        optimize_leader_talon(self.m_top)
+        optimize_leader_talon(self.m_bottom)
         optimize_normal_talon(self.m_angle)
 
     def set_launch_angle(self, theta: Unum):
