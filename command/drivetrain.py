@@ -8,7 +8,10 @@ class DriveSwerveCustom(SubsystemCommand[SwerveDrivetrain]):
         pass
 
     def execute(self) -> None:
-        dx, dy, d_theta = self.subsystem.axis_dx.value, self.subsystem.axis_dy.value, self.subsystem.axis_rotation.value
+        dx, dy, d_theta = self.subsystem.axis_dx.value, self.subsystem.axis_dy.value, -self.subsystem.axis_rotation.value
+
+        if abs(d_theta) < 0.15:
+            d_theta = 0
 
         def curve_abs(x):
             return x ** 2
@@ -20,6 +23,7 @@ class DriveSwerveCustom(SubsystemCommand[SwerveDrivetrain]):
 
         dx = curve(dx)
         dy = curve(dy)
+        d_theta = curve(d_theta)
 
         # TODO normalize this to circle somehow
         dx *= self.subsystem.max_vel.asUnit(m/s)

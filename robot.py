@@ -1,5 +1,8 @@
 from commands2 import InstantCommand
 
+import constants
+from sensors import limelight
+
 import utils
 
 import wpilib
@@ -23,10 +26,13 @@ from sensors.color_sensors import ColorSensors
 
 class _Robot(wpilib.TimedRobot):
     """
-    Main robot class. Initializes OI and subsystems, and runs the commands scheduler.
+    Main robot class. Initializes OI and subsystems, and runs the command scheduler.
     """
     loops_per_net_update: int = 10
     network_counter: int
+
+    def __init__(self):
+        super().__init__(constants.period)
 
     def robotInit(self):
         """
@@ -44,8 +50,8 @@ class _Robot(wpilib.TimedRobot):
         Network.robot_init(subsystems)
         self.network_counter = self.loops_per_net_update
 
-        for s in subsystems:
-            s.init()
+        for subsystem in subsystems:
+            subsystem.init()
 
         # OI
         OI.init()
@@ -73,19 +79,23 @@ class _Robot(wpilib.TimedRobot):
         # print(Pneumatics.get_compressor())
         # for i in range(10):
         #     print(f"Limit Switch {i}: {Robot.limit_switches[i].get_value()}")
+        # z = Robot.limelight.calculate_distance()
+        # print(f"Limelight: {z}")
         pass
 
     def autonomousInit(self) -> None:
-        Robot.elevator.set_height(0 * inch)
+        # Robot.elevator.set_height(0 * inch)
+        # Robot.shooter.target(5)
         pass
 
     def autonomousPeriodic(self) -> None:
-        c = ""
-        for i, sw in enumerate(Robot.limit_switches):
-            if sw.get_value():
-                c += f"{i} "
-        if c != "":
-            logger.info(c)
+        # c = ""
+        # for i, sw in enumerate(Robot.limit_switches):
+        #     if sw.get_value():
+        #         c += f"{i} "
+        # if c != "":
+        #     logger.info(c)
+        pass
 
     def disabledInit(self) -> None:
         pass
@@ -98,4 +108,4 @@ class _Robot(wpilib.TimedRobot):
 
 
 if __name__ == "__main__":
-    wpilib.run(_Robot, period=0.05)
+    wpilib.run(_Robot)
