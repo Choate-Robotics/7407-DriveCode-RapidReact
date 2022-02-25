@@ -5,8 +5,8 @@ controllerOPERATOR = LogitechController
 
 
 class Controllers:
-    DRIVER = 1
-    OPERATOR = 0
+    DRIVER = 0
+    OPERATOR = 1
 
 
 class Keymap:

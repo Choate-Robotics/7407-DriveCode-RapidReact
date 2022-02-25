@@ -2,7 +2,7 @@ from commands2 import InstantCommand
 
 import command
 import constants
-from sensors import limelight
+from sensors import limelight, Limelight
 
 import utils
 
@@ -36,7 +36,7 @@ class _Robot(wpilib.TimedRobot):
     def __init__(self):
         super().__init__(constants.period)
 
-        self.test_command = ShooterDataCollectCommand(Robot.shooter).alongWith(command.IndexOn)
+        # self.test_command = ShooterDataCollectCommand(Robot.shooter).alongWith(command.IndexOn)
 
     def robotInit(self):
         """
@@ -58,8 +58,8 @@ class _Robot(wpilib.TimedRobot):
             subsystem.init()
 
         # OI
-        # OI.init()
-        # OI.map_controls()
+        OI.init()
+        OI.map_controls()
 
         # Pneumatics
         Pneumatics.compressor.enableAnalog(90, 120)
@@ -78,8 +78,8 @@ class _Robot(wpilib.TimedRobot):
             Network.robot_send_status()
 
     def teleopInit(self) -> None:
-        # commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
-        commands2.CommandScheduler.getInstance().schedule(self.test_command)
+        commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
+        # commands2.CommandScheduler.getInstance().schedule(self.test_command)
         pass
 
     def teleopPeriodic(self) -> None:
@@ -88,6 +88,7 @@ class _Robot(wpilib.TimedRobot):
         #     print(f"Limit Switch {i}: {Robot.limit_switches[i].get_value()}")
         # z = Robot.limelight.calculate_distance()
         # print(f"Limelight: {z}")
+        # logger.info(f"{Robot.limelight.calculate_distance()}")
         pass
 
     def autonomousInit(self) -> None:

@@ -40,7 +40,7 @@ class Shooter(Subsystem):
 
     def target(self, limelight_dist):
         vx, vy = ShooterTargeting.stationary_aim(limelight_dist)
-        final_velocity = (vx**2 + vy**2)**.5 * m/s
+        final_velocity = (-0.286 + 1.475 * (vx**2 + vy**2)**.5) * m/s
         final_angle = math.atan(vy / vx) * rad
         self.set_launch_angle(final_angle)
         self.set_flywheels(final_velocity, final_velocity)

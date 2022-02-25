@@ -2,6 +2,8 @@ from math import degrees, pi
 from networktables import NetworkTables
 import math
 from robotpy_toolkit_7407.utils import logger
+from robotpy_toolkit_7407.utils.units import m, deg, ft, inch, rad
+
 
 class Limelight():
     
@@ -18,15 +20,17 @@ class Limelight():
         
     def calculate_distance(self) -> float:
         # values for calculation
-        cam_height = .775 # units meters (height from ground to camera)
-        cam_angle = 40*pi/180  # units radians (angle from horizontal)
-        h_hub_height = 2.642  # units meters (where is the upper hub from ground) 8 feet 8 inches
-        ty = -self.table.getNumber('ty',None)
+        cam_height = .813 * m  # units meters (height from ground to camera)
+        cam_angle = 43 * deg  # units radians (angle from horizontal)
+        h_hub_height = 8 * ft + 8 * inch  # units meters (where is the upper hub from ground) 8 feet 8 inches
+        ty = self.table.getNumber('ty', 0) * deg
         if ty is None:
             return -1
-        
-        h_hub_angle = math.radians(self.table.getNumber('ty',None))  # convert to radians
-        
-        distance =  (h_hub_height - cam_height) / math.tan(cam_angle + h_hub_angle)
 
-        return distance
+        true_angle = cam_angle + ty
+
+        logger.info(f"true theta: {true_angle.asUnit(deg)}")
+        
+        distance = (h_hub_height - cam_height) / math.tan(true_angle.asNumber(rad))
+
+        return distance.asNumber(m)
