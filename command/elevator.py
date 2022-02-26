@@ -1,6 +1,6 @@
 from telnetlib import EL
 
-from commands2 import InstantCommand, ParallelCommandGroup, ConditionalCommand, SequentialCommandGroup
+from commands2 import InstantCommand, ParallelCommandGroup, ConditionalCommand, SequentialCommandGroup, WaitCommand
 from robotpy_toolkit_7407.command import SubsystemCommand, T
 from robotpy_toolkit_7407.unum import Unum
 from robotpy_toolkit_7407.unum.units import cm
@@ -10,68 +10,80 @@ import constants
 from robot_systems import Robot
 from subsystem import Elevator
 
-ElevatorSolenoidExtend = InstantCommand(Robot.elevator.extend_solenoid, Robot.elevator)
-ElevatorSolenoidRetract = InstantCommand(Robot.elevator.extend_solenoid, Robot.elevator)
-ElevatorSolenoidToggle = InstantCommand(Robot.elevator.solenoid.toggle, Robot.elevator)
+ElevatorSolenoidExtend = lambda: InstantCommand(Robot.elevator.extend_solenoid, Robot.elevator)
+ElevatorSolenoidRetract = lambda: InstantCommand(Robot.elevator.retract_solenoid, Robot.elevator)
+ElevatorSolenoidToggle = lambda: InstantCommand(Robot.elevator.solenoid.toggle, Robot.elevator)
 
-ElevatorSetupCommand = SequentialCommandGroup(
+ElevatorSetupCommand = lambda: ParallelCommandGroup(
     InstantCommand(lambda: Robot.elevator.set_height(constants.elevator_extended_height)),
-    ElevatorSolenoidRetract
+    ElevatorSolenoidRetract()
 )
 
 
 class ElevatorClimbStep1(SubsystemCommand[Elevator]):
-    aborted: bool
-
     def __init__(self, subsystem: T, tolerance: Unum = 0.5 * cm):
         super().__init__(subsystem)
         self.tolerance = tolerance
         self.grabbed = False
+        self.aborted = False
+        self.aborted2 = False
         self.setpoint = constants.elevator_pull_down_height
-        ElevatorClimbStep1.aborted = False
 
     def initialize(self) -> None:
         self.grabbed = False
+        self.aborted = False
+        self.aborted2 = False
         self.setpoint = constants.elevator_pull_down_height
-        ElevatorClimbStep1.aborted = False
 
     def execute(self) -> None:
         self.subsystem.set_height(self.setpoint)
 
-        if ElevatorClimbStep1.aborted:
+        if self.aborted:
+            if self.at_setpoint():
+                self.aborted = False
+                self.aborted2 = True
+                self.setpoint = constants.elevator_extended_height
+            return
+
+        if self.aborted2:
+            if self.at_setpoint():
+                self.aborted2 = False
+                self.setpoint = constants.elevator_pull_down_height
             return
 
         if self.subsystem.bar_on_climb_hooks():
             self.grabbed = True
         if self.subsystem.get_height() <= constants.elevator_min_bar_contact_height:
             if not self.grabbed:
-                ElevatorClimbStep1.aborted = True
+                self.aborted = True
+                self.aborted2 = False
                 self.setpoint = constants.elevator_extended_height
 
     def isFinished(self) -> bool:
+        return self.at_setpoint() and not (self.aborted or self.aborted2)
+    
+    def at_setpoint(self) -> bool:
         return abs(self.subsystem.get_height() - self.setpoint) <= self.tolerance
 
 
 class ElevatorClimbStep2(SubsystemCommand[Elevator]):
-    aborted: bool
-
     def __init__(self, subsystem: T, tolerance: Unum = 0.5 * cm):
         super().__init__(subsystem)
         self.tolerance = tolerance
         self.latched = False
+        self.aborted = False
         self.setpoint = constants.elevator_latch_height
-        ElevatorClimbStep2.aborted = False
 
     def initialize(self) -> None:
         self.latched = False
         self.setpoint = constants.elevator_latch_height
-        ElevatorClimbStep2.aborted = False
+        self.aborted = False
         logger.info("STEP 2")
 
     def execute(self) -> None:
         self.subsystem.set_height(self.setpoint)
 
-        if ElevatorClimbStep2.aborted:
+        if self.aborted:
             return
 
         if self.subsystem.bar_on_grab_hooks() and not self.latched:
@@ -79,15 +91,20 @@ class ElevatorClimbStep2(SubsystemCommand[Elevator]):
             self.latched = True
 
     def isFinished(self) -> bool:
-        if abs(self.subsystem.get_height() - self.setpoint) <= self.tolerance:
-            if ElevatorClimbStep2.aborted:
+        if self.at_setpoint():
+            if not self.aborted:
+                if not self.latched:
+                    self.aborted = True
+                    self.setpoint = constants.elevator_pull_down_height
+                    return False
                 return True
-            if not self.latched:
-                ElevatorClimbStep2.aborted = True
-                self.setpoint = constants.elevator_pull_down_height
-                return False
-            return True
+            else:
+                self.aborted = False
+                self.setpoint = constants.elevator_latch_height
         return False
+    
+    def at_setpoint(self) -> bool:
+        return abs(self.subsystem.get_height() - self.setpoint) <= self.tolerance
 
 
 class ElevatorClimbStep3(SubsystemCommand[Elevator]):
@@ -110,16 +127,42 @@ class ElevatorClimbStep3(SubsystemCommand[Elevator]):
         return abs(self.subsystem.get_height() - constants.elevator_extended_height) <= self.tolerance
 
 
+class ElevatorClimbStep4(SubsystemCommand[Elevator]):
+    def __init__(self, subsystem: T, tolerance: Unum = 0.5 * cm):
+        super().__init__(subsystem)
+        self.tolerance = tolerance
+
+    def initialize(self) -> None:
+        logger.info("STEP 4")
+
+    def execute(self) -> None:
+        self.subsystem.set_height(constants.elevator_latch_height)
+
+    def isFinished(self) -> bool:
+        return abs(self.subsystem.get_height() - constants.elevator_latch_height) <= self.tolerance
+
+
 def abort_fn():
     logger.info("ABORTED")
 
 
-ElevatorClimbCommand = SequentialCommandGroup(
+ElevatorClimbCommand = lambda: SequentialCommandGroup(
     ElevatorClimbStep1(Robot.elevator),
-    ConditionalCommand(ElevatorClimbStep2(Robot.elevator), InstantCommand(abort_fn), lambda: not ElevatorClimbStep1.aborted),
-    ConditionalCommand(
-        ElevatorClimbStep3(Robot.elevator),
-        InstantCommand(abort_fn),
-        lambda: not ElevatorClimbStep1.aborted and not ElevatorClimbStep2.aborted
-    ),
+    ElevatorClimbStep2(Robot.elevator),
+    ElevatorClimbStep3(Robot.elevator),
+    ElevatorSolenoidRetract().andThen(
+        SequentialCommandGroup(
+            WaitCommand(3),
+            ElevatorClimbStep1(Robot.elevator),
+            ElevatorClimbStep2(Robot.elevator),
+            ElevatorClimbStep3(Robot.elevator),
+            ElevatorSolenoidRetract().andThen(
+                SequentialCommandGroup(
+                    WaitCommand(3),
+                    ElevatorClimbStep1(Robot.elevator),
+                    ElevatorClimbStep4(Robot.elevator)
+                )
+            )
+        )
+    )
 )

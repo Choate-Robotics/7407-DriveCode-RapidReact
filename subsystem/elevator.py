@@ -11,7 +11,7 @@ from utils.can_optimizations import optimize_leader_talon, optimize_normal_talon
 
 _MOTOR_CFG = TalonConfig(
     1, 0.001, 0, 1023 / 20937,
-    motion_cruise_velocity=4000*talon_sensor_vel_unit, motion_acceleration=20000*talon_sensor_accel_unit,
+    motion_cruise_velocity=10000*talon_sensor_vel_unit, motion_acceleration=10000*talon_sensor_accel_unit,
     neutral_brake=True
 )
 

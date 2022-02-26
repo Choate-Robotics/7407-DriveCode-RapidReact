@@ -3,7 +3,7 @@ from robotpy_toolkit_7407.unum.units import cm
 from robotpy_toolkit_7407.utils.units import rad, rev, inch, deg, m, mile, hour, s, ft
 
 
-period = 0.04
+period = 0.08
 
 # --- DRIVETRAIN ---
 

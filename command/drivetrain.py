@@ -7,6 +7,7 @@ from wpimath._controls._controls.trajectory import TrapezoidProfileRadians
 from sensors.limelight import Limelight
 import commands2
 from robot_systems import Robot
+import constants
 
 
 class DriveSwerveCustom(SubsystemCommand[SwerveDrivetrain]):
@@ -54,15 +55,15 @@ class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
     controller: ProfiledPIDControllerRadians
 
     def initialize(self) -> None:
-        self.cam = Limelight()
-        self.controller = ProfiledPIDControllerRadians(1, 0, 0, TrapezoidProfileRadians.Constraints(5, 20))
+        self.controller = ProfiledPIDControllerRadians(1, 0, -0.1, TrapezoidProfileRadians.Constraints(0.5, 2), period=constants.period)
         self.controller.reset(0)
 
     def execute(self) -> None:
         dx, dy = self.subsystem.axis_dx.value, self.subsystem.axis_dy.value
         #omega = self.controller.calculate(0, self.cam.get_x_offset()) * rad / s
-        omega = -self.controller.calculate(0, self.cam.get_x_offset()) * 2.8 * rad / s #(The 3 is adjustable, p-gain)
+        omega = -self.controller.calculate(0, Robot.limelight.get_x_offset()) * rad / s #(The 3 is adjustable, p-gain)
         
+        print(omega)
 
         def curve_abs(x):
             return x ** 2
@@ -82,15 +83,10 @@ class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
         self.subsystem.set((dx, dy), omega)
 
     def end(self, interrupted: bool) -> None:
-        self.subsystem.n_00.set(0 * m/s, 0 * rad)
-        self.subsystem.n_01.set(0 * m/s, 0 * rad)
-        self.subsystem.n_10.set(0 * m/s, 0 * rad)
-        self.subsystem.n_11.set(0 * m/s, 0 * rad)
-        commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
+        pass
 
     def isFinished(self) -> bool:
-        #commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
-        return self.cam.get_x_offset()<math.radians(3.2)
+        return False
             
 
     def runsWhenDisabled(self) -> bool:

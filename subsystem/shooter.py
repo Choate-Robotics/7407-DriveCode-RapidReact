@@ -7,6 +7,7 @@ import math
 import constants
 from utils.can_optimizations import optimize_normal_talon, optimize_leader_talon
 from utils.shooter_targeting import ShooterTargeting
+from sensors import LimitSwitch
 
 
 class Shooter(Subsystem):
