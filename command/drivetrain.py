@@ -2,10 +2,9 @@ import math
 from robotpy_toolkit_7407.command import SubsystemCommand
 from robotpy_toolkit_7407.subsystem_templates.drivetrain.swerve_drivetrain import SwerveDrivetrain
 from robotpy_toolkit_7407.utils.units import m, s, rad
-from wpimath._controls._controls.controller import ProfiledPIDControllerRadians
-from wpimath._controls._controls.trajectory import TrapezoidProfileRadians
+from wpimath.controller import ProfiledPIDControllerRadians
+from wpimath.trajectory import TrapezoidProfileRadians
 from sensors.limelight import Limelight
-import commands2
 from robot_systems import Robot
 import constants
 
