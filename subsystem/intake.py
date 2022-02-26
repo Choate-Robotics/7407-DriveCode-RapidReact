@@ -46,8 +46,8 @@ class Intake(Subsystem):
     def toggle(self):
         if self.on:
             self.set(0, 0)
-            self.s_right.set(wpilib.DoubleSolenoid.Value.kForward)
+            self.s_right.set(wpilib.DoubleSolenoid.Value.kReverse)
         else:
             self.set(.5, .7)
-            self.s_right.set(wpilib.DoubleSolenoid.Value.kReverse)
+            self.s_right.set(wpilib.DoubleSolenoid.Value.kForward)
         self.on = not self.on

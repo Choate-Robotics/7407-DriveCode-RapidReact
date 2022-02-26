@@ -69,11 +69,11 @@ class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
         omega = -0.07 * Robot.limelight.get_x_offset() * rad / s #(The 3 is adjustable, p-gain)
 
         def curve_abs(x):
-            return x ** 2
+            return x ** 1.5
 
         def curve(x):
             if x < 0:
-                return -curve_abs(x)
+                return -curve_abs(-x)
             return curve_abs(x)
 
         dx = curve(dx)
