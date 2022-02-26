@@ -11,35 +11,29 @@ from utils.can_optimizations import optimize_leader_talon, optimize_normal_talon
 
 _MOTOR_CFG = TalonConfig(
     1, 0.001, 0, 1023 / 20937,
-    motion_cruise_velocity=10000*talon_sensor_vel_unit, motion_acceleration=10000*talon_sensor_accel_unit,
+    motion_cruise_velocity=4000*talon_sensor_vel_unit, motion_acceleration=20000*talon_sensor_accel_unit,
     neutral_brake=True
 )
 
 
 class Elevator(Subsystem):
-    # motors: TalonGroup = TalonGroup(TalonFX(17, inverted=True), TalonFX(18, inverted=False), config=_MOTOR_CFG)
-    m_1 = TalonFX(17, inverted=True, config=_MOTOR_CFG)
-    m_2 = TalonFX(18, inverted=False, config=_MOTOR_CFG)
+    motors: TalonGroup = TalonGroup(TalonFX(17, inverted=True), TalonFX(18, inverted=False), config=_MOTOR_CFG)
     solenoid = wpilib.DoubleSolenoid(1, wpilib.PneumaticsModuleType.REVPH, 4, 5)
     l_elevator = [LimitSwitch(2), LimitSwitch(3)]
     l_hanger_top = [LimitSwitch(4), LimitSwitch(5)]
     l_hanger_bottom = [LimitSwitch(6), LimitSwitch(7)]
 
     def init(self):
-        # self.motors.init()
-        self.m_1.init()
-        self.m_2.init()
-        # optimize_leader_talon(self.motors.motors[0])
-        # optimize_leader_talon(self.motors.motors[1])
+        self.motors.init()
+        optimize_leader_talon(self.motors.motors[0])
+        optimize_leader_talon(self.motors.motors[1])
         self.retract_solenoid()
 
     def set_height(self, h: Unum):
-        # self.motors.set_target_position(h * constants.elevator_gear_ratio)
-        self.m_1.set_target_position(h * constants.elevator_gear_ratio)
-        self.m_2.set_target_position(h * constants.elevator_gear_ratio)
+        self.motors.set_target_position(h * constants.elevator_gear_ratio)
 
     def get_height(self):
-        return self.m_1.get_sensor_position() / constants.elevator_gear_ratio
+        return self.motors.get_sensor_position() / constants.elevator_gear_ratio
 
     def extend_solenoid(self):
         self.solenoid.set(wpilib.DoubleSolenoid.Value.kReverse)
