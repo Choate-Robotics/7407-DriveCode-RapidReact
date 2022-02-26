@@ -5,10 +5,28 @@ from robotpy_toolkit_7407.command import SubsystemCommand, T
 from robotpy_toolkit_7407.unum import Unum
 from robotpy_toolkit_7407.unum.units import cm
 from robotpy_toolkit_7407.utils import logger
+from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit
+from robotpy_toolkit_7407.utils.units import m, s
 
 import constants
 from robot_systems import Robot
 from subsystem import Elevator
+
+class ElevatorZero(SubsystemCommand[Elevator]):
+    def initialize(self, subsystem):
+        self.subsystem = subsystem
+        self.subsystem.motors.set_raw_output(-.1)
+        self.subsystem.motors.set_raw_output(-.1)
+    def execute(self) -> None:
+        if self.subsystem.l_elevator[0].get_value() or self.subsystem.l_elevator[1].get_value():
+            self.subsystem.zeroed = True
+    def isFinished(self) -> bool:
+        return self.subsystem.zeroed
+    def end(self) -> None:
+        self.subsystem.motors.set_sensor_velocity(-.1 * m/s)
+        self.subsystem.motors.set_sensor_position(0 * talon_sensor_unit)
+    
+
 
 ElevatorSolenoidExtend = lambda: InstantCommand(Robot.elevator.extend_solenoid, Robot.elevator)
 ElevatorSolenoidRetract = lambda: InstantCommand(Robot.elevator.retract_solenoid, Robot.elevator)

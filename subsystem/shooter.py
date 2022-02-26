@@ -24,12 +24,16 @@ class Shooter(Subsystem):
     sensor_zero_angle = 15 * deg
 
     def init(self):
+        self.left_limit = LimitSwitch(1)
         self.m_top.init()
         self.m_bottom.init()
         self.m_angle.init()
         optimize_leader_talon(self.m_top)
         optimize_leader_talon(self.m_bottom)
         optimize_normal_talon(self.m_angle)
+
+        self.zeroed = self.left_limit.get_value()
+        #self.m_top.set_sensor_position(0 * talon_sensor_unit)
 
     def set_launch_angle(self, theta: Unum):
         theta = 90 * deg - theta - self.sensor_zero_angle

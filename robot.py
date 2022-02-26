@@ -3,6 +3,7 @@ from commands2 import InstantCommand
 import command
 import constants
 from sensors import limelight, Limelight
+from subsystem.shooter import Shooter
 
 import utils
 
@@ -16,7 +17,8 @@ from robotpy_toolkit_7407.utils import logger
 from robotpy_toolkit_7407.utils.units import deg, s, m, inch
 
 from command.drivetrain import DriveSwerveCustom
-from command.elevator import ElevatorSetupCommand, ElevatorClimbCommand
+from command.elevator import ElevatorZero, ElevatorSetupCommand, ElevatorClimbCommand
+from command.shooter import ShooterZero
 from oi.OI import OI
 from oi.keymap import Keymap
 from robot_systems import Robot, Pneumatics, Sensors
@@ -61,6 +63,7 @@ class _Robot(wpilib.TimedRobot):
         OI.init()
         OI.map_controls()
 
+
         # Pneumatics
         Pneumatics.compressor.enableAnalog(90, 120)
 
@@ -79,6 +82,10 @@ class _Robot(wpilib.TimedRobot):
 
     def teleopInit(self) -> None:
         commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
+        if not Robot.shooter.zeroed:
+            ShooterZero(Robot.shooter)
+        if not Robot.elevator.zeroed:
+            ElevatorZero(Robot.elevator)
         # commands2.CommandScheduler.getInstance().schedule(self.test_command)
         pass
 

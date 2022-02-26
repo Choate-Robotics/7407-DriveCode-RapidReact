@@ -24,11 +24,11 @@ class Elevator(Subsystem):
     l_elevator = [LimitSwitch(2), LimitSwitch(3)]
     l_hanger_top = [LimitSwitch(4), LimitSwitch(5)]
     l_hanger_bottom = [LimitSwitch(6), LimitSwitch(7)]
-
     def init(self):
         # self.motors.init()
         self.m_1.init()
         self.m_2.init()
+        self.zeroed = self.l_elevator[0].get_value() or self.l_elevator[1].get_value()
         # optimize_leader_talon(self.motors.motors[0])
         # optimize_leader_talon(self.motors.motors[1])
         self.retract_solenoid()
