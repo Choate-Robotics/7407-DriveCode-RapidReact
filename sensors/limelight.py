@@ -34,3 +34,6 @@ class Limelight():
         distance = (h_hub_height - cam_height) / math.tan(true_angle.asNumber(rad))
 
         return distance.asNumber(m)
+
+    def get_x_offset(self) -> float:
+        return math.radians(self.table.getNumber('tx', None))

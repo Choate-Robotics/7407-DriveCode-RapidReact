@@ -16,6 +16,7 @@ class Keymap:
         DRIVE_ROTATION_AXIS = JoystickAxis(Controllers.DRIVER, controllerDRIVER.R_JOY[0])
         RESET_GYRO = DefaultButton(Controllers.DRIVER, controllerDRIVER.A)
         REZERO_MOTORS = DefaultButton(Controllers.DRIVER, controllerDRIVER.B)
+        AIM_SWERVE = DefaultButton(Controllers.DRIVER, controllerDRIVER.RT)
 
     class Elevator:
         ELEVATOR_INIT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.A)
@@ -23,6 +24,7 @@ class Keymap:
         ELEVATOR_SOLENOID_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.START)
 
     class Intake:
+        #INDEX_ACT = JoystickAxis(Controllers.OPERATOR, controllerOPERATOR.R_JOY)
         INTAKE_ON = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.A)
         INTAKE_OFF = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.B)
         INTAKE_LEFT_SOLENOID_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.LB)

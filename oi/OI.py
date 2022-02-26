@@ -3,6 +3,7 @@ from robotpy_toolkit_7407.utils import logger
 from oi.keymap import Keymap
 from robot_systems import Robot
 import command
+from command import DriveSwerveAim
 
 
 class OI:
@@ -25,6 +26,8 @@ class OI:
             Robot.drivetrain.n_11.zero()
 
         Keymap.Drivetrain.REZERO_MOTORS().whenPressed(zero_motors)
+
+        Keymap.Drivetrain.AIM_SWERVE().whileHeld(DriveSwerveAim(Robot.drivetrain))
 
         # Keymap.Elevator.ELEVATOR_UP().whileHeld(command.ElevatorUp)
         # Keymap.Elevator.ELEVATOR_UP().whenReleased(command.ElevatorStop)

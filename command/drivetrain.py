@@ -1,6 +1,12 @@
+import math
 from robotpy_toolkit_7407.command import SubsystemCommand
 from robotpy_toolkit_7407.subsystem_templates.drivetrain.swerve_drivetrain import SwerveDrivetrain
 from robotpy_toolkit_7407.utils.units import m, s, rad
+from wpimath._controls._controls.controller import ProfiledPIDControllerRadians
+from wpimath._controls._controls.trajectory import TrapezoidProfileRadians
+from sensors.limelight import Limelight
+import commands2
+from robot_systems import Robot
 
 
 class DriveSwerveCustom(SubsystemCommand[SwerveDrivetrain]):
@@ -39,6 +45,53 @@ class DriveSwerveCustom(SubsystemCommand[SwerveDrivetrain]):
 
     def isFinished(self) -> bool:
         return False
+
+    def runsWhenDisabled(self) -> bool:
+        return False
+
+class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
+    cam: Limelight
+    controller: ProfiledPIDControllerRadians
+
+    def initialize(self) -> None:
+        self.cam = Limelight()
+        self.controller = ProfiledPIDControllerRadians(1, 0, 0, TrapezoidProfileRadians.Constraints(5, 20))
+        self.controller.reset(0)
+
+    def execute(self) -> None:
+        dx, dy = self.subsystem.axis_dx.value, self.subsystem.axis_dy.value
+        #omega = self.controller.calculate(0, self.cam.get_x_offset()) * rad / s
+        omega = -self.controller.calculate(0, self.cam.get_x_offset()) * 2.8 * rad / s #(The 3 is adjustable, p-gain)
+        
+
+        def curve_abs(x):
+            return x ** 2
+
+        def curve(x):
+            if x < 0:
+                return -curve_abs(x)
+            return curve_abs(x)
+
+        dx = curve(dx)
+        dy = curve(dy)
+
+        # TODO normalize this to circle somehow
+        dx *= self.subsystem.max_vel.asUnit(m / s)
+        dy *= -self.subsystem.max_vel.asUnit(m / s)
+
+        self.subsystem.set((dx, dy), omega)
+
+    def end(self, interrupted: bool) -> None:
+        self.subsystem.n_00.set(0 * m/s, 0 * rad)
+        self.subsystem.n_01.set(0 * m/s, 0 * rad)
+        self.subsystem.n_10.set(0 * m/s, 0 * rad)
+        self.subsystem.n_11.set(0 * m/s, 0 * rad)
+        commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
+
+    def isFinished(self) -> bool:
+        #commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
+        return self.cam.get_x_offset()<math.radians(3.2)
+            
 
     def runsWhenDisabled(self) -> bool:
         return False
