@@ -8,6 +8,9 @@ from robotpy_toolkit_7407.utils.units import m, s
 
 class ShooterEnable(SubsystemCommand[Shooter]):
     def initialize(self) -> None:
+        pass
+
+    def execute(self) -> None:
         self.subsystem.target(Robot.limelight.calculate_distance())
 
     def isFinished(self) -> bool:
