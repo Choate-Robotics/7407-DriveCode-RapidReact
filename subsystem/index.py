@@ -11,7 +11,7 @@ class Index(Subsystem):
 
     def init(self):
         self.motor.init()
-        optimize_leader_talon(self.motor)
+        optimize_normal_talon(self.motor)
 
     def set(self, motor_speed: float):
         # TODO Velocity control

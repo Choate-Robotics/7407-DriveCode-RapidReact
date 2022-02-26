@@ -61,11 +61,12 @@ class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
             period=constants.period
         )
         self.controller.reset(0)
+        Robot.limelight.led_on()
 
     def execute(self) -> None:
         dx, dy = self.subsystem.axis_dx.value, self.subsystem.axis_dy.value
         #omega = self.controller.calculate(0, self.cam.get_x_offset()) * rad / s
-        omega = -self.controller.calculate(0, Robot.limelight.get_x_offset()) * rad / s #(The 3 is adjustable, p-gain)
+        omega = -0.07 * Robot.limelight.get_x_offset() * rad / s #(The 3 is adjustable, p-gain)
         
         print(omega)
 
@@ -87,7 +88,7 @@ class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
         self.subsystem.set((dx, dy), omega)
 
     def end(self, interrupted: bool) -> None:
-        pass
+        Robot.limelight.led_off()
 
     def isFinished(self) -> bool:
         return False

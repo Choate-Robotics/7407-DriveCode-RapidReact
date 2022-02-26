@@ -27,7 +27,7 @@ class Elevator(Subsystem):
     def init(self):
         self.motors.init()
         optimize_leader_talon(self.motors.motors[0])
-        optimize_leader_talon(self.motors.motors[1])
+        optimize_normal_talon(self.motors.motors[1])
         self.solenoid = wpilib.DoubleSolenoid(1, wpilib.PneumaticsModuleType.REVPH, 4, 5)
         self.retract_solenoid()
         self.zeroed = self.bottomed_out()

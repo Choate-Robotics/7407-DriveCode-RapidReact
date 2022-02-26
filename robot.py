@@ -70,6 +70,8 @@ class _Robot(wpilib.TimedRobot):
 
         commands2.CommandScheduler.getInstance().setPeriod(constants.period)
 
+        Robot.limelight.led_off()
+
         logger.info("initialization complete")
 
     def robotPeriodic(self):
@@ -82,10 +84,11 @@ class _Robot(wpilib.TimedRobot):
 
     def teleopInit(self) -> None:
         commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
-        if not Robot.shooter.zeroed:
-            commands2.CommandScheduler.getInstance().schedule(ShooterZero(Robot.shooter))
-        if not Robot.elevator.zeroed:
-            commands2.CommandScheduler.getInstance().schedule(ElevatorZero(Robot.elevator))
+        Robot.limelight.led_off()
+        # if not Robot.shooter.zeroed:
+        #     commands2.CommandScheduler.getInstance().schedule(ShooterZero(Robot.shooter))
+        # if not Robot.elevator.zeroed:
+        #     commands2.CommandScheduler.getInstance().schedule(ElevatorZero(Robot.elevator))
         # commands2.CommandScheduler.getInstance().schedule(self.test_command)
         pass
 
@@ -99,6 +102,7 @@ class _Robot(wpilib.TimedRobot):
         pass
 
     def autonomousInit(self) -> None:
+        Robot.limelight.led_off()
         # Robot.elevator.set_height(0 * inch)
         # Robot.shooter.target(5)
         pass

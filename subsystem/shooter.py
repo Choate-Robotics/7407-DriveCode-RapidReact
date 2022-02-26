@@ -22,6 +22,7 @@ class Shooter(Subsystem):
         neutral_brake=True))
 
     sensor_zero_angle = 15 * deg
+    angle_range = 45 * deg
 
     left_limit = LimitSwitch(1)
     zeroed: bool
@@ -30,14 +31,14 @@ class Shooter(Subsystem):
         self.m_top.init()
         self.m_bottom.init()
         self.m_angle.init()
-        optimize_leader_talon(self.m_top)
-        optimize_leader_talon(self.m_bottom)
+        optimize_normal_talon(self.m_top)
+        optimize_normal_talon(self.m_bottom)
         optimize_normal_talon(self.m_angle)
         self.zeroed = self.left_limit.get_value()
 
     def set_launch_angle(self, theta: Unum):
         theta = 90 * deg - theta - self.sensor_zero_angle
-        self.m_angle.set_target_position(theta * constants.shooter_angle_gear_ratio)
+        self.m_angle.set_target_position(min(theta, self.angle_range) * constants.shooter_angle_gear_ratio)
 
     def set_flywheels(self, top_vel: Unum, bottom_vel: Unum):
         self.m_top.set_target_velocity(top_vel * constants.shooter_top_gear_ratio)

@@ -8,10 +8,11 @@ from robotpy_toolkit_7407.utils.units import m, s, rad
 
 class ShooterEnable(SubsystemCommand[Shooter]):
     def initialize(self) -> None:
-        pass
+        # self.subsystem.target(Robot.limelight.calculate_distance())
+        self.subsystem.target(3)
 
     def execute(self) -> None:
-        self.subsystem.target(Robot.limelight.calculate_distance())
+        pass
 
     def isFinished(self) -> bool:
         return False
@@ -26,7 +27,7 @@ class ShooterZero(SubsystemCommand[Shooter]):
         self.subsystem = subsystem
 
     def initialize(self) -> None:
-        self.subsystem.m_angle.set_target_velocity(-1 * rad/s)
+        self.subsystem.m_angle.set_raw_output(-0.06)
 
     def execute(self):
         if self.subsystem.left_limit.get_value():
