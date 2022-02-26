@@ -18,7 +18,7 @@ _MOTOR_CFG = TalonConfig(
 
 class Elevator(Subsystem):
     motors: TalonGroup = TalonGroup(TalonFX(17, inverted=True), TalonFX(18, inverted=False), config=_MOTOR_CFG)
-    solenoid = wpilib.DoubleSolenoid(1, wpilib.PneumaticsModuleType.REVPH, 4, 5)
+    solenoid: wpilib.DoubleSolenoid
     l_elevator = [LimitSwitch(2), LimitSwitch(3)]
     l_hanger_top = [LimitSwitch(4), LimitSwitch(5)]
     l_hanger_bottom = [LimitSwitch(6), LimitSwitch(7)]
@@ -28,6 +28,7 @@ class Elevator(Subsystem):
         self.motors.init()
         optimize_leader_talon(self.motors.motors[0])
         optimize_leader_talon(self.motors.motors[1])
+        self.solenoid = wpilib.DoubleSolenoid(1, wpilib.PneumaticsModuleType.REVPH, 4, 5)
         self.retract_solenoid()
         self.zeroed = self.bottomed_out()
 

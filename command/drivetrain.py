@@ -49,12 +49,17 @@ class DriveSwerveCustom(SubsystemCommand[SwerveDrivetrain]):
     def runsWhenDisabled(self) -> bool:
         return False
 
+
 class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
     cam: Limelight
     controller: ProfiledPIDControllerRadians
 
     def initialize(self) -> None:
-        self.controller = ProfiledPIDControllerRadians(1, 0, -0.1, TrapezoidProfileRadians.Constraints(0.5, 2), period=constants.period)
+        self.controller = ProfiledPIDControllerRadians(
+            1, 0, -0.1,
+            TrapezoidProfileRadians.Constraints(0.5, 2),
+            period=constants.period
+        )
         self.controller.reset(0)
 
     def execute(self) -> None:
