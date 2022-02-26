@@ -5,29 +5,38 @@ from robotpy_toolkit_7407.utils import logger
 from robotpy_toolkit_7407.utils.units import m, deg, ft, inch, rad
 
 
-class Limelight():
-    
-    '''
-    tx = table.getNumber('tx',None)  # horizontal angle away from center (-27 to 27 degrees)
-    ty = table.getNumber('ty',None)  # vertical angle away from the center (-20.5 to 20.5 degrees)
-    ta = table.getNumber('ta',None)  # Area in percentage of image of the reflective surface that the limelight detects (pixels?)
-    ts = table.getNumber('ts',None)  # skew or rotation of the reflective surface from (-90 to 0 degrees)
-    '''
-    
+class Limelight:
     def __init__(self):
         NetworkTables.initialize()
         self.table = NetworkTables.getTable("limelight")
-        
+        self.measure_amount = 3
+        self.data_x = [0]
+        self.data_y = [0]
+        self.tx = 0
+        self.ty = 0
+
+    def update(self):
+        c_tx = self.table.getNumber('tx', None)
+        c_ty = self.table.getNumber('ty', None)
+        if c_tx is None or c_ty is None:
+            return
+        self.data_x.append(c_tx)
+        self.data_y.append(c_ty)
+        if len(self.data_x) > self.measure_amount:
+            self.data_x.pop(0)
+            self.data_y.pop(0)
+        # self.tx = sum(self.data_x) / len(self.data_x)
+        # self.ty = sum(self.data_y) / len(self.data_y)
+        self.tx = c_tx
+        self.ty = c_ty
+
     def calculate_distance(self) -> float:
         # values for calculation
         cam_height = .813 * m  # units meters (height from ground to camera)
         cam_angle = 43 * deg  # units radians (angle from horizontal)
         h_hub_height = 8 * ft + 8 * inch  # units meters (where is the upper hub from ground) 8 feet 8 inches
-        ty = self.table.getNumber('ty', 0) * deg
-        if ty is None:
-            return -1
 
-        true_angle = cam_angle + ty
+        true_angle = cam_angle + self.ty
 
         logger.info(f"true theta: {true_angle.asUnit(deg)}")
         
@@ -36,4 +45,5 @@ class Limelight():
         return distance.asNumber(m)
 
     def get_x_offset(self) -> float:
-        return math.radians(self.table.getNumber('tx', None))
+        logger.info(f"{self.tx}")
+        return self.tx

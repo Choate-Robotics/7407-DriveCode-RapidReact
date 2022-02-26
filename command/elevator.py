@@ -19,7 +19,7 @@ class ElevatorZero(SubsystemCommand[Elevator]):
         self.subsystem = subsystem
 
     def initialize(self) -> None:
-        self.subsystem.motors.set_target_velocity(-.05 * m/s)
+        self.subsystem.motors.set_target_velocity(-.05 * constants.elevator_gear_ratio * m/s)
 
     def execute(self) -> None:
         if self.subsystem.bottomed_out():

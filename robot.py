@@ -74,6 +74,7 @@ class _Robot(wpilib.TimedRobot):
 
     def robotPeriodic(self):
         commands2.CommandScheduler.getInstance().run()
+        Robot.limelight.update()
         self.network_counter -= 1
         if self.network_counter == 0:
             self.network_counter = self.loops_per_net_update

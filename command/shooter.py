@@ -3,7 +3,7 @@ from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit
 
 from robot_systems import Robot
 from subsystem import Shooter
-from robotpy_toolkit_7407.utils.units import m, s
+from robotpy_toolkit_7407.utils.units import m, s, rad
 
 
 class ShooterEnable(SubsystemCommand[Shooter]):
@@ -26,7 +26,7 @@ class ShooterZero(SubsystemCommand[Shooter]):
         self.subsystem = subsystem
 
     def initialize(self) -> None:
-        self.subsystem.m_angle.set_target_velocity(-.1 * m/s)
+        self.subsystem.m_angle.set_target_velocity(-1 * rad/s)
 
     def execute(self):
         if self.subsystem.left_limit.get_value():

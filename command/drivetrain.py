@@ -56,7 +56,7 @@ class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
 
     def initialize(self) -> None:
         self.controller = ProfiledPIDControllerRadians(
-            1, 0, -0.1,
+            1, 0, 0,
             TrapezoidProfileRadians.Constraints(0.5, 2),
             period=constants.period
         )

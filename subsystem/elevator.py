@@ -52,4 +52,4 @@ class Elevator(Subsystem):
                (self.l_hanger_top[1].get_value() or self.l_hanger_bottom[1].get_value())
 
     def bottomed_out(self):
-        return self.l_elevator[0].get_value() or self.l_elevator[1].get_value()
+        return not(self.l_elevator[0].get_value() or self.l_elevator[1].get_value())
