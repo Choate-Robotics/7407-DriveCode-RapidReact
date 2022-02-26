@@ -5,6 +5,7 @@ from robotpy_toolkit_7407.unum import Unum
 import math
 
 import constants
+from sensors import LimitSwitch
 from utils.can_optimizations import optimize_normal_talon, optimize_leader_talon
 from utils.shooter_targeting import ShooterTargeting
 
@@ -22,17 +23,17 @@ class Shooter(Subsystem):
 
     sensor_zero_angle = 15 * deg
 
+    left_limit = LimitSwitch(1)
+    zeroed: bool
+
     def init(self):
-        self.left_limit = LimitSwitch(1)
         self.m_top.init()
         self.m_bottom.init()
         self.m_angle.init()
         optimize_leader_talon(self.m_top)
         optimize_leader_talon(self.m_bottom)
         optimize_normal_talon(self.m_angle)
-
         self.zeroed = self.left_limit.get_value()
-        #self.m_top.set_sensor_position(0 * talon_sensor_unit)
 
     def set_launch_angle(self, theta: Unum):
         theta = 90 * deg - theta - self.sensor_zero_angle

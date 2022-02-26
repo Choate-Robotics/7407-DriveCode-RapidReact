@@ -63,7 +63,6 @@ class _Robot(wpilib.TimedRobot):
         OI.init()
         OI.map_controls()
 
-
         # Pneumatics
         Pneumatics.compressor.enableAnalog(90, 120)
 
@@ -83,9 +82,9 @@ class _Robot(wpilib.TimedRobot):
     def teleopInit(self) -> None:
         commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
         if not Robot.shooter.zeroed:
-            ShooterZero(Robot.shooter)
+            commands2.CommandScheduler.getInstance().schedule(ShooterZero(Robot.shooter))
         if not Robot.elevator.zeroed:
-            ElevatorZero(Robot.elevator)
+            commands2.CommandScheduler.getInstance().schedule(ElevatorZero(Robot.elevator))
         # commands2.CommandScheduler.getInstance().schedule(self.test_command)
         pass
 

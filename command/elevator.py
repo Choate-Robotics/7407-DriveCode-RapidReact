@@ -12,20 +12,25 @@ import constants
 from robot_systems import Robot
 from subsystem import Elevator
 
+
 class ElevatorZero(SubsystemCommand[Elevator]):
-    def initialize(self, subsystem):
+    def __init__(self, subsystem: Elevator):
+        super().__init__(subsystem)
         self.subsystem = subsystem
-        self.subsystem.motors.set_raw_output(-.1)
-        self.subsystem.motors.set_raw_output(-.1)
+
+    def initialize(self) -> None:
+        self.subsystem.motors.set_target_velocity(-.05 * m/s)
+
     def execute(self) -> None:
-        if self.subsystem.l_elevator[0].get_value() or self.subsystem.l_elevator[1].get_value():
+        if self.subsystem.bottomed_out():
             self.subsystem.zeroed = True
+            self.subsystem.motors.set_sensor_position(0 * talon_sensor_unit)
+
     def isFinished(self) -> bool:
         return self.subsystem.zeroed
-    def end(self) -> None:
-        self.subsystem.motors.set_sensor_velocity(-.1 * m/s)
-        self.subsystem.motors.set_sensor_position(0 * talon_sensor_unit)
-    
+
+    def end(self, interrupted: bool) -> None:
+        self.subsystem.motors.set_raw_output(0)
 
 
 ElevatorSolenoidExtend = lambda: InstantCommand(Robot.elevator.extend_solenoid, Robot.elevator)

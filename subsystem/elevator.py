@@ -22,20 +22,14 @@ class Elevator(Subsystem):
     l_elevator = [LimitSwitch(2), LimitSwitch(3)]
     l_hanger_top = [LimitSwitch(4), LimitSwitch(5)]
     l_hanger_bottom = [LimitSwitch(6), LimitSwitch(7)]
+    zeroed: bool
+
     def init(self):
-<<<<<<< HEAD
-        # self.motors.init()
-        self.m_1.init()
-        self.m_2.init()
-        self.zeroed = self.l_elevator[0].get_value() or self.l_elevator[1].get_value()
-        # optimize_leader_talon(self.motors.motors[0])
-        # optimize_leader_talon(self.motors.motors[1])
-=======
         self.motors.init()
         optimize_leader_talon(self.motors.motors[0])
         optimize_leader_talon(self.motors.motors[1])
->>>>>>> aba50dde21cfe6ccabe0ae4c6224258aff14264e
         self.retract_solenoid()
+        self.zeroed = self.bottomed_out()
 
     def set_height(self, h: Unum):
         self.motors.set_target_position(h * constants.elevator_gear_ratio)
@@ -55,3 +49,6 @@ class Elevator(Subsystem):
     def bar_on_grab_hooks(self) -> bool:
         return (self.l_hanger_top[0].get_value() or self.l_hanger_bottom[0].get_value()) and \
                (self.l_hanger_top[1].get_value() or self.l_hanger_bottom[1].get_value())
+
+    def bottomed_out(self):
+        return self.l_elevator[0].get_value() or self.l_elevator[1].get_value()

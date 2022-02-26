@@ -5,6 +5,7 @@ from robot_systems import Robot
 from subsystem import Shooter
 from robotpy_toolkit_7407.utils.units import m, s
 
+
 class ShooterEnable(SubsystemCommand[Shooter]):
     def initialize(self) -> None:
         self.subsystem.target(Robot.limelight.calculate_distance())
@@ -15,15 +16,22 @@ class ShooterEnable(SubsystemCommand[Shooter]):
     def end(self, interrupted: bool) -> None:
         self.subsystem.stop()
 
+
 class ShooterZero(SubsystemCommand[Shooter]):
-    def initialize(self, subsystem) -> None:
+    def __init__(self, subsystem: Shooter):
+        super().__init__(subsystem)
         self.subsystem = subsystem
+
+    def initialize(self) -> None:
         self.subsystem.m_angle.set_target_velocity(-.1 * m/s)
+
     def execute(self):
         if self.subsystem.left_limit.get_value():
             self.subsystem.zeroed = True
+
     def isFinished(self) -> bool:
         return self.subsystem.zeroed
-    def end(self) -> None:
+
+    def end(self, interrupted: bool) -> None:
         self.subsystem.stop()
         self.subsystem.m_angle.set_sensor_position(0 * talon_sensor_unit)
