@@ -8,7 +8,8 @@ _MOTOR_CFG = TalonConfig(neutral_brake=False)
 
 
 class Intake(Subsystem):
-    m_bottom: TalonGroup = TalonGroup(TalonFX(13, inverted=True), TalonFX(14, inverted=False), config=_MOTOR_CFG)
+    m_bottom: TalonGroup = TalonGroup(TalonFX(13, inverted=True), config=_MOTOR_CFG)
+    # m_bottom: TalonGroup = TalonGroup(TalonFX(13, inverted=True), TalonFX(14, inverted=False), config=_MOTOR_CFG)
     m_top: TalonFX = TalonFX(15, inverted=True, config=_MOTOR_CFG)
     s_left = wpilib.DoubleSolenoid(1, wpilib.PneumaticsModuleType.REVPH, 0, 1)
     s_right = wpilib.DoubleSolenoid(1, wpilib.PneumaticsModuleType.REVPH, 2, 3)
