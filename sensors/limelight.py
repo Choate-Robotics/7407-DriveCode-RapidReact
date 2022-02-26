@@ -42,7 +42,7 @@ class Limelight:
         cam_angle = 43 * deg  # units radians (angle from horizontal)
         h_hub_height = 8 * ft + 8 * inch  # units meters (where is the upper hub from ground) 8 feet 8 inches
 
-        true_angle = cam_angle + self.ty
+        true_angle = cam_angle + self.ty * deg
 
         logger.info(f"true theta: {true_angle.asUnit(deg)}")
         
@@ -51,5 +51,4 @@ class Limelight:
         return distance.asNumber(m)
 
     def get_x_offset(self) -> float:
-        logger.info(f"{self.tx}")
         return self.tx

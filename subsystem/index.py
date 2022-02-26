@@ -1,7 +1,7 @@
 from robotpy_toolkit_7407 import Subsystem
 from robotpy_toolkit_7407.motors import TalonFX, TalonGroup, TalonConfig
 
-from utils.can_optimizations import optimize_normal_talon, optimize_leader_talon
+from utils.can_optimizations import optimize_normal_talon, optimize_leader_talon, optimize_normal_talon_no_sensor
 
 _MOTOR_CFG = TalonConfig(neutral_brake=True)
 
@@ -11,7 +11,7 @@ class Index(Subsystem):
 
     def init(self):
         self.motor.init()
-        optimize_normal_talon(self.motor)
+        optimize_normal_talon_no_sensor(self.motor)
 
     def set(self, motor_speed: float):
         # TODO Velocity control

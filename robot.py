@@ -2,6 +2,7 @@ from commands2 import InstantCommand
 
 import command
 import constants
+from command import IndexDrive
 from sensors import limelight, Limelight
 from subsystem.shooter import Shooter
 
@@ -70,7 +71,7 @@ class _Robot(wpilib.TimedRobot):
 
         commands2.CommandScheduler.getInstance().setPeriod(constants.period)
 
-        Robot.limelight.led_off()
+        Robot.limelight.led_on()
 
         logger.info("initialization complete")
 
@@ -84,7 +85,8 @@ class _Robot(wpilib.TimedRobot):
 
     def teleopInit(self) -> None:
         commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
-        Robot.limelight.led_off()
+        commands2.CommandScheduler.getInstance().schedule(IndexDrive(Robot.index))
+        Robot.limelight.led_on()
         # if not Robot.shooter.zeroed:
         #     commands2.CommandScheduler.getInstance().schedule(ShooterZero(Robot.shooter))
         # if not Robot.elevator.zeroed:
@@ -102,7 +104,7 @@ class _Robot(wpilib.TimedRobot):
         pass
 
     def autonomousInit(self) -> None:
-        Robot.limelight.led_off()
+        Robot.limelight.led_on()
         # Robot.elevator.set_height(0 * inch)
         # Robot.shooter.target(5)
         pass

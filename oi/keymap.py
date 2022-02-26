@@ -25,14 +25,15 @@ class Keymap:
 
     class Intake:
         #INDEX_ACT = JoystickAxis(Controllers.OPERATOR, controllerOPERATOR.R_JOY)
-        INTAKE_ON = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.A)
-        INTAKE_OFF = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.B)
+        INTAKE_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.B)
         INTAKE_LEFT_SOLENOID_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.LB)
         INTAKE_RIGHT_SOLENOID_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.RB)
 
     class Index:
         INDEX_ON = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.X)
         INDEX_OFF = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.Y)
+        INDEX_JOY = JoystickAxis(Controllers.OPERATOR, controllerOPERATOR.L_JOY[1])
+
 
     class Shooter:
         SHOOTER_ENABLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.RT)

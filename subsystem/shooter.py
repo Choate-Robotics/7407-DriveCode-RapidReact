@@ -6,7 +6,7 @@ import math
 
 import constants
 from sensors import LimitSwitch
-from utils.can_optimizations import optimize_normal_talon, optimize_leader_talon
+from utils.can_optimizations import optimize_normal_talon, optimize_leader_talon, optimize_normal_talon_no_sensor
 from utils.shooter_targeting import ShooterTargeting
 
 
@@ -31,9 +31,9 @@ class Shooter(Subsystem):
         self.m_top.init()
         self.m_bottom.init()
         self.m_angle.init()
-        optimize_normal_talon(self.m_top)
-        optimize_normal_talon(self.m_bottom)
-        optimize_normal_talon(self.m_angle)
+        optimize_normal_talon_no_sensor(self.m_top)
+        optimize_normal_talon_no_sensor(self.m_bottom)
+        optimize_normal_talon_no_sensor(self.m_angle)
         self.zeroed = self.left_limit.get_value()
 
     def set_launch_angle(self, theta: Unum):
