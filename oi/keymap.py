@@ -28,8 +28,6 @@ class Keymap:
         RIGHT_INTAKE_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.B)
 
     class Index:
-        INDEX_ON = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.X)
-        INDEX_OFF = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.Y)
         INDEX_JOY = JoystickAxis(Controllers.OPERATOR, controllerOPERATOR.L_JOY[1])
 
     class Shooter:

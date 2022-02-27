@@ -50,9 +50,6 @@ class OI:
         Keymap.Intake.LEFT_INTAKE_TOGGLE().whenPressed(command.IntakeToggleLeft())
         Keymap.Intake.RIGHT_INTAKE_TOGGLE().whenPressed(command.IntakeToggleRight())
 
-        Keymap.Index.INDEX_ON().whenPressed(command.IndexOn)
-        Keymap.Index.INDEX_OFF().whenPressed(command.IndexOff)
-
         Keymap.Shooter.SHOOTER_ENABLE().whileHeld(command.ShooterEnable(Robot.shooter))
 
         logger.info("mapping complete", "[oi]")

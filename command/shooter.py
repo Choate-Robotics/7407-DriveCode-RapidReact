@@ -1,5 +1,6 @@
 from robotpy_toolkit_7407.command import SubsystemCommand
 from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit
+from robotpy_toolkit_7407.unum import Unum
 from robotpy_toolkit_7407.utils import logger
 
 from robot_systems import Robot
@@ -8,11 +9,14 @@ from robotpy_toolkit_7407.utils.units import m, s, rad
 
 
 class ShooterEnable(SubsystemCommand[Shooter]):
+    def __init__(self, subsystem: Shooter, distance: float = None):
+        super().__init__(subsystem)
+        self.distance = distance
+
     def initialize(self) -> None:
-        # self.subsystem.target(Robot.limelight.calculate_distance())
-        d = Robot.limelight.calculate_distance()
-        self.subsystem.target_stationary(Robot.limelight.calculate_distance())
-        logger.info(f"distance = {d}")
+        if self.distance is None:
+            self.distance = Robot.limelight.calculate_distance()
+        self.subsystem.target_stationary(self.distance)
 
     def execute(self) -> None:
         pass

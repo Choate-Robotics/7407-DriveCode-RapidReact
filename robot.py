@@ -4,6 +4,7 @@ from wpimath.geometry import Pose2d, Rotation2d
 
 import command
 import constants
+from autonomous import three_ball_auto
 from autonomous.follow_path import FollowPathCustom
 from autonomous.trajectory import generate_trajectory, TrajectoryEndpoint, generate_trajectory_from_pose
 from command import IndexDrive
@@ -110,24 +111,22 @@ class _Robot(wpilib.TimedRobot):
 
     def autonomousInit(self) -> None:
         Robot.limelight.led_on()
-        Robot.drivetrain.odometry.resetPosition(Pose2d(0, 0, 0), Rotation2d(0))
+        Robot.drivetrain.odometry.resetPosition(
+            three_ball_auto.initial_robot_pose,
+            three_ball_auto.initial_robot_pose.rotation()
+        )
+        Robot.drivetrain.gyro._gyro.setYaw(
+            three_ball_auto.initial_robot_pose.rotation().degrees()
+        )
         commands2.CommandScheduler.getInstance().schedule(
-            FollowPathCustom(
-                Robot.drivetrain,
-                generate_trajectory_from_pose(
-                    Pose2d(0, 0, (90 * deg).asNumber(rad)), [],
-                    TrajectoryEndpoint(0 * m, 2 * m), 4 * m/s, 2 * m/(s*s)
-                ),
-                90 * deg,
-                constants.period
-            )
+            three_ball_auto.final_command
         )
         # Robot.elevator.set_height(0 * inch)
         # Robot.shooter.target(5)
         pass
 
     def autonomousPeriodic(self) -> None:
-        logger.info(Robot.drivetrain.odometry.getPose())
+        # logger.info(Robot.drivetrain.odometry.getPose())
         # c = ""
         # for i, sw in enumerate(Robot.limit_switches):
         #     if sw.get_value():

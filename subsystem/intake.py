@@ -29,6 +29,14 @@ class Intake(Subsystem):
         self.on_l = False
         self.on_r = False
 
+    def set_left(self, on: bool):
+        if self.on_l != on:
+            self.toggle_left()
+
+    def set_right(self, on: bool):
+        if self.on_r != on:
+            self.toggle_right()
+
     def toggle_left(self):
         if self.on_l:
             self.m_bottom_l.set_raw_output(0)
