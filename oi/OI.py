@@ -1,5 +1,7 @@
 from commands2 import InstantCommand
 from robotpy_toolkit_7407.utils import logger
+from wpimath.geometry import Pose2d, Rotation2d
+
 from command.drivetrain import DriveSwerveCustom
 from oi.keymap import Keymap
 from robot_systems import Robot
@@ -18,7 +20,11 @@ class OI:
     def map_controls():
         logger.info("mapping controller buttons", "[oi]")
 
-        Keymap.Drivetrain.RESET_GYRO().whenPressed(lambda: Robot.drivetrain.gyro.reset_angle())
+        def reset_gyro():
+            Robot.drivetrain.gyro.reset_angle()
+            Robot.drivetrain.odometry.resetPosition(Pose2d(0, 0, 0), Rotation2d(0))
+
+        Keymap.Drivetrain.RESET_GYRO().whenPressed(reset_gyro)
 
         def zero_motors():
             Robot.drivetrain.n_00.zero()

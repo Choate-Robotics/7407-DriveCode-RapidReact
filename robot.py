@@ -1,7 +1,11 @@
 from commands2 import InstantCommand
+from robotpy_toolkit_7407.subsystem_templates.drivetrain.swerve_drivetrain_commands import FollowPath
+from wpimath.geometry import Pose2d, Rotation2d
 
 import command
 import constants
+from autonomous.follow_path import FollowPathCustom
+from autonomous.trajectory import generate_trajectory, TrajectoryEndpoint, generate_trajectory_from_pose
 from command import IndexDrive
 from sensors import limelight, Limelight
 from subsystem.shooter import Shooter
@@ -15,7 +19,7 @@ from robotpy_toolkit_7407 import Subsystem
 from robotpy_toolkit_7407.network.network_system import Network
 from robotpy_toolkit_7407.subsystem_templates.drivetrain import DriveSwerve
 from robotpy_toolkit_7407.utils import logger
-from robotpy_toolkit_7407.utils.units import deg, s, m, inch
+from robotpy_toolkit_7407.utils.units import deg, s, m, inch, rad
 
 from command.drivetrain import DriveSwerveCustom
 from command.elevator import ElevatorZero, ElevatorSetupCommand, ElevatorClimbCommand
@@ -95,6 +99,7 @@ class _Robot(wpilib.TimedRobot):
         pass
 
     def teleopPeriodic(self) -> None:
+        logger.info(Robot.drivetrain.odometry.getPose())
         # print(Pneumatics.get_compressor())
         # for i in range(10):
         #     print(f"Limit Switch {i}: {Robot.limit_switches[i].get_value()}")
@@ -105,11 +110,24 @@ class _Robot(wpilib.TimedRobot):
 
     def autonomousInit(self) -> None:
         Robot.limelight.led_on()
+        Robot.drivetrain.odometry.resetPosition(Pose2d(0, 0, 0), Rotation2d(0))
+        commands2.CommandScheduler.getInstance().schedule(
+            FollowPathCustom(
+                Robot.drivetrain,
+                generate_trajectory_from_pose(
+                    Pose2d(0, 0, (90 * deg).asNumber(rad)), [],
+                    TrajectoryEndpoint(0 * m, 2 * m), 4 * m/s, 2 * m/(s*s)
+                ),
+                90 * deg,
+                constants.period
+            )
+        )
         # Robot.elevator.set_height(0 * inch)
         # Robot.shooter.target(5)
         pass
 
     def autonomousPeriodic(self) -> None:
+        logger.info(Robot.drivetrain.odometry.getPose())
         # c = ""
         # for i, sw in enumerate(Robot.limit_switches):
         #     if sw.get_value():
