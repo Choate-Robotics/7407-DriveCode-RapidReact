@@ -10,8 +10,8 @@ from utils.can_optimizations import optimize_leader_talon, optimize_normal_talon
     optimize_normal_talon_no_sensor
 
 _MOTOR_CFG = TalonConfig(
-    1, 0.001, 0, 1023 / 20937,
-    motion_cruise_velocity=4000*talon_sensor_vel_unit, motion_acceleration=20000*talon_sensor_accel_unit,
+    0.5, 0.001, 0, 1023 / 20937,
+    motion_cruise_velocity=4000*talon_sensor_vel_unit, motion_acceleration=4000*talon_sensor_accel_unit,
     neutral_brake=True
 )
 
@@ -26,7 +26,7 @@ class Elevator(Subsystem):
 
     def init(self):
         self.motors.init()
-        optimize_leader_talon_no_sensor(self.motors.motors[0])
+        optimize_leader_talon(self.motors.motors[0])
         optimize_normal_talon_no_sensor(self.motors.motors[1])
         self.solenoid = wpilib.DoubleSolenoid(1, wpilib.PneumaticsModuleType.REVPH, 4, 5)
         self.retract_solenoid()

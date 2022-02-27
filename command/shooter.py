@@ -11,7 +11,7 @@ class ShooterEnable(SubsystemCommand[Shooter]):
     def initialize(self) -> None:
         # self.subsystem.target(Robot.limelight.calculate_distance())
         d = Robot.limelight.calculate_distance()
-        self.subsystem.target(Robot.limelight.calculate_distance())
+        self.subsystem.target_stationary(Robot.limelight.calculate_distance())
         logger.info(f"distance = {d}")
 
     def execute(self) -> None:

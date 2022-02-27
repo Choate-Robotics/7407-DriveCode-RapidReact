@@ -9,6 +9,16 @@ from robot_systems import Robot
 import constants
 
 
+def curve_abs(x):
+    return x ** 2
+
+
+def curve(x):
+    if x < 0:
+        return -curve_abs(x)
+    return curve_abs(x)
+
+
 class DriveSwerveCustom(SubsystemCommand[SwerveDrivetrain]):
     def initialize(self) -> None:
         pass
@@ -18,14 +28,6 @@ class DriveSwerveCustom(SubsystemCommand[SwerveDrivetrain]):
 
         if abs(d_theta) < 0.15:
             d_theta = 0
-
-        def curve_abs(x):
-            return x ** 2
-
-        def curve(x):
-            if x < 0:
-                return -curve_abs(x)
-            return curve_abs(x)
 
         dx = curve(dx)
         dy = curve(dy)
@@ -51,30 +53,13 @@ class DriveSwerveCustom(SubsystemCommand[SwerveDrivetrain]):
 
 
 class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
-    cam: Limelight
-    controller: ProfiledPIDControllerRadians
-
     def initialize(self) -> None:
-        self.controller = ProfiledPIDControllerRadians(
-            1, 0, 0,
-            TrapezoidProfileRadians.Constraints(0.5, 2),
-            period=constants.period
-        )
-        self.controller.reset(0)
         Robot.limelight.led_on()
 
     def execute(self) -> None:
         dx, dy = self.subsystem.axis_dx.value, self.subsystem.axis_dy.value
         #omega = self.controller.calculate(0, self.cam.get_x_offset()) * rad / s
         omega = -0.07 * Robot.limelight.get_x_offset() * rad / s #(The 3 is adjustable, p-gain)
-
-        def curve_abs(x):
-            return x ** 1.5
-
-        def curve(x):
-            if x < 0:
-                return -curve_abs(-x)
-            return curve_abs(x)
 
         dx = curve(dx)
         dy = curve(dy)
@@ -91,7 +76,6 @@ class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
 
     def isFinished(self) -> bool:
         return False
-            
 
     def runsWhenDisabled(self) -> bool:
         return False
