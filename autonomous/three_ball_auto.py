@@ -18,21 +18,46 @@ waypoints = [
 initial_gyro_angle = -90 * deg
 initial_robot_pose = Pose2d(7.927611, -6.613358, initial_gyro_angle.asNumber(rad))
 
-first_path_end_pose = TrajectoryEndpoint(7.927611 * m, -8 * m + 1.5 * ft, -1.5707963267948963 * rad)
+first_path_end_pose = TrajectoryEndpoint(7.927611 * m, -8 * m + 1.6 * ft, initial_gyro_angle.asNumber(rad))
+
+second_path_start_pose = first_path_end_pose
+second_path_start_pose.angle = 163 * deg
+second_path_end_pose = TrajectoryEndpoint((7.927611 - 2) * m, (-8 + 0.6) * m + 2.6 * ft, 163 * deg)
 
 first_path = FollowPathCustom(
     Robot.drivetrain,
-    generate_trajectory_from_pose(initial_robot_pose, [], first_path_end_pose, 1 * m/s, 0.5 * m/(s*s)),
+    generate_trajectory_from_pose(initial_robot_pose, [], first_path_end_pose, 4 * m/s, 1 * m/(s*s)),
     -90 * deg,
     period=constants.period
 )
 
-second_path = RotateInPlace(
+rotate_1 = RotateInPlace(
     Robot.drivetrain,
-    -13 * deg,
+    -8 * deg,
     1,
     period=constants.period
 )
+
+second_path = FollowPathCustom(
+    Robot.drivetrain,
+    generate_trajectory(
+        second_path_start_pose,
+        [],
+        second_path_end_pose,
+        4 * m/s,
+        1 * m/(s*s)
+    ),
+    -13 * deg,
+    period=constants.period
+)
+
+rotate_2 = RotateInPlace(
+    Robot.drivetrain,
+    -48 * deg,
+    1,
+    period=constants.period
+)
+
 
 final_command = SequentialCommandGroup(
     ParallelCommandGroup(
@@ -40,11 +65,22 @@ final_command = SequentialCommandGroup(
         InstantCommand(lambda: Robot.intake.set_right(True), Robot.intake)
     ),
     ParallelCommandGroup(
-        second_path,
+        rotate_1,
         InstantCommand(lambda: Robot.intake.set_right(False), Robot.intake)
     ),
     ParallelCommandGroup(
         ShooterEnable(Robot.shooter, 2),
+        WaitCommand(1).andThen(IndexOn().alongWith(IntakeThingyOn()))
+    ).withTimeout(3),
+    IndexOff(), IntakeThingyOff(),
+    ParallelCommandGroup(
+        second_path,
+        InstantCommand(lambda: Robot.intake.set_left(True), Robot.intake)
+    ),
+    InstantCommand(lambda: Robot.intake.set_left(False), Robot.intake),
+    rotate_2,
+    ParallelCommandGroup(
+        ShooterEnable(Robot.shooter, 2.4),
         WaitCommand(1).andThen(IndexOn().alongWith(IntakeThingyOn()))
     ).withTimeout(3),
     IndexOff(), IntakeThingyOff()
