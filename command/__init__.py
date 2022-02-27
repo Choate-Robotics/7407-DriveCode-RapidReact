@@ -1,4 +1,4 @@
-from command.intake import IntakeToggle
+from command.intake import IntakeToggleLeft, IntakeToggleRight
 from command.index import IndexOn, IndexOff, IndexDrive
 from command.elevator import ElevatorZero, ElevatorSolenoidToggle, ElevatorSetupCommand, ElevatorClimbCommand
 from command.shooter import ShooterEnable, ShooterZero

@@ -38,10 +38,11 @@ class OI:
         # Keymap.Elevator.ELEVATOR_DOWN().whenReleased(command.ElevatorStop)
         Keymap.Elevator.ELEVATOR_SOLENOID_TOGGLE().whenPressed(command.ElevatorSolenoidToggle())
 
-        # Keymap.Elevator.ELEVATOR_INIT().whenPressed(command.ElevatorSetupCommand())
-        # Keymap.Elevator.ELEVATOR_CLIMB().whenPressed(command.ElevatorClimbCommand())
+        Keymap.Elevator.ELEVATOR_INIT().whenPressed(command.ElevatorSetupCommand())
+        Keymap.Elevator.ELEVATOR_CLIMB().whenPressed(command.ElevatorClimbCommand())
 
-        Keymap.Intake.INTAKE_TOGGLE().whenPressed(command.IntakeToggle)
+        Keymap.Intake.LEFT_INTAKE_TOGGLE().whenPressed(command.IntakeToggleLeft())
+        Keymap.Intake.RIGHT_INTAKE_TOGGLE().whenPressed(command.IntakeToggleRight())
 
         Keymap.Index.INDEX_ON().whenPressed(command.IndexOn)
         Keymap.Index.INDEX_OFF().whenPressed(command.IndexOff)

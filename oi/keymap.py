@@ -19,21 +19,18 @@ class Keymap:
         AIM_SWERVE = DefaultButton(Controllers.DRIVER, controllerDRIVER.RT)
 
     class Elevator:
-        ELEVATOR_INIT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.A)
-        ELEVATOR_CLIMB = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.B)
+        ELEVATOR_INIT = DefaultButton(Controllers.DRIVER, controllerOPERATOR.START)
+        ELEVATOR_CLIMB = DefaultButton(Controllers.DRIVER, controllerOPERATOR.SELECT)
         ELEVATOR_SOLENOID_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.START)
 
     class Intake:
-        #INDEX_ACT = JoystickAxis(Controllers.OPERATOR, controllerOPERATOR.R_JOY)
-        INTAKE_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.B)
-        INTAKE_LEFT_SOLENOID_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.LB)
-        INTAKE_RIGHT_SOLENOID_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.RB)
+        LEFT_INTAKE_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.A)
+        RIGHT_INTAKE_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.B)
 
     class Index:
         INDEX_ON = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.X)
         INDEX_OFF = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.Y)
         INDEX_JOY = JoystickAxis(Controllers.OPERATOR, controllerOPERATOR.L_JOY[1])
-
 
     class Shooter:
         SHOOTER_ENABLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.RT)
