@@ -259,14 +259,12 @@ class ShooterTargeting:
         return ball_error <= acceptable_error
 
     @staticmethod
-    def real_velocity_to_shooting(real_velocity, robot_orientation, angle_to_hub):
+    def real_velocity_to_shooting(real_velocity, angle_to_hub):
         """
         converts the actual velocity of the robot into the velocity in the coordinate system used for shooting
 
 
-        real_velocity is the velocity of the robot as it is used in driving (m/s)
-
-        robot_orientation is how much the robot has rotated from an objective starting direction (rad)
+        real_velocity is the velocity of the robot where the front of the robot is in the +y direction (m/s)
 
         angle_to_hub is the angle between the shooter and the hub (rad)
 
@@ -274,16 +272,12 @@ class ShooterTargeting:
         returns a new velocity tuple in the coordinate system used for shooting
         """
 
-        objective_to_robot = complex(math.cos(robot_orientation), math.sin(robot_orientation))
-
         robot_to_hub = complex(math.cos(angle_to_hub), -math.sin(angle_to_hub))
 
-        # total_rotation is how much the new coordinate system has been rotated compared to the objective coordinate system
-        total_rotation = objective_to_robot * robot_to_hub
 
         complex_velocity = complex(real_velocity[0], real_velocity[1])
 
-        complex_rotated_velocity = complex_velocity / total_rotation
+        complex_rotated_velocity = complex_velocity / robot_to_hub
 
         rotated_velocity = (complex_rotated_velocity.real, complex_rotated_velocity.imag)
 
