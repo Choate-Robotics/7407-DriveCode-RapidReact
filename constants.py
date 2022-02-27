@@ -31,7 +31,7 @@ shooter_angle_gear_ratio = (266 / 10) * (36 / 12) * rad/rad
 
 # Targeting constants
 air_resistance_constant = 0.048187
-height_difference = 2  # meters
+height_difference = 2  # meters # In reality about 1.76m, but a slightly higher height makes the ball bounce off the back of the HUB
 gravity = 9.80665  # m/s^2
 shooter_delay = 0.5  # seconds
 acceptable_error = 0.25  # meters
