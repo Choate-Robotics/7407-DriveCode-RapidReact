@@ -141,16 +141,31 @@ class ElevatorClimbStep3(SubsystemCommand[Elevator]):
         self.fired = False
 
     def execute(self) -> None:
-        self.subsystem.set_height(constants.elevator_extended_height)
+        self.subsystem.set_height(constants.elevator_below_extended_height)
         if not self.fired and self.subsystem.get_height() >= constants.elevator_fire_height:
             self.fired = True
             self.subsystem.extend_solenoid()
 
     def isFinished(self) -> bool:
-        return abs(self.subsystem.get_height() - constants.elevator_extended_height) <= self.tolerance
+        return abs(self.subsystem.get_height() - constants.elevator_below_extended_height) <= self.tolerance
 
 
 class ElevatorClimbStep4(SubsystemCommand[Elevator]):
+    def __init__(self, subsystem: T, tolerance: Unum = 0.5 * cm):
+        super().__init__(subsystem)
+        self.tolerance = tolerance
+
+    def initialize(self) -> None:
+        logger.info("STEP 4")
+
+    def execute(self) -> None:
+        self.subsystem.set_height(constants.elevator_extended_height)
+
+    def isFinished(self) -> bool:
+        return abs(self.subsystem.get_height() - constants.elevator_extended_height) <= self.tolerance
+
+
+class ElevatorClimbStep5(SubsystemCommand[Elevator]):
     def __init__(self, subsystem: T, tolerance: Unum = 0.5 * cm):
         super().__init__(subsystem)
         self.tolerance = tolerance
@@ -173,17 +188,20 @@ ElevatorClimbCommand = lambda: SequentialCommandGroup(
     ElevatorClimbStep1(Robot.elevator),
     ElevatorClimbStep2(Robot.elevator),
     ElevatorClimbStep3(Robot.elevator),
+    ElevatorClimbStep4(Robot.elevator),
     ElevatorSolenoidRetract().andThen(
         SequentialCommandGroup(
-            WaitCommand(3),
+            WaitCommand(2),
             ElevatorClimbStep1(Robot.elevator),
             ElevatorClimbStep2(Robot.elevator),
             ElevatorClimbStep3(Robot.elevator),
+            WaitCommand(1),
+            ElevatorClimbStep4(Robot.elevator),
             ElevatorSolenoidRetract().andThen(
                 SequentialCommandGroup(
-                    WaitCommand(3),
+                    WaitCommand(3.5),
                     ElevatorClimbStep1(Robot.elevator),
-                    ElevatorClimbStep4(Robot.elevator)
+                    ElevatorClimbStep5(Robot.elevator)
                 )
             )
         )

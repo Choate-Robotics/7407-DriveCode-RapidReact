@@ -42,6 +42,7 @@ acceptable_error = 0.25  # meters
 elevator_gear_ratio = 20 * rev / (5.501 * inch)
 
 elevator_extended_height = 27.75 * inch
+elevator_below_extended_height = 21.75 * inch
 elevator_min_bar_contact_height = 23 * inch
 elevator_pull_down_height = 0.5 * cm
 elevator_latch_height = 2.5 * inch
