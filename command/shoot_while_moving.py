@@ -1,4 +1,5 @@
 from robotpy_toolkit_7407 import Command
+from robotpy_toolkit_7407.utils import logger
 from robotpy_toolkit_7407.utils.units import rad, s, m
 
 from command.drivetrain import curve
@@ -23,17 +24,20 @@ class ShootWhileMoving(Command):
 
         hub_dist, hub_angle = Robot.limelight.calculate_distance(), -Robot.limelight.get_x_offset()
 
-        angle_offset = self.shooter.target_with_motion(hub_dist, hub_angle, robot_vel)
+        angle_offset = self.shooter.target_with_motion(hub_dist, hub_angle, robot_vel) + hub_angle
 
-        omega = 0.07 * angle_offset * rad/s
+        logger.info(f"offset={angle_offset}")
+
+        omega = 0.07 * hub_angle * rad/s
 
         self.drivetrain.set(
-            (curve(dx) * self.subsystem.max_vel.asUnit(m / s), curve(-dy) * self.subsystem.max_vel.asUnit(m / s)),
+            (curve(dx) * self.drivetrain.max_vel.asUnit(m / s), curve(-dy) * self.drivetrain.max_vel.asUnit(m / s)),
             omega
         )
 
     def end(self, interrupted: bool) -> None:
         # Robot.limelight.led_off()
+        self.shooter.stop()
         pass
 
     def isFinished(self) -> bool:
