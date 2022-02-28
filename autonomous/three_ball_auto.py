@@ -7,6 +7,7 @@ from autonomous.follow_path import FollowPathCustom, RotateInPlace
 from autonomous.trajectory import generate_trajectory_from_pose, TrajectoryEndpoint, generate_trajectory
 from command import ShooterEnable, IndexOn, IndexOff
 from command.intake import IntakeThingyOn, IntakeThingyOff
+from command.shooter import ShooterEnableAtDistance
 from robot_systems import Robot
 
 initial_gyro_angle = -90 * deg
@@ -88,7 +89,7 @@ final_command = SequentialCommandGroup(
         InstantCommand(lambda: Robot.intake.set_right(False), Robot.intake)
     ),
     ParallelCommandGroup(
-        ShooterEnable(Robot.shooter, 2.1),
+        ShooterEnableAtDistance(Robot.shooter, 2.1),
         WaitCommand(0.6).andThen(IndexOn().alongWith(IntakeThingyOn()))
     ).withTimeout(1.5),
     IndexOff(), IntakeThingyOff(),
@@ -103,7 +104,7 @@ final_command = SequentialCommandGroup(
     ),
     InstantCommand(lambda: Robot.intake.set_left(False), Robot.intake),
     ParallelCommandGroup(
-        ShooterEnable(Robot.shooter, 2.4),
+        ShooterEnableAtDistance(Robot.shooter, 2.4),
         WaitCommand(0.6).andThen(IndexOn().alongWith(IntakeThingyOn()))
     ).withTimeout(1.5),
     IndexOff(), IntakeThingyOff(),
@@ -118,7 +119,7 @@ final_command = SequentialCommandGroup(
         rotate_3,
     ),
     ParallelCommandGroup(
-        ShooterEnable(Robot.shooter, (21 * ft - 8 * inch).asNumber(m)),
+        ShooterEnableAtDistance(Robot.shooter, (21 * ft - 8 * inch).asNumber(m)),
         WaitCommand(0.5).andThen(IndexOn().alongWith(IntakeThingyOn()))
     ).withTimeout(4),
     IndexOff(), IntakeThingyOff()

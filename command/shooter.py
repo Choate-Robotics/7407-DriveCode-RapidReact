@@ -9,7 +9,24 @@ from robotpy_toolkit_7407.utils.units import m, s, rad
 
 
 class ShooterEnable(SubsystemCommand[Shooter]):
-    def __init__(self, subsystem: Shooter, distance: float = None):
+    def __init__(self, subsystem: Shooter):
+        super().__init__(subsystem)
+
+    def initialize(self) -> None:
+        self.subsystem.target_stationary(Robot.limelight.calculate_distance())
+
+    def execute(self) -> None:
+        pass
+
+    def isFinished(self) -> bool:
+        return False
+
+    def end(self, interrupted: bool) -> None:
+        self.subsystem.stop()
+
+
+class ShooterEnableAtDistance(SubsystemCommand[Shooter]):
+    def __init__(self, subsystem: Shooter, distance: float):
         super().__init__(subsystem)
         self.distance = distance
 

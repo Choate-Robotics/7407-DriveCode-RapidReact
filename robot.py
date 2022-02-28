@@ -100,7 +100,7 @@ class _Robot(wpilib.TimedRobot):
         pass
 
     def teleopPeriodic(self) -> None:
-        logger.info(Robot.drivetrain.odometry.getPose())
+        # logger.info(Robot.drivetrain.odometry.getPose())
         # print(Pneumatics.get_compressor())
         # for i in range(10):
         #     print(f"Limit Switch {i}: {Robot.limit_switches[i].get_value()}")
