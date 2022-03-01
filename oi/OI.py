@@ -3,6 +3,7 @@ from robotpy_toolkit_7407.utils import logger
 from wpimath.geometry import Pose2d, Rotation2d
 
 from command.drivetrain import DriveSwerveCustom
+from command.shoot_while_moving import ShootWhileMoving
 from oi.keymap import Keymap
 from robot_systems import Robot
 import command
@@ -53,5 +54,9 @@ class OI:
 
         Keymap.Shooter.SHOOTER_ENABLE().whileHeld(command.ShooterEnable(Robot.shooter))
         Keymap.Shooter.SHOOTER_EJECT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, .5))
+
+        # Keymap.Shooter.SHOOTER_ENABLE()\
+        #     .whileHeld(ShootWhileMoving(Robot.drivetrain, Robot.shooter))\
+        #     .whenReleased(DriveSwerveCustom(Robot.drivetrain))
 
         logger.info("mapping complete", "[oi]")
