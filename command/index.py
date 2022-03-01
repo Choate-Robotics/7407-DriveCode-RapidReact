@@ -6,9 +6,40 @@ from subsystem import Index
 from oi.keymap import Keymap
 
 
+
 IndexOn = lambda: InstantCommand(lambda: Robot.index.set(.5), Robot.index)
 IndexOff = lambda: InstantCommand(lambda: Robot.index.set(0), Robot.index)
 
+class IndexAutoDrive(SubsystemCommand):
+    def __init__(self, subsystem: Index):
+        super().__init__(subsystem)
+        self.subsystem = subsystem
+
+    def initialize(self):
+        pass
+    def execute(self):
+        speed = 0
+        if Robot.intake.on_l or Robot.intake.on_r:
+            speed = .5
+
+        if self.subsystem.photo_electric.get_value():
+            speed = 0
+
+        left_joy = Keymap.Index.INDEX_JOY.value
+        if abs(left_joy) < .1:
+            pass
+        else:
+            if left_joy < 0:
+                speed = .5
+            else:
+                speed = -.5
+
+        self.subsystem.set(speed)
+
+    def isFinished(self) -> bool:
+        return False
+    def end(self, interrupted=False):
+        pass
 
 class IndexDrive(SubsystemCommand[Index]):
     def __init__(self, subsystem: Index):

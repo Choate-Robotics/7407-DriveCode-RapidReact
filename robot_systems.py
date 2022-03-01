@@ -17,7 +17,6 @@ class Robot:
     limelight = sensors.Limelight()
 
     limit_switches = [
-        sensors.LimitSwitch(0),
         sensors.LimitSwitch(8),
         sensors.LimitSwitch(9)
     ]

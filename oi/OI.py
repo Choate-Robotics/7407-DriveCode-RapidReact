@@ -34,8 +34,8 @@ class OI:
 
         Keymap.Drivetrain.REZERO_MOTORS().whenPressed(zero_motors)
 
-        Keymap.Drivetrain.AIM_SWERVE()\
-            .whileHeld(DriveSwerveAim(Robot.drivetrain))\
+        Keymap.Drivetrain.AIM_SWERVE() \
+            .whileHeld(DriveSwerveAim(Robot.drivetrain)) \
             .whenReleased(DriveSwerveCustom(Robot.drivetrain))
 
         # Keymap.Elevator.ELEVATOR_UP().whileHeld(command.ElevatorUp)
