@@ -101,8 +101,6 @@ class ElevatorClimbStep2(SubsystemCommand[Elevator]):
         self.latched = False
         self.setpoint = constants.elevator_latch_height
         self.aborted = False
-        logger.info("STEP 2")
-
     def execute(self) -> None:
         self.subsystem.set_height(self.setpoint)
 
@@ -110,7 +108,6 @@ class ElevatorClimbStep2(SubsystemCommand[Elevator]):
             return
 
         if self.subsystem.bar_on_grab_hooks() and not self.latched:
-            logger.info("LATCHED")
             self.latched = True
 
     def isFinished(self) -> bool:
@@ -137,7 +134,6 @@ class ElevatorClimbStep3(SubsystemCommand[Elevator]):
         self.fired = False
 
     def initialize(self) -> None:
-        logger.info("STEP 3")
         self.fired = False
 
     def execute(self) -> None:
@@ -156,7 +152,7 @@ class ElevatorClimbStep4(SubsystemCommand[Elevator]):
         self.tolerance = tolerance
 
     def initialize(self) -> None:
-        logger.info("STEP 4")
+        pass
 
     def execute(self) -> None:
         self.subsystem.set_height(constants.elevator_extended_height)
@@ -171,8 +167,7 @@ class ElevatorClimbStep5(SubsystemCommand[Elevator]):
         self.tolerance = tolerance
 
     def initialize(self) -> None:
-        logger.info("STEP 4")
-
+        pass
     def execute(self) -> None:
         self.subsystem.set_height(constants.elevator_latch_height)
 
@@ -181,7 +176,7 @@ class ElevatorClimbStep5(SubsystemCommand[Elevator]):
 
 
 def abort_fn():
-    logger.info("ABORTED")
+    pass
 
 
 ElevatorClimbCommand = lambda: SequentialCommandGroup(
