@@ -42,8 +42,8 @@ class Intake(Subsystem):
     def toggle_left(self):
         if self.on_l:
             self.m_bottom_l.set_raw_output(0)
-            wpilib.wait(.5)
             self.s_left.set(wpilib.DoubleSolenoid.Value.kReverse)
+            wpilib.wait(.5)
             self.m_top.set_raw_output(.7 if self.on_r else 0)
             self.on_l = False
         else:
