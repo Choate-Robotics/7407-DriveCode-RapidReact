@@ -19,6 +19,10 @@ second_path_start_pose = first_path_end_pose
 second_path_start_pose.angle = 163 * deg
 second_path_end_pose = TrajectoryEndpoint((7.927611 - 2) * m, (-8 + 0.6) * m + 2.6 * ft, 163 * deg)
 
+third_path_start_pose = second_path_end_pose
+third_path_start_pose.angle = 163 * deg
+third_path_end_pose = TrajectoryEndpoint((7.927611 - 2) * m - 167 * inch, (-8 + 0.6) * m + 2.6 * ft + 4 * inch, -116 * deg)
+
 first_path = FollowPathCustom(
     Robot.drivetrain,
     generate_trajectory_from_pose(initial_robot_pose, [], first_path_end_pose, 8 * m/s, 1.5 * m/(s*s)),
@@ -53,6 +57,26 @@ rotate_2 = RotateInPlace(
     period=constants.period
 )
 
+third_path = FollowPathCustom(
+    Robot.drivetrain,
+    generate_trajectory(
+        third_path_start_pose,
+        [],
+        third_path_end_pose,
+        10 * m/s,
+        4 * m/(s*s)
+    ),
+    35 * deg,
+    period=constants.period
+)
+
+rotate_3 = RotateInPlace(
+    Robot.drivetrain,
+    -72.5 * deg,
+    1,
+    period=constants.period
+)
+
 
 final_command = SequentialCommandGroup(
     ParallelCommandGroup(
@@ -84,4 +108,19 @@ final_command = SequentialCommandGroup(
         WaitCommand(0.6).andThen(IndexOn().alongWith(IntakeThingyOn()))
     ).withTimeout(1.5),
     IndexOff(), IntakeThingyOff(),
+    ParallelCommandGroup(
+        third_path,
+        InstantCommand(lambda: Robot.intake.set_left(True), Robot.intake)
+    ),
+    InstantCommand(Robot.drivetrain.stop, Robot.drivetrain),
+    WaitCommand(1.3),
+    ParallelCommandGroup(
+        WaitCommand(0.5).andThen(InstantCommand(lambda: Robot.intake.set_left(False), Robot.intake)),
+        rotate_3,
+    ),
+    ParallelCommandGroup(
+        ShooterEnableAtDistance(Robot.shooter, (21 * ft - 8 * inch).asNumber(m)),
+        WaitCommand(0.5).andThen(IndexOn().alongWith(IntakeThingyOn()))
+    ).withTimeout(4),
+    IndexOff(), IntakeThingyOff()
 )
