@@ -36,7 +36,11 @@ ElevatorSolenoidExtend = lambda: InstantCommand(Robot.elevator.extend_solenoid, 
 ElevatorSolenoidRetract = lambda: InstantCommand(Robot.elevator.retract_solenoid, Robot.elevator)
 ElevatorSolenoidToggle = lambda: InstantCommand(Robot.elevator.solenoid.toggle, Robot.elevator)
 
+def restrict_robot_vel():
+    Robot.drivetrain.max_vel = constants.drivetrain_max_climb_vel
+
 ElevatorSetupCommand = lambda: ParallelCommandGroup(
+    InstantCommand(lambda: restrict_robot_vel())
     InstantCommand(lambda: Robot.elevator.set_height(constants.elevator_extended_height)),
     ElevatorSolenoidRetract()
 )
