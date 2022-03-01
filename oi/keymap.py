@@ -26,6 +26,7 @@ class Keymap:
     class Intake:
         LEFT_INTAKE_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.A)
         RIGHT_INTAKE_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.B)
+        INTAKE_REVERSE_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.Y)
 
     class Index:
         INDEX_JOY = JoystickAxis(Controllers.OPERATOR, controllerOPERATOR.L_JOY[1])

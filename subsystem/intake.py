@@ -16,6 +16,7 @@ class Intake(Subsystem):
     s_right: wpilib.DoubleSolenoid
     on_l: bool
     on_r: bool
+    on_reverse: bool
 
     def init(self):
         self.m_bottom_l.init()
@@ -28,6 +29,7 @@ class Intake(Subsystem):
         optimize_normal_talon_no_sensor(self.m_top)
         self.on_l = False
         self.on_r = False
+        self.on_reverse = False
 
     def set_left(self, on: bool):
         if self.on_l != on:
@@ -60,3 +62,20 @@ class Intake(Subsystem):
             self.m_top.set_raw_output(.7)
             self.s_right.set(wpilib.DoubleSolenoid.Value.kForward)
             self.on_r = True
+
+    def toggle_reverse(self):
+        if self.on_reverse:
+            self.m_top.set_raw_output(0)
+            self.on_reverse = False
+        else:
+            if self.on_r:
+                self.m_bottom_r.set_raw_output(0)
+                self.s_right.set(wpilib.DoubleSolenoid.Value.kReverse)
+                self.on_r = False
+            if self.on_l:
+                self.m_bottom_l.set_raw_output(0)
+                self.s_left.set(wpilib.DoubleSolenoid.Value.kReverse)
+                self.on_l = False
+            self.m_top.set_raw_output(-0.7)
+            self.on_reverse = True
+
