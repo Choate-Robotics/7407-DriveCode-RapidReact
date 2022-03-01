@@ -33,3 +33,4 @@ class Keymap:
 
     class Shooter:
         SHOOTER_ENABLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.RT)
+        SHOOTER_EJECT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.X)

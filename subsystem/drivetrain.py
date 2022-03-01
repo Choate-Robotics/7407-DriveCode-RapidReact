@@ -119,6 +119,6 @@ class Drivetrain(SwerveDrivetrain):
     track_width: Unum = constants.track_width
     max_vel: Unum = constants.drivetrain_max_vel
     max_angular_vel: Unum = constants.drivetrain_max_angular_vel
-    deadzone_velocity: Unum = 0.05 * m / s
+    deadzone_velocity: Unum = 0.01 * m / s
     deadzone_angular_velocity: Unum = 5 * deg / s
     start_pose: Pose2d = Pose2d(0, 0, 0)
