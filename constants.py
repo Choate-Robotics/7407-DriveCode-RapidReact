@@ -15,6 +15,7 @@ track_width = 24.2 * inch
 # TODO Maybe change these
 drivetrain_max_vel = 20 * mile/hour
 drivetrain_max_angular_vel = 2 * rev/s
+drivetrain_max_climb_vel = 2 * mile/hour
 
 
 # --- SHOOTER ---

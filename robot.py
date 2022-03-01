@@ -4,10 +4,10 @@ from wpimath.geometry import Pose2d, Rotation2d
 
 import command
 import constants
-from autonomous import three_ball_auto
+from autonomous import five_ball_auto
 from autonomous.follow_path import FollowPathCustom
 from autonomous.trajectory import generate_trajectory, TrajectoryEndpoint, generate_trajectory_from_pose
-from command import IndexDrive
+from command import IndexAutoDrive
 from sensors import limelight, Limelight
 from subsystem.shooter import Shooter
 
@@ -90,7 +90,7 @@ class _Robot(wpilib.TimedRobot):
 
     def teleopInit(self) -> None:
         commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
-        commands2.CommandScheduler.getInstance().schedule(IndexDrive(Robot.index))
+        commands2.CommandScheduler.getInstance().schedule(IndexAutoDrive(Robot.index))
         Robot.limelight.led_on()
         # if not Robot.shooter.zeroed:
         #     commands2.CommandScheduler.getInstance().schedule(ShooterZero(Robot.shooter))
@@ -102,6 +102,7 @@ class _Robot(wpilib.TimedRobot):
     def teleopPeriodic(self) -> None:
         # logger.info(Robot.drivetrain.odometry.getPose())
         # print(Pneumatics.get_compressor())
+        print(Robot.index.photo_electric.get_value())
         # for i in range(10):
         #     print(f"Limit Switch {i}: {Robot.limit_switches[i].get_value()}")
         # z = Robot.limelight.calculate_distance()

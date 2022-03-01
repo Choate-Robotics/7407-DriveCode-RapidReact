@@ -19,13 +19,14 @@ class Keymap:
         AIM_SWERVE = DefaultButton(Controllers.DRIVER, controllerDRIVER.RT)
 
     class Elevator:
-        ELEVATOR_INIT = DefaultButton(Controllers.DRIVER, controllerOPERATOR.START)
-        ELEVATOR_CLIMB = DefaultButton(Controllers.DRIVER, controllerOPERATOR.SELECT)
+        ELEVATOR_INIT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.LB)
+        ELEVATOR_CLIMB = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.RB)
         ELEVATOR_SOLENOID_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.START)
 
     class Intake:
         LEFT_INTAKE_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.A)
         RIGHT_INTAKE_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.B)
+        INTAKE_REVERSE_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.Y)
 
     class Index:
         INDEX_JOY = JoystickAxis(Controllers.OPERATOR, controllerOPERATOR.L_JOY[1])

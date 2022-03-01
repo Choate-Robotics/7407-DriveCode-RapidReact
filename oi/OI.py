@@ -35,8 +35,8 @@ class OI:
 
         Keymap.Drivetrain.REZERO_MOTORS().whenPressed(zero_motors)
 
-        Keymap.Drivetrain.AIM_SWERVE()\
-            .whileHeld(DriveSwerveAim(Robot.drivetrain))\
+        Keymap.Drivetrain.AIM_SWERVE() \
+            .whileHeld(DriveSwerveAim(Robot.drivetrain)) \
             .whenReleased(DriveSwerveCustom(Robot.drivetrain))
 
         # Keymap.Elevator.ELEVATOR_UP().whileHeld(command.ElevatorUp)
@@ -50,6 +50,7 @@ class OI:
 
         Keymap.Intake.LEFT_INTAKE_TOGGLE().whenPressed(command.IntakeToggleLeft())
         Keymap.Intake.RIGHT_INTAKE_TOGGLE().whenPressed(command.IntakeToggleRight())
+        Keymap.Intake.INTAKE_REVERSE_TOGGLE().whenPressed(command.IntakeToggleReverse())
 
         Keymap.Shooter.SHOOTER_ENABLE().whileHeld(command.ShooterEnable(Robot.shooter))
 

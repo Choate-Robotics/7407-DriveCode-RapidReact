@@ -115,7 +115,6 @@ class ShooterTargeting:
 
         new_position is the new position in the original coordinate system as a tuple
 
-
         returns a tuple containing the new distance to the hub (in meters) and the new angle (in radians)
 
         """
