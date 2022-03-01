@@ -6,7 +6,7 @@ import constants
 from autonomous.follow_path import FollowPathCustom, RotateInPlace
 from autonomous.trajectory import generate_trajectory_from_pose, TrajectoryEndpoint, generate_trajectory
 from command import ShooterEnable, IndexOn, IndexOff
-from command.intake import IntakeThingyOn, IntakeThingyOff
+from command.intake import IntakeDinglebobOn, IntakeDinglebobOff
 from command.shooter import ShooterEnableAtDistance
 from robot_systems import Robot
 
@@ -66,9 +66,9 @@ final_command = SequentialCommandGroup(
     ),
     ParallelCommandGroup(
         ShooterEnableAtDistance(Robot.shooter, 2.1),
-        WaitCommand(0.6).andThen(IndexOn().alongWith(IntakeThingyOn()))
+        WaitCommand(0.6).andThen(IndexOn().alongWith(IntakeDinglebobOn()))
     ).withTimeout(1.5),
-    IndexOff(), IntakeThingyOff(),
+    IndexOff(), IntakeDinglebobOff(),
     ParallelCommandGroup(
         second_path,
         InstantCommand(lambda: Robot.intake.set_left(True), Robot.intake)
@@ -81,7 +81,7 @@ final_command = SequentialCommandGroup(
     InstantCommand(lambda: Robot.intake.set_left(False), Robot.intake),
     ParallelCommandGroup(
         ShooterEnableAtDistance(Robot.shooter, 2.4),
-        WaitCommand(0.6).andThen(IndexOn().alongWith(IntakeThingyOn()))
+        WaitCommand(0.6).andThen(IndexOn().alongWith(IntakeDinglebobOn()))
     ).withTimeout(1.5),
-    IndexOff(), IntakeThingyOff(),
+    IndexOff(), IntakeDinglebobOff(),
 )
