@@ -4,7 +4,7 @@ from wpimath.geometry import Pose2d, Rotation2d
 
 import command
 import constants
-from autonomous import three_ball_auto
+from autonomous import five_ball_auto
 from autonomous.follow_path import FollowPathCustom
 from autonomous.trajectory import generate_trajectory, TrajectoryEndpoint, generate_trajectory_from_pose
 from command import IndexDrive
