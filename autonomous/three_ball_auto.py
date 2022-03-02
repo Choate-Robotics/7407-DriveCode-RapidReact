@@ -3,6 +3,7 @@ from robotpy_toolkit_7407.utils.units import m, rad, deg, s, ft, inch
 from wpimath.geometry import Pose2d, Translation2d
 
 import constants
+from autonomous.auto_routine import AutoRoutine
 from autonomous.follow_path import FollowPathCustom, RotateInPlace
 from autonomous.trajectory import generate_trajectory_from_pose, TrajectoryEndpoint, generate_trajectory
 from command import ShooterEnable, IndexOn, IndexOff
@@ -85,3 +86,5 @@ final_command = SequentialCommandGroup(
     ).withTimeout(1.5),
     IndexOff(), IntakeDinglebobOff(),
 )
+
+routine = AutoRoutine(initial_robot_pose, final_command)

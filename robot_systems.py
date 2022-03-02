@@ -5,6 +5,7 @@ import sensors
 import wpilib
 
 from sensors.color_sensors import ColorSensors
+from sensors.rev_digit import RevDigit
 
 
 class Robot:
@@ -15,6 +16,8 @@ class Robot:
     shooter = subsystem.Shooter()
 
     limelight = sensors.Limelight()
+
+    rev_digit: RevDigit
 
     limit_switches = [
         sensors.LimitSwitch(8),

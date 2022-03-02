@@ -14,12 +14,23 @@ class Limelight:
         self.data_y = [0]
         self.tx = 0
         self.ty = 0
+        self.refs = 0
 
     def led_on(self):
         self.table.putNumber("ledMode", 3)
 
     def led_off(self):
         self.table.putNumber("ledMode", 1)
+
+    def ref_on(self):
+        if self.refs == 0:
+            self.led_on()
+        self.refs += 1
+
+    def ref_off(self):
+        self.refs -= 1
+        if self.refs == 0:
+            self.led_off()
 
     def update(self):
         c_tx = self.table.getNumber('tx', None)

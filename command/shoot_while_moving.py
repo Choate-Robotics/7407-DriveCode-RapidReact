@@ -15,7 +15,7 @@ class ShootWhileMoving(Command):
         self.shooter = shooter
 
     def initialize(self) -> None:
-        Robot.limelight.led_on()
+        Robot.limelight.ref_on()
 
     def execute(self) -> None:
         dx, dy = self.drivetrain.axis_dx.value, self.drivetrain.axis_dy.value
@@ -36,7 +36,7 @@ class ShootWhileMoving(Command):
         )
 
     def end(self, interrupted: bool) -> None:
-        # Robot.limelight.led_off()
+        Robot.limelight.ref_off()
         self.shooter.stop()
         pass
 

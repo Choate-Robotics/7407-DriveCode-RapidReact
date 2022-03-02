@@ -1,3 +1,5 @@
+import commands2
+from commands2 import InstantCommand, WaitCommand
 from robotpy_toolkit_7407 import Subsystem
 from robotpy_toolkit_7407.motors import TalonFX, TalonGroup, TalonConfig
 import wpilib
@@ -43,9 +45,12 @@ class Intake(Subsystem):
         if self.on_l:
             self.m_bottom_l.set_raw_output(0)
             self.s_left.set(wpilib.DoubleSolenoid.Value.kReverse)
-            wpilib.wait(.5)
-            self.m_top.set_raw_output(.7 if self.on_r else 0)
-            self.on_l = False
+
+            def f():
+                self.m_top.set_raw_output(.7 if self.on_r else 0)
+                self.on_l = False
+
+            commands2.CommandScheduler.getInstance().schedule(WaitCommand(0.5).andThen(InstantCommand(f)))
         else:
             self.m_bottom_l.set_raw_output(.5)
             self.m_top.set_raw_output(.7)
@@ -56,9 +61,12 @@ class Intake(Subsystem):
         if self.on_r:
             self.m_bottom_r.set_raw_output(0)
             self.s_right.set(wpilib.DoubleSolenoid.Value.kReverse)
-            wpilib.wait(.5)
-            self.m_top.set_raw_output(.7 if self.on_l else 0)
-            self.on_r = False
+
+            def f():
+                self.m_top.set_raw_output(.7 if self.on_l else 0)
+                self.on_r = False
+
+            commands2.CommandScheduler.getInstance().schedule(WaitCommand(0.5).andThen(InstantCommand(f)))
         else:
             self.m_bottom_r.set_raw_output(.5)
             self.m_top.set_raw_output(.7)
