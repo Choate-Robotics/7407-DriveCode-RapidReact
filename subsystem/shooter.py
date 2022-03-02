@@ -35,7 +35,7 @@ class Shooter(Subsystem):
         optimize_normal_talon_no_sensor(self.m_bottom)
         optimize_normal_talon_no_sensor(self.m_angle)
         self.zeroed = self.left_limit.get_value()
-/']'
+
     def set_launch_angle(self, theta: Unum):
         theta = 90 * deg - theta - self.sensor_zero_angle
         self.m_angle.set_target_position(max(min(theta, self.angle_range), 0) * constants.shooter_angle_gear_ratio)
