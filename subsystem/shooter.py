@@ -38,7 +38,7 @@ class Shooter(Subsystem):
 
     def set_launch_angle(self, theta: Unum):
         theta = 90 * deg - theta - self.sensor_zero_angle
-        self.m_angle.set_target_position(max(min(theta, self.angle_range), 0) * constants.shooter_angle_gear_ratio)
+        self.m_angle.set_target_position(max(min(theta, self.angle_range), 0 * rad) * constants.shooter_angle_gear_ratio)
 
     def set_flywheels(self, top_vel: Unum, bottom_vel: Unum):
         self.m_top.set_target_velocity(top_vel * constants.shooter_top_gear_ratio)
