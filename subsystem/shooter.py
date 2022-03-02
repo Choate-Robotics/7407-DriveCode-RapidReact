@@ -53,7 +53,6 @@ class Shooter(Subsystem):
     def target_stationary(self, limelight_dist):
         vx, vy = ShooterTargeting.stationary_aim(limelight_dist)
         self.set_flywheels_for_ball_velocity(vx, vy)
-
    
     def target_with_motion(self, limelight_dist, angle_to_hub, robot_vel) -> float:
         adjusted_robot_vel = ShooterTargeting.real_velocity_to_shooting(robot_vel, angle_to_hub)
@@ -64,4 +63,4 @@ class Shooter(Subsystem):
     def stop(self):
         self.m_top.set_raw_output(0)
         self.m_bottom.set_raw_output(0)
-
+        self.m_angle.set_target_position(0 * rad)

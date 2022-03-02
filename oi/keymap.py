@@ -21,7 +21,7 @@ class Keymap:
     class Elevator:
         ELEVATOR_INIT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.LB)
         ELEVATOR_CLIMB = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.RB)
-        ELEVATOR_SOLENOID_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.START)
+        ELEVATOR_DOWN = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.SELECT)
 
     class Intake:
         LEFT_INTAKE_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.A)

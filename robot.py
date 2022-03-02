@@ -1,38 +1,17 @@
-from commands2 import InstantCommand
-from robotpy_toolkit_7407.subsystem_templates.drivetrain.swerve_drivetrain_commands import FollowPath
-from wpimath.geometry import Pose2d, Rotation2d
-
-import command
-import constants
-from autonomous import five_ball_auto, two_ball_auto, three_ball_auto
-from autonomous.follow_path import FollowPathCustom
-from autonomous.trajectory import generate_trajectory, TrajectoryEndpoint, generate_trajectory_from_pose
-from command import IndexAutoDrive, IndexDrive
-from sensors import limelight, Limelight
-from sensors.rev_digit import RevDigit
-from subsystem.shooter import Shooter
-
-import utils
-
-import wpilib
 import commands2
-from ctre import ControlMode
+import wpilib
 from robotpy_toolkit_7407 import Subsystem
 from robotpy_toolkit_7407.network.network_system import Network
-from robotpy_toolkit_7407.subsystem_templates.drivetrain import DriveSwerve
 from robotpy_toolkit_7407.utils import logger
-from robotpy_toolkit_7407.utils.units import deg, s, m, inch, rad
 
+import constants
+from autonomous import five_ball_auto, two_ball_auto, three_ball_auto
+from command import IndexDrive
 from command.drivetrain import DriveSwerveCustom
-from command.elevator import ElevatorZero, ElevatorSetupCommand, ElevatorClimbCommand
-from command.shooter import ShooterZero
 from oi.OI import OI
-from oi.keymap import Keymap
 from robot_systems import Robot, Pneumatics, Sensors
-import time
-
 from sensors.color_sensors import ColorSensors
-from utils.shooter_data import ShooterDataCollectCommand
+from sensors.rev_digit import RevDigit
 
 
 class _Robot(wpilib.TimedRobot):
