@@ -59,9 +59,9 @@ class IndexDrive(SubsystemCommand[Index]):
                 self.was_on = False
         else:
             if left_joy < 0:
-                self.subsystem.set(.5)
+                self.subsystem.set(.45)
             else:
-                self.subsystem.set(-.5)
+                self.subsystem.set(-.45)
             self.was_on = True
             Robot.intake.m_top.set_raw_output(0.7)  # TODO bad thing
 

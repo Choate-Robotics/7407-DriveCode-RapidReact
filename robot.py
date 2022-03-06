@@ -1,9 +1,12 @@
 import commands2
 import wpilib
+from commands2 import WaitCommand
 from robotpy_toolkit_7407 import Subsystem
 from robotpy_toolkit_7407.network.network_system import Network
 from robotpy_toolkit_7407.utils import logger
+from robotpy_toolkit_7407.utils.units import m, s
 
+import command
 import constants
 from autonomous import five_ball_auto, two_ball_auto, three_ball_auto
 from command import IndexDrive
@@ -101,7 +104,9 @@ class _Robot(wpilib.TimedRobot):
 
     def autonomousInit(self) -> None:
         Robot.limelight.led_off()
-        self.auto_routines[Robot.rev_digit.routine_idx].run()
+        # self.auto_routines[Robot.rev_digit.routine_idx].run()
+        # five_ball_auto.routine.run()
+        two_ball_auto.routine.run()
         # Robot.elevator.set_height(0 * inch)
         # Robot.shooter.target(5)
         pass

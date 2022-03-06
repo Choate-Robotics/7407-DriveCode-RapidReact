@@ -22,7 +22,7 @@ second_path_end_pose = TrajectoryEndpoint((7.927611 - 2) * m, (-8 + 0.6) * m + 2
 
 third_path_start_pose = second_path_end_pose
 third_path_start_pose.angle = 163 * deg
-third_path_end_pose = TrajectoryEndpoint((7.927611 - 2) * m - 167 * inch, (-8 + 0.6) * m + 2.6 * ft + 4 * inch, -116 * deg)
+third_path_end_pose = TrajectoryEndpoint((7.927611 - 2) * m - 178.5 * inch, (-8 + 0.6) * m + 2.6 * ft + 4 * inch, -116 * deg)
 
 first_path = FollowPathCustom(
     Robot.drivetrain,
@@ -64,8 +64,8 @@ third_path = FollowPathCustom(
         third_path_start_pose,
         [],
         third_path_end_pose,
-        10 * m/s,
-        4 * m/(s*s)
+        11 * m/s,
+        5 * m/(s*s)
     ),
     35 * deg,
     period=constants.period
@@ -90,7 +90,7 @@ final_command = SequentialCommandGroup(
         InstantCommand(lambda: Robot.intake.set_right(False), Robot.intake)
     ),
     ParallelCommandGroup(
-        ShooterEnableAtDistance(Robot.shooter, 2.1),
+        ShooterEnableAtDistance(Robot.shooter, 2),
         WaitCommand(0.6).andThen(IndexOn().alongWith(IntakeDinglebobOn()))
     ).withTimeout(1.5),
     IndexOff(), IntakeDinglebobOff(),

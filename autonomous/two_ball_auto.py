@@ -47,7 +47,7 @@ final_command = SequentialCommandGroup(
         WaitCommand(0.75).andThen(InstantCommand(lambda: Robot.intake.set_left(False), Robot.intake))
     ),
     ParallelCommandGroup(
-        ShooterEnableAtDistance(Robot.shooter, 2.15),
+        ShooterEnableAtDistance(Robot.shooter, 2.65),
         WaitCommand(0.6).andThen(IndexOn().alongWith(IntakeDinglebobOn()))
     ).withTimeout(1.5),
     IndexOff(), IntakeDinglebobOff()
