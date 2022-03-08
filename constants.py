@@ -2,6 +2,9 @@ from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit, talon_sen
 from robotpy_toolkit_7407.unum.units import cm
 from robotpy_toolkit_7407.utils.units import rad, rev, inch, deg, m, mile, hour, s, ft
 
+##### IMPORTANT
+TEAM = "red"
+
 
 period = 0.08
 

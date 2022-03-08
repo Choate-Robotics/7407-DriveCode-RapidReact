@@ -9,6 +9,7 @@ from autonomous.follow_path import FollowPathCustom
 from autonomous.trajectory import generate_trajectory, TrajectoryEndpoint, generate_trajectory_from_pose
 from command import IndexAutoDrive
 from sensors import limelight, Limelight
+import sensors
 from subsystem.shooter import Shooter
 
 import utils
@@ -29,8 +30,6 @@ from oi.OI import OI
 from oi.keymap import Keymap
 from robot_systems import Robot, Pneumatics, Sensors
 import time
-
-from sensors.color_sensors import ColorSensors
 from utils.shooter_data import ShooterDataCollectCommand
 
 
@@ -72,8 +71,6 @@ class _Robot(wpilib.TimedRobot):
         # Pneumatics
         Pneumatics.compressor.enableAnalog(90, 120)
 
-        Sensors.color_sensors = ColorSensors()
-
         commands2.CommandScheduler.getInstance().setPeriod(constants.period)
 
         Robot.limelight.led_on()
@@ -108,19 +105,28 @@ class _Robot(wpilib.TimedRobot):
         # z = Robot.limelight.calculate_distance()
         # print(f"Limelight: {z}")
         # logger.info(f"{Robot.limelight.calculate_distance()}")
+
+        photo = Robot.index.photo_electric.get_value()
+        if not photo and Robot.shooter.photo_status:
+            Robot.shooter.next_color.pop(0)
+        Robot.photo_status = photo
+
+        color = Sensors.color_sensors.color()
+        if len(Robot.shooter.next_color)<3 and color != "none":
+            Robot.shooter.next_color.append(color)
         pass
 
     def autonomousInit(self) -> None:
         Robot.limelight.led_on()
         Robot.drivetrain.odometry.resetPosition(
-            three_ball_auto.initial_robot_pose,
-            three_ball_auto.initial_robot_pose.rotation()
+            five_ball_auto.initial_robot_pose,
+            five_ball_auto.initial_robot_pose.rotation()
         )
         Robot.drivetrain.gyro._gyro.setYaw(
-            three_ball_auto.initial_robot_pose.rotation().degrees()
+            five_ball_auto.initial_robot_pose.rotation().degrees()
         )
         commands2.CommandScheduler.getInstance().schedule(
-            three_ball_auto.final_command
+            five_ball_auto.final_command
         )
         # Robot.elevator.set_height(0 * inch)
         # Robot.shooter.target(5)

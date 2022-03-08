@@ -1,6 +1,7 @@
 from robotpy_toolkit_7407 import Subsystem
 from robotpy_toolkit_7407.motors import TalonFX, TalonGroup, TalonConfig
 import wpilib
+from sensors import color_sensors
 
 from utils.can_optimizations import optimize_normal_talon, optimize_leader_talon, optimize_leader_talon_no_sensor, \
     optimize_normal_talon_no_sensor
@@ -17,6 +18,7 @@ class Intake(Subsystem):
     on_l: bool
     on_r: bool
     on_reverse: bool
+    color_sensor: 
 
     def init(self):
         self.m_bottom_l.init()
