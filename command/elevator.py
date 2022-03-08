@@ -12,7 +12,12 @@ from robot_systems import Robot
 from subsystem import Elevator
 
 
-ElevatorDown = lambda: InstantCommand(lambda: Robot.elevator.set_height(0 * inch), Robot.elevator)
+def elevator_down():
+    Robot.elevator.set_height(0 * inch)
+    Robot.drivetrain.max_vel = constants.drivetrain_max_vel
+
+
+ElevatorDown = lambda: InstantCommand(elevator_down, Robot.elevator)
 ElevatorSolenoidExtend = lambda: InstantCommand(Robot.elevator.extend_solenoid, Robot.elevator)
 ElevatorSolenoidRetract = lambda: InstantCommand(Robot.elevator.retract_solenoid, Robot.elevator)
 ElevatorSolenoidToggle = lambda: InstantCommand(Robot.elevator.solenoid.toggle, Robot.elevator)
