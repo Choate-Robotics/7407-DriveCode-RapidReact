@@ -1,4 +1,6 @@
-import math, numpy
+import math
+import numpy
+
 from constants import air_resistance_constant, height_difference, gravity, acceptable_error, shooter_delay, \
     ideal_entry_angle
 
@@ -156,7 +158,8 @@ class ShooterTargeting:
         step_size is the size of the steps in gradient descent
 
 
-        The returned value is a tuple with the horizontal and vertical components of velocity, and an orientation of the robot in radians
+        The returned value is a tuple with the horizontal and vertical components of velocity, and an orientation of
+        the robot in radians
         """
         required_velocity = cls.stationary_aim(distance_to_hub, velocity_up, step_size)
         shooter_setting = (
@@ -185,7 +188,7 @@ class ShooterTargeting:
 
         new_angle = robot_angle - angle_to_hub
 
-        return (new_dist, new_angle)
+        return new_dist, new_angle
 
     @staticmethod
     def convert_velocity(new_position, velocity):
@@ -234,7 +237,7 @@ class ShooterTargeting:
     @classmethod
     def goal_angle_to_current(cls, goal_angle, new_position, current_angle):
         """
-        calculates how much the robot needs to rotate to acheive the goal angle
+        calculates how much the robot needs to rotate to achieve the goal angle
 
 
         goal_angle is the goal angle in radians
