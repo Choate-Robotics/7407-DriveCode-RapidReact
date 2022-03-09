@@ -18,7 +18,6 @@ class Intake(Subsystem):
     on_l: bool
     on_r: bool
     on_reverse: bool
-    color_sensor: 
 
     def init(self):
         self.m_bottom_l.init()

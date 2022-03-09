@@ -7,7 +7,7 @@ import constants
 from autonomous import five_ball_auto
 from autonomous.follow_path import FollowPathCustom
 from autonomous.trajectory import generate_trajectory, TrajectoryEndpoint, generate_trajectory_from_pose
-from command import IndexAutoDrive
+from command import IndexDrive
 from sensors import limelight, Limelight
 import sensors
 from subsystem.shooter import Shooter
@@ -86,8 +86,9 @@ class _Robot(wpilib.TimedRobot):
             Network.robot_send_status()
 
     def teleopInit(self) -> None:
+        Robot.shooter.next_color = ["red"]
         commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
-        commands2.CommandScheduler.getInstance().schedule(IndexAutoDrive(Robot.index))
+        commands2.CommandScheduler.getInstance().schedule(IndexDrive(Robot.index))
         Robot.limelight.led_on()
         # if not Robot.shooter.zeroed:
         #     commands2.CommandScheduler.getInstance().schedule(ShooterZero(Robot.shooter))
@@ -99,22 +100,30 @@ class _Robot(wpilib.TimedRobot):
     def teleopPeriodic(self) -> None:
         # logger.info(Robot.drivetrain.odometry.getPose())
         # print(Pneumatics.get_compressor())
-        print(Robot.index.photo_electric.get_value())
+        #print(Robot.index.photo_electric.get_value())
+        print(Sensors.color_sensors.get_val())
+        print("PHOTO: ", Robot.shooter.photo_status)
         # for i in range(10):
         #     print(f"Limit Switch {i}: {Robot.limit_switches[i].get_value()}")
         # z = Robot.limelight.calculate_distance()
         # print(f"Limelight: {z}")
         # logger.info(f"{Robot.limelight.calculate_distance()}")
 
+        
         photo = Robot.index.photo_electric.get_value()
-        if not photo and Robot.shooter.photo_status:
-            Robot.shooter.next_color.pop(0)
-        Robot.photo_status = photo
+        if photo != Robot.shooter.photo_status and photo == False:
+            try:
+                Robot.shooter.next_color.pop(0)
+            except:
+                pass
+        Robot.shooter.photo_status = photo
 
         color = Sensors.color_sensors.color()
-        if len(Robot.shooter.next_color)<3 and color != "none":
+        if len(Robot.shooter.next_color)<2 and color != "none":
             Robot.shooter.next_color.append(color)
-        pass
+
+        print(Robot.shooter.next_color)
+        
 
     def autonomousInit(self) -> None:
         Robot.limelight.led_on()
