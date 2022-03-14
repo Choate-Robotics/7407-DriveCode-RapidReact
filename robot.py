@@ -1,37 +1,20 @@
-from commands2 import InstantCommand
-from robotpy_toolkit_7407.subsystem_templates.drivetrain.swerve_drivetrain_commands import FollowPath
-from wpimath.geometry import Pose2d, Rotation2d
+import commands2
+import wpilib
+from commands2 import WaitCommand
+from robotpy_toolkit_7407 import Subsystem
+from robotpy_toolkit_7407.network.network_system import Network
+from robotpy_toolkit_7407.utils import logger
+from robotpy_toolkit_7407.utils.units import m, s
 
 import command
 import constants
-from autonomous import five_ball_auto
-from autonomous.follow_path import FollowPathCustom
-from autonomous.trajectory import generate_trajectory, TrajectoryEndpoint, generate_trajectory_from_pose
-from command import IndexAutoDrive
-from sensors import limelight, Limelight
-from subsystem.shooter import Shooter
-
-import utils
-
-import wpilib
-import commands2
-from ctre import ControlMode
-from robotpy_toolkit_7407 import Subsystem
-from robotpy_toolkit_7407.network.network_system import Network
-from robotpy_toolkit_7407.subsystem_templates.drivetrain import DriveSwerve
-from robotpy_toolkit_7407.utils import logger
-from robotpy_toolkit_7407.utils.units import deg, s, m, inch, rad
-
+from autonomous import five_ball_auto, two_ball_auto, three_ball_auto
+from command import IndexDrive
 from command.drivetrain import DriveSwerveCustom
-from command.elevator import ElevatorZero, ElevatorSetupCommand, ElevatorClimbCommand
-from command.shooter import ShooterZero
 from oi.OI import OI
-from oi.keymap import Keymap
 from robot_systems import Robot, Pneumatics, Sensors
-import time
-
 from sensors.color_sensors import ColorSensors
-from utils.shooter_data import ShooterDataCollectCommand
+from sensors.rev_digit import RevDigit
 
 
 class _Robot(wpilib.TimedRobot):
@@ -43,6 +26,12 @@ class _Robot(wpilib.TimedRobot):
 
     def __init__(self):
         super().__init__(constants.period)
+
+        self.auto_routines = [
+            two_ball_auto.routine,
+            three_ball_auto.routine,
+            five_ball_auto.routine
+        ]
 
         # self.test_command = ShooterDataCollectCommand(Robot.shooter).alongWith(command.IndexOn)
 
@@ -69,6 +58,8 @@ class _Robot(wpilib.TimedRobot):
         OI.init()
         OI.map_controls()
 
+        Robot.rev_digit = RevDigit()
+
         # Pneumatics
         Pneumatics.compressor.enableAnalog(90, 120)
 
@@ -76,11 +67,12 @@ class _Robot(wpilib.TimedRobot):
 
         commands2.CommandScheduler.getInstance().setPeriod(constants.period)
 
-        Robot.limelight.led_on()
+        Robot.limelight.led_off()
 
         logger.info("initialization complete")
 
     def robotPeriodic(self):
+        Robot.rev_digit.update()
         commands2.CommandScheduler.getInstance().run()
         Robot.limelight.update()
         self.network_counter -= 1
@@ -89,9 +81,9 @@ class _Robot(wpilib.TimedRobot):
             Network.robot_send_status()
 
     def teleopInit(self) -> None:
+        Robot.limelight.led_off()
         commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
-        commands2.CommandScheduler.getInstance().schedule(IndexAutoDrive(Robot.index))
-        Robot.limelight.led_on()
+        commands2.CommandScheduler.getInstance().schedule(IndexDrive(Robot.index))
         # if not Robot.shooter.zeroed:
         #     commands2.CommandScheduler.getInstance().schedule(ShooterZero(Robot.shooter))
         # if not Robot.elevator.zeroed:
@@ -102,7 +94,7 @@ class _Robot(wpilib.TimedRobot):
     def teleopPeriodic(self) -> None:
         # logger.info(Robot.drivetrain.odometry.getPose())
         # print(Pneumatics.get_compressor())
-        print(Robot.index.photo_electric.get_value())
+        #print(Robot.index.photo_electric.get_value())
         # for i in range(10):
         #     print(f"Limit Switch {i}: {Robot.limit_switches[i].get_value()}")
         # z = Robot.limelight.calculate_distance()
@@ -111,17 +103,10 @@ class _Robot(wpilib.TimedRobot):
         pass
 
     def autonomousInit(self) -> None:
-        Robot.limelight.led_on()
-        Robot.drivetrain.odometry.resetPosition(
-            three_ball_auto.initial_robot_pose,
-            three_ball_auto.initial_robot_pose.rotation()
-        )
-        Robot.drivetrain.gyro._gyro.setYaw(
-            three_ball_auto.initial_robot_pose.rotation().degrees()
-        )
-        commands2.CommandScheduler.getInstance().schedule(
-            three_ball_auto.final_command
-        )
+        Robot.limelight.led_off()
+        # self.auto_routines[Robot.rev_digit.routine_idx].run()
+        # five_ball_auto.routine.run()
+        two_ball_auto.routine.run()
         # Robot.elevator.set_height(0 * inch)
         # Robot.shooter.target(5)
         pass

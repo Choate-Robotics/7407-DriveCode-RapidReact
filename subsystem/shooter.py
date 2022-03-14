@@ -12,11 +12,18 @@ from utils.shooter_targeting import ShooterTargeting
 
 class Shooter(Subsystem):
     m_top = TalonFX(21, inverted=True, config=TalonConfig(
-        0.09, 0.001, 7.5, 1023 / 20369, integral_zone=1000, max_integral_accumulator=100000,
+        0.09, 0, 5, 1023 / 20369, integral_zone=1000, max_integral_accumulator=100000,
         neutral_brake=False))
     m_bottom = TalonFX(19, inverted=False, config=TalonConfig(
-        0.26, 0.002, 11.6, 1023 / 20101, integral_zone=1000, max_integral_accumulator=100000,
+        0.1, 0, 0.5, 1023 / 20101, integral_zone=1000, max_integral_accumulator=100000,
         neutral_brake=False))
+    # OLD VALUES
+    # m_top = TalonFX(21, inverted=True, config=TalonConfig(
+    #     0.09, 0.001, 5, 1023 / 20369, integral_zone=1000, max_integral_accumulator=100000,
+    #     neutral_brake=False))
+    # m_bottom = TalonFX(19, inverted=False, config=TalonConfig(
+    #     0.14, 0.002, 10, 1023 / 20101, integral_zone=1000, max_integral_accumulator=100000,
+    #     neutral_brake=False))
     m_angle = TalonFX(20, inverted=True, config=TalonConfig(
         0.3, 0.005, 1, 1023 * 0.1 / 917, integral_zone=1000, max_integral_accumulator=10000,
         neutral_brake=True))
@@ -27,18 +34,20 @@ class Shooter(Subsystem):
     left_limit = LimitSwitch(1)
     zeroed: bool
 
+    offset_m = -0.12
+
     def init(self):
         self.m_top.init()
         self.m_bottom.init()
         self.m_angle.init()
-        optimize_normal_talon_no_sensor(self.m_top)
-        optimize_normal_talon_no_sensor(self.m_bottom)
-        optimize_normal_talon_no_sensor(self.m_angle)
+        optimize_normal_talon(self.m_top)
+        optimize_normal_talon(self.m_bottom)
+        optimize_normal_talon(self.m_angle)
         self.zeroed = self.left_limit.get_value()
 
     def set_launch_angle(self, theta: Unum):
         theta = 90 * deg - theta - self.sensor_zero_angle
-        self.m_angle.set_target_position(max(min(theta, self.angle_range), 0) * constants.shooter_angle_gear_ratio)
+        self.m_angle.set_target_position(max(min(theta, self.angle_range), 0 * rad) * constants.shooter_angle_gear_ratio)
 
     def set_flywheels(self, top_vel: Unum, bottom_vel: Unum):
         self.m_top.set_target_velocity(top_vel * constants.shooter_top_gear_ratio)
@@ -53,7 +62,6 @@ class Shooter(Subsystem):
     def target_stationary(self, limelight_dist):
         vx, vy = ShooterTargeting.stationary_aim(limelight_dist)
         self.set_flywheels_for_ball_velocity(vx, vy)
-
    
     def target_with_motion(self, limelight_dist, angle_to_hub, robot_vel) -> float:
         adjusted_robot_vel = ShooterTargeting.real_velocity_to_shooting(robot_vel, angle_to_hub)
@@ -64,4 +72,4 @@ class Shooter(Subsystem):
     def stop(self):
         self.m_top.set_raw_output(0)
         self.m_bottom.set_raw_output(0)
-
+        self.m_angle.set_target_position(0 * rad)

@@ -54,7 +54,7 @@ class DriveSwerveCustom(SubsystemCommand[SwerveDrivetrain]):
 
 class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
     def initialize(self) -> None:
-        Robot.limelight.led_on()
+        Robot.limelight.ref_on()
 
     def execute(self) -> None:
         dx, dy = self.subsystem.axis_dx.value, self.subsystem.axis_dy.value
@@ -71,7 +71,7 @@ class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
         self.subsystem.set((dx, dy), omega)
 
     def end(self, interrupted: bool) -> None:
-        # Robot.limelight.led_off()
+        Robot.limelight.ref_off()
         pass
 
     def isFinished(self) -> bool:

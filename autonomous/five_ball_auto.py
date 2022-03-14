@@ -3,6 +3,7 @@ from robotpy_toolkit_7407.utils.units import m, rad, deg, s, ft, inch
 from wpimath.geometry import Pose2d, Translation2d
 
 import constants
+from autonomous.auto_routine import AutoRoutine
 from autonomous.follow_path import FollowPathCustom, RotateInPlace
 from autonomous.trajectory import generate_trajectory_from_pose, TrajectoryEndpoint, generate_trajectory
 from command import ShooterEnable, IndexOn, IndexOff
@@ -21,7 +22,7 @@ second_path_end_pose = TrajectoryEndpoint((7.927611 - 2) * m, (-8 + 0.6) * m + 2
 
 third_path_start_pose = second_path_end_pose
 third_path_start_pose.angle = 163 * deg
-third_path_end_pose = TrajectoryEndpoint((7.927611 - 2) * m - 167 * inch, (-8 + 0.6) * m + 2.6 * ft + 4 * inch, -116 * deg)
+third_path_end_pose = TrajectoryEndpoint((7.927611 - 2) * m - 178.5 * inch, (-8 + 0.6) * m + 2.6 * ft + 4 * inch, -116 * deg)
 
 first_path = FollowPathCustom(
     Robot.drivetrain,
@@ -63,8 +64,8 @@ third_path = FollowPathCustom(
         third_path_start_pose,
         [],
         third_path_end_pose,
-        10 * m/s,
-        4 * m/(s*s)
+        11 * m/s,
+        5 * m/(s*s)
     ),
     35 * deg,
     period=constants.period
@@ -89,7 +90,7 @@ final_command = SequentialCommandGroup(
         InstantCommand(lambda: Robot.intake.set_right(False), Robot.intake)
     ),
     ParallelCommandGroup(
-        ShooterEnableAtDistance(Robot.shooter, 2.1),
+        ShooterEnableAtDistance(Robot.shooter, 2),
         WaitCommand(0.6).andThen(IndexOn().alongWith(IntakeDinglebobOn()))
     ).withTimeout(1.5),
     IndexOff(), IntakeDinglebobOff(),
@@ -124,3 +125,5 @@ final_command = SequentialCommandGroup(
     ).withTimeout(4),
     IndexOff(), IntakeDinglebobOff()
 )
+
+routine = AutoRoutine(initial_robot_pose, final_command)

@@ -43,7 +43,7 @@ class OI:
         # Keymap.Elevator.ELEVATOR_UP().whenReleased(command.ElevatorStop)
         # Keymap.Elevator.ELEVATOR_DOWN().whileHeld(command.ElevatorDown)
         # Keymap.Elevator.ELEVATOR_DOWN().whenReleased(command.ElevatorStop)
-        Keymap.Elevator.ELEVATOR_SOLENOID_TOGGLE().whenPressed(command.ElevatorSolenoidToggle())
+        Keymap.Elevator.ELEVATOR_DOWN().whenPressed(command.ElevatorDown())
 
         Keymap.Elevator.ELEVATOR_INIT().whenPressed(command.ElevatorSetupCommand())
         Keymap.Elevator.ELEVATOR_CLIMB().whenPressed(command.ElevatorClimbCommand())
@@ -54,6 +54,10 @@ class OI:
 
         Keymap.Shooter.SHOOTER_ENABLE().whileHeld(command.ShooterEnable(Robot.shooter))
         Keymap.Shooter.SHOOTER_EJECT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, .5))
+        Keymap.Shooter.SHOOTER_SHORT_EJECT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, .35))
+
+        Keymap.Shooter.SHOOTER_OFFSET_UP().whenPressed(command.ShooterOffsetUp())
+        Keymap.Shooter.SHOOTER_OFFSET_DOWN().whenPressed(command.ShooterOffsetDown())
 
         # Keymap.Shooter.SHOOTER_ENABLE()\
         #     .whileHeld(ShootWhileMoving(Robot.drivetrain, Robot.shooter))\

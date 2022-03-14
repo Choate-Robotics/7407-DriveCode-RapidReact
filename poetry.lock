@@ -49,7 +49,7 @@ pycparser = "*"
 
 [[package]]
 name = "click"
-version = "8.0.3"
+version = "8.0.4"
 description = "Composable command line interface toolkit"
 category = "main"
 optional = false
@@ -241,7 +241,7 @@ python-versions = ">=3.5"
 
 [[package]]
 name = "pyntcore"
-version = "2022.3.1.0"
+version = "2022.4.1.0"
 description = "Binary wrappers for the FRC ntcore library"
 category = "main"
 optional = false
@@ -249,7 +249,7 @@ python-versions = ">=3.6"
 
 [package.dependencies]
 pynetworktables = ">=2021.0.0,<2022.0.0"
-robotpy-wpiutil = ">=2022.3.1.0,<2023.0.0"
+robotpy-wpiutil = ">=2022.4.1.1,<2023.0.0"
 
 [[package]]
 name = "pyparsing"
@@ -285,7 +285,7 @@ testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "pygments (>=2.
 
 [[package]]
 name = "robotpy"
-version = "2022.0.55"
+version = "2022.0.56"
 description = "Meta package to make installing robotpy easier"
 category = "main"
 optional = false
@@ -303,11 +303,11 @@ robotpy-installer = {version = ">=2022.1.1,<2023.0.0", markers = "platform_machi
 robotpy-rev = {version = ">=2022.0.1,<2023.0.0", optional = true, markers = "extra == \"rev\""}
 robotpy-wpilib-utilities = ">=2022.0.2,<2023.0.0"
 robotpy-wpimath = ">=2022.3.1.1,<2023.0.0"
-robotpy-wpiutil = ">=2022.3.1.3,<2023.0.0"
+robotpy-wpiutil = ">=2022.4.1.0,<2023.0.0"
 wpilib = ">=2022.3.1.1,<2023.0.0"
 
 [package.extras]
-all = ["robotpy-wpimath (>=2022.3.1.1,<2023.0.0)", "robotpy-commands-v2 (>=2022.3.1.1,<2023.0.0)", "robotpy-wpiutil (>=2022.3.1.3,<2023.0.0)", "pynetworktables (>=2021.0.0,<2023.0.0.0)", "robotpy-photonvision (>=2022.0.3,<2023.0.0)", "robotpy-wpilib-utilities (>=2022.0.2,<2023.0.0)", "robotpy-commands-v1 (>=2022.3.1.0,<2023.0.0)", "robotpy-rev (>=2022.0.1,<2023.0.0)", "pyntcore (>=2022.3.1.0,<2023.0.0)", "robotpy-navx (>=2022.0.1,<2023.0.0)", "robotpy-playingwithfusion (>=2022.0.4,<2023.0.0)", "robotpy-ctre (>=2022.1.0,<2023.0.0)", "robotpy-hal (>=2022.3.1.0,<2023.0.0)", "wpilib (>=2022.3.1.1,<2023.0.0)", "pyfrc (>=2022.0.0,<2023.0.0)", "robotpy-halsim-ws (>=2022.3.1.0,<2023.0.0)", "robotpy-installer (>=2022.1.1,<2023.0.0)", "robotpy-halsim-gui (>=2022.3.1.0,<2023.0.0)", "robotpy-romi (>=2022.2.1.0,<2023.0.0)", "robotpy-halsim-ds-socket (>=2022.3.1.0,<2023.0.0)"]
+all = ["pynetworktables (>=2021.0.0,<2023.0.0.0)", "robotpy-navx (>=2022.0.1,<2023.0.0)", "robotpy-wpimath (>=2022.3.1.1,<2023.0.0)", "robotpy-photonvision (>=2022.0.3,<2023.0.0)", "robotpy-commands-v1 (>=2022.3.1.0,<2023.0.0)", "wpilib (>=2022.3.1.1,<2023.0.0)", "robotpy-ctre (>=2022.1.0,<2023.0.0)", "pyntcore (>=2022.3.1.0,<2023.0.0)", "robotpy-wpilib-utilities (>=2022.0.2,<2023.0.0)", "robotpy-hal (>=2022.3.1.0,<2023.0.0)", "robotpy-wpiutil (>=2022.4.1.0,<2023.0.0)", "robotpy-commands-v2 (>=2022.3.1.1,<2023.0.0)", "robotpy-rev (>=2022.0.1,<2023.0.0)", "robotpy-playingwithfusion (>=2022.0.4,<2023.0.0)", "pyfrc (>=2022.0.0,<2023.0.0)", "robotpy-romi (>=2022.2.1.0,<2023.0.0)", "robotpy-halsim-ds-socket (>=2022.3.1.0,<2023.0.0)", "robotpy-halsim-ws (>=2022.3.1.0,<2023.0.0)", "robotpy-halsim-gui (>=2022.3.1.0,<2023.0.0)", "robotpy-installer (>=2022.1.1,<2023.0.0)"]
 commands = ["robotpy-commands-v1 (>=2022.3.1.0,<2023.0.0)"]
 commands2 = ["robotpy-commands-v2 (>=2022.3.1.1,<2023.0.0)"]
 ctre = ["robotpy-ctre (>=2022.1.0,<2023.0.0)"]
@@ -320,14 +320,14 @@ sim = ["robotpy-halsim-ds-socket (>=2022.3.1.0,<2023.0.0)", "robotpy-halsim-ws (
 
 [[package]]
 name = "robotpy-commands-v2"
-version = "2022.3.1.1"
+version = "2022.4.1.0"
 description = "WPILib command framework v2"
 category = "main"
 optional = false
 python-versions = ">=3.6"
 
 [package.dependencies]
-wpilib = ">=2022.3.1.0,<2023.0.0"
+wpilib = ">=2022.4.1.0,<2023.0.0"
 
 [[package]]
 name = "robotpy-ctre"
@@ -342,28 +342,28 @@ wpilib = ">=2022.2.1.3,<2023.0.0"
 
 [[package]]
 name = "robotpy-hal"
-version = "2022.3.1.0"
+version = "2022.4.1.0"
 description = "Binary wrapper for FRC HAL"
 category = "main"
 optional = false
 python-versions = ">=3.6"
 
 [package.dependencies]
-robotpy-wpiutil = ">=2022.3.1.0,<2023.0.0"
+robotpy-wpiutil = ">=2022.4.1.1,<2023.0.0"
 
 [[package]]
 name = "robotpy-halsim-gui"
-version = "2022.3.1.0"
+version = "2022.4.1.0"
 description = "WPILib command framework"
 category = "main"
 optional = false
 python-versions = ">=3.6"
 
 [package.dependencies]
-pyntcore = ">=2022.3.1.0,<2023.0.0"
-robotpy-hal = ">=2022.3.1.0,<2023.0.0"
-robotpy-wpimath = ">=2022.3.1.0,<2023.0.0"
-robotpy-wpiutil = ">=2022.3.1.0,<2023.0.0"
+pyntcore = ">=2022.4.1.0,<2023.0.0"
+robotpy-hal = ">=2022.4.1.0,<2023.0.0"
+robotpy-wpimath = ">=2022.4.1.0,<2023.0.0"
+robotpy-wpiutil = ">=2022.4.1.1,<2023.0.0"
 
 [[package]]
 name = "robotpy-installer"
@@ -392,7 +392,7 @@ wpilib = ">=2022.2.1.3,<2023.0.0"
 
 [[package]]
 name = "robotpy-toolkit-7407"
-version = "0.3.2"
+version = "0.3.3"
 description = ""
 category = "main"
 optional = false
@@ -416,18 +416,18 @@ wpilib = ">=2022.2.1.0,<2023.0.0"
 
 [[package]]
 name = "robotpy-wpimath"
-version = "2022.3.1.1"
+version = "2022.4.1.0"
 description = "Binary wrapper for FRC WPIMath library"
 category = "main"
 optional = false
 python-versions = ">=3.6"
 
 [package.dependencies]
-robotpy-wpiutil = ">=2022.3.1.2,<2023.0.0"
+robotpy-wpiutil = ">=2022.4.1.1,<2023.0.0"
 
 [[package]]
 name = "robotpy-wpiutil"
-version = "2022.3.1.3"
+version = "2022.4.1.1"
 description = "Binary wrapper for FRC WPIUtil library"
 category = "main"
 optional = false
@@ -459,22 +459,22 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "wpilib"
-version = "2022.3.1.1"
+version = "2022.4.1.0"
 description = "Binary wrapper for FRC WPILib"
 category = "main"
 optional = false
 python-versions = ">=3.6"
 
 [package.dependencies]
-pyntcore = ">=2022.3.1.0,<2023.0.0"
-robotpy-hal = ">=2022.3.1.0,<2023.0.0"
-robotpy-wpimath = ">=2022.3.1.0,<2023.0.0"
-robotpy-wpiutil = ">=2022.3.1.0,<2023.0.0"
+pyntcore = ">=2022.4.1.0,<2023.0.0"
+robotpy-hal = ">=2022.4.1.0,<2023.0.0"
+robotpy-wpimath = ">=2022.4.1.0,<2023.0.0"
+robotpy-wpiutil = ">=2022.4.1.1,<2023.0.0"
 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "1de9de1c98824db208d04dcada7aba621339b0ea1567abe8908c5d68dc06d3d3"
+content-hash = "bcd1eb882e7c1e550ee9ac8646143576431015ddd25c05a382894620d224caf6"
 
 [metadata.files]
 atomicwrites = [
@@ -550,8 +550,8 @@ cffi = [
     {file = "cffi-1.15.0.tar.gz", hash = "sha256:920f0d66a896c2d99f0adbb391f990a84091179542c205fa53ce5787aff87954"},
 ]
 click = [
-    {file = "click-8.0.3-py3-none-any.whl", hash = "sha256:353f466495adaeb40b6b5f592f9f91cb22372351c84caeb068132442a4518ef3"},
-    {file = "click-8.0.3.tar.gz", hash = "sha256:410e932b050f5eed773c4cda94de75971c89cdb3155a72a0831139a79e5ecb5b"},
+    {file = "click-8.0.4-py3-none-any.whl", hash = "sha256:6a7a62563bbfabfda3a38f3023a1db4a35978c0abd76f6c9605ecd6554d6d9b1"},
+    {file = "click-8.0.4.tar.gz", hash = "sha256:8458d7b1287c5fb128c90e23381cf99dcde74beaf6c7ff6384ce84d6fe090adb"},
 ]
 colorama = [
     {file = "colorama-0.4.4-py2.py3-none-any.whl", hash = "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"},
@@ -689,22 +689,22 @@ pynetworktables = [
     {file = "pynetworktables-2021.0.0.tar.gz", hash = "sha256:91167948e66c29d5c90f85f3e249403f4d2ebf11368b93f9b968ef315388c73c"},
 ]
 pyntcore = [
-    {file = "pyntcore-2022.3.1.0-cp310-cp310-macosx_10_15_x86_64.whl", hash = "sha256:94221f6c222dff45cd5aca5588c927d1b915a9dbc1306f0078592eb43526d924"},
-    {file = "pyntcore-2022.3.1.0-cp310-cp310-manylinux_2_27_x86_64.whl", hash = "sha256:4dcc798d4b894b7fb0367272c0152ef4539b05ec8d9b9cd08835f9a1bb72c7e5"},
-    {file = "pyntcore-2022.3.1.0-cp310-cp310-win_amd64.whl", hash = "sha256:9581b8973c585ebe4c50de28b2473eea213e0a1f23b19907dd833e1d6c0777ff"},
-    {file = "pyntcore-2022.3.1.0-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:818357a9cf59a2c039f718516b9a20cbbf6f3a6dedd4b4b9e48e9df4b36a9526"},
-    {file = "pyntcore-2022.3.1.0-cp36-cp36m-manylinux_2_27_x86_64.whl", hash = "sha256:fd745d73ac887aef2fe65ac129c7e359cd232fb2a812fbeb8338b47291b7308f"},
-    {file = "pyntcore-2022.3.1.0-cp36-cp36m-win_amd64.whl", hash = "sha256:31e390e2ede8b1578b8edd0e7a295c24784c8fc6e38f7ecf442b5cbd9465a6d3"},
-    {file = "pyntcore-2022.3.1.0-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:7afe9f5fe4a22b59a99bfe1490e3a53e68bfaf6c256c550b5702584380007be4"},
-    {file = "pyntcore-2022.3.1.0-cp37-cp37m-manylinux_2_27_x86_64.whl", hash = "sha256:3b5eaca022057a18b50832d0c178f0dfb4b36b6a88bf8c0d45ba73f4c143b480"},
-    {file = "pyntcore-2022.3.1.0-cp37-cp37m-win_amd64.whl", hash = "sha256:14cb55f479d0fd21d0dce0773c3ba0601c3e0656ec8e66f2a2a1c0046989d088"},
-    {file = "pyntcore-2022.3.1.0-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:169d1be1dca321f8d55bf561d4aa2b6bb92bc531f1337ce419b3e3f7aa4cf752"},
-    {file = "pyntcore-2022.3.1.0-cp38-cp38-manylinux_2_27_x86_64.whl", hash = "sha256:3fb8970bb02a7b4f888ed0abba4beacebdf752867d21e2b8200d511a2dbf5d95"},
-    {file = "pyntcore-2022.3.1.0-cp38-cp38-win_amd64.whl", hash = "sha256:b1b3760bc7c8869e65d2716d4a697ba23f86f02f504140d68789cb002b22d7a6"},
-    {file = "pyntcore-2022.3.1.0-cp39-cp39-macosx_10_15_x86_64.whl", hash = "sha256:8324a9c0d81b89ac358cbbfc02a4a1c2c45162d74c40d3f0353f84b1026e474b"},
-    {file = "pyntcore-2022.3.1.0-cp39-cp39-manylinux_2_27_x86_64.whl", hash = "sha256:4755292953a6a0b8f2d162a916c3352ed4e68862353c0e8ce8a12927dc589ad8"},
-    {file = "pyntcore-2022.3.1.0-cp39-cp39-win_amd64.whl", hash = "sha256:3ee39280c90b275cf5cacc32944b53df659d31d8e643940774475ba3aeb0d2f7"},
-    {file = "pyntcore-2022.3.1.0.tar.gz", hash = "sha256:b4137d273409b7a55b50a70181ca5ffc0058792a46e4492411340c300da73577"},
+    {file = "pyntcore-2022.4.1.0-cp310-cp310-macosx_10_15_x86_64.whl", hash = "sha256:2b76091d82db90f644b345687ec5656dabcf9b74c29ab572b00e20f387c90e66"},
+    {file = "pyntcore-2022.4.1.0-cp310-cp310-manylinux_2_27_x86_64.whl", hash = "sha256:dd736d1a87232481b4d0effd95930793209d0b283048fae949075a42fc766f4b"},
+    {file = "pyntcore-2022.4.1.0-cp310-cp310-win_amd64.whl", hash = "sha256:120af9b82e9bc414013562a911569de87fbbf346d867ef7e41b0f526e4f20fd3"},
+    {file = "pyntcore-2022.4.1.0-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:8f535c3346037cdf151131c8c34862ae3fb67c7de02c0fe220eb622f1fce35c0"},
+    {file = "pyntcore-2022.4.1.0-cp36-cp36m-manylinux_2_27_x86_64.whl", hash = "sha256:ce555d83e3a33b435ac437ef1d5bb26da5c2758ba7fe771dc2d406cabb7cb38b"},
+    {file = "pyntcore-2022.4.1.0-cp36-cp36m-win_amd64.whl", hash = "sha256:d665e0d4fe4ca7156288dbcbe2c181178b90bb6ce3542e244d9870c8344b7194"},
+    {file = "pyntcore-2022.4.1.0-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:0939b2b1386472daf74178d3713b1d6b9c7aaf10e52fb5a848f9bfdc1e591e5f"},
+    {file = "pyntcore-2022.4.1.0-cp37-cp37m-manylinux_2_27_x86_64.whl", hash = "sha256:73603cc3349b20bc64ad893e7a1463d393d690561728efe8ec1b2425fd62dd51"},
+    {file = "pyntcore-2022.4.1.0-cp37-cp37m-win_amd64.whl", hash = "sha256:21b99be3c22960a417219cd9907552aeca7a5e957a90bd85e00d435f52b070b2"},
+    {file = "pyntcore-2022.4.1.0-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:9e9bcdff1f2d78dea373f7250c63ba73519ffa82946356682fa395a743a33ed2"},
+    {file = "pyntcore-2022.4.1.0-cp38-cp38-manylinux_2_27_x86_64.whl", hash = "sha256:e6cf1c78c9dd0fec339cb1511e78b457a5f9706d99e0a962e5c9ad360a3deca4"},
+    {file = "pyntcore-2022.4.1.0-cp38-cp38-win_amd64.whl", hash = "sha256:983d8e59b4f97b72a82760a44e28b4466e1af6e2a5e7be25b59218caa92f995c"},
+    {file = "pyntcore-2022.4.1.0-cp39-cp39-macosx_10_15_x86_64.whl", hash = "sha256:5ebf249aeb659e2c091f6959ed22d0aae54022b4923db524aa2adaa55b18ea61"},
+    {file = "pyntcore-2022.4.1.0-cp39-cp39-manylinux_2_27_x86_64.whl", hash = "sha256:48c56f312681bd77be696d130611b80322f9fc23a4a7d11f8237c7c4727d3e7a"},
+    {file = "pyntcore-2022.4.1.0-cp39-cp39-win_amd64.whl", hash = "sha256:8990c3b3db210fd5177414b4af388eff26072378939deca100face873449e3c0"},
+    {file = "pyntcore-2022.4.1.0.tar.gz", hash = "sha256:e6738d1a76af901e5f44e81d30bfe3c310be06caa1a8651921e88546038f4625"},
 ]
 pyparsing = [
     {file = "pyparsing-3.0.7-py3-none-any.whl", hash = "sha256:a6c06a88f252e6c322f65faf8f418b16213b51bdfaece0524c1c1bc30c63c484"},
@@ -715,26 +715,26 @@ pytest = [
     {file = "pytest-7.0.1.tar.gz", hash = "sha256:e30905a0c131d3d94b89624a1cc5afec3e0ba2fbdb151867d8e0ebd49850f171"},
 ]
 robotpy = [
-    {file = "robotpy-2022.0.55-py3-none-any.whl", hash = "sha256:1223d01f0d007e99351ceefc82553c92192d27a9ac9362db176520b391b22664"},
-    {file = "robotpy-2022.0.55.tar.gz", hash = "sha256:a7aa9e88ce2e9b6864a02ec4b9675bc89374fd3e4028945dc5dabf7931e24815"},
+    {file = "robotpy-2022.0.56-py3-none-any.whl", hash = "sha256:441a443b185f6e9a8ae901ca6665dc3b598c9a85b53fb1cda6b1c9be8cb3d1f5"},
+    {file = "robotpy-2022.0.56.tar.gz", hash = "sha256:d116e43a1b1d2f3067a90a65b653ef446ebdf5fa6870f62e062db37b3b193c37"},
 ]
 robotpy-commands-v2 = [
-    {file = "robotpy-commands-v2-2022.3.1.1.tar.gz", hash = "sha256:d732df645f4031eb7e5fac7a030a3ac9e4d13049457bbb748931f4192417a2ba"},
-    {file = "robotpy_commands_v2-2022.3.1.1-cp310-cp310-macosx_10_15_x86_64.whl", hash = "sha256:df2b87aa51c5cd36b6e63ebf5ac70912a2685768e189e963a08571471645d127"},
-    {file = "robotpy_commands_v2-2022.3.1.1-cp310-cp310-manylinux_2_27_x86_64.whl", hash = "sha256:a681f196d628d248bab53b129baf92c2580a9e29915f1b693b0fbc2223e97ad2"},
-    {file = "robotpy_commands_v2-2022.3.1.1-cp310-cp310-win_amd64.whl", hash = "sha256:707212a64c64ea28722fbdce1f6474e36e2907a446d1dc4a50666cab64652d88"},
-    {file = "robotpy_commands_v2-2022.3.1.1-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:abb89b4b5928505dc5fd552d6d86d3a8b01ad34e5d1d52d6f38b35c29a090c73"},
-    {file = "robotpy_commands_v2-2022.3.1.1-cp36-cp36m-manylinux_2_27_x86_64.whl", hash = "sha256:f827de1ffb7dce26c3c0c271f93b74de595f559c5e4f7e744224ce267a9e6bcd"},
-    {file = "robotpy_commands_v2-2022.3.1.1-cp36-cp36m-win_amd64.whl", hash = "sha256:61be99c7af14f7ec772aac7974563083cd5442ae294dd7b553d84e4e5fe3e8d6"},
-    {file = "robotpy_commands_v2-2022.3.1.1-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:f44dc89bbca6ca5a0902b827e21ba9d63b26ec7899765f9323a1441e0719474a"},
-    {file = "robotpy_commands_v2-2022.3.1.1-cp37-cp37m-manylinux_2_27_x86_64.whl", hash = "sha256:64da672852a51c28895e1c0caca6a102bd8930c93fbdf9478acc85f2ca77f870"},
-    {file = "robotpy_commands_v2-2022.3.1.1-cp37-cp37m-win_amd64.whl", hash = "sha256:a4d381f8e1eb05df548690020eca9480e747a8a217e5044c9c866f81c9f0e6ef"},
-    {file = "robotpy_commands_v2-2022.3.1.1-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:d5be0b298ccb60359029fab852a3c0a4a49e988df78b7e1d0d9b24e1d56590d3"},
-    {file = "robotpy_commands_v2-2022.3.1.1-cp38-cp38-manylinux_2_27_x86_64.whl", hash = "sha256:8cd1e668af5ff8ff6f6608d9844a574f2a18fe4325796d674e77ddf956231ca0"},
-    {file = "robotpy_commands_v2-2022.3.1.1-cp38-cp38-win_amd64.whl", hash = "sha256:f1c2ead71f8dc70ed8462e20d8e69caef45733527e157a6474b5d884057e4ceb"},
-    {file = "robotpy_commands_v2-2022.3.1.1-cp39-cp39-macosx_10_15_x86_64.whl", hash = "sha256:4e55318aa4f2b997516a860e6a3ccc076251d8bb32444ff247ef1c990d1daa2b"},
-    {file = "robotpy_commands_v2-2022.3.1.1-cp39-cp39-manylinux_2_27_x86_64.whl", hash = "sha256:95856a25a8fb739c44e8207d6141b0600ea67e212cd79bb5f45b302b5a4d04d8"},
-    {file = "robotpy_commands_v2-2022.3.1.1-cp39-cp39-win_amd64.whl", hash = "sha256:9ded59c6c96debe15e440663d212a5597875e4fb1e5509a82adbb3eb4bd87c91"},
+    {file = "robotpy-commands-v2-2022.4.1.0.tar.gz", hash = "sha256:97d2ce2de776607493845848f4c8fc97a2828f508788d230687e55a8ca04a353"},
+    {file = "robotpy_commands_v2-2022.4.1.0-cp310-cp310-macosx_10_15_x86_64.whl", hash = "sha256:55ef0015775444a0bc4a3b211ca8c56551371355d5bceb5d1506ec33257dd4d5"},
+    {file = "robotpy_commands_v2-2022.4.1.0-cp310-cp310-manylinux_2_27_x86_64.whl", hash = "sha256:8a684f165cf3d5a94cc0b73e37ab26b15408c10f0a7453a3335e85a2ca0bd4b2"},
+    {file = "robotpy_commands_v2-2022.4.1.0-cp310-cp310-win_amd64.whl", hash = "sha256:54b3ac9aefc99f827ccf7a2afe33de28e1bc6a7e572c360616a50d867d6c4c6a"},
+    {file = "robotpy_commands_v2-2022.4.1.0-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:0caf9bb7ff3820db6544af1428473f8fea7a073d265f1d0bffface0f73d55482"},
+    {file = "robotpy_commands_v2-2022.4.1.0-cp36-cp36m-manylinux_2_27_x86_64.whl", hash = "sha256:ee3176450f92730891005368ccbe3d5fe55b59c98336c922682776cc58099aed"},
+    {file = "robotpy_commands_v2-2022.4.1.0-cp36-cp36m-win_amd64.whl", hash = "sha256:be6777e20b412a1880b414a3fa2cbd59079532de0964fb53d957afab76090608"},
+    {file = "robotpy_commands_v2-2022.4.1.0-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:e90e3fe71935c2b2f422beba40e2772bc3854f86b1b877dfcb4fb3a5fd6dbcd7"},
+    {file = "robotpy_commands_v2-2022.4.1.0-cp37-cp37m-manylinux_2_27_x86_64.whl", hash = "sha256:c3440728877fd7e60cb81dceababc9ae12c3c22aad0448165e380cdb46028d95"},
+    {file = "robotpy_commands_v2-2022.4.1.0-cp37-cp37m-win_amd64.whl", hash = "sha256:e53556677780633a61be559cb84f1767372aaf861921e2ff783375d9803688df"},
+    {file = "robotpy_commands_v2-2022.4.1.0-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:9e37095c7e289253f2f0b94aabae1afba0cbc42cd8ef1b89f80dc00255fd93a8"},
+    {file = "robotpy_commands_v2-2022.4.1.0-cp38-cp38-manylinux_2_27_x86_64.whl", hash = "sha256:251314ef41c723fcac93c1ed5c926148a26444e80101eefd4e55776fdb4973c6"},
+    {file = "robotpy_commands_v2-2022.4.1.0-cp38-cp38-win_amd64.whl", hash = "sha256:eb81987a983dd3d1bcf090fd6c6d698352b13a071e48319540d461aef19f6a66"},
+    {file = "robotpy_commands_v2-2022.4.1.0-cp39-cp39-macosx_10_15_x86_64.whl", hash = "sha256:c5508e197eb3fad8dee952417f664b2362f8438debbe0dd58f84654197c867dc"},
+    {file = "robotpy_commands_v2-2022.4.1.0-cp39-cp39-manylinux_2_27_x86_64.whl", hash = "sha256:fdaa8b319690fa776b1e9f9818b8027513887c8d6eb4adeaf4435aa70f119742"},
+    {file = "robotpy_commands_v2-2022.4.1.0-cp39-cp39-win_amd64.whl", hash = "sha256:29c852fb1c71b4e42916b762fab9265eb8bda4ccb5c3f49e660a0d03a884d10f"},
 ]
 robotpy-ctre = [
     {file = "robotpy-ctre-2022.1.0.tar.gz", hash = "sha256:4635dd126cfd7385abef5ee7c88774652b9c4fb213f2325b59016c571b4ad437"},
@@ -755,40 +755,40 @@ robotpy-ctre = [
     {file = "robotpy_ctre-2022.1.0-cp39-cp39-win_amd64.whl", hash = "sha256:ad46a89e749e0ac56b39edfee9a9e7eed051545e6692133ade5915480f18a606"},
 ]
 robotpy-hal = [
-    {file = "robotpy-hal-2022.3.1.0.tar.gz", hash = "sha256:a17bf4a5b2d0c8732f496195558acbd5be89c6d6072975d1e47c7c258bcd7c33"},
-    {file = "robotpy_hal-2022.3.1.0-cp310-cp310-macosx_10_15_x86_64.whl", hash = "sha256:0527480f8d51a71e67120221e6e2b0560b5d317067b6f813a2f831f4ad5303cf"},
-    {file = "robotpy_hal-2022.3.1.0-cp310-cp310-manylinux_2_27_x86_64.whl", hash = "sha256:e7b09cbe7a71a951afd162a9889e625b501e804cfee27e02fa1dd573125438b2"},
-    {file = "robotpy_hal-2022.3.1.0-cp310-cp310-win_amd64.whl", hash = "sha256:22afc0ae9aa83c275a482f647ed0cdc1094cb0752c870f70bde583d1e7054205"},
-    {file = "robotpy_hal-2022.3.1.0-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:14e5425d566629de84a934a018b76cdf857aac9ea05b84936a88876d1e4b647a"},
-    {file = "robotpy_hal-2022.3.1.0-cp36-cp36m-manylinux_2_27_x86_64.whl", hash = "sha256:94f947314aa09f27ce5c137581f6725641d03605eabc96b736d4e7ef593ed37a"},
-    {file = "robotpy_hal-2022.3.1.0-cp36-cp36m-win_amd64.whl", hash = "sha256:eab4dc471af92555b231411a72ca16968b521a579ffaa36e0cec496712afee41"},
-    {file = "robotpy_hal-2022.3.1.0-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:773446b916adeebee33ffca814f7046911abe5d2ae8ee3eb4a54fa467bfb2e45"},
-    {file = "robotpy_hal-2022.3.1.0-cp37-cp37m-manylinux_2_27_x86_64.whl", hash = "sha256:b2b3f3a8ea22dc362e4652d302cc9b503d90776db4af96b311b992f146443dac"},
-    {file = "robotpy_hal-2022.3.1.0-cp37-cp37m-win_amd64.whl", hash = "sha256:867550777ad755210fca96836c0b162f89fb012c9ef69216bcbde03bf6f61e36"},
-    {file = "robotpy_hal-2022.3.1.0-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:cf0375abe10459e8561edf839a38e01110a03cb5dbb15a7cc6d8db74a6259da8"},
-    {file = "robotpy_hal-2022.3.1.0-cp38-cp38-manylinux_2_27_x86_64.whl", hash = "sha256:b34e73ec318ab3b99cbbe3d6699ac8e9e335fbe89f57edb153e07a3310ba00df"},
-    {file = "robotpy_hal-2022.3.1.0-cp38-cp38-win_amd64.whl", hash = "sha256:3fcd049fb65ad21794dbbc253e82d580b84be8418ec0677267e6bdfe7067764b"},
-    {file = "robotpy_hal-2022.3.1.0-cp39-cp39-macosx_10_15_x86_64.whl", hash = "sha256:cc0a377774182be83e2867f402d2a9fe624946cbe6f9c8fcb2e6c9060cd40010"},
-    {file = "robotpy_hal-2022.3.1.0-cp39-cp39-manylinux_2_27_x86_64.whl", hash = "sha256:e85141345f397b05ee19b81f954b791d44c383e01125279a44fc1b5673f7dade"},
-    {file = "robotpy_hal-2022.3.1.0-cp39-cp39-win_amd64.whl", hash = "sha256:5280adb21a6191c7407e8fd0fbfc81a667627514029e9149970377abeb33b3d8"},
+    {file = "robotpy-hal-2022.4.1.0.tar.gz", hash = "sha256:4f561f47b9a58cf99cf5943148e53e8bb795bd0854e84654b064a7cf435a92e1"},
+    {file = "robotpy_hal-2022.4.1.0-cp310-cp310-macosx_10_15_x86_64.whl", hash = "sha256:7f9582199b0ef564065e6a967c1a6b79c80d88509017118fa74dc6755b07d472"},
+    {file = "robotpy_hal-2022.4.1.0-cp310-cp310-manylinux_2_27_x86_64.whl", hash = "sha256:b3a00830349941f43e7f54b90ac62937c548e302329a13926d7557d5c6d574fa"},
+    {file = "robotpy_hal-2022.4.1.0-cp310-cp310-win_amd64.whl", hash = "sha256:988625b9c88cd6c08c8482ba532fb6388d24db6ddf767f8f6d2c3189a8436654"},
+    {file = "robotpy_hal-2022.4.1.0-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:87f78b403cc7830df33690f03a42c0a512c097af6a079876aad1109218966294"},
+    {file = "robotpy_hal-2022.4.1.0-cp36-cp36m-manylinux_2_27_x86_64.whl", hash = "sha256:fda294e64b9f33d196a8636746e950480e62429f5ae2e6c090ba6c12f5de5127"},
+    {file = "robotpy_hal-2022.4.1.0-cp36-cp36m-win_amd64.whl", hash = "sha256:dbe07986aba7160e13313b2048bab28121c73483155999063cf7401590ffdcc6"},
+    {file = "robotpy_hal-2022.4.1.0-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:313ca9a651df76330437e3d23dd29745ef58e500b7228c9266e5926dd7c16e7f"},
+    {file = "robotpy_hal-2022.4.1.0-cp37-cp37m-manylinux_2_27_x86_64.whl", hash = "sha256:c38e652077796dfaccfd3ea55e5971b74a484f7076d9218181e42a9d49e08aac"},
+    {file = "robotpy_hal-2022.4.1.0-cp37-cp37m-win_amd64.whl", hash = "sha256:cdf93a7fc53c23247ab9a3feb35207be5ebc677a7b5f47cdbcdf3f001b0325f1"},
+    {file = "robotpy_hal-2022.4.1.0-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:13d4c7df990c8ca64389ceb451acb36958a45cbdf957f8db591074c48ff872fe"},
+    {file = "robotpy_hal-2022.4.1.0-cp38-cp38-manylinux_2_27_x86_64.whl", hash = "sha256:e5219193f07ca068bb94f377ae9e918a85a8ca95a8520628c5b25a5215d107ed"},
+    {file = "robotpy_hal-2022.4.1.0-cp38-cp38-win_amd64.whl", hash = "sha256:2af9bbf51322bada5798f7c66997adcd6a08840bef8ac8a3a2e7be754e74f3bd"},
+    {file = "robotpy_hal-2022.4.1.0-cp39-cp39-macosx_10_15_x86_64.whl", hash = "sha256:e0e380da00b98a6be0a59f0c66679a75e43f04cda7c71e28bc48d05b7148614c"},
+    {file = "robotpy_hal-2022.4.1.0-cp39-cp39-manylinux_2_27_x86_64.whl", hash = "sha256:5f860793722028730d7336642e4eb898834c817a749598c468b8af367febcaa8"},
+    {file = "robotpy_hal-2022.4.1.0-cp39-cp39-win_amd64.whl", hash = "sha256:a6f5935855a70096cab20bbbb3a0f399c958ec711d93b9093ba27f1d5de898db"},
 ]
 robotpy-halsim-gui = [
-    {file = "robotpy-halsim-gui-2022.3.1.0.tar.gz", hash = "sha256:2e9cb300a029d732a7cdabd030809dfeb0820c5e88c32df4a057fea342bd8526"},
-    {file = "robotpy_halsim_gui-2022.3.1.0-cp310-cp310-macosx_10_15_x86_64.whl", hash = "sha256:f249a3e8a6bf62c2d501c35011bd6d72bcf6b103b016b353651519dae272fe9a"},
-    {file = "robotpy_halsim_gui-2022.3.1.0-cp310-cp310-manylinux_2_27_x86_64.whl", hash = "sha256:3c1ef960f07ea5a59f9ee96b9e88107796d02678d923c97f4f8a654fa2988af5"},
-    {file = "robotpy_halsim_gui-2022.3.1.0-cp310-cp310-win_amd64.whl", hash = "sha256:9aad421d468e8812410fd7ebce1578eb0edf05fabef0b7b7ecdd5cac188f9131"},
-    {file = "robotpy_halsim_gui-2022.3.1.0-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:f2edeca4903361f4f39b679a4a4511350864227de8cde3f9f3feafaa29194ac2"},
-    {file = "robotpy_halsim_gui-2022.3.1.0-cp36-cp36m-manylinux_2_27_x86_64.whl", hash = "sha256:66d314c958d753da32ef0c4438d92be2840e843c10cbaa12d3282c5dac0d7056"},
-    {file = "robotpy_halsim_gui-2022.3.1.0-cp36-cp36m-win_amd64.whl", hash = "sha256:d0d982935cbbf78ba2216948dcd2d6a7221d18bc2e877b4b9e3f69e8fbe232d6"},
-    {file = "robotpy_halsim_gui-2022.3.1.0-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:308e1cc328b482c65a1505c36bdfd8a389fc6b8074db7784e65c33343d1637a4"},
-    {file = "robotpy_halsim_gui-2022.3.1.0-cp37-cp37m-manylinux_2_27_x86_64.whl", hash = "sha256:0ae6fe4bb13b3362690cbaeac5f78111b1bb71afcb910d5df61b0e52969bed70"},
-    {file = "robotpy_halsim_gui-2022.3.1.0-cp37-cp37m-win_amd64.whl", hash = "sha256:54eb8c27013204b5d9a779a49bc02a52292390a7746f21c31f217ab277381640"},
-    {file = "robotpy_halsim_gui-2022.3.1.0-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:7dd3f473424747fb84dc3292cbc15ee2c007ebc5c3bbca2cdb0beee0e4898c1e"},
-    {file = "robotpy_halsim_gui-2022.3.1.0-cp38-cp38-manylinux_2_27_x86_64.whl", hash = "sha256:eef9c30882cca5904122db894709e6536ba49f5a0d44a32a95331957bdc9604e"},
-    {file = "robotpy_halsim_gui-2022.3.1.0-cp38-cp38-win_amd64.whl", hash = "sha256:320b759e7a697f4062041404c445e7cf27203733854e6e38f694fbfd0fee1104"},
-    {file = "robotpy_halsim_gui-2022.3.1.0-cp39-cp39-macosx_10_15_x86_64.whl", hash = "sha256:0660d459142e1a2626b433a4c887d3692fd8866f78742d70ed7374c591dd71bd"},
-    {file = "robotpy_halsim_gui-2022.3.1.0-cp39-cp39-manylinux_2_27_x86_64.whl", hash = "sha256:d80f1c81ec15b9bc9ad970d9c3c47ea4d5c16d6fc67924d7f346204007132fc0"},
-    {file = "robotpy_halsim_gui-2022.3.1.0-cp39-cp39-win_amd64.whl", hash = "sha256:2e42d75c9445ea5ee7e88ccc060a97fd3f06be8d566bfc898241eff659fd938a"},
+    {file = "robotpy-halsim-gui-2022.4.1.0.tar.gz", hash = "sha256:e8ca96cc8f958645e861cf8e65a401ff81e717267c23eceb12e1aeae08e66f44"},
+    {file = "robotpy_halsim_gui-2022.4.1.0-cp310-cp310-macosx_10_15_x86_64.whl", hash = "sha256:104dbb40aed95bfd92ff7006be8c140c6bf4abac1adbe23197f9113e09423812"},
+    {file = "robotpy_halsim_gui-2022.4.1.0-cp310-cp310-manylinux_2_27_x86_64.whl", hash = "sha256:31c76ca0f7494a60bc3b07ce3561a93294c9639cff230e7632b8f762bd70a65a"},
+    {file = "robotpy_halsim_gui-2022.4.1.0-cp310-cp310-win_amd64.whl", hash = "sha256:7205a78f08aa16d433135159a2fa14aa4701882de9f91cf40ea9496e45731a76"},
+    {file = "robotpy_halsim_gui-2022.4.1.0-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:eedb28a21912ea5a16e2ca881a4b6d20e3d3c345ac6dcdb61b09f9708af5f4b2"},
+    {file = "robotpy_halsim_gui-2022.4.1.0-cp36-cp36m-manylinux_2_27_x86_64.whl", hash = "sha256:f419b316a59f42565a52b7b6d17dfae97708c74720a8081cec2b84f8701e29f7"},
+    {file = "robotpy_halsim_gui-2022.4.1.0-cp36-cp36m-win_amd64.whl", hash = "sha256:d29141bed3598c7427e4cb476d909b37b78138eb5a78f1e0d6ce8ecdcf2e2a70"},
+    {file = "robotpy_halsim_gui-2022.4.1.0-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:3062b0d4bef9c7a2bf397020e1ed4c3923db9660bbfc4cc8ff76061fbdab57d5"},
+    {file = "robotpy_halsim_gui-2022.4.1.0-cp37-cp37m-manylinux_2_27_x86_64.whl", hash = "sha256:878ab380740432178ea7db7dd863b5d370cac757db64b7c7e686abf96708bc0d"},
+    {file = "robotpy_halsim_gui-2022.4.1.0-cp37-cp37m-win_amd64.whl", hash = "sha256:023e2195d5569d3eafa3134c84fa801eefd9076ed7bc3bc304fd0634be514e46"},
+    {file = "robotpy_halsim_gui-2022.4.1.0-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:52253dc18dad5552290498aa4eb40a8fb7a5adb55729dd631b208aad084ce278"},
+    {file = "robotpy_halsim_gui-2022.4.1.0-cp38-cp38-manylinux_2_27_x86_64.whl", hash = "sha256:2a92056ae502143517ae0d6109be280f189c008d31214ed094ee6dd8cee716f7"},
+    {file = "robotpy_halsim_gui-2022.4.1.0-cp38-cp38-win_amd64.whl", hash = "sha256:7192d1e95b2b3f98b6b47ad02d7098ff7eca112810ed60e008c14c587a7d4dd5"},
+    {file = "robotpy_halsim_gui-2022.4.1.0-cp39-cp39-macosx_10_15_x86_64.whl", hash = "sha256:5e295220c102272359620b8f5f580e8129e0ef59fb4dc089c48ef89b7544ec7d"},
+    {file = "robotpy_halsim_gui-2022.4.1.0-cp39-cp39-manylinux_2_27_x86_64.whl", hash = "sha256:86d3c5f31f78d740f898520b37348a2d1e0d53dd2afd12ed2dbad40dcf53322f"},
+    {file = "robotpy_halsim_gui-2022.4.1.0-cp39-cp39-win_amd64.whl", hash = "sha256:b4edd7ff0669cd2c73fe8ba12960359690e30f76c9963c42fe1a50f67f5f45d5"},
 ]
 robotpy-installer = [
     {file = "robotpy-installer-2022.1.1.tar.gz", hash = "sha256:0b8bcc47c29242afd972fa5312dedfe8c4a8a09d99c743a19ae85f0b986724a3"},
@@ -813,48 +813,48 @@ robotpy-rev = [
     {file = "robotpy_rev-2022.0.1-cp39-cp39-win_amd64.whl", hash = "sha256:fec101c8a66f278925010a046f75379d2a37d0e6ba681b1ceff493591efbf91b"},
 ]
 robotpy-toolkit-7407 = [
-    {file = "robotpy-toolkit-7407-0.3.2.tar.gz", hash = "sha256:885ca3b09924b42946201bdaeaf152fae20f28468ce33d9ed709ed6a9b3a2fed"},
-    {file = "robotpy_toolkit_7407-0.3.2-py3-none-any.whl", hash = "sha256:f28ccffe74b6090383439e717c6cce206c96f1effba2526f3157e52236bb8de8"},
+    {file = "robotpy-toolkit-7407-0.3.3.tar.gz", hash = "sha256:5fdfc8c7470776f08acc6a76e455b35dcacf24b2299ab3b08635cf5c257c0f4f"},
+    {file = "robotpy_toolkit_7407-0.3.3-py3-none-any.whl", hash = "sha256:1a1ee0b910bb6a0ce4b4adb8187b63c25b8f4ea4c9b33010a5f1d9789060e0fe"},
 ]
 robotpy-wpilib-utilities = [
     {file = "robotpy-wpilib-utilities-2022.0.2.tar.gz", hash = "sha256:24e3a4cc5164be69466b62e6d7804e562936bcd24d3a306964bbfb2a9e7c6326"},
     {file = "robotpy_wpilib_utilities-2022.0.2-py3-none-any.whl", hash = "sha256:85ed855dc145e08b84373c7a62a4be09ece74358c3f10ae80c17a029b1d5d185"},
 ]
 robotpy-wpimath = [
-    {file = "robotpy-wpimath-2022.3.1.1.tar.gz", hash = "sha256:e3c75a01bc98cca39ecc1f4bbe358e39891bba0502e3398689bcda8ab6a1a3d3"},
-    {file = "robotpy_wpimath-2022.3.1.1-cp310-cp310-macosx_10_15_x86_64.whl", hash = "sha256:381ece13fc009faaef54b2044e33ce221f5227c3d4e3f94c52c65e44a2381b95"},
-    {file = "robotpy_wpimath-2022.3.1.1-cp310-cp310-manylinux_2_27_x86_64.whl", hash = "sha256:d4fbebbbee7234b3eb980d91ff8278d98ccad408f45472585dfdbe3b839d4e74"},
-    {file = "robotpy_wpimath-2022.3.1.1-cp310-cp310-win_amd64.whl", hash = "sha256:f141bf3bfeb74b570d4d6051d72e2907aba6e8bbaf6f84de8aa1d0e77846c91d"},
-    {file = "robotpy_wpimath-2022.3.1.1-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:1245a851308343ed4670f8580bee4629e762532f3dc99bd24ecd8dfb06a5ef22"},
-    {file = "robotpy_wpimath-2022.3.1.1-cp36-cp36m-manylinux_2_27_x86_64.whl", hash = "sha256:0ae23dae473e9d6615c288d339255ec6da17985f68bef710d989743171484866"},
-    {file = "robotpy_wpimath-2022.3.1.1-cp36-cp36m-win_amd64.whl", hash = "sha256:45c8d04df0b9fcc02d92a199fd5c2a0800689267cf5c1fedb73120d44f026e0a"},
-    {file = "robotpy_wpimath-2022.3.1.1-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:0425bcf3ef719dfc05d9d395b46e40e8507f2bcfd7b827eae19c4a2a925b53f9"},
-    {file = "robotpy_wpimath-2022.3.1.1-cp37-cp37m-manylinux_2_27_x86_64.whl", hash = "sha256:45cb1eb8ea3e34d804247bd6d33d31256ac14a5ead952b5ca2f9f49cd397cdcd"},
-    {file = "robotpy_wpimath-2022.3.1.1-cp37-cp37m-win_amd64.whl", hash = "sha256:530a161615b534cab286e3849fab1925e3772919cb2d34e5de16d51d6f3441f1"},
-    {file = "robotpy_wpimath-2022.3.1.1-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:80fe5258fb5cc6037818f6226c34c8eea3dc60cd7ba356704db798a25d6557f4"},
-    {file = "robotpy_wpimath-2022.3.1.1-cp38-cp38-manylinux_2_27_x86_64.whl", hash = "sha256:bf57f87aa43c438041d523254b6581465db722d8a9b0335470c0c3eda4116073"},
-    {file = "robotpy_wpimath-2022.3.1.1-cp38-cp38-win_amd64.whl", hash = "sha256:3d8cff331783104bccf6419b3931712f3bbad9cb780c79304b4ba2e7720cf316"},
-    {file = "robotpy_wpimath-2022.3.1.1-cp39-cp39-macosx_10_15_x86_64.whl", hash = "sha256:ca18db0cf23f49d1d4218ad4017bb521699bd318ae9961b3071ba153738b81cd"},
-    {file = "robotpy_wpimath-2022.3.1.1-cp39-cp39-manylinux_2_27_x86_64.whl", hash = "sha256:70187cc5fff3b994b1ce40282e3cabd29d6fdf8b888465e3c165bd230c40ca7f"},
-    {file = "robotpy_wpimath-2022.3.1.1-cp39-cp39-win_amd64.whl", hash = "sha256:b2480e0ab4c4d92dda971e4b0b5dc4cb9d0037f7ed64f05847d64c63833e2783"},
+    {file = "robotpy-wpimath-2022.4.1.0.tar.gz", hash = "sha256:9395339432a74938d3f9cbfdba7eede490c708b166cde5e6f70e6ab5c31c0169"},
+    {file = "robotpy_wpimath-2022.4.1.0-cp310-cp310-macosx_10_15_x86_64.whl", hash = "sha256:2a73690e3b675c94058007528dffb6740dab1964e6b57b9aceabe8a4fc84fa45"},
+    {file = "robotpy_wpimath-2022.4.1.0-cp310-cp310-manylinux_2_27_x86_64.whl", hash = "sha256:1f898baafdeb3f3b1eca54ca4a160a753a467ae5923dc73dd187bcd218e23e3e"},
+    {file = "robotpy_wpimath-2022.4.1.0-cp310-cp310-win_amd64.whl", hash = "sha256:d48b3b245a7125f681db6bc94a403d537cea1c3a2cb493d8610f90035b9a7d50"},
+    {file = "robotpy_wpimath-2022.4.1.0-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:89faf911ab3ba6ee82c90ce2df7e6de4957b7c4d24293a29b8278f8e3d272701"},
+    {file = "robotpy_wpimath-2022.4.1.0-cp36-cp36m-manylinux_2_27_x86_64.whl", hash = "sha256:0e93442299357938fd4fb8e4fd30f265c4e08cccecf1b06488b5745eba9e32fb"},
+    {file = "robotpy_wpimath-2022.4.1.0-cp36-cp36m-win_amd64.whl", hash = "sha256:d7bef0779a3bd63de0e409f634bb1a5e149e28ee0ae050798da41ea69b81d8bc"},
+    {file = "robotpy_wpimath-2022.4.1.0-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:c3a175803c2a23eb3c3b7b37656c72b610ba20ccd5696f3df03cbec0f93ef333"},
+    {file = "robotpy_wpimath-2022.4.1.0-cp37-cp37m-manylinux_2_27_x86_64.whl", hash = "sha256:df35e0e96597ea635f7f9c843a04983d01ad87c63a2df60adcf9c4dc8d7c076f"},
+    {file = "robotpy_wpimath-2022.4.1.0-cp37-cp37m-win_amd64.whl", hash = "sha256:9f6894d27cb7f27063f5e09c6d2e50eed8daa6a801ec58d1fc8ca3571c57d0af"},
+    {file = "robotpy_wpimath-2022.4.1.0-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:90f6400b6f6536a944561d16890db931b9a2f4b858de1707564e6fe706ffe99d"},
+    {file = "robotpy_wpimath-2022.4.1.0-cp38-cp38-manylinux_2_27_x86_64.whl", hash = "sha256:0dcb0c8280a7e2312c9b6f77471224db7e0679401a9ab864d612c098b09a9659"},
+    {file = "robotpy_wpimath-2022.4.1.0-cp38-cp38-win_amd64.whl", hash = "sha256:c1e784fff4678c2d0f1a98116bfe80abbafe0003b1d1af3b20196a9b8559bf1c"},
+    {file = "robotpy_wpimath-2022.4.1.0-cp39-cp39-macosx_10_15_x86_64.whl", hash = "sha256:b655f6e41a7ad021ffd72d0e62ec5df1fee571ca1441384649d1cda8fc5cbdcb"},
+    {file = "robotpy_wpimath-2022.4.1.0-cp39-cp39-manylinux_2_27_x86_64.whl", hash = "sha256:5657e731fa0609c2ce78af61e6857640b6611a0e6d3779bdaa19ceca08afb84e"},
+    {file = "robotpy_wpimath-2022.4.1.0-cp39-cp39-win_amd64.whl", hash = "sha256:8c818c08a9efc6facf9cfa1846a805c61bb36f61a8b5a9130930fe03467a0167"},
 ]
 robotpy-wpiutil = [
-    {file = "robotpy-wpiutil-2022.3.1.3.tar.gz", hash = "sha256:fd002c5305683d52ec9fd61473de4f540b4db02c86095be027d6bc74294795c8"},
-    {file = "robotpy_wpiutil-2022.3.1.3-cp310-cp310-macosx_10_15_x86_64.whl", hash = "sha256:8c6cfe73ce06dcc1d09ee55e5b71819500237fdfeae7526106572e287f9b2601"},
-    {file = "robotpy_wpiutil-2022.3.1.3-cp310-cp310-manylinux_2_27_x86_64.whl", hash = "sha256:150ecab69df8963f938470bdd6c421790aff09e7f61418ff9555c031f7868500"},
-    {file = "robotpy_wpiutil-2022.3.1.3-cp310-cp310-win_amd64.whl", hash = "sha256:87fcfe7ecb300d57bfffb825668f9e77134843673f1ac7e251cf8e1adc165020"},
-    {file = "robotpy_wpiutil-2022.3.1.3-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:487ae2313abfd2c4c422a04eb200baa2f2dbed17e5fcd86921772bdb07953dac"},
-    {file = "robotpy_wpiutil-2022.3.1.3-cp36-cp36m-manylinux_2_27_x86_64.whl", hash = "sha256:0d37ab7ff1441ccf6ec3873de134d52df0d5851d0681834f51cf5dd2e8c1062b"},
-    {file = "robotpy_wpiutil-2022.3.1.3-cp36-cp36m-win_amd64.whl", hash = "sha256:006a803e4014c83f50290339f25f3013dbc6739d5ef2709ea488fbdcc3990477"},
-    {file = "robotpy_wpiutil-2022.3.1.3-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:f03000e63ed4b36322fa1c265b7e03bd98452dda04dd2a2bdc8b716da975227a"},
-    {file = "robotpy_wpiutil-2022.3.1.3-cp37-cp37m-manylinux_2_27_x86_64.whl", hash = "sha256:5a9b53c34c99aee2faa3d19b35f36474e6ec3de923ee57b304d68549aea1d2ab"},
-    {file = "robotpy_wpiutil-2022.3.1.3-cp37-cp37m-win_amd64.whl", hash = "sha256:44e3abfbbf306cb2ce2b50c28750fd2b947071974ded8b49ba432b3aa905cbcf"},
-    {file = "robotpy_wpiutil-2022.3.1.3-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:f8d4ffe3495ab48fee495d6ca3686521325278cad4b5b43cf561ca0205122f66"},
-    {file = "robotpy_wpiutil-2022.3.1.3-cp38-cp38-manylinux_2_27_x86_64.whl", hash = "sha256:1451205568fc64823009eae64e94fa4c0363be7fa664cc650c6fc82b0bd471d8"},
-    {file = "robotpy_wpiutil-2022.3.1.3-cp38-cp38-win_amd64.whl", hash = "sha256:0c2f9bc54b4f20005a83998b4c7784f557758c9ea193bcf5f730f4253a5fd968"},
-    {file = "robotpy_wpiutil-2022.3.1.3-cp39-cp39-macosx_10_15_x86_64.whl", hash = "sha256:7a0403ae56b28e25227121cda60140f59cc59bca8b16152dd6060751bc6f9314"},
-    {file = "robotpy_wpiutil-2022.3.1.3-cp39-cp39-manylinux_2_27_x86_64.whl", hash = "sha256:e74b4bffdf46692b274faa5c804592f4aeee1688356a37a173ca4f5d9638ced0"},
-    {file = "robotpy_wpiutil-2022.3.1.3-cp39-cp39-win_amd64.whl", hash = "sha256:f6e796e9183592aa8635a404e78a385cd9c61595d49e3ca7c3d689e97a932565"},
+    {file = "robotpy-wpiutil-2022.4.1.1.tar.gz", hash = "sha256:56548f7d528ff45fd410a8e29c4387efce079ccd7ce77f9246303dbad3d28f8e"},
+    {file = "robotpy_wpiutil-2022.4.1.1-cp310-cp310-macosx_10_15_x86_64.whl", hash = "sha256:4767fc2398ffd20d32a8e4de424ac2d5be7643a262fd7e825b480822215e2a2e"},
+    {file = "robotpy_wpiutil-2022.4.1.1-cp310-cp310-manylinux_2_27_x86_64.whl", hash = "sha256:86e58f1fcb723dd856aa13355ca9daee322b636f6dc4408fc1d6f7107c69eb16"},
+    {file = "robotpy_wpiutil-2022.4.1.1-cp310-cp310-win_amd64.whl", hash = "sha256:a56e37df1c94ef63c33cc2012d960dd0d50e16aedf2a49aa8406a82d6ac6611f"},
+    {file = "robotpy_wpiutil-2022.4.1.1-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:42d8363cea99daf46495d9333d8465c9bafe2af1580da35bd09a6fc6572306f3"},
+    {file = "robotpy_wpiutil-2022.4.1.1-cp36-cp36m-manylinux_2_27_x86_64.whl", hash = "sha256:0dbffc7870dd19817cd4f3d4eed68732e7019f6807649e676537ff8e21256032"},
+    {file = "robotpy_wpiutil-2022.4.1.1-cp36-cp36m-win_amd64.whl", hash = "sha256:a54d788757f8ff30268679ebe672d4103dc1ab65b03fa43abe1c83ea7177bd90"},
+    {file = "robotpy_wpiutil-2022.4.1.1-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:53a0c0b109431e1812e8e8548a494d893903e09d080851b33d9edf6fad472fcf"},
+    {file = "robotpy_wpiutil-2022.4.1.1-cp37-cp37m-manylinux_2_27_x86_64.whl", hash = "sha256:f70f77f11310e8c04852cd6ae87c28b9b7153954cb422d7798d382b30f17c004"},
+    {file = "robotpy_wpiutil-2022.4.1.1-cp37-cp37m-win_amd64.whl", hash = "sha256:aaadd4f39e9734131d5dbff580cc21a931bffa1237b2ac2ac9549509ea9315e0"},
+    {file = "robotpy_wpiutil-2022.4.1.1-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:987a4cb86a428f6eccbc54922fc61dfaefe63939468bcf46fc65c44535a742dc"},
+    {file = "robotpy_wpiutil-2022.4.1.1-cp38-cp38-manylinux_2_27_x86_64.whl", hash = "sha256:92ab492c222496f0375cf2614944c4a3a5aef259ede89a8916415b6936a4d237"},
+    {file = "robotpy_wpiutil-2022.4.1.1-cp38-cp38-win_amd64.whl", hash = "sha256:37b804f547f44c93d9012de545e4fd10286d8886f375751cbb84b023da7cf94e"},
+    {file = "robotpy_wpiutil-2022.4.1.1-cp39-cp39-macosx_10_15_x86_64.whl", hash = "sha256:6c6ba2e20140f88d1678abf3d4adb24132f4bc3061787b042633d55278a5d9d0"},
+    {file = "robotpy_wpiutil-2022.4.1.1-cp39-cp39-manylinux_2_27_x86_64.whl", hash = "sha256:efdf08e7a9c0e98f4e6610ab29e3b5260bda75c3213c66fc4a485f73a5038f8a"},
+    {file = "robotpy_wpiutil-2022.4.1.1-cp39-cp39-win_amd64.whl", hash = "sha256:ac6743527244151776a7bb3ec0a824e50e5893c31280c1658e6bf2988884bce7"},
 ]
 six = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
@@ -869,20 +869,20 @@ typing-extensions = [
     {file = "typing_extensions-4.1.1.tar.gz", hash = "sha256:1a9462dcc3347a79b1f1c0271fbe79e844580bb598bafa1ed208b94da3cdcd42"},
 ]
 wpilib = [
-    {file = "wpilib-2022.3.1.1-cp310-cp310-macosx_10_15_x86_64.whl", hash = "sha256:68ddcf1a9828ac2b8ca198483d6f5b9f12aa8048936a48752821ff74e487c96e"},
-    {file = "wpilib-2022.3.1.1-cp310-cp310-manylinux_2_27_x86_64.whl", hash = "sha256:7f16b9f27c85a249c7671199278314ba29984c3a02cad5883915a8b3ea2beeb5"},
-    {file = "wpilib-2022.3.1.1-cp310-cp310-win_amd64.whl", hash = "sha256:870db04fe311e9c85fea254fa9676f2093136b1379fa7245ac4dce5b327d6276"},
-    {file = "wpilib-2022.3.1.1-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:19dc29e6d26a3940496d9d1338ecd213b783836bc6cde9f3f9d0f32a3e74198c"},
-    {file = "wpilib-2022.3.1.1-cp36-cp36m-manylinux_2_27_x86_64.whl", hash = "sha256:f9d0cbaa73cb19961e5906903126048e8b3970ac06794e4eb576b92cc4f76f19"},
-    {file = "wpilib-2022.3.1.1-cp36-cp36m-win_amd64.whl", hash = "sha256:f55f2e4ba6ad6c5b9a627cbd573d43baa34add4f40333154fe4e9389b0466cda"},
-    {file = "wpilib-2022.3.1.1-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:2198b26be581851d30409e6e4fa6d818710e8aa2b85ab9d2252b2f5917becf85"},
-    {file = "wpilib-2022.3.1.1-cp37-cp37m-manylinux_2_27_x86_64.whl", hash = "sha256:0157d096f9651b493514e775c05b191374116e9ea86376ffcad16e739873bc38"},
-    {file = "wpilib-2022.3.1.1-cp37-cp37m-win_amd64.whl", hash = "sha256:9a79a8b44178797dc5d3849b03578c1b1bf6cc07127cd0150214b9a045f49642"},
-    {file = "wpilib-2022.3.1.1-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:7b1b01305989774fb8889efe5cb92691ab5035d3998fc8298f1faf90af02a24f"},
-    {file = "wpilib-2022.3.1.1-cp38-cp38-manylinux_2_27_x86_64.whl", hash = "sha256:a6717e001af810e1752490153f4322855ba0072cd656fa25d44ac80d16817e0e"},
-    {file = "wpilib-2022.3.1.1-cp38-cp38-win_amd64.whl", hash = "sha256:91dfd61eebb6483b8041fec834bf38455974c6473e2c3465f76a4a7b98779886"},
-    {file = "wpilib-2022.3.1.1-cp39-cp39-macosx_10_15_x86_64.whl", hash = "sha256:0bdb986653eb80d2cd327295b6323eef46ccae3e78ad00101e13e9de0bdde524"},
-    {file = "wpilib-2022.3.1.1-cp39-cp39-manylinux_2_27_x86_64.whl", hash = "sha256:e5dc6ad18ca1334c17be0bb01037e6ecb52216ca7f1cbcc22c9b2b69b159d901"},
-    {file = "wpilib-2022.3.1.1-cp39-cp39-win_amd64.whl", hash = "sha256:95e036de19fca61152b57ff4bf5bb43973b820e661a984f351fff65bc263c329"},
-    {file = "wpilib-2022.3.1.1.tar.gz", hash = "sha256:9aaf4ff7714f54ca77596e64f1fe896068620cd15f86ac4a86a9fd048eefe241"},
+    {file = "wpilib-2022.4.1.0-cp310-cp310-macosx_10_15_x86_64.whl", hash = "sha256:d797fef16bee9314a913807ef17935598728790f2b7eef478087213779ca7756"},
+    {file = "wpilib-2022.4.1.0-cp310-cp310-manylinux_2_27_x86_64.whl", hash = "sha256:43483f0524d38f0d4caafe8474c632aff5cfcf32be8093245ef2f1f6096fb2fb"},
+    {file = "wpilib-2022.4.1.0-cp310-cp310-win_amd64.whl", hash = "sha256:d2eab4c5fe0598b85f47f340932d942f8b30b94457ed60cddb3067572999ef92"},
+    {file = "wpilib-2022.4.1.0-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:ac672c0053f9c86fd9764bb28334c2e8813ca188155b9a6959dc6906e78a4898"},
+    {file = "wpilib-2022.4.1.0-cp36-cp36m-manylinux_2_27_x86_64.whl", hash = "sha256:0770390a42c0c4761ed8ac26c79ac194202b0c392933ec0615a7071eda240448"},
+    {file = "wpilib-2022.4.1.0-cp36-cp36m-win_amd64.whl", hash = "sha256:d77d1906f1414e10fa243cf010baae3fc06af61c7a537d0524f993ae4ee9d322"},
+    {file = "wpilib-2022.4.1.0-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:a58f32482a2b52a8689362aba7741cdfd229a204addb350934a2e7c0cc081a71"},
+    {file = "wpilib-2022.4.1.0-cp37-cp37m-manylinux_2_27_x86_64.whl", hash = "sha256:f7ff57ce8d4302cb9704cb19065bc35d2da45e06475591545ee8f3183cd849a7"},
+    {file = "wpilib-2022.4.1.0-cp37-cp37m-win_amd64.whl", hash = "sha256:c0c7c5ac701c2e557d9c7445ef6179149beaa237e4aa7eef6498cc8db2397166"},
+    {file = "wpilib-2022.4.1.0-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:9c8628669c502f384200d0fe0c16a8aabf87207a0be16e32dfb3a89d3587ab6d"},
+    {file = "wpilib-2022.4.1.0-cp38-cp38-manylinux_2_27_x86_64.whl", hash = "sha256:62ec332db6b20b3d3573510c96ff2fede2f248c77f987efb6bb7210e4416ebb4"},
+    {file = "wpilib-2022.4.1.0-cp38-cp38-win_amd64.whl", hash = "sha256:847c9fcbce548ac3bd446aca0bbf83c8f4c99103b11ac0f9a9c6b4d4ba28df28"},
+    {file = "wpilib-2022.4.1.0-cp39-cp39-macosx_10_15_x86_64.whl", hash = "sha256:29516ae230b69582630276dab449db04a4e53ee8e6209a53779e8f1c8c8b8995"},
+    {file = "wpilib-2022.4.1.0-cp39-cp39-manylinux_2_27_x86_64.whl", hash = "sha256:a04165996dcea60dbe704f69a8643b47dcf0df6816105cd81c0e5f618d20fbe4"},
+    {file = "wpilib-2022.4.1.0-cp39-cp39-win_amd64.whl", hash = "sha256:7705eacd1a46129a24b8c9981625f07fd9c8040607b773553f64105d348919b0"},
+    {file = "wpilib-2022.4.1.0.tar.gz", hash = "sha256:0407154b658d7e278279664a4d43fad4d29ba757cf6b4d81a273130e06f5c90e"},
 ]

@@ -21,7 +21,7 @@ class Keymap:
     class Elevator:
         ELEVATOR_INIT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.LB)
         ELEVATOR_CLIMB = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.RB)
-        ELEVATOR_SOLENOID_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.START)
+        ELEVATOR_DOWN = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.SELECT)
 
     class Intake:
         LEFT_INTAKE_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.A)
@@ -34,3 +34,7 @@ class Keymap:
     class Shooter:
         SHOOTER_ENABLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.RT)
         SHOOTER_EJECT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.X)
+        SHOOTER_SHORT_EJECT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.LT)
+        SHOOTER_OFFSET_UP = DefaultButton(Controllers.DRIVER, controllerDRIVER.LB)
+        SHOOTER_OFFSET_DOWN = DefaultButton(Controllers.DRIVER, controllerDRIVER.RB)
+

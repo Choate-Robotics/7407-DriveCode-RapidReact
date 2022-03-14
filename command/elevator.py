@@ -5,33 +5,19 @@ from robotpy_toolkit_7407.command import SubsystemCommand, T
 from robotpy_toolkit_7407.unum import Unum
 from robotpy_toolkit_7407.unum.units import cm
 from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit
-from robotpy_toolkit_7407.utils.units import m, s
+from robotpy_toolkit_7407.utils.units import m, s, inch
 
 import constants
 from robot_systems import Robot
 from subsystem import Elevator
 
 
-class ElevatorZero(SubsystemCommand[Elevator]):
-    def __init__(self, subsystem: Elevator):
-        super().__init__(subsystem)
-        self.subsystem = subsystem
-
-    def initialize(self) -> None:
-        self.subsystem.motors.set_target_velocity(-.05 * constants.elevator_gear_ratio * m/s)
-
-    def execute(self) -> None:
-        if self.subsystem.bottomed_out():
-            self.subsystem.zeroed = True
-            self.subsystem.motors.set_sensor_position(0 * talon_sensor_unit)
-
-    def isFinished(self) -> bool:
-        return self.subsystem.zeroed
-
-    def end(self, interrupted: bool) -> None:
-        self.subsystem.motors.set_raw_output(0)
+def elevator_down():
+    Robot.elevator.set_height(0 * inch)
+    Robot.drivetrain.max_vel = constants.drivetrain_max_vel
 
 
+ElevatorDown = lambda: InstantCommand(elevator_down, Robot.elevator)
 ElevatorSolenoidExtend = lambda: InstantCommand(Robot.elevator.extend_solenoid, Robot.elevator)
 ElevatorSolenoidRetract = lambda: InstantCommand(Robot.elevator.retract_solenoid, Robot.elevator)
 ElevatorSolenoidToggle = lambda: InstantCommand(Robot.elevator.solenoid.toggle, Robot.elevator)
