@@ -2,7 +2,7 @@ import math
 import numpy
 
 from constants import air_resistance_constant, height_difference, gravity, acceptable_error, shooter_delay, \
-    ideal_entry_angle
+    ideal_entry_angle, minimum_shooter_angle, max_shooter_velocity
 
 
 class ShooterTargeting:
@@ -42,6 +42,11 @@ class ShooterTargeting:
     def initial_velocity_horizontal(distance, time):
         velocity = ((math.e ** (air_resistance_constant * distance)) - 1) / (air_resistance_constant * time)
         return velocity
+
+    @staticmethod
+    def distance_horizontal(velocity_horizontal, time):
+        distance = (1 / air_resistance_constant) * math.log(velocity_horizontal * air_resistance_constant * time + 1)
+        return distance
 
     @classmethod
     def calculate_required_velocity(cls, velocity_vertical, distance_to_hub):
@@ -144,7 +149,7 @@ class ShooterTargeting:
         return cls.calculate_required_velocity(velocity_vertical, distance_to_hub)[0]
 
     @classmethod
-    def moving_aim(cls, distance_to_hub, robot_velocity, velocity_up=10, step_size=0.1):
+    def moving_aim(cls, distance_to_hub, robot_velocity, velocity_up=10, step_size=0.1, function=velocity_angle_minimize):
         """
         calculates how to orient the robot and what velocity to give the ball to make a shot while moving
 
@@ -161,9 +166,26 @@ class ShooterTargeting:
         The returned value is a tuple with the horizontal and vertical components of velocity, and an orientation of
         the robot in radians
         """
-        required_velocity = cls.stationary_aim(distance_to_hub, velocity_up, step_size)
+        # What velocity the ball needs to have
+        required_velocity = cls.stationary_aim(distance_to_hub, velocity_up, step_size=step_size, function=function)
+
         shooter_setting = (
-            math.sqrt((required_velocity[0] - robot_velocity[1]) ** 2 + robot_velocity[0] ** 2), required_velocity[1])
+            numpy.linalg.norm((required_velocity[0] - robot_velocity[1], robot_velocity[0])), required_velocity[1])
+
+        # The shooter cannot shoot below a certain angle. If the shooter cannot shoot the optimal angle, this loop
+        # finds an angle it can shoot
+
+        while math.atan2(shooter_setting[1], shooter_setting[0]) < minimum_shooter_angle:
+            required_velocity = cls.calculate_required_velocity(required_velocity[1] + 1, distance_to_hub)[0]
+            shooter_setting = (
+                numpy.linalg.norm((required_velocity[0] - robot_velocity[1], robot_velocity[0])), required_velocity[1])
+
+        # Catches 3 situations in which the shooter cannot shoot.
+        # The angle is too steep, the velocity is too high, or the robot is moving too fast towards the hub
+        if math.atan2(shooter_setting[1], shooter_setting[0]) < minimum_shooter_angle or numpy.linalg.norm(
+                shooter_setting) > max_shooter_velocity or required_velocity[0] < robot_velocity[1]:
+            return None, None
+
         orientation_setting = math.atan(robot_velocity[0] / (required_velocity[0] - robot_velocity[1]))
 
         return shooter_setting, orientation_setting
@@ -249,6 +271,8 @@ class ShooterTargeting:
 
         returns an angle to rotate in radians
         """
+        if goal_angle is None:
+            return None
 
         # If we don't rotate, what will the angle be?
         future_angle = cls.convert_position(current_angle, new_position)[1]
