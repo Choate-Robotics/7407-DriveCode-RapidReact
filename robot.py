@@ -86,7 +86,7 @@ class _Robot(wpilib.TimedRobot):
             Network.robot_send_status()
 
     def teleopInit(self) -> None:
-        Robot.shooter.next_color = ["red"]
+        Robot.shooter.next_color = []
         commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
         commands2.CommandScheduler.getInstance().schedule(IndexDrive(Robot.index))
         Robot.limelight.led_on()
