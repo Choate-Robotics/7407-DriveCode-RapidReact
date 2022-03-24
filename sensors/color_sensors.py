@@ -14,8 +14,8 @@ class ColorSensor:
 
     def color(self) -> str:
         vals = self.get_val()
-        if vals[0]-vals[2]>2500:
+        if vals[0]-vals[2]>1000:
             return "red"
-        elif vals[2]-vals[0]>2500:
+        elif vals[2]-vals[0]>1000:
             return "blue"
         return "none"

@@ -119,6 +119,8 @@ class _Robot(wpilib.TimedRobot):
         Robot.shooter.photo_status = photo
 
         color = Sensors.color_sensors.color()
+        print(Sensors.color_sensors.get_val())
+        print(color)
         if len(Robot.shooter.next_color)<2 and color != "none":
             Robot.shooter.next_color.append(color)
 
