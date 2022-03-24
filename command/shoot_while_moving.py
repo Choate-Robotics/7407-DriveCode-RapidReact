@@ -24,11 +24,11 @@ class ShootWhileMoving(Command):
 
         hub_dist, hub_angle = Robot.limelight.calculate_distance(), -Robot.limelight.get_x_offset()
 
-        angle_offset = self.shooter.target_with_motion(hub_dist, hub_angle, robot_vel) + hub_angle
+        angle_offset = self.shooter.target_with_motion(hub_dist, hub_angle, robot_vel)
 
         logger.info(f"offset={angle_offset}")
 
-        omega = 0.07 * hub_angle * rad/s
+        omega = 0.07 * angle_offset * rad/s
 
         self.drivetrain.set(
             (curve(dx) * self.drivetrain.max_vel.asUnit(m / s), curve(-dy) * self.drivetrain.max_vel.asUnit(m / s)),
