@@ -53,12 +53,12 @@ class Shooter(Subsystem):
         final_angle = math.atan(vy / vx) * rad
         #self.set_launch_angle(final_angle)
         self.set_flywheels(final_velocity, final_velocity)
-        if self.ball_queue[0] == constants.TEAM:
-            #next_velloss = 0
-            self.set_launch_angle(final_angle)
-        else:
-            #next_velloss = .3
-            self.set_launch_angle(0)
+        try:
+            if self.next_color[0] != constants.TEAM:
+                final_angle = 45 * rad
+        except:
+            pass
+        self.set_launch_angle(final_angle)
 
     def target_stationary(self, limelight_dist):
         vx, vy = ShooterTargeting.stationary_aim(limelight_dist)
