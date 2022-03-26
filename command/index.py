@@ -4,6 +4,7 @@ from robotpy_toolkit_7407.command import SubsystemCommand
 from robot_systems import Robot
 from subsystem import Index
 from oi.keymap import Keymap
+import wpilib
 
 
 
