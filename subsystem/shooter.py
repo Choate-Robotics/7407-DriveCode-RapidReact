@@ -48,23 +48,15 @@ class Shooter(Subsystem):
         self.m_bottom.set_target_velocity(bottom_vel * constants.shooter_bottom_gear_ratio)
 
     def set_flywheels_for_ball_velocity(self, vx: float, vy: float):
-        next_velloss = 0
-        final_velocity = ((-0.286 + 1.475 * (vx**2 + vy**2)**.5) - next_velloss) * m/s
+        final_velocity = (-0.286 + 1.475 * (vx**2 + vy**2)**.5) * m/s
         final_angle = math.atan(vy / vx) * rad
-        #self.set_launch_angle(final_angle)
-        self.set_flywheels(final_velocity, final_velocity)
-        try:
-            if self.next_color[0] != constants.TEAM:
-                final_angle = 45 * rad
-        except:
-            pass
         self.set_launch_angle(final_angle)
+        self.set_flywheels(final_velocity, final_velocity)
 
     def target_stationary(self, limelight_dist):
         vx, vy = ShooterTargeting.stationary_aim(limelight_dist)
         self.set_flywheels_for_ball_velocity(vx, vy)
 
-   
     def target_with_motion(self, limelight_dist, angle_to_hub, robot_vel) -> float:
         adjusted_robot_vel = ShooterTargeting.real_velocity_to_shooting(robot_vel, angle_to_hub)
         (vx, vy), theta = ShooterTargeting.moving_aim_ahead(angle_to_hub, adjusted_robot_vel, limelight_dist)

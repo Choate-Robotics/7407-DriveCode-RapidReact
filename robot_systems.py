@@ -19,6 +19,8 @@ class Robot:
         sensors.LimitSwitch(9)
     ]
 
+    ball_queue = []
+    team = "red"
 
 class Pneumatics:
     compressor = wpilib.Compressor(1, wpilib.PneumaticsModuleType.REVPH)
