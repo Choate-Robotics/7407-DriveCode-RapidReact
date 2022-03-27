@@ -11,9 +11,9 @@ _MOTOR_CFG = TalonConfig(neutral_brake=False)
 
 
 class Intake(Subsystem):
-    m_bottom_l: TalonFX = TalonFX(14, inverted=False, config=_MOTOR_CFG)
+    m_bottom_l: TalonFX = TalonFX(14, inverted=True, config=_MOTOR_CFG)
     m_bottom_r: TalonFX = TalonFX(13, inverted=True, config=_MOTOR_CFG)
-    m_top: TalonFX = TalonFX(15, inverted=True, config=_MOTOR_CFG)
+    m_top: TalonGroup = TalonGroup(TalonFX(15, inverted=True, config=_MOTOR_CFG), TalonFX(22, inverted=False, config=_MOTOR_CFG))
     s_left: wpilib.DoubleSolenoid
     s_right: wpilib.DoubleSolenoid
     on_l: bool
@@ -24,11 +24,12 @@ class Intake(Subsystem):
         self.m_bottom_l.init()
         self.m_bottom_r.init()
         self.m_top.init()
+        optimize_leader_talon(self.m_top.motors[0])
+        optimize_normal_talon_no_sensor(self.m_top.motors[1])
         self.s_left = wpilib.DoubleSolenoid(1, wpilib.PneumaticsModuleType.REVPH, 0, 1)
         self.s_right = wpilib.DoubleSolenoid(1, wpilib.PneumaticsModuleType.REVPH, 2, 3)
         optimize_normal_talon_no_sensor(self.m_bottom_l)
         optimize_normal_talon_no_sensor(self.m_bottom_r)
-        optimize_normal_talon_no_sensor(self.m_top)
         self.on_l = False
         self.on_r = False
         self.on_reverse = False
