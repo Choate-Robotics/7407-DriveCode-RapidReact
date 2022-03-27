@@ -66,6 +66,8 @@ class Shooter(Subsystem):
     def target_with_motion(self, limelight_dist, angle_to_hub, robot_vel) -> float:
         adjusted_robot_vel = ShooterTargeting.real_velocity_to_shooting(robot_vel, angle_to_hub)
         (vx, vy), theta = ShooterTargeting.moving_aim_ahead(angle_to_hub, adjusted_robot_vel, limelight_dist)
+        if theta is None:
+            return -angle_to_hub
         self.set_flywheels_for_ball_velocity(vx, vy)
         return theta
 

@@ -2,7 +2,7 @@ import math
 import numpy
 
 from constants import air_resistance_constant, height_difference, gravity, acceptable_error, shooter_delay, \
-    ideal_entry_angle, minimum_shooter_angle, max_shooter_velocity
+    ideal_entry_angle, minimum_shooter_angle, max_shooter_angle, max_shooter_velocity
 
 
 class ShooterTargeting:
@@ -387,7 +387,7 @@ class ShooterTargeting:
         step = 0.1
 
         speed = math.sqrt(distance * gravity / (math.cos(max_shooter_angle) * math.sin(max_shooter_angle) * 2))
-        no_air_velocity = np.multiply((math.cos(max_shooter_angle), math.sin(max_shooter_angle)), speed)
+        no_air_velocity = numpy.multiply((math.cos(max_shooter_angle), math.sin(max_shooter_angle)), speed)
         best_velocity = cls.calculate_required_velocity(no_air_velocity[1], distance, False)[0]
 
         if cls.distance_up(cls.time_up(best_velocity[1]), best_velocity[1]) > max_height:
