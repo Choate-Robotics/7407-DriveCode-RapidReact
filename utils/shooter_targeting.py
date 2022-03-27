@@ -288,7 +288,7 @@ class ShooterTargeting:
         return angle_difference
 
     @classmethod
-    def moving_aim_ahead(cls, current_angle, robot_velocity, distance_to_hub, time=1, guess_velocity=10, step_size=0.1):
+    def moving_aim_ahead(cls, current_angle, robot_velocity, distance_to_hub, time=shooter_delay, guess_velocity=10, step_size=0.1):
         """
         calculates how to orient the robot and prepare the shooter to shoot in a given amount of time
 
@@ -314,7 +314,7 @@ class ShooterTargeting:
         return shooter_setting, rotate
 
     @classmethod
-    def should_shoot(cls, current_angle, robot_velocity, distance_to_hub, shooter_setting, time=shooter_delay):
+    def should_shoot(cls, current_angle, robot_velocity, distance_to_hub, shooter_setting, time=0):
         """
         boolean function that determines if now is a good time to begin the shooting process
 
@@ -327,6 +327,8 @@ class ShooterTargeting:
 
         returns a boolean that is true if now is a good time to shoot, and false if it is not a good time to shoot
         """
+        time += shooter_delay
+
         new_pos = cls.new_position(distance_to_hub, robot_velocity, time)
         future_angle = cls.convert_position(current_angle, new_pos)[1]
         future_velocity = cls.convert_velocity(new_pos, robot_velocity)
