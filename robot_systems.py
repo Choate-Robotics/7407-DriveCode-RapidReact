@@ -21,6 +21,7 @@ class Robot:
 
     ball_queue = []
     team = "red"
+    not_team = "blue"
 
 class Pneumatics:
     compressor = wpilib.Compressor(1, wpilib.PneumaticsModuleType.REVPH)

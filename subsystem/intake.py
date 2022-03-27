@@ -1,5 +1,3 @@
-import commands2
-from commands2 import InstantCommand, WaitCommand
 from robotpy_toolkit_7407 import Subsystem
 from robotpy_toolkit_7407.motors import TalonFX, TalonGroup, TalonConfig
 import wpilib
@@ -11,81 +9,85 @@ _MOTOR_CFG = TalonConfig(neutral_brake=False)
 
 
 class Intake(Subsystem):
-    m_bottom_l: TalonFX = TalonFX(14, inverted=True, config=_MOTOR_CFG)
-    m_bottom_r: TalonFX = TalonFX(13, inverted=True, config=_MOTOR_CFG)
-    m_top: TalonGroup = TalonGroup(TalonFX(15, inverted=True, config=_MOTOR_CFG), TalonFX(22, inverted=False, config=_MOTOR_CFG))
+    left_intake_motor: TalonFX = TalonFX(14, inverted=True, config=_MOTOR_CFG)
+    right_intake_motor: TalonFX = TalonFX(13, inverted=True, config=_MOTOR_CFG)
+    left_dinglebob: TalonFX = TalonFX(15, inverted=False, config=_MOTOR_CFG)
+    right_dinglebob: TalonFX = TalonFX(22, inverted=False, config=_MOTOR_CFG)
     s_left: wpilib.DoubleSolenoid
     s_right: wpilib.DoubleSolenoid
-    on_l: bool
-    on_r: bool
-    on_reverse: bool
+
+    left_intake_down: bool
+    left_intake_speed: float
+    right_intake_down: bool
+    right_intake_speed: float
+    intake_speed: float
+    dinglebob_speed: float
+    left_dinglebob_in: bool
+    right_dinglebob_in: bool
 
     def init(self):
-        self.m_bottom_l.init()
-        self.m_bottom_r.init()
-        self.m_top.init()
-        optimize_leader_talon_no_sensor(self.m_top.motors[0])
-        optimize_normal_talon_no_sensor(self.m_top.motors[1])
+        self.left_intake_motor.init()
+        self.right_intake_motor.init()
+        self.left_dinglebob.init()
+        self.right_dinglebob.init()
         self.s_left = wpilib.DoubleSolenoid(1, wpilib.PneumaticsModuleType.REVPH, 0, 1)
         self.s_right = wpilib.DoubleSolenoid(1, wpilib.PneumaticsModuleType.REVPH, 2, 3)
-        optimize_normal_talon_no_sensor(self.m_bottom_l)
-        optimize_normal_talon_no_sensor(self.m_bottom_r)
-        self.on_l = False
-        self.on_r = False
-        self.on_reverse = False
-        
-    def set_left(self, on: bool):
-        if self.on_l != on:
-            self.toggle_left()
+        optimize_normal_talon_no_sensor(self.left_intake_motor)
+        optimize_normal_talon_no_sensor(self.right_intake_motor)
+        optimize_normal_talon_no_sensor(self.left_dinglebob)
+        optimize_normal_talon_no_sensor(self.right_dinglebob)
 
-    def set_right(self, on: bool):
-        if self.on_r != on:
-            self.toggle_right()
+        self.left_intake_down = False
+        self.right_intake_down = False
+        self.intake_speed = .7
+        self.intake_speed = .7
+        self.dinglebob_speed = .5
+        self.left_dinglebob_in = True
+        self.right_dinglebob_in = True
 
-    def toggle_left(self):
-        if self.on_l:
-            self.m_bottom_l.set_raw_output(0)
+    def toggle_left_intake(self):
+        if self.left_intake_down:
             self.s_left.set(wpilib.DoubleSolenoid.Value.kReverse)
-
-            def f():
-                self.m_top.set_raw_output(.7 if self.on_r else 0)
-                self.on_l = False
-
-            commands2.CommandScheduler.getInstance().schedule(WaitCommand(0.5).andThen(InstantCommand(f)))
+            self.left_intake_down = False
+            self.left_intake_motor.set_raw_output(0)
+            self.left_intake_on = False
         else:
-            self.m_bottom_l.set_raw_output(.5)
-            self.m_top.set_raw_output(.7)
             self.s_left.set(wpilib.DoubleSolenoid.Value.kForward)
-            self.on_l = True
+            self.left_intake_down = True
+            self.left_intake_motor.set_raw_output(self.intake_speed)
+            self.left_intake_on = True
+            
 
-    def toggle_right(self):
-        if self.on_r:
-            self.m_bottom_r.set_raw_output(0)
+    def toggle_right_intake(self):
+        if self.right_intake_down:
             self.s_right.set(wpilib.DoubleSolenoid.Value.kReverse)
-
-            def f():
-                self.m_top.set_raw_output(.7 if self.on_l else 0)
-                self.on_r = False
-
-            commands2.CommandScheduler.getInstance().schedule(WaitCommand(0.5).andThen(InstantCommand(f)))
+            self.right_intake_down = False
+            self.right_intake_motor.set_raw_output(0)
         else:
-            self.m_bottom_r.set_raw_output(.5)
-            self.m_top.set_raw_output(.7)
             self.s_right.set(wpilib.DoubleSolenoid.Value.kForward)
-            self.on_r = True
+            self.right_intake_down = True
+            self.right_intake_motor.set_raw_output(self.intake_speed)
 
-    def toggle_reverse(self):
-        if self.on_reverse:
-            self.m_top.set_raw_output(0)
-            self.on_reverse = False
-        else:
-            if self.on_r:
-                self.m_bottom_r.set_raw_output(0)
-                self.s_right.set(wpilib.DoubleSolenoid.Value.kReverse)
-                self.on_r = False
-            if self.on_l:
-                self.m_bottom_l.set_raw_output(0)
-                self.s_left.set(wpilib.DoubleSolenoid.Value.kReverse)
-                self.on_l = False
-            self.m_top.set_raw_output(-0.7)
-            self.on_reverse = True
+    def dinglebobs_in(self):
+        self.left_dinglebob.set_raw_output(-self.dinglebob_speed)
+        self.right_dinglebob.set_raw_output(self.dinglebob_speed)
+        self.left_dinglebob_in = True
+        self.right_dinglebob_in = True
+
+    def dinglebob_eject_left(self):
+        self.left_dinglebob.set_raw_output(self.dinglebob_speed)
+        self.right_dinglebob.set_raw_output(self.dinglebob_speed)
+        self.left_dinglebob_in = False
+        self.right_dinglebob_in = True
+
+    def dinglebob_eject_right(self):
+        self.left_dinglebob.set_raw_output(-self.dinglebob_speed)
+        self.right_dinglebob.set_raw_output(-self.dinglebob_speed)
+        self.left_dinglebob_in = True
+        self.right_dinglebob_in = False
+    
+    def dinglebobs_off(self):
+        self.right_dinglebob.set_raw_output(0)
+        self.left_dinglebob.set_raw_output(0)
+        self.right_dinglebob_in = False
+        self.left_dinglebob_in = False
