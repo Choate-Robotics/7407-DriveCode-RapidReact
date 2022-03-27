@@ -73,20 +73,20 @@ class ShooterTargeting:
         return abs(ideal_entry_angle - input_angle)
 
     @classmethod
-    def velocity_angle_minimize(cls, velocities):
+    def velocity_angle_minimize(cls, velocities, distance):
         final_vel = velocities[1]
-        a, b = 1, 40
+        a, b = 1, 40 * ((distance / 9) ** 2)
         return a * cls.calculate_energy(final_vel) + b * cls.calculate_angle(final_vel)
 
     @staticmethod
-    def energy_minimize(velocities):
+    def energy_minimize(velocities, distance):
         initial_velocity = velocities[0]
         energy = (initial_velocity[0] ** 2) + (initial_velocity[1] ** 2)
         return energy
 
     @classmethod
     def stationary_aim(cls, distance_to_hub, velocity_vertical=7.3, direction=None, current_function_value=None,
-                       step_size=0.1, function=velocity_angle_minimize):
+                       step_size=0.1, function=None):
         """
         calculates how to orient the robot and what velocity to give the ball to make a shot while stationary
 
@@ -100,18 +100,22 @@ class ShooterTargeting:
 
         The returned value is a tuple with the horizontal and vertical components of velocity
         """
+
+        if function is None:
+            function = cls.velocity_angle_minimize
+
         # Figure out the direction
         if direction is None:
             # Check the current function value. If that gives an error, we need to try a higher velocity
             try:
-                current_function_value = function(cls.calculate_required_velocity(velocity_vertical, distance_to_hub))
+                current_function_value = function(cls.calculate_required_velocity(velocity_vertical, distance_to_hub), distance_to_hub)
             except ValueError:
                 return cls.stationary_aim(distance_to_hub, velocity_vertical + step_size, direction,
                                           current_function_value, step_size, function)
 
             # Check the function value when the vertical component of velocity is increased
             increase_function_value = function(
-                cls.calculate_required_velocity(velocity_vertical + step_size, distance_to_hub))
+                cls.calculate_required_velocity(velocity_vertical + step_size, distance_to_hub), distance_to_hub)
 
             # See if we should increase the vertical component of velocity
             if increase_function_value < current_function_value:
@@ -123,7 +127,7 @@ class ShooterTargeting:
             # at a min.
             try:
                 decrease_function_value = function(
-                    cls.calculate_required_velocity(velocity_vertical - step_size, distance_to_hub))
+                    cls.calculate_required_velocity(velocity_vertical - step_size, distance_to_hub), distance_to_hub)
             except ValueError:
                 return cls.calculate_required_velocity(velocity_vertical, distance_to_hub)[0]
 
@@ -138,7 +142,7 @@ class ShooterTargeting:
         # domain error
         try:
             new_function_value = function(
-                cls.calculate_required_velocity(velocity_vertical + (step_size * direction), distance_to_hub))
+                cls.calculate_required_velocity(velocity_vertical + (step_size * direction), distance_to_hub), distance_to_hub)
         except ValueError:
             return cls.calculate_required_velocity(velocity_vertical, distance_to_hub)[0]
 
@@ -149,7 +153,8 @@ class ShooterTargeting:
         return cls.calculate_required_velocity(velocity_vertical, distance_to_hub)[0]
 
     @classmethod
-    def moving_aim(cls, distance_to_hub, robot_velocity, velocity_up=10, step_size=0.1, function=velocity_angle_minimize):
+    def moving_aim(cls, distance_to_hub, robot_velocity, velocity_up=10, step_size=0.1,
+                   function=velocity_angle_minimize):
         """
         calculates how to orient the robot and what velocity to give the ball to make a shot while moving
 
@@ -369,3 +374,31 @@ class ShooterTargeting:
         rotated_velocity = (complex_rotated_velocity.real, complex_rotated_velocity.imag)
 
         return rotated_velocity
+
+    @classmethod
+    def launch_up(cls, max_height, distance):
+        # This uses calculus to find the optimal shooting angle, however it is typically way too steep
+        # best_upwards_velocity = math.sqrt((gravity / air_resistance_constant)) * math.tan(
+        #     math.acos(math.e ** (-air_resistance_constant * max_height)))
+        # best_velocity = calculate_required_velocity(best_upwards_velocity, distance, False)[0]
+        # while math.atan2(best_velocity[1], best_velocity[0]) > max_shooter_angle:
+        #     best_velocity = calculate_required_velocity(best_velocity[1] - 0.1, distance, False)[0]
+        # return best_velocity
+        step = 0.1
+
+        speed = math.sqrt(distance * gravity / (math.cos(max_shooter_angle) * math.sin(max_shooter_angle) * 2))
+        no_air_velocity = np.multiply((math.cos(max_shooter_angle), math.sin(max_shooter_angle)), speed)
+        best_velocity = cls.calculate_required_velocity(no_air_velocity[1], distance, False)[0]
+
+        if cls.distance_up(cls.time_up(best_velocity[1]), best_velocity[1]) > max_height:
+            while cls.distance_up(cls.time_up(best_velocity[1]), best_velocity[1]) > max_height:
+                best_velocity = cls.calculate_required_velocity(best_velocity[1] - step, distance, False)[0]
+            return best_velocity
+
+        potential_velocity = best_velocity
+
+        while math.atan2(potential_velocity[1], potential_velocity[0]) < max_shooter_angle and cls.distance_up(
+                cls.time_up(best_velocity[1]), best_velocity[1]) < max_height:
+            best_velocity = potential_velocity
+            potential_velocity = cls.calculate_required_velocity(best_velocity[1] + step, distance, False)[0]
+        return best_velocity
