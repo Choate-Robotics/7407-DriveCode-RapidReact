@@ -1,7 +1,7 @@
 from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit, talon_sensor_vel_unit, talon_sensor_accel_unit
 from robotpy_toolkit_7407.unum.units import cm
 from robotpy_toolkit_7407.utils.units import rad, rev, inch, deg, m, mile, hour, s, ft
-from math import pi
+import math
 
 period = 0.08
 
@@ -35,8 +35,9 @@ height_difference = 1.85  # meters # In reality about 1.76m, but a slightly high
 gravity = 9.80665  # m/s^2
 shooter_delay = 0.5  # seconds
 acceptable_error = 0.25  # meters
-ideal_entry_angle = -pi / 3  # desired angle for the ball to enter the hub
-minimum_shooter_angle = pi / 4  # radians
+ideal_entry_angle = -math.pi / 3  # desired angle for the ball to enter the hub
+minimum_shooter_angle = math.pi / 4  # radians
+max_shooter_angle = math.radians(75)
 max_shooter_velocity = 30  # m/s
 
 # --- ELEVATOR ---
