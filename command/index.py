@@ -1,3 +1,4 @@
+
 from commands2 import InstantCommand
 from robotpy_toolkit_7407.command import SubsystemCommand
 
@@ -19,7 +20,7 @@ class IndexAutoDrive(SubsystemCommand):
         pass
     def execute(self):
         speed = 0
-        if Robot.intake.on_l or Robot.intake.on_r:
+        if Robot.intake.left_dinglebob_in and Robot.intake.right_dinglebob_in:
             speed = .5
 
         if self.subsystem.photo_electric.get_value():
@@ -55,15 +56,13 @@ class IndexDrive(SubsystemCommand[Index]):
         if abs(left_joy) < .1:
             self.subsystem.set(0)
             if self.was_on:
-                Robot.intake.m_top.set_raw_output(0)
                 self.was_on = False
         else:
             if left_joy < 0:
-                self.subsystem.set(.45)
+                self.subsystem.set(.5)
             else:
-                self.subsystem.set(-.45)
+                self.subsystem.set(-.5)
             self.was_on = True
-            Robot.intake.m_top.set_raw_output(0.7)  # TODO bad thing
 
     def end(self, interrupted: bool) -> None:
         pass
