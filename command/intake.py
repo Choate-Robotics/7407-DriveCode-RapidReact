@@ -17,14 +17,16 @@ class IntakeAutoEject(SubsystemCommand):
     def initialize(self):
         pass
     def execute(self):
+        print("RUNNNING/n"*3)
         #print("INTAKE: ", self.subsystem.left_intake_down)
         # if len(Robot.shooter.ball_queue) == 2:
         #     self.subsystem.intake_speed = 0
         # else:
         #     self.subsystem.intake_speed = .7
-        Sensors.color_sensors.towrite = bytes([0b100])
+        Sensors.color_sensors.multiplexer.writeBulk(bytes([0b100]))
         left_color = Sensors.color_sensors.color()
         print("Lefty: ", Sensors.color_sensors.get_val())
+        print("Left Color:", left_color)
 
         if left_color != constants.TEAM and left_color != "none":
             self.ejecting = True
@@ -32,9 +34,10 @@ class IntakeAutoEject(SubsystemCommand):
             wpilib.wait(1.5)
             print("EJECTING")
 
-        Sensors.color_sensors.towrite = bytes([0b1000])
+        Sensors.color_sensors.multiplexer.writeBulk(bytes([0b1000]))
         right_color = Sensors.color_sensors.color()
         print("Righty: ", Sensors.color_sensors.get_val())
+        print("Right Color:", right_color)
 
         if right_color != constants.TEAM and right_color != "none":
             self.ejecting = True
