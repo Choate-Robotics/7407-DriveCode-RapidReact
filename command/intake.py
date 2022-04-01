@@ -17,44 +17,49 @@ class IntakeAutoEject(SubsystemCommand):
     def initialize(self):
         pass
     def execute(self):
-        print("RUNNNING/n"*3)
-        #print("INTAKE: ", self.subsystem.left_intake_down)
-        # if len(Robot.shooter.ball_queue) == 2:
-        #     self.subsystem.intake_speed = 0
-        # else:
-        #     self.subsystem.intake_speed = .7
-        Sensors.color_sensors.multiplexer.writeBulk(bytes([0b100]))
-        left_color = Sensors.color_sensors.color()
-        print("Lefty: ", Sensors.color_sensors.get_val())
-        print("Left Color:", left_color)
 
-        if left_color != constants.TEAM and left_color != "none":
-            self.ejecting = True
-            self.subsystem.dinglebob_eject_right()
-            wpilib.wait(1.5)
-            print("EJECTING")
-
-        Sensors.color_sensors.multiplexer.writeBulk(bytes([0b1000]))
-        right_color = Sensors.color_sensors.color()
-        print("Righty: ", Sensors.color_sensors.get_val())
-        print("Right Color:", right_color)
-
-        if right_color != constants.TEAM and right_color != "none":
-            self.ejecting = True
-            self.subsystem.dinglebob_eject_left()
-            wpilib.wait(1.5)
-            print("EJECTING")
-            
-        elif self.subsystem.left_intake_down and self.subsystem.right_intake_down:
-            print("OFF")
+        if Robot.index.ball_queue == 2:
             self.subsystem.dinglebobs_off()
-
+            self.subsystem.toggle_left_intake()
         else:
-            print("IN")
-            self.subsystem.dinglebobs_in()
-            #self.subsystem.dinglebob_eject_left()
-        
-        print("EJECTING: ", self.ejecting)
+            print("RUNNNING/n"*3)
+            #print("INTAKE: ", self.subsystem.left_intake_down)
+            # if len(Robot.shooter.ball_queue) == 2:
+            #     self.subsystem.intake_speed = 0
+            # else:
+            #     self.subsystem.intake_speed = .7
+            Sensors.color_sensors.multiplexer.writeBulk(bytes([0b100]))
+            left_color = Sensors.color_sensors.color()
+            print("Lefty: ", Sensors.color_sensors.get_val())
+            print("Left Color:", left_color)
+
+            if left_color != constants.TEAM and left_color != "none":
+                self.ejecting = True
+                self.subsystem.dinglebob_eject_right()
+                wpilib.wait(1.5)
+                print("EJECTING")
+
+            Sensors.color_sensors.multiplexer.writeBulk(bytes([0b1000]))
+            right_color = Sensors.color_sensors.color()
+            print("Righty: ", Sensors.color_sensors.get_val())
+            print("Right Color:", right_color)
+
+            if right_color != constants.TEAM and right_color != "none":
+                self.ejecting = True
+                self.subsystem.dinglebob_eject_left()
+                wpilib.wait(1.5)
+                print("EJECTING")
+                
+            elif self.subsystem.left_intake_down and self.subsystem.right_intake_down:
+                print("OFF")
+                self.subsystem.dinglebobs_off()
+
+            else:
+                print("IN")
+                self.subsystem.dinglebobs_in()
+                #self.subsystem.dinglebob_eject_left()
+            
+            print("EJECTING: ", self.ejecting)
 
 
     def isFinished(self) -> bool:

@@ -25,17 +25,17 @@ class ColorSensors:
         self.multiplexer.writeBulk(bytes([0b1000]))
         #time.sleep(.02)
         vals = self.get_val()
-        if vals[0]-vals[2]>2500:
+        if vals[0]-vals[2]>2000:
             return "red"
-        elif vals[2]-vals[0]>2500:
+        elif vals[2]-vals[0]>2000:
             return "blue"
         return "none"
     def get_color_right(self) -> str:
         self.multiplexer.writeBulk(bytes([0b100]))
         #time.sleep(.02)
         vals = self.get_val()
-        if vals[0]-vals[2]>2500:
+        if vals[0]-vals[2]>2000:
             return "red"
-        elif vals[2]-vals[0]>2500:
+        elif vals[2]-vals[0]>2000:
             return "blue"
         return "none" 

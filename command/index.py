@@ -6,6 +6,8 @@ from robot_systems import Robot
 from subsystem import Index
 from oi.keymap import Keymap
 
+from robotpy_toolkit_7407.utils.units import inch
+
 
 
 IndexOn = lambda: InstantCommand(lambda: Robot.index.set(.5), Robot.index)
@@ -15,16 +17,29 @@ class IndexAutoDrive(SubsystemCommand):
     def __init__(self, subsystem: Index):
         super().__init__(subsystem)
         self.subsystem = subsystem
+        self.ball_distance = 7 * inch
+        self.desired_distance = 0
 
     def initialize(self):
         pass
     def execute(self):
         speed = 0
-        if Robot.intake.left_dinglebob_in and Robot.intake.right_dinglebob_in:
-            speed = .5
 
         if self.subsystem.photo_electric.get_value():
-            speed = 0
+            match self.subsystem.ball_queue:
+                case 0:
+                    self.done = False
+                    self.desired_distance = self.subsystem.motor.get_sensor_position() + self.ball_distance
+                    self.subsystem.motor.set_target_position(self.desired_distance)
+                    if self.subsystem.motor.get_sensor_position() >= self.desired_distance:
+                        speed = 0
+                        self.subsysem.ball_queue += 1
+                        self.done = True
+                case 1:
+                    speed = 0
+                    self.subsystem.ball_queue += 1
+                case 2:
+                    speed = 0
 
         left_joy = Keymap.Index.INDEX_JOY.value
         if abs(left_joy) < .1:
@@ -35,7 +50,37 @@ class IndexAutoDrive(SubsystemCommand):
             else:
                 speed = -.5
 
-        self.subsystem.set(speed)
+        if speed == 0 and not self.done:
+            pass
+        else:
+            self.subsystem.set(speed)
+
+
+        """
+        LOGIC
+
+        If intake running:
+            if the photo sensor senser a ball and the ballcount is 0:
+                set the ball count to 1
+                run the index until it goes a certain amount (need to measure)
+                set the index speed to zero
+            elif the photo sensor senses a ball and the ballcount is 1:
+                set the ball count to 2
+                set the index speed to zero
+                stop the dinglebobs
+            elif the ballcount count is 2 and the photo sensor senses a ball:
+                set the index speed to zero
+                stop the dinglebobs
+            else
+                set the index speed to zero
+        if shooting
+            set the index speed to .5 when the robot is ready to shoot
+            if the ball is shot reduce ball count
+        if was shooting and now not
+            run the index down until the photo senses a ball and then continue
+        override by operator controls
+                
+        """
 
     def isFinished(self) -> bool:
         return False

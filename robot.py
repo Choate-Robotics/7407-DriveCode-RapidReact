@@ -101,6 +101,7 @@ class _Robot(wpilib.TimedRobot):
         # z = Robot.limelight.calculate_distance()
         # print(f"Limelight: {z}")
         # logger.info(f"{Robot.limelight.calculate_distance()}")
+        print("Sensor: ", Robot.index.motor.get_sensor_position())
         pass
 
     def autonomousInit(self) -> None:

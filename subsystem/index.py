@@ -15,6 +15,8 @@ class Index(Subsystem):
         self.motor.init()
         optimize_normal_talon_no_sensor(self.motor)
 
+        ball_queue = 0
+
     def set(self, motor_speed: float):
         # TODO Velocity control
         self.motor.set_raw_output(motor_speed)
