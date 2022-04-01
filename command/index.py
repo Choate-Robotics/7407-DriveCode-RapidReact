@@ -1,4 +1,3 @@
-
 from commands2 import InstantCommand
 from robotpy_toolkit_7407.command import SubsystemCommand
 
@@ -6,7 +5,8 @@ from robot_systems import Robot
 from subsystem import Index
 from oi.keymap import Keymap
 
-from robotpy_toolkit_7407.utils.units import inch
+from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit
+from robotpy_toolkit_7407.unum import Unum
 
 
 
@@ -16,9 +16,10 @@ IndexOff = lambda: InstantCommand(lambda: Robot.index.set(0), Robot.index)
 class IndexAutoDrive(SubsystemCommand):
     def __init__(self, subsystem: Index):
         super().__init__(subsystem)
+        self.done = True
         self.subsystem = subsystem
-        self.ball_distance = 7 * inch
-        self.desired_distance = 0
+        self.ball_distance = 21034*talon_sensor_unit
+        self.desired_distance = None
 
     def initialize(self):
         pass
@@ -26,15 +27,15 @@ class IndexAutoDrive(SubsystemCommand):
         speed = 0
 
         if self.subsystem.photo_electric.get_value():
+            print("TRIPPED")
             match self.subsystem.ball_queue:
                 case 0:
-                    self.done = False
-                    self.desired_distance = self.subsystem.motor.get_sensor_position() + self.ball_distance
-                    self.subsystem.motor.set_target_position(self.desired_distance)
-                    if self.subsystem.motor.get_sensor_position() >= self.desired_distance:
-                        speed = 0
-                        self.subsysem.ball_queue += 1
-                        self.done = True
+                    print("CASE 0")
+                    if self.done:
+                        self.done = False
+                        self.desired_distance = self.subsystem.motor.get_sensor_position() + self.ball_distance
+                        #self.subsystem.motor.set_target_position(self.desired_distance)
+
                 case 1:
                     speed = 0
                     self.subsystem.ball_queue += 1
@@ -50,10 +51,24 @@ class IndexAutoDrive(SubsystemCommand):
             else:
                 speed = -.5
 
+        
+
         if speed == 0 and not self.done:
-            pass
+            if self.subsystem.motor.get_sensor_position() >= self.desired_distance:
+                speed = 0
+                print("YAYAYAYA")
+                self.subsystem.ball_queue += 1
+                self.done = True
+                self.desired_distance = None
+                self.subsystem.set(0)
+            else:
+                print(self.subsystem.motor.get_sensor_position(), self.desired_distance)
+                self.subsystem.set(.1)
+            
         else:
             self.subsystem.set(speed)
+
+        print("DESIRED: ", self.desired_distance)
 
 
         """
