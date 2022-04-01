@@ -63,7 +63,7 @@ class IndexAutoDrive(SubsystemCommand):
                 self.subsystem.set(0)
             else:
                 print(self.subsystem.motor.get_sensor_position(), self.desired_distance)
-                self.subsystem.set(.1)
+                self.subsystem.set(.3)
             
         else:
             self.subsystem.set(speed)
