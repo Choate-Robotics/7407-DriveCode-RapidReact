@@ -78,7 +78,6 @@ class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
     def end(self, interrupted: bool) -> None:
         Robot.shooter.drive_ready = False
         Robot.limelight.ref_off()
-        pass
 
     def isFinished(self) -> bool:
         return False

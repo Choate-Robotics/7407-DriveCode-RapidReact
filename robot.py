@@ -86,6 +86,7 @@ class _Robot(wpilib.TimedRobot):
         commands2.CommandScheduler.getInstance().schedule(IndexAutoDrive(Robot.index))
         commands2.CommandScheduler.getInstance().schedule(IntakeAutoEject(Robot.intake))
         Robot.elevator.zero_elevator()
+        Robot.index.ball_queue = 0
         # if not Robot.shooter.zeroed:
         #     commands2.CommandScheduler.getInstance().schedule(ShooterZero(Robot.shooter))
         # if not Robot.elevator.zeroed:
@@ -100,7 +101,7 @@ class _Robot(wpilib.TimedRobot):
         # for i in range(10):
         #     print(f"Limit Switch {i}: {Robot.limit_switches[i].get_value()}")
         # z = Robot.limelight.calculate_distance()
-        # print(f"Limelight: {z}")
+        # print(f"Limelight: {z}"
         # logger.info(f"{Robot.limelight.calculate_distance()}")
         #print("Sensor: ", Robot.index.motor.get_sensor_position())
         #print("BALL QUEUE: ", Robot.index.ball_queue)

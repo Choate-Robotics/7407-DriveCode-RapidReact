@@ -8,8 +8,6 @@ from oi.keymap import Keymap
 from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit
 from robotpy_toolkit_7407.unum import Unum
 
-
-
 IndexOn = lambda: InstantCommand(lambda: Robot.index.set(.5), Robot.index)
 IndexOff = lambda: InstantCommand(lambda: Robot.index.set(0), Robot.index)
 
@@ -48,6 +46,7 @@ class IndexAutoDrive(SubsystemCommand):
                 speed = .5
             else:
                 speed = -.5
+            self.subsystem.ball_queue = 0
 
         
 
@@ -65,6 +64,7 @@ class IndexAutoDrive(SubsystemCommand):
         elif Robot.shooter.drive_ready and Robot.shooter.shooter_ready:
             print("READY")
             self.subsystem.set(.5)
+            self.subsystem.ball_queue = 0
 
         else:
             self.subsystem.set(speed)
