@@ -39,9 +39,9 @@ class Intake(Subsystem):
 
         self.left_intake_down = False
         self.right_intake_down = False
-        self.intake_speed = .7
-        self.intake_speed = .7
+        self.intake_speed = 1
         self.dinglebob_speed = .5
+        self.dinglebob_eject_speed = 1
         self.left_dinglebob_in = True
         self.right_dinglebob_in = True
 
@@ -56,6 +56,11 @@ class Intake(Subsystem):
             self.left_intake_down = True
             self.left_intake_motor.set_raw_output(self.intake_speed)
             self.left_intake_on = True
+
+        self.s_right.set(wpilib.DoubleSolenoid.Value.kReverse)
+        self.right_intake_down = False
+        self.right_intake_motor.set_raw_output(0)
+        self.right_intake_on = False
             
 
     def toggle_right_intake(self):
@@ -68,6 +73,11 @@ class Intake(Subsystem):
             self.right_intake_down = True
             self.right_intake_motor.set_raw_output(self.intake_speed)
 
+        self.s_left.set(wpilib.DoubleSolenoid.Value.kReverse)
+        self.left_intake_down = False
+        self.left_intake_motor.set_raw_output(0)
+        self.left_intake_on = False
+
     def dinglebobs_in(self):
         self.left_dinglebob.set_raw_output(-self.dinglebob_speed)
         self.right_dinglebob.set_raw_output(self.dinglebob_speed)
@@ -75,14 +85,14 @@ class Intake(Subsystem):
         self.right_dinglebob_in = True
 
     def dinglebob_eject_left(self):
-        self.left_dinglebob.set_raw_output(self.dinglebob_speed)
-        self.right_dinglebob.set_raw_output(self.dinglebob_speed)
+        self.left_dinglebob.set_raw_output(self.dinglebob_eject_speed)
+        self.right_dinglebob.set_raw_output(self.dinglebob_eject_speed)
         self.left_dinglebob_in = False
         self.right_dinglebob_in = True
 
     def dinglebob_eject_right(self):
-        self.left_dinglebob.set_raw_output(-self.dinglebob_speed)
-        self.right_dinglebob.set_raw_output(-self.dinglebob_speed)
+        self.left_dinglebob.set_raw_output(-self.dinglebob_eject_speed)
+        self.right_dinglebob.set_raw_output(-self.dinglebob_eject_speed)
         self.left_dinglebob_in = True
         self.right_dinglebob_in = False
     

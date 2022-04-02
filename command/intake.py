@@ -28,27 +28,38 @@ class IntakeAutoEject(SubsystemCommand):
             #     self.subsystem.intake_speed = 0
             # else:
             #     self.subsystem.intake_speed = .7
-            Sensors.color_sensors.multiplexer.writeBulk(bytes([0b100]))
+            Sensors.color_sensors.multiplexer.writeBulk(bytes([0b0100]))
             left_color = Sensors.color_sensors.color()
-            ###print("Lefty: ", Sensors.color_sensors.get_val())
-            ###print("Left Color:", left_color)
+            # print("Lefty: ", Sensors.color_sensors.get_val())
+            # print("Left Color:", left_color)
 
             if left_color != constants.TEAM and left_color != "none":
                 self.ejecting = True
                 self.subsystem.dinglebob_eject_right()
-                wpilib.wait(1.5)
+                reset = False
+                if self.subsystem.left_intake_down:
+                    reset = True
+                self.subsystem.left_intake_motor.set_raw_output(0)
+                wpilib.wait(.5) #.45
+                if reset:
+                    self.subsystem.left_intake_motor.set_raw_output(self.subsystem.intake_speed)
                 ###print("EJECTING")
 
             Sensors.color_sensors.multiplexer.writeBulk(bytes([0b1000]))
             right_color = Sensors.color_sensors.color()
-            ###print("Righty: ", Sensors.color_sensors.get_val())
-            ###print("Right Color:", right_color)
+            # print("Righty: ", Sensors.color_sensors.get_val())
+            # print("Right Color:", right_color)
 
             if right_color != constants.TEAM and right_color != "none":
                 self.ejecting = True
                 self.subsystem.dinglebob_eject_left()
-                wpilib.wait(1.5)
-                ###print("EJECTING")
+                reset = False
+                if self.subsystem.right_intake_down:
+                    reset = True
+                self.subsystem.right_intake_motor.set_raw_output(0)
+                wpilib.wait(.5) #.45
+                if reset:
+                    self.subsystem.right_intake_motor.set_raw_output(self.subsystem.intake_speed)
                 
             elif not self.subsystem.left_intake_down and not self.subsystem.right_intake_down:
                 ###print("OFF")

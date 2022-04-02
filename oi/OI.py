@@ -37,6 +37,7 @@ class OI:
 
         Keymap.Drivetrain.AIM_SWERVE() \
             .whileHeld(DriveSwerveAim(Robot.drivetrain)) \
+            .whileHeld(command.ShooterEnable(Robot.shooter)) \
             .whenReleased(DriveSwerveCustom(Robot.drivetrain))
 
         # Keymap.Elevator.ELEVATOR_UP().whileHeld(command.ElevatorUp)

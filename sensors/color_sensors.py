@@ -7,6 +7,7 @@ class ColorSensors:
     def __init__(self):
         self.multiplexer = I2C(I2C.Port.kMXP, 0x71)
         self.multiplexer.writeBulk(bytes([0b1000]))
+        self.multiplexer.writeBulk(bytes([0b0100]))
         self.sensor = ColorSensorV3(I2C.Port.kMXP)
 
     def get_val(self) -> tuple[float, float, float, int]:

@@ -27,10 +27,8 @@ class IndexAutoDrive(SubsystemCommand):
         speed = 0
 
         if self.subsystem.photo_electric.get_value():
-            print("TRIPPED")
             match self.subsystem.ball_queue:
                 case 0:
-                    print("CASE 0")
                     if self.done:
                         self.done = False
                         self.desired_distance = self.subsystem.motor.get_sensor_position() + self.ball_distance
@@ -56,7 +54,6 @@ class IndexAutoDrive(SubsystemCommand):
         if speed == 0 and not self.done:
             if self.subsystem.motor.get_sensor_position() >= self.desired_distance:
                 speed = 0
-                print("YAYAYAYA")
                 self.subsystem.ball_queue += 1
                 self.done = True
                 self.desired_distance = None
@@ -65,10 +62,12 @@ class IndexAutoDrive(SubsystemCommand):
                 print(self.subsystem.motor.get_sensor_position(), self.desired_distance)
                 self.subsystem.set(.3)
             
+        elif Robot.shooter.drive_ready and Robot.shooter.shooter_ready:
+            print("READY")
+            self.subsystem.set(.5)
+
         else:
             self.subsystem.set(speed)
-
-        print("DESIRED: ", self.desired_distance)
 
 
         """

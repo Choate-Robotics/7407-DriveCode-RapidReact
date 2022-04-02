@@ -1,3 +1,4 @@
+from re import sub
 from commands2 import InstantCommand
 from robotpy_toolkit_7407.command import SubsystemCommand
 from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit
@@ -6,8 +7,8 @@ from robotpy_toolkit_7407.utils import logger
 
 from robot_systems import Robot
 from subsystem import Shooter
-from robotpy_toolkit_7407.utils.units import m, s, rad
-
+from robotpy_toolkit_7407.utils.units import m, s, rad, Unum
+from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_vel_unit
 
 def change_offset(change: float):
     Robot.shooter.offset_m += change
@@ -21,13 +22,13 @@ ShooterOffsetDown = lambda: InstantCommand(lambda: change_offset(-0.1))
 class ShooterEnable(SubsystemCommand[Shooter]):
     def __init__(self, subsystem: Shooter):
         super().__init__(subsystem)
+        self.subsystem = subsystem
 
     def initialize(self) -> None:
         Robot.limelight.ref_on()
 
     def execute(self) -> None:
         self.subsystem.target_stationary(Robot.limelight.calculate_distance() + Robot.shooter.offset_m)
-
     def isFinished(self) -> bool:
         return False
 
