@@ -39,10 +39,10 @@ class IntakeAutoEject(SubsystemCommand):
                 reset = False
                 if self.subsystem.left_intake_down:
                     reset = True
-                self.subsystem.left_intake_motor.set_raw_output(0)
+                #self.subsystem.left_intake_motor.set_raw_output(0)
                 wpilib.wait(.5) #.45
-                if reset:
-                    self.subsystem.left_intake_motor.set_raw_output(self.subsystem.intake_speed)
+                #if reset:
+                #    self.subsystem.left_intake_motor.set_raw_output(self.subsystem.intake_speed)
                 ###print("EJECTING")
 
             Sensors.color_sensors.multiplexer.writeBulk(bytes([0b1000]))
@@ -56,10 +56,10 @@ class IntakeAutoEject(SubsystemCommand):
                 reset = False
                 if self.subsystem.right_intake_down:
                     reset = True
-                self.subsystem.right_intake_motor.set_raw_output(0)
+                #self.subsystem.right_intake_motor.set_raw_output(0)
                 wpilib.wait(.5) #.45
-                if reset:
-                    self.subsystem.right_intake_motor.set_raw_output(self.subsystem.intake_speed)
+                #if reset:
+                #    self.subsystem.right_intake_motor.set_raw_output(self.subsystem.intake_speed)
                 
             elif not self.subsystem.left_intake_down and not self.subsystem.right_intake_down:
                 ###print("OFF")
