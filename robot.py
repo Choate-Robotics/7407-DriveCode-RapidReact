@@ -85,6 +85,7 @@ class _Robot(wpilib.TimedRobot):
         commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
         commands2.CommandScheduler.getInstance().schedule(IndexAutoDrive(Robot.index))
         commands2.CommandScheduler.getInstance().schedule(IntakeAutoEject(Robot.intake))
+        Robot.elevator.zero_elevator()
         # if not Robot.shooter.zeroed:
         #     commands2.CommandScheduler.getInstance().schedule(ShooterZero(Robot.shooter))
         # if not Robot.elevator.zeroed:

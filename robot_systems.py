@@ -19,10 +19,6 @@ class Robot:
 
     rev_digit: RevDigit
 
-    limit_switches = [
-        sensors.LimitSwitch(8),
-        sensors.LimitSwitch(9)
-    ]
 
 
 class Pneumatics:
