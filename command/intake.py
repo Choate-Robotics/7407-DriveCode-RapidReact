@@ -70,7 +70,6 @@ class IntakeAutoEject(SubsystemCommand):
                 #self.subsystem.dinglebobs_off()
             else:
                 self.subsystem.dinglebobs_off()
-        print("Robot Intake Extra:", Robot.intake.dinglebobs_extra)
 
 
 

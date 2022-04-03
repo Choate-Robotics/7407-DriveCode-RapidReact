@@ -68,10 +68,11 @@ class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
         dx *= self.subsystem.max_vel.asUnit(m / s)
         dy *= -self.subsystem.max_vel.asUnit(m / s)
 
-        if Robot.drivetrain.chassis_speeds.omega < .003 and Robot.limelight.get_x_offset() != 0:
+        if Robot.drivetrain.chassis_speeds.omega < .001 and Robot.limelight.get_x_offset() != 0:
             Robot.shooter.drive_ready = True
         else:
             Robot.shooter.drive_ready = False
+        print(Robot.drivetrain.chassis_speeds.omega)
 
         self.subsystem.set((dx, dy), omega)
 

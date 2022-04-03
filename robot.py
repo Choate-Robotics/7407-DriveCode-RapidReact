@@ -97,6 +97,7 @@ class _Robot(wpilib.TimedRobot):
         pass
 
     def teleopPeriodic(self) -> None:
+        print("QUEUE: ", Robot.index.ball_queue)
         # logger.info(Robot.drivetrain.odometry.getPose())
         # print(Pneumatics.get_compressor())
         #print(Robot.index.photo_electric.get_value())

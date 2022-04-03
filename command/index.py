@@ -63,7 +63,6 @@ class IndexAutoDrive(SubsystemCommand):
             print("READY")
             self.subsystem.set(.5)
             Robot.intake.dinglebobs_in()
-            self.subsystem.ball_queue = 0
 
         else:
             if speed > 0:

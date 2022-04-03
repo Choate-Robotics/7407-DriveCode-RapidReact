@@ -1,4 +1,4 @@
-from commands2 import InstantCommand
+from commands2 import InstantCommand, CommandScheduler
 from robotpy_toolkit_7407.utils import logger
 from wpimath.geometry import Pose2d, Rotation2d
 
@@ -33,12 +33,16 @@ class OI:
             Robot.drivetrain.n_10.zero()
             Robot.drivetrain.n_11.zero()
 
+        def zero_ball_queue():
+            Robot.index.ball_queue = 0
+
         Keymap.Drivetrain.REZERO_MOTORS().whenPressed(zero_motors)
 
         Keymap.Drivetrain.AIM_SWERVE() \
             .whileHeld(DriveSwerveAim(Robot.drivetrain)) \
             .whileHeld(command.ShooterEnable(Robot.shooter)) \
-            .whenReleased(DriveSwerveCustom(Robot.drivetrain))
+            .whenReleased(DriveSwerveCustom(Robot.drivetrain)) \
+            .whenReleased(InstantCommand(zero_ball_queue))
 
         # Keymap.Elevator.ELEVATOR_UP().whileHeld(command.ElevatorUp)
         # Keymap.Elevator.ELEVATOR_UP().whenReleased(command.ElevatorStop)
@@ -55,6 +59,7 @@ class OI:
 
         Keymap.Shooter.SHOOTER_ENABLE().whileHeld(command.ShooterEnable(Robot.shooter))
         Keymap.Shooter.SHOOTER_EJECT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, .5))
+        Keymap.Shooter.FENDER_SHOT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, .5))
         Keymap.Shooter.SHOOTER_SHORT_EJECT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, .35))
 
         Keymap.Shooter.SHOOTER_OFFSET_UP().whenPressed(command.ShooterOffsetUp())
