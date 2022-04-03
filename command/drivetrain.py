@@ -10,7 +10,7 @@ import constants
 
 
 def curve_abs(x):
-    return x ** 2
+    return x ** 2 #2
 
 
 def curve(x):
@@ -59,7 +59,7 @@ class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
     def execute(self) -> None:
         dx, dy = self.subsystem.axis_dx.value, self.subsystem.axis_dy.value
         #omega = self.controller.calculate(0, self.cam.get_x_offset()) * rad / s
-        omega = -0.07 * Robot.limelight.get_x_offset() * rad / s #(The 3 is adjustable, p-gain)
+        omega = -0.07 * Robot.limelight.get_x_offset() * rad / s #(The 3 is adjustable, p-gain) #.07
 
         dx = curve(dx)
         dy = curve(dy)
@@ -68,7 +68,7 @@ class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
         dx *= self.subsystem.max_vel.asUnit(m / s)
         dy *= -self.subsystem.max_vel.asUnit(m / s)
 
-        if Robot.drivetrain.chassis_speeds.omega < .005 and Robot.limelight.get_x_offset() != 0:
+        if Robot.drivetrain.chassis_speeds.omega < .003 and Robot.limelight.get_x_offset() != 0:
             Robot.shooter.drive_ready = True
         else:
             Robot.shooter.drive_ready = False

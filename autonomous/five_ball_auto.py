@@ -82,48 +82,48 @@ rotate_3 = RotateInPlace(
 final_command = SequentialCommandGroup(
     ParallelCommandGroup(
         first_path,
-        InstantCommand(lambda: Robot.intake.set_right(True), Robot.intake)
+        InstantCommand(lambda: Robot.intake.toggle_right_intake(), Robot.intake)
     ),
     WaitCommand(0.05),
     ParallelCommandGroup(
         rotate_1,
-        InstantCommand(lambda: Robot.intake.set_right(False), Robot.intake)
+        InstantCommand(lambda: Robot.intake.toggle_right_intake(), Robot.intake)
     ),
     ParallelCommandGroup(
         ShooterEnableAtDistance(Robot.shooter, 2),
-        WaitCommand(0.6).andThen(IndexOn().alongWith(IntakeDinglebobOn()))
+        WaitCommand(0.6).andThen(IndexOn().alongWith(InstantCommand(lambda: Robot.intake.dinglebobs_in(), Robot.intake)))
     ).withTimeout(1.5),
-    IndexOff(), IntakeDinglebobOff(),
+    IndexOff(), InstantCommand(lambda: Robot.intake.dinglebobs_off(), Robot.intake),
     ParallelCommandGroup(
         second_path,
-        InstantCommand(lambda: Robot.intake.set_left(True), Robot.intake)
+        InstantCommand(lambda: Robot.intake.toggle_left_intake(), Robot.intake)
     ),
     WaitCommand(0.1),
     ParallelCommandGroup(
         rotate_2,
-        WaitCommand(0.5).andThen(InstantCommand(lambda: Robot.intake.set_left(False), Robot.intake)),
+        WaitCommand(0.5).andThen(InstantCommand(lambda: Robot.intake.toggle_left_intake(), Robot.intake)),
     ),
-    InstantCommand(lambda: Robot.intake.set_left(False), Robot.intake),
+    #InstantCommand(lambda: Robot.intake.set_left(False), Robot.intake),
     ParallelCommandGroup(
         ShooterEnableAtDistance(Robot.shooter, 2.4),
-        WaitCommand(0.6).andThen(IndexOn().alongWith(IntakeDinglebobOn()))
+        WaitCommand(0.6).andThen(IndexOn().alongWith(InstantCommand(lambda: Robot.intake.dinglebobs_in(), Robot.intake)))
     ).withTimeout(1.5),
-    IndexOff(), IntakeDinglebobOff(),
+    IndexOff(), InstantCommand(lambda: Robot.intake.dinglebobs_off(), Robot.intake),
     ParallelCommandGroup(
         third_path,
-        InstantCommand(lambda: Robot.intake.set_left(True), Robot.intake)
+        InstantCommand(lambda: Robot.intake.toggle_left_intake(), Robot.intake)
     ),
     InstantCommand(Robot.drivetrain.stop, Robot.drivetrain),
     WaitCommand(1.3),
     ParallelCommandGroup(
-        WaitCommand(0.5).andThen(InstantCommand(lambda: Robot.intake.set_left(False), Robot.intake)),
+        WaitCommand(0.5).andThen(InstantCommand(lambda: Robot.intake.toggle_left_intake(), Robot.intake)),
         rotate_3,
     ),
     ParallelCommandGroup(
         ShooterEnableAtDistance(Robot.shooter, (21 * ft - 8 * inch).asNumber(m)),
-        WaitCommand(0.5).andThen(IndexOn().alongWith(IntakeDinglebobOn()))
+        WaitCommand(0.5).andThen(IndexOn().alongWith(InstantCommand(lambda: Robot.intake.dinglebobs_in(), Robot.intake)))
     ).withTimeout(4),
-    IndexOff(), IntakeDinglebobOff()
+    IndexOff(), InstantCommand(lambda: Robot.intake.dinglebobs_off(), Robot.intake)
 )
 
 routine = AutoRoutine(initial_robot_pose, final_command)

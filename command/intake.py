@@ -1,4 +1,3 @@
-from commands2 import InstantCommand
 from robot_systems import Robot, Sensors
 import commands2
 from robotpy_toolkit_7407.command import SubsystemCommand
@@ -63,8 +62,15 @@ class IntakeAutoEject(SubsystemCommand):
                 active = True
             else:
                 self.subsystem.dinglebobs_in()
-        else:
-            self.subsystem.dinglebobs_off()
+        elif not Robot.index.running:
+            if not Robot.index.photo_electric.get_value():
+                if Robot.intake.dinglebobs_extra:
+                    commands2.CommandScheduler.getInstance().schedule(commands2.WaitCommand(.5).andThen(commands2.InstantCommand(self.subsystem.dinglebobs_off)))
+                    Robot.intake.dinglebobs_extra = False
+                #self.subsystem.dinglebobs_off()
+            else:
+                self.subsystem.dinglebobs_off()
+        print("Robot Intake Extra:", Robot.intake.dinglebobs_extra)
 
 
 

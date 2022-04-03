@@ -48,8 +48,6 @@ class IndexAutoDrive(SubsystemCommand):
                 speed = -.5
             self.subsystem.ball_queue = 0
 
-        
-
         if speed == 0 and not self.done:
             if self.subsystem.motor.get_sensor_position() >= self.desired_distance:
                 speed = 0
@@ -64,9 +62,12 @@ class IndexAutoDrive(SubsystemCommand):
         elif Robot.shooter.drive_ready and Robot.shooter.shooter_ready:
             print("READY")
             self.subsystem.set(.5)
+            Robot.intake.dinglebobs_in()
             self.subsystem.ball_queue = 0
 
         else:
+            if speed > 0:
+                Robot.intake.dinglebobs_in()
             self.subsystem.set(speed)
 
 
