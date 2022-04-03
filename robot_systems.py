@@ -5,6 +5,7 @@ import sensors
 import wpilib
 
 from sensors.color_sensors import ColorSensors
+from sensors.intake_cameras import IntakeCameras
 from sensors.rev_digit import RevDigit
 
 
@@ -24,9 +25,11 @@ class Robot:
         sensors.LimitSwitch(9)
     ]
 
+    intake_cameras: IntakeCameras
+
 
 class Pneumatics:
-    compressor = wpilib.Compressor(1, wpilib.PneumaticsModuleType.REVPH)
+    compressor = None # wpilib.Compressor(1, wpilib.PneumaticsModuleType.REVPH)
 
     @classmethod
     def get_compressor(cls):

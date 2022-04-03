@@ -47,15 +47,14 @@ class Shooter(Subsystem):
 
     def set_launch_angle(self, theta: Unum):
         theta = 90 * deg - theta - self.sensor_zero_angle
-        self.m_angle.set_target_position(
-            max(min(theta, self.angle_range), 0 * rad) * constants.shooter_angle_gear_ratio)
+        self.m_angle.set_target_position(max(min(theta, self.angle_range), 0 * rad) * constants.shooter_angle_gear_ratio)
 
     def set_flywheels(self, top_vel: Unum, bottom_vel: Unum):
         self.m_top.set_target_velocity(top_vel * constants.shooter_top_gear_ratio)
         self.m_bottom.set_target_velocity(bottom_vel * constants.shooter_bottom_gear_ratio)
 
     def set_flywheels_for_ball_velocity(self, vx: float, vy: float):
-        final_velocity = (-0.286 + 1.475 * (vx ** 2 + vy ** 2) ** .5) * m / s
+        final_velocity = (-0.286 + 1.475 * (vx**2 + vy**2)**.5) * m/s
         final_angle = math.atan(vy / vx) * rad
         self.set_launch_angle(final_angle)
         self.set_flywheels(final_velocity, final_velocity)
@@ -66,11 +65,18 @@ class Shooter(Subsystem):
 
     def target_with_motion(self, limelight_dist, angle_to_hub, robot_vel) -> float:
         adjusted_robot_vel = ShooterTargeting.real_velocity_to_shooting(robot_vel, angle_to_hub)
-        (vx, vy), theta = ShooterTargeting.moving_aim_ahead(angle_to_hub, adjusted_robot_vel, limelight_dist)
-        if theta is None:
-            return -angle_to_hub
-        self.set_flywheels_for_ball_velocity(vx, vy)
-        return theta
+        if target := ShooterTargeting.moving_aim_ahead(angle_to_hub, adjusted_robot_vel, limelight_dist):
+            (vx, vy), theta = target
+            self.set_flywheels_for_ball_velocity(vx, vy)
+            return -theta
+        return angle_to_hub
+
+    def should_shoot(self, limelight_dist, angle_to_hub, robot_vel):
+        adjusted_robot_vel = ShooterTargeting.real_velocity_to_shooting(robot_vel, angle_to_hub)
+        return ShooterTargeting.should_shoot(
+            angle_to_hub, adjusted_robot_vel, limelight_dist,
+            ((self.m_top.get_sensor_velocity() / constants.shooter_top_gear_ratio).asNumber(m/s) + 0.286) / 1.475
+        )
 
     def stop(self):
         self.m_top.set_raw_output(0)

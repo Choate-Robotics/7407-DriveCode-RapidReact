@@ -26,7 +26,8 @@ class ShooterEnable(SubsystemCommand[Shooter]):
         Robot.limelight.ref_on()
 
     def execute(self) -> None:
-        self.subsystem.target_stationary(Robot.limelight.calculate_distance() + Robot.shooter.offset_m)
+        dist = Robot.limelight.calculate_distance() or 2  # default is 2 meters
+        self.subsystem.target_stationary(dist + Robot.shooter.offset_m)
 
     def isFinished(self) -> bool:
         return False

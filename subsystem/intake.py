@@ -11,7 +11,7 @@ _MOTOR_CFG = TalonConfig(neutral_brake=False)
 
 
 class Intake(Subsystem):
-    m_bottom_l: TalonFX = TalonFX(14, inverted=False, config=_MOTOR_CFG)
+    m_bottom_l: TalonFX = TalonFX(14, inverted=True, config=_MOTOR_CFG)
     m_bottom_r: TalonFX = TalonFX(13, inverted=True, config=_MOTOR_CFG)
     m_top: TalonFX = TalonFX(15, inverted=True, config=_MOTOR_CFG)
     s_left: wpilib.DoubleSolenoid
