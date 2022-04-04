@@ -9,7 +9,7 @@ from robotpy_toolkit_7407.utils import logger
 class IntakeCameras:
     def __init__(self):
         # Start server
-        args = ["sudo", sys.executable, os.path.dirname(__file__) + "/intake_camera_server.py"]
+        args = [sys.executable, os.path.dirname(__file__) + "/intake_camera_server.py"]
         logger.info(f"starting {args}...")
         subprocess.Popen(args)
         logger.info("started!")
@@ -22,3 +22,4 @@ class IntakeCameras:
         self.conn.send("c")
         if self.conn.poll(0.005):
             print(self.conn.recv())
+        pass
