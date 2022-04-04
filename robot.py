@@ -10,8 +10,9 @@ from robotpy_toolkit_7407.utils.units import m, s
 
 import command
 import constants
-from autonomous import five_ball_auto, two_ball_auto, three_ball_auto
-from command import IndexDrive
+from autonomous import two_ball_auto, five_ball_auto
+#from autonomous import five_ball_auto, two_ball_auto, three_ball_auto # TODO: Fix this
+from command import IndexDrive, IndexAutoDrive, IntakeAutoEject
 from command.drivetrain import DriveSwerveCustom
 from oi.OI import OI
 from robot_systems import Robot, Pneumatics, Sensors
@@ -24,17 +25,18 @@ class _Robot(wpilib.TimedRobot):
     """
     Main robot class. Initializes OI and subsystems, and runs the command scheduler.
     """
-    loops_per_net_update: int = 10
+    loops_per_net_update: int = 8 #10
     network_counter: int
 
     def __init__(self):
         super().__init__(constants.period)
 
-        self.auto_routines = [
-            two_ball_auto.routine,
-            three_ball_auto.routine,
-            five_ball_auto.routine
-        ]
+        # self.auto_routines = [
+        #     two_ball_auto.routine,
+        #     three_ball_auto.routine,
+        #     five_ball_auto.routine
+        # ] # TODO Fix This
+        self.auto_routines = [two_ball_auto.routine, five_ball_auto.routine]
 
         # self.test_command = ShooterDataCollectCommand(Robot.shooter).alongWith(command.IndexOn)
 
@@ -89,7 +91,10 @@ class _Robot(wpilib.TimedRobot):
     def teleopInit(self) -> None:
         Robot.limelight.led_off()
         commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
-        commands2.CommandScheduler.getInstance().schedule(IndexDrive(Robot.index))
+        commands2.CommandScheduler.getInstance().schedule(IndexAutoDrive(Robot.index))
+        commands2.CommandScheduler.getInstance().schedule(IntakeAutoEject(Robot.intake))
+        Robot.elevator.zero_elevator()
+        Robot.index.ball_queue = 0
         # if not Robot.shooter.zeroed:
         #     commands2.CommandScheduler.getInstance().schedule(ShooterZero(Robot.shooter))
         # if not Robot.elevator.zeroed:
@@ -98,21 +103,24 @@ class _Robot(wpilib.TimedRobot):
         pass
 
     def teleopPeriodic(self) -> None:
+        #print("QUEUE: ", Robot.index.ball_queue)
         # logger.info(Robot.drivetrain.odometry.getPose())
         # print(Pneumatics.get_compressor())
         #print(Robot.index.photo_electric.get_value())
         # for i in range(10):
         #     print(f"Limit Switch {i}: {Robot.limit_switches[i].get_value()}")
         # z = Robot.limelight.calculate_distance()
-        # print(f"Limelight: {z}")
+        # print(f"Limelight: {z}"
         # logger.info(f"{Robot.limelight.calculate_distance()}")
+        #print("Sensor: ", Robot.index.motor.get_sensor_position())
+        #print("BALL QUEUE: ", Robot.index.ball_queue)
         pass
 
     def autonomousInit(self) -> None:
         Robot.limelight.led_off()
         # self.auto_routines[Robot.rev_digit.routine_idx].run()
-        # five_ball_auto.routine.run()
-        two_ball_auto.routine.run()
+        #two_ball_auto.routine.run()
+        # two_ball_auto.routine.run() # TODO: Fix this
         # Robot.elevator.set_height(0 * inch)
         # Robot.shooter.target(5)
         pass

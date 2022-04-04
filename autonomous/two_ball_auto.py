@@ -40,17 +40,25 @@ first_turn = RotateInPlace(
 final_command = SequentialCommandGroup(
     ParallelCommandGroup(
         first_path,
-        InstantCommand(lambda: Robot.intake.set_left(True), Robot.intake)
+        InstantCommand(lambda: Robot.intake.toggle_left_intake(), Robot.intake)
     ),
     ParallelCommandGroup(
         first_turn,
-        WaitCommand(0.75).andThen(InstantCommand(lambda: Robot.intake.set_left(False), Robot.intake))
+        WaitCommand(0.75).andThen(InstantCommand(lambda: Robot.intake.toggle_left_intake(), Robot.intake))
     ),
     ParallelCommandGroup(
         ShooterEnableAtDistance(Robot.shooter, 2.65),
-        WaitCommand(0.6).andThen(IndexOn().alongWith(IntakeDinglebobOn()))
+        WaitCommand(0.6).andThen(IndexOn().alongWith(InstantCommand(lambda: Robot.intake.dinglebobs_in(), Robot.intake)))
     ).withTimeout(1.5),
-    IndexOff(), IntakeDinglebobOff()
+    IndexOff(), InstantCommand(lambda: Robot.intake.dinglebobs_off(), Robot.intake)
+)
+
+#routine = AutoRoutine(initial_robot_pose, final_command)
+
+test_command = SequentialCommandGroup(
+    ParallelCommandGroup(
+        WaitCommand(0.6).andThen(IndexOn().alongWith(InstantCommand(lambda: Robot.intake.dinglebobs_in(), Robot.intake)))
+    ).withTimeout(1.5)
 )
 
 routine = AutoRoutine(initial_robot_pose, final_command)
