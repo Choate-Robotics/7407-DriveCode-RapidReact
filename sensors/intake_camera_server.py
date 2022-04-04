@@ -46,6 +46,7 @@ def read_frame():
 
 
 while True:
+    ds_socket.sendto(b"hello", ('<broadcast>', 5804))
     start = time.time()
     frame = None
 
@@ -63,4 +64,4 @@ while True:
         print(f"cmd = {cmd}")
         local_conn.send(fps)
         if frame is not None:
-            ds_socket.sendto(frame, ('127.0.0.1', 5804))
+            ds_socket.sendto(frame, ('<broadcast>', 5804))
