@@ -191,19 +191,58 @@ class ElevatorClimbStep5(SubsystemCommand[Elevator]):
         return abs(self.subsystem.get_height() - constants.elevator_extended_height) <= self.tolerance
 
 
-# pull the elevator to the latch height onto traversal at the end, so we rest on t-rex hooks
+# pull the robot onto the mid/high bar
 class ElevatorClimbStep6(SubsystemCommand[Elevator]):
     def __init__(self, subsystem: T, tolerance: Unum = 0.5 * cm):
         super().__init__(subsystem)
         self.tolerance = tolerance
+        self.grabbed = False
+        self.aborted = False
+        self.aborted2 = False
+        self.setpoint = constants.elevator_below_extended_height
 
     def initialize(self) -> None:
-        pass
-    def execute(self) -> None:
-        self.subsystem.set_height(constants.elevator_latch_height)
+        self.grabbed = False
+        self.aborted = False
+        self.aborted2 = False
+        self.setpoint = constants.elevator_below_extended_height
 
+    def execute(self) -> None:
+        self.subsystem.set_height(self.setpoint)
+
+        # after we miss the bar and re-extend elevator to the top, aborted part 2 start
+        if self.aborted:
+            if self.at_setpoint():
+                self.aborted = False
+                self.aborted2 = True
+                self.setpoint = constants.elevator_extended_height
+            return
+
+        # double checking that elevator is re-extended to the top, and then ask it to pull down to the bar again
+        if self.aborted2:
+            if self.at_setpoint():
+                self.aborted2 = False
+                self.setpoint = constants.elevator_below_extended_height
+            return
+
+        # set grab status to true if limit switches on elevator hooks are pressed
+        if self.subsystem.bar_on_climb_hooks():
+            self.grabbed = True
+
+        # if we're not grabbed onto the bar and the elevator went pass the bar height, and send the elevator all the way back up again
+        if self.subsystem.get_height() <= constants.elevator_min_bar_contact_height:
+            if not self.grabbed:
+                self.aborted = True
+                self.aborted2 = False
+                self.setpoint = constants.elevator_extended_height
+
+    # finish when the robot is pulled onto the bar and elevator not going up and down like crazy
     def isFinished(self) -> bool:
-        return abs(self.subsystem.get_height() - constants.elevator_latch_height) <= self.tolerance
+        return self.at_setpoint() and not (self.aborted or self.aborted2)
+
+    # check if we're at the height we tell the elevator to be
+    def at_setpoint(self) -> bool:
+        return abs(self.subsystem.get_height() - self.setpoint) <= self.tolerance
 
 
 def abort_fn():
@@ -226,7 +265,6 @@ ElevatorClimbCommand = lambda: SequentialCommandGroup(
             ElevatorSolenoidRetract().andThen(
                 SequentialCommandGroup(
                     WaitCommand(1), # make this wait slightly shorter, possibly 0.5 / 0.75
-                    ElevatorClimbStep1(Robot.elevator),
                     ElevatorClimbStep6(Robot.elevator)
                 )
             )
