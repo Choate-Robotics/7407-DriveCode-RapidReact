@@ -60,11 +60,15 @@ class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
 
     def initialize(self) -> None:
         Robot.limelight.ref_on()
+        self.old_limelight=Robot.limelight.get_x_offset().asNumber(rad)
 
     def execute(self) -> None:
         dx, dy = self.subsystem.axis_dx.value, self.subsystem.axis_dy.value
         #omega = self.controller.calculate(0, self.cam.get_x_offset()) * rad / s
-        omega = -0.06 * Robot.limelight.get_x_offset() * rad / s #(The 3 is adjustable, p-gain) #.07
+        d_omega=self.old_limelight-Robot.limelight.get_x_offset().asNumber(rad) # BARDOE
+        #omega = -0.06 * Robot.limelight.get_x_offset()* rad / s #(The 3 is adjustable, p-gain) #.07
+        omega = (-0.4 * Robot.limelight.get_x_offset().asNumber(rad) + .05*d_omega)* rad / s  # BARDOE (tune constants)
+        self.old_limelight=Robot.limelight.get_x_offset().asNumber(rad) #BARDOE
 
         dx = curve(dx)
         dy = curve(dy)
