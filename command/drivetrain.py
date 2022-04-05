@@ -77,8 +77,10 @@ class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
         dx *= self.subsystem.max_vel.asUnit(m / s)
         dy *= -self.subsystem.max_vel.asUnit(m / s)
 
-        if abs(Robot.drivetrain.chassis_speeds.omega) < .1 and Robot.limelight.get_x_offset() != 0:
-            self.c_count += 1
+        #if abs(Robot.drivetrain.chassis_speeds.omega) < .1 and Robot.limelight.get_x_offset() != 0:
+        if abs(Robot.drivetrain.chassis_speeds.omega) < .1:# BARDOE Why did we have it so the x_offset is not zero?
+
+            self.c_count += 1 # Why do we do this?
             if self.c_count >= self.ready_counts:
                 Robot.shooter.drive_ready = True
         else:
