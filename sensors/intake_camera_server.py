@@ -4,7 +4,6 @@ import struct
 import time
 from multiprocessing.connection import Client, Listener
 
-import numpy as np
 import serial
 from serial import SerialException
 
