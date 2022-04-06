@@ -62,4 +62,5 @@ class Limelight:
         return distance.asNumber(m)
 
     def get_x_offset(self) -> float:
-        return self.tx
+        #return self.tx
+        return self.tx * deg # BARDOE
