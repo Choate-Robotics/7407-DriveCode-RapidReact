@@ -2,6 +2,7 @@ from robotpy_toolkit_7407 import Subsystem
 from robotpy_toolkit_7407.motors import TalonFX, TalonGroup, TalonConfig
 from robotpy_toolkit_7407.utils.units import rad, m, s, deg
 from robotpy_toolkit_7407.unum import Unum
+from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit, talon_sensor_vel_unit
 import math
 
 import constants
@@ -26,7 +27,7 @@ class Shooter(Subsystem):
     #     neutral_brake=False))
     m_angle = TalonFX(20, inverted=True, config=TalonConfig(
         0.3, 0.005, 1, 1023 * 0.1 / 917, integral_zone=1000, max_integral_accumulator=10000,
-        neutral_brake=True))
+        neutral_brake=True, motion_cruise_velocity=6000*talon_sensor_vel_unit))
 
     sensor_zero_angle = 15 * deg
     angle_range = 45 * deg
