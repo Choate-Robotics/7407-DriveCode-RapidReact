@@ -60,7 +60,7 @@ class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
 
     def initialize(self) -> None:
         Robot.limelight.ref_on()
-        self.old_limelight=Robot.limelight.get_x_offset().asNumber(rad) #Bardoe for the damping
+        self.old_limelight=Robot.limelight.get_x_offset().asNumber(deg) #Bardoe for the damping
 
     def execute(self) -> None:
         dx, dy = self.subsystem.axis_dx.value, self.subsystem.axis_dy.value
