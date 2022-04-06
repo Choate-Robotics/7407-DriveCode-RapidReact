@@ -20,6 +20,8 @@ def curve(x):
 
 
 class DriveSwerveCustom(SubsystemCommand[SwerveDrivetrain]):
+    driver_centric = False
+
     def initialize(self) -> None:
         pass
 
@@ -37,7 +39,10 @@ class DriveSwerveCustom(SubsystemCommand[SwerveDrivetrain]):
         dx *= self.subsystem.max_vel.asUnit(m/s)
         dy *= -self.subsystem.max_vel.asUnit(m/s)
 
-        self.subsystem.set((dx, dy), d_theta * self.subsystem.max_angular_vel)
+        if DriveSwerveCustom.driver_centric:
+            self.subsystem.set_driver_centric((dy, -dx), d_theta * self.subsystem.max_angular_vel)
+        else:
+            self.subsystem.set((dx, dy), d_theta * self.subsystem.max_angular_vel)
 
     def end(self, interrupted: bool) -> None:
         self.subsystem.n_00.set(0 * m/s, 0 * rad)

@@ -45,6 +45,14 @@ class OI:
             .whenReleased(DriveSwerveCustom(Robot.drivetrain)) \
             .whenReleased(InstantCommand(zero_ball_queue))
 
+        def driver_centric_enable():
+            DriveSwerveCustom.driver_centric = True
+
+        def driver_centric_disable():
+            DriveSwerveCustom.driver_centric = False
+
+        Keymap.Drivetrain.DRIVER_CENTRIC().whenPressed(driver_centric_enable).whenReleased(driver_centric_disable)
+
         # Keymap.Elevator.ELEVATOR_UP().whileHeld(command.ElevatorUp)
         # Keymap.Elevator.ELEVATOR_UP().whenReleased(command.ElevatorStop)
         # Keymap.Elevator.ELEVATOR_DOWN().whileHeld(command.ElevatorDown)

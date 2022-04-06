@@ -17,6 +17,7 @@ class Keymap:
         RESET_GYRO = DefaultButton(Controllers.DRIVER, controllerDRIVER.A)
         REZERO_MOTORS = DefaultButton(Controllers.DRIVER, controllerDRIVER.B)
         AIM_SWERVE = DefaultButton(Controllers.DRIVER, controllerDRIVER.RT)
+        DRIVER_CENTRIC = DefaultButton(Controllers.DRIVER, controllerDRIVER.LB)
 
     class Elevator:
         ELEVATOR_INIT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.LB)
