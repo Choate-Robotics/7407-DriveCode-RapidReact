@@ -67,7 +67,7 @@ class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
         #omega = self.controller.calculate(0, self.cam.get_x_offset()) * rad / s #NOT BARDOE
         d_omega=self.old_limelight-Robot.limelight.get_x_offset().asNumber(deg) # BARDOE
         #omega = -0.06 * Robot.limelight.get_x_offset()* rad / s #(The 3 is adjustable, p-gain) #.07
-        omega = (-0.4 * Robot.limelight.get_x_offset().asNumber(deg) + .05*d_omega)* rad / s  # BARDOE (tune constants)
+        omega = (-0.4 * Robot.limelight.get_x_offset().asNumber(deg) + .005*d_omega)* rad / s  # BARDOE (tune constants)
         self.old_limelight=Robot.limelight.get_x_offset().asNumber(deg) #BARDOE
 
         dx = curve(dx)
