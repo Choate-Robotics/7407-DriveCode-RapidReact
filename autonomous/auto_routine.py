@@ -20,6 +20,6 @@ class AutoRoutine:
         Robot.drivetrain.gyro._gyro.setYaw(
             self.initial_robot_pose.rotation().degrees()
         )
-        commands2.CommandScheduler.getInstance().schedule(
-            self.command
-        )
+        # commands2.CommandScheduler.getInstance().schedule(
+        #     self.command
+        # )

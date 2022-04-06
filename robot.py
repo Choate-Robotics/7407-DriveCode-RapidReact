@@ -17,6 +17,7 @@ from command.drivetrain import DriveSwerveCustom
 from oi.OI import OI
 from robot_systems import Robot, Pneumatics, Sensors
 from sensors.color_sensors import ColorSensors
+from sensors.field_odometry import FieldOdometry
 from sensors.intake_cameras import IntakeCameras
 from sensors.rev_digit import RevDigit
 
@@ -49,47 +50,52 @@ class _Robot(wpilib.TimedRobot):
 
         logger.info("initializing robot")
 
-        # subsystems: list[Subsystem] = list(
-        #     {k: v for k, v in Robot.__dict__.items() if isinstance(v, Subsystem)}.values()
-        # )
-        #
-        # Network.robot_init(subsystems)
-        # self.network_counter = self.loops_per_net_update
-        #
-        # for subsystem in subsystems:
-        #     subsystem.init()
-        #
-        # # OI
-        # OI.init()
-        # OI.map_controls()
+        subsystems: list[Subsystem] = list(
+            {k: v for k, v in Robot.__dict__.items() if isinstance(v, Subsystem)}.values()
+        )
+
+        Network.robot_init(subsystems)
+        self.network_counter = self.loops_per_net_update
+
+        for subsystem in subsystems:
+            subsystem.init()
+
+        # OI
+        OI.init()
+        OI.map_controls()
 
         Robot.rev_digit = RevDigit()
 
         # Pneumatics
-        # Pneumatics.compressor.enableAnalog(90, 120)
+        Pneumatics.compressor = wpilib.Compressor(1, wpilib.PneumaticsModuleType.REVPH)
+        Pneumatics.compressor.enableAnalog(90, 120)
 
-        # Sensors.color_sensors = ColorSensors()
+        Sensors.color_sensors = ColorSensors()
 
         commands2.CommandScheduler.getInstance().setPeriod(constants.period)
 
-        # Robot.limelight.led_off()
+        Robot.limelight.led_off()
+        Robot.limelight.ref_on()
 
-        Robot.intake_cameras = IntakeCameras()
+        Robot.odometry = FieldOdometry(Robot.limelight, Robot.drivetrain)
+
+        # Robot.intake_cameras = IntakeCameras()
 
         logger.info("initialization complete")
 
     def robotPeriodic(self):
         # Robot.rev_digit.update()
         commands2.CommandScheduler.getInstance().run()
+        Robot.odometry.update()
         # Robot.limelight.update()
-        Robot.intake_cameras.read_camera_data()
+        # Robot.intake_cameras.read_camera_data()
         # self.network_counter -= 1
         # if self.network_counter == 0:
         #     self.network_counter = self.loops_per_net_update
         #     Network.robot_send_status()
 
     def teleopInit(self) -> None:
-        Robot.limelight.led_off()
+        # Robot.limelight.led_off()
         commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
         commands2.CommandScheduler.getInstance().schedule(IndexAutoDrive(Robot.index))
         commands2.CommandScheduler.getInstance().schedule(IntakeAutoEject(Robot.intake))
@@ -109,17 +115,17 @@ class _Robot(wpilib.TimedRobot):
         #print(Robot.index.photo_electric.get_value())
         # for i in range(10):
         #     print(f"Limit Switch {i}: {Robot.limit_switches[i].get_value()}")
-        # z = Robot.limelight.calculate_distance()
+        # z = Robot.odometry.get_dist_to_hub()
         # print(f"Limelight: {z}"
-        # logger.info(f"{Robot.limelight.calculate_distance()}")
+        # logger.info(f"{Robot.odometry.get_dist_to_hub()}")
         #print("Sensor: ", Robot.index.motor.get_sensor_position())
         #print("BALL QUEUE: ", Robot.index.ball_queue)
         pass
 
     def autonomousInit(self) -> None:
-        Robot.limelight.led_off()
+        Robot.limelight.led_on()
         # self.auto_routines[Robot.rev_digit.routine_idx].run()
-        #two_ball_auto.routine.run()
+        five_ball_auto.routine.run()
         # two_ball_auto.routine.run() # TODO: Fix this
         # Robot.elevator.set_height(0 * inch)
         # Robot.shooter.target(5)

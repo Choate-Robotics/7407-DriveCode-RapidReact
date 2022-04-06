@@ -5,6 +5,7 @@ import sensors
 import wpilib
 
 from sensors.color_sensors import ColorSensors
+from sensors.field_odometry import FieldOdometry
 from sensors.intake_cameras import IntakeCameras
 from sensors.rev_digit import RevDigit
 
@@ -18,8 +19,9 @@ class Robot:
 
     limelight = sensors.Limelight()
 
-    rev_digit: RevDigit
+    odometry: FieldOdometry
 
+    rev_digit: RevDigit
 
     intake_cameras: IntakeCameras
 

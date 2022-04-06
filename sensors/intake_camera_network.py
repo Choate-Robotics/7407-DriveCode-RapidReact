@@ -1,7 +1,7 @@
 import socket
 
 
-PORT = 37201
+PORT = 37021
 
 
 class UDPServer:

@@ -26,7 +26,7 @@ class ShooterEnable(SubsystemCommand[Shooter]):
         Robot.limelight.ref_on()
 
     def execute(self) -> None:
-        self.subsystem.target_stationary(Robot.limelight.calculate_distance() + Robot.shooter.offset_m)
+        self.subsystem.target_stationary(Robot.odometry.get_dist_to_hub() + Robot.shooter.offset_m)
 
     def isFinished(self) -> bool:
         return False
