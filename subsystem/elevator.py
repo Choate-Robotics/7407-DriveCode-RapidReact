@@ -1,3 +1,4 @@
+# import iniconfig
 from robotpy_toolkit_7407 import Subsystem
 from robotpy_toolkit_7407.motors import TalonFX, TalonGroup, TalonConfig
 import wpilib
@@ -14,7 +15,7 @@ from robotpy_toolkit_7407.utils.units import inch, rev
 
 _MOTOR_CFG = TalonConfig(
     0.1, 0, 0, 1023 / 20937,
-    motion_cruise_velocity=15000*talon_sensor_vel_unit, motion_acceleration=50000*talon_sensor_accel_unit,
+    motion_cruise_velocity=30000*talon_sensor_vel_unit, motion_acceleration=50000*talon_sensor_accel_unit,
     neutral_brake=True
 )
 
@@ -67,4 +68,14 @@ class Elevator(Subsystem):
         self.motors.set_target_position(0 * inch * constants.elevator_gear_ratio)
         self.motors.set_sensor_position(0 * rev)
         
+
+    def set_climb_speed(self):
+        _MOTOR_CFG = TalonConfig(
+        0.1, 0, 0, 1023 / 20937,
+        motion_cruise_velocity=15000*talon_sensor_vel_unit, motion_acceleration=50000*talon_sensor_accel_unit,
+        neutral_brake=True
+        )
         
+        self.motors: TalonGroup = TalonGroup(TalonFX(17, inverted=True), TalonFX(18, inverted=False), config=_MOTOR_CFG)
+        
+        self.motors.init()

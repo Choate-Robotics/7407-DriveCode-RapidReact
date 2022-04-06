@@ -8,7 +8,7 @@ from robotpy_toolkit_7407.utils.units import m, s
 
 import command
 import constants
-from autonomous import two_ball_auto, five_ball_auto
+from autonomous import two_ball_auto, five_ball_auto, new_five_ball_auto
 #from autonomous import five_ball_auto, two_ball_auto, three_ball_auto # TODO: Fix this
 from command import IndexDrive, IndexAutoDrive, IntakeAutoEject
 from command.drivetrain import DriveSwerveCustom
@@ -98,7 +98,7 @@ class _Robot(wpilib.TimedRobot):
 
     def teleopPeriodic(self) -> None:
         #print("QUEUE: ", Robot.index.ball_queue)
-        # logger.info(Robot.drivetrain.odometry.getPose())
+        logger.info(Robot.drivetrain.odometry.getPose())
         # print(Pneumatics.get_compressor())
         #print(Robot.index.photo_electric.get_value())
         # for i in range(10):
@@ -112,8 +112,10 @@ class _Robot(wpilib.TimedRobot):
 
     def autonomousInit(self) -> None:
         Robot.limelight.led_off()
+        new_five_ball_auto.routine.run()
+        
         # self.auto_routines[Robot.rev_digit.routine_idx].run()
-        #two_ball_auto.routine.run()
+        # two_ball_auto.routine.run()
         # two_ball_auto.routine.run() # TODO: Fix this
         # Robot.elevator.set_height(0 * inch)
         # Robot.shooter.target(5)

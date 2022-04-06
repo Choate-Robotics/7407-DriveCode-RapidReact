@@ -244,6 +244,21 @@ class ElevatorClimbStep6(SubsystemCommand[Elevator]):
     def at_setpoint(self) -> bool:
         return abs(self.subsystem.get_height() - self.setpoint) <= self.tolerance
 
+    
+class ElevatorClimbStep7(SubsystemCommand[Elevator]):
+    def __init__(self, subsystem: T, tolerance: Unum = 0.5 * cm):
+        super().__init__(subsystem)
+        self.tolerance = tolerance
+
+    def initialize(self) -> None:
+        pass
+    
+    def execute(self) -> None:
+        self.subsystem.set_height(constants.elevator_latch_height)
+
+    def isFinished(self) -> bool:
+        return abs(self.subsystem.get_height() - constants.elevator_latch_height) <= self.tolerance
+    
 
 def abort_fn():
     pass
@@ -251,6 +266,7 @@ def abort_fn():
 
 
 ElevatorClimbCommand = lambda: SequentialCommandGroup(
+    InstantCommand(lambda: Robot.elevator.set_climb_speed(), Robot.elevator),
     ElevatorClimbStep1(Robot.elevator),
     ElevatorClimbStep2(Robot.elevator),
     ElevatorClimbStep3(Robot.elevator),
@@ -264,10 +280,15 @@ ElevatorClimbCommand = lambda: SequentialCommandGroup(
             ElevatorClimbStep5(Robot.elevator),
             ElevatorSolenoidRetract().andThen(
                 SequentialCommandGroup(
-                    WaitCommand(1), # make this wait slightly shorter, possibly 0.5 / 0.75
-                    ElevatorClimbStep6(Robot.elevator)
+                    WaitCommand(0.60), 
+                    ElevatorClimbStep6(Robot.elevator),
+                    WaitCommand(3.5),
+                    ElevatorClimbStep1(Robot.elevator),
+                    ElevatorClimbStep7(Robot.elevator)
                 )
             )
         )
     )
 )
+
+# changed the last wait command from 1 to 0.5, untested

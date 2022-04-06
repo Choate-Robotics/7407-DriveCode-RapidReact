@@ -58,17 +58,20 @@ class TalonFXSwerveNode(SwerveNode):
         optimize_normal_talon(self.m_turn)
         self.zero()
 
+    # make the turn motor set their sensor 0 to current horizontal thingy
     def zero(self):
         current_absolute_pos_radians = self.encoder.getAbsolutePosition() * deg
         new_sensor_pos_radians = current_absolute_pos_radians - self.encoder_zeroed_absolute_pos_radians
         self.m_turn.set_sensor_position(new_sensor_pos_radians * constants.drivetrain_turn_gear_ratio)
 
+    # reposition the wheels
     def set_motor_angle(self, pos: Unum):
         self.m_turn.set_target_position(pos * constants.drivetrain_turn_gear_ratio)
 
     def get_current_motor_angle(self) -> Unum:
         return self.m_turn.get_sensor_position() / constants.drivetrain_turn_gear_ratio
 
+    # rotate the wheel so the robot moves
     def set_motor_velocity(self, vel: Unum):
         self.m_move.set_target_velocity(vel * constants.drivetrain_move_gear_ratio)
 
@@ -87,6 +90,7 @@ class PigeonIMUGyro(SwerveGyro):
     def get_robot_heading(self) -> Unum:
         return self._gyro.getYaw() * deg
 
+    # reset the gyro
     def reset_angle(self):
         self._gyro.setYaw(0)
 
