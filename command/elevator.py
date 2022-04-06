@@ -27,9 +27,13 @@ ElevatorSolenoidToggle = lambda: InstantCommand(Robot.elevator.solenoid.toggle, 
 def restrict_robot_vel():
     Robot.drivetrain.max_vel = constants.drivetrain_max_climb_vel
 
+def set_initialized():
+    Robot.elevator.initialized = True
+
 ElevatorSetupCommand = lambda: ParallelCommandGroup(
     InstantCommand(lambda: restrict_robot_vel()),
     InstantCommand(lambda: Robot.elevator.set_height(constants.elevator_extended_height)),
+    InstantCommand(set_initialized),
     ElevatorSolenoidRetract()
 )
 
@@ -264,31 +268,34 @@ def abort_fn():
     pass
 
 
-
-ElevatorClimbCommand = lambda: SequentialCommandGroup(
-    InstantCommand(lambda: Robot.elevator.set_climb_speed(), Robot.elevator),
-    ElevatorClimbStep1(Robot.elevator),
-    ElevatorClimbStep2(Robot.elevator),
-    ElevatorClimbStep3(Robot.elevator),
-    ElevatorSolenoidRetract().andThen(
-        SequentialCommandGroup(
-            WaitCommand(0.5),
-            ElevatorClimbStep1(Robot.elevator),
-            ElevatorClimbStep2(Robot.elevator),
-            ElevatorClimbStep4(Robot.elevator),
-            WaitCommand(0.25), 
-            ElevatorClimbStep5(Robot.elevator),
-            ElevatorSolenoidRetract().andThen(
-                SequentialCommandGroup(
-                    WaitCommand(0.60), 
-                    ElevatorClimbStep6(Robot.elevator),
-                    WaitCommand(3.5),
-                    ElevatorClimbStep1(Robot.elevator),
-                    ElevatorClimbStep7(Robot.elevator)
+ElevatorClimbCommand = lambda: ConditionalCommand(
+    InstantCommand(abort_fn),
+    SequentialCommandGroup(
+        InstantCommand(lambda: Robot.elevator.set_climb_speed(), Robot.elevator),
+        ElevatorClimbStep1(Robot.elevator),
+        ElevatorClimbStep2(Robot.elevator),
+        ElevatorClimbStep3(Robot.elevator),
+        ElevatorSolenoidRetract().andThen(
+            SequentialCommandGroup(
+                WaitCommand(0.5),
+                ElevatorClimbStep1(Robot.elevator),
+                ElevatorClimbStep2(Robot.elevator),
+                ElevatorClimbStep4(Robot.elevator),
+                WaitCommand(0.25),
+                ElevatorClimbStep5(Robot.elevator),
+                ElevatorSolenoidRetract().andThen(
+                    SequentialCommandGroup(
+                        WaitCommand(0.60),
+                        ElevatorClimbStep6(Robot.elevator),
+                        WaitCommand(3.5),
+                        ElevatorClimbStep1(Robot.elevator),
+                        ElevatorClimbStep7(Robot.elevator)
+                    )
                 )
             )
         )
-    )
+    ),
+    lambda: Robot.elevator.initialized
 )
 
 # changed the last wait command from 1 to 0.5, untested

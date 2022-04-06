@@ -27,6 +27,7 @@ class Elevator(Subsystem):
     l_hanger_top = [LimitSwitch(4), LimitSwitch(5)]
     l_hanger_bottom = [LimitSwitch(6), LimitSwitch(7)]
     mag_sensor = LimitSwitch(9)
+    initialized: bool = False
 
     def init(self):
         self.motors.init()

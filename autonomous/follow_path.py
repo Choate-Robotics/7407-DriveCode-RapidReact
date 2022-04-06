@@ -57,7 +57,7 @@ class FollowPathCustom(SubsystemCommand[SwerveDrivetrain]):
         # self.subsystem.set((vx, vy), 0 * rad/s)
 
     def end(self, interrupted: bool) -> None:
-        pass
+        self.subsystem.set((0 * m/s, 0 * m/s), 0 * rad/s)
 
     def isFinished(self) -> bool:
         return self.finished

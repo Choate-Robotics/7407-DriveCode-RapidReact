@@ -47,8 +47,23 @@ class Intake(Subsystem):
 
         self.dinglebobs_extra = False
 
-    def toggle_left_intake(self):
+    def left_intake_enable(self):
+        if not self.left_intake_down:
+            self.toggle_left_intake()
 
+    def left_intake_disable(self):
+        if self.left_intake_down:
+            self.toggle_left_intake()
+
+    def right_intake_enable(self):
+        if not self.right_intake_down:
+            self.toggle_right_intake()
+
+    def right_intake_disable(self):
+        if self.right_intake_down:
+            self.toggle_right_intake()
+
+    def toggle_left_intake(self):
         if self.left_intake_down:
             self.dinglebobs_extra = True
             self.s_left.set(wpilib.DoubleSolenoid.Value.kReverse)
@@ -68,7 +83,6 @@ class Intake(Subsystem):
             
 
     def toggle_right_intake(self):
-
         if self.right_intake_down:
             self.dinglebobs_extra = True
             self.s_right.set(wpilib.DoubleSolenoid.Value.kReverse)

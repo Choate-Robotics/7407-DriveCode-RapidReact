@@ -84,6 +84,7 @@ class _Robot(wpilib.TimedRobot):
 
     def teleopInit(self) -> None:
         Robot.limelight.led_off()
+        Robot.elevator.initialized = False
         commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
         commands2.CommandScheduler.getInstance().schedule(IndexAutoDrive(Robot.index))
         commands2.CommandScheduler.getInstance().schedule(IntakeAutoEject(Robot.intake))
@@ -112,7 +113,7 @@ class _Robot(wpilib.TimedRobot):
 
     def autonomousInit(self) -> None:
         Robot.limelight.led_off()
-        new_five_ball_auto.routine.run()
+        five_ball_auto.routine.run()
         
         # self.auto_routines[Robot.rev_digit.routine_idx].run()
         # two_ball_auto.routine.run()
