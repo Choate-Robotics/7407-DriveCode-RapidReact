@@ -15,6 +15,12 @@ class ColorSensors:
 
     def color(self) -> str:
         vals = self.get_val()
+        if vals[0] == 0:
+            print("REINITIALIZING I2C!!!")
+            self.multiplexer = I2C(I2C.Port.kMXP, 0x71)
+            self.multiplexer.writeBulk(bytes([0b0100]))
+            vals = self.get_val()
+
         if vals[0]-vals[2]>1000:
             return "red"
         elif vals[2]-vals[0]>1000:
