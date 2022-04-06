@@ -1,7 +1,7 @@
 import math
 from robotpy_toolkit_7407.command import SubsystemCommand
 from robotpy_toolkit_7407.subsystem_templates.drivetrain.swerve_drivetrain import SwerveDrivetrain
-from robotpy_toolkit_7407.utils.units import m, s, rad
+from robotpy_toolkit_7407.utils.units import m, s, rad, deg
 from wpimath.controller import ProfiledPIDControllerRadians
 from wpimath.trajectory import TrapezoidProfileRadians
 from sensors.limelight import Limelight
@@ -67,7 +67,7 @@ class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
         #omega = self.controller.calculate(0, self.cam.get_x_offset()) * rad / s #NOT BARDOE
         d_omega=self.old_limelight-Robot.limelight.get_x_offset().asNumber(deg) # BARDOE
         #omega = -0.06 * Robot.limelight.get_x_offset()* rad / s #(The 3 is adjustable, p-gain) #.07
-        omega = (-0.4 * Robot.limelight.get_x_offset().asNumber(deg) + .005*d_omega)* rad / s  # BARDOE (tune constants)
+        omega = (-0.06 * Robot.limelight.get_x_offset().asNumber(deg) +.035*d_omega)* rad / s  # BARDOE (tune constants)
         self.old_limelight=Robot.limelight.get_x_offset().asNumber(deg) #BARDOE
 
         dx = curve(dx)
@@ -78,7 +78,7 @@ class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
         dy *= -self.subsystem.max_vel.asUnit(m / s)
 
         #if abs(Robot.drivetrain.chassis_speeds.omega) < .1 and Robot.limelight.get_x_offset() != 0:
-        if abs(Robot.drivetrain.chassis_speeds.omega) < .1 and Robot.limelight.get_x_offset(): # BARDOE Why did we have it so the x_offset is not zero?
+        if abs(Robot.drivetrain.chassis_speeds.omega) < .1 and Robot.limelight.get_x_offset().asNumber(rad)!=0: # BARDOE Why did we have it so the x_offset is not zero?
 
             self.c_count += 1 # Why do we do this?
             if self.c_count >= self.ready_counts:
