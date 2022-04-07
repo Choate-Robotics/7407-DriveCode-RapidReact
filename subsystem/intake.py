@@ -104,6 +104,12 @@ class Intake(Subsystem):
         self.left_dinglebob_in = True
         self.right_dinglebob_in = True
 
+    def dinglebobs_out(self):
+        self.left_dinglebob.set_raw_output(self.dinglebob_speed)
+        self.right_dinglebob.set_raw_output(-self.dinglebob_speed)
+        self.left_dinglebob_in = True
+        self.right_dinglebob_in = True
+
     def dinglebob_eject_left(self):
         self.left_dinglebob.set_raw_output(self.dinglebob_eject_speed)
         self.right_dinglebob.set_raw_output(self.dinglebob_eject_speed)

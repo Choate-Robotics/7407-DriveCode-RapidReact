@@ -73,10 +73,10 @@ class BallPath(SubsystemCommand[Index]):
             self.index_normal = False
             Robot.index.ball_queue += 1
         elif Robot.index.ball_queue == 1 and Robot.index.photo_electric.get_value():
-            self.dingebob_direction = "off"
+            self.dinglebob_direction = "off"
             Robot.index.ball_queue += 1
         elif Robot.index.ball_queue == 2:
-            self.dingebob_direction = "off"
+            self.dinglebob_direction = "off"
         
         if self.index_index:
             if self.desired_distance <= Robot.index.motor.get_sensor_position():
@@ -93,20 +93,28 @@ class BallPath(SubsystemCommand[Index]):
             self.index_shoot = True
             self.index_index = False
             self.index_speed = .5
-            self.dingebob_direction = "in"
+            self.dinglebob_direction = "in"
 
         left_joy = Keymap.Index.INDEX_JOY.value
 
         if abs(left_joy) >= .1:
             if left_joy < 0:
                 self.index_normal = False
-                speed = .5
+                self.index_speed = .5
                 self.dinglebob_direction = "in"
             else:
                 self.index_normal = False
-                speed = -.5
-                self.dingebob_direction = "out"
+                self.index_speed = -.5
+                self.dinglebob_direction = "out"
             self.subsystem.ball_queue = 0
+
+        Robot.index.set(self.index_speed)
+        if self.dinglebob_direction == "in":
+            Robot.intake.dinglebobs_in()
+        elif self.dinglebob_direction == "out":
+            Robot.intake.dinglebobs_out()
+        elif self.dinglebob_direction == "off":
+            Robot.intake.dinglebobs_off()
         
 
 
