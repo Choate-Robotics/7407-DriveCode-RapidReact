@@ -91,14 +91,12 @@ class BallPath(SubsystemCommand[Index]):
         else:
             self.desired_distance = None
         
-        if Robot.shooter.drive_ready and Robot.shooter.shooter_ready and Robot.limelight.get_x_offset()!=0 and Robot.limelight.get_x_offset() and abs(Robot.drivetrain.chassis_speeds()) < .1:
+        if Robot.shooter.drive_ready and Robot.shooter.shooter_ready: # and Robot.limelight.get_x_offset()!=0 and Robot.limelight.get_x_offset() and abs(Robot.drivetrain.chassis_speeds) < .1:
             self.index_shoot = True
             self.index_index = False
             self.index_normal = False
             self.index_speed = .5
             self.dinglebob_direction = "in"
-        else:
-            print(f"Drive Ready: {Robot.shooter.drive_ready}, Shooter Ready: {Robot.shooter.shooter_ready}, ")
 
         left_joy = Keymap.Index.INDEX_JOY.value
 
