@@ -62,6 +62,9 @@ class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
         super().__init__(subsystem)
         self.ready_counts = ready_counts
         self.c_count = 0
+        self.KP = -0.06 # -0.06
+        self.KD = .040 # 0.035
+        # The PID is actually really good rn don't change it pls
 
     def initialize(self) -> None:
         Robot.limelight.ref_on()
@@ -72,7 +75,7 @@ class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
         #omega = self.controller.calculate(0, self.cam.get_x_offset()) * rad / s #NOT BARDOE
         d_omega=self.old_limelight-Robot.limelight.get_x_offset().asNumber(deg) # BARDOE
         #omega = -0.06 * Robot.limelight.get_x_offset()* rad / s #(The 3 is adjustable, p-gain) #.07
-        omega = (-0.06 * Robot.limelight.get_x_offset().asNumber(deg) +.035*d_omega)* rad / s  # BARDOE (tune constants)
+        omega = (self.KP * Robot.limelight.get_x_offset().asNumber(deg) +self.KD*d_omega)* rad / s  # BARDOE (tune constants) # KD should be smaller than KD
         self.old_limelight=Robot.limelight.get_x_offset().asNumber(deg) #BARDOE
 
         dx = curve(dx)

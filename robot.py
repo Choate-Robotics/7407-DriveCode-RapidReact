@@ -99,7 +99,7 @@ class _Robot(wpilib.TimedRobot):
 
     def teleopPeriodic(self) -> None:
         #print("QUEUE: ", Robot.index.ball_queue)
-        logger.info(Robot.drivetrain.odometry.getPose())
+        # logger.info(Robot.drivetrain.odometry.getPose())
         # print(Pneumatics.get_compressor())
         #print(Robot.index.photo_electric.get_value())
         # for i in range(10):
@@ -113,7 +113,8 @@ class _Robot(wpilib.TimedRobot):
 
     def autonomousInit(self) -> None:
         Robot.limelight.led_off()
-        five_ball_auto.routine.run()
+        two_ball_auto.routine.run()
+        # five_ball_auto.routine.run()
         
         # self.auto_routines[Robot.rev_digit.routine_idx].run()
         # two_ball_auto.routine.run()

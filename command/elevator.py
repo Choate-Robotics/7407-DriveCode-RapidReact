@@ -269,7 +269,6 @@ def abort_fn():
 
 
 ElevatorClimbCommand = lambda: ConditionalCommand(
-    InstantCommand(abort_fn),
     SequentialCommandGroup(
         InstantCommand(lambda: Robot.elevator.set_climb_speed(), Robot.elevator),
         ElevatorClimbStep1(Robot.elevator),
@@ -295,6 +294,7 @@ ElevatorClimbCommand = lambda: ConditionalCommand(
             )
         )
     ),
+    InstantCommand(abort_fn), 
     lambda: Robot.elevator.initialized
 )
 

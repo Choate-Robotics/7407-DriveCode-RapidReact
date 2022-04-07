@@ -56,7 +56,7 @@ class Shooter(Subsystem):
     def set_flywheels(self, top_vel: Unum, bottom_vel: Unum):
         self.m_top.set_target_velocity(top_vel * constants.shooter_top_gear_ratio)
         self.m_bottom.set_target_velocity(bottom_vel * constants.shooter_bottom_gear_ratio)
-        tolerance = .06
+        tolerance = .08 # 0.06
         if abs(self.m_top.get_sensor_velocity()-top_vel*constants.shooter_top_gear_ratio)<tolerance*(top_vel*constants.shooter_top_gear_ratio) and abs(self.m_bottom.get_sensor_velocity()-bottom_vel*constants.shooter_bottom_gear_ratio)<tolerance*(bottom_vel*constants.shooter_bottom_gear_ratio): 
             self.shooter_ready = True
         else:
