@@ -10,7 +10,7 @@ import command
 import constants
 from autonomous import two_ball_auto, five_ball_auto, new_five_ball_auto
 #from autonomous import five_ball_auto, two_ball_auto, three_ball_auto # TODO: Fix this
-from command import IndexDrive, IndexAutoDrive, IntakeAutoEject
+from command import IndexDrive, IndexAutoDrive, IntakeAutoEject, BallPath
 from command.drivetrain import DriveSwerveCustom
 from oi.OI import OI
 from robot_systems import Robot, Pneumatics, Sensors
@@ -86,8 +86,9 @@ class _Robot(wpilib.TimedRobot):
         Robot.limelight.led_off()
         Robot.elevator.initialized = False
         commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
-        commands2.CommandScheduler.getInstance().schedule(IndexAutoDrive(Robot.index))
-        commands2.CommandScheduler.getInstance().schedule(IntakeAutoEject(Robot.intake))
+        #commands2.CommandScheduler.getInstance().schedule(IndexAutoDrive(Robot.index))
+        #commands2.CommandScheduler.getInstance().schedule(IntakeAutoEject(Robot.intake))
+        commands2.CommandScheduler.getInstance().schedule(BallPath())
         Robot.elevator.zero_elevator()
         Robot.index.ball_queue = 0
         # if not Robot.shooter.zeroed:
