@@ -12,7 +12,8 @@ from subsystem import Intake
 import constants
 
 class BallPath(SubsystemCommand[Index]):
-    def __init__(self):
+    def __init__(self, subsystem):
+        super().__init__(subsystem)
         self.index_speed = 0
         self.dinglebob_direction = "off"
         self.left_intake_direction = "off"
@@ -96,6 +97,8 @@ class BallPath(SubsystemCommand[Index]):
             self.index_normal = False
             self.index_speed = .5
             self.dinglebob_direction = "in"
+        else:
+            print(f"Drive Ready: {Robot.shooter.drive_ready}, Shooter Ready: {Robot.shooter.shooter_ready}, ")
 
         left_joy = Keymap.Index.INDEX_JOY.value
 
@@ -116,16 +119,18 @@ class BallPath(SubsystemCommand[Index]):
         elif self.dinglebob_direction == "out":
             Robot.intake.dinglebobs_out()
         elif self.dinglebob_direction == "eject_left":
+            print("Eject Left")
             Robot.intake.dinglebob_eject_left()
         elif self.dinglebob_direction == "eject_right":
+            print("Eject Right")
             Robot.intake.dinglebob_eject_right()
         elif self.dinglebob_direction == "off":
             Robot.intake.dinglebobs_off()
 
-        print(f"Index Shooting: {self.index_shoot}, Index Indexing: {self.index_index}")
-        print(f"INTAKE ACTIVE CHECK: {self.intake_active_check}")
-        print(f"Dinglebob Direction: {self.dinglebob_direction}")
-        print(f"Index Speed: ", self.index_speed)
+        # print(f"Index Shooting: {self.index_shoot}, Index Indexing: {self.index_index}")
+        # print(f"INTAKE ACTIVE CHECK: {self.intake_active_check}")
+        # print(f"Dinglebob Direction: {self.dinglebob_direction}")
+        # print(f"Index Speed: ", self.index_speed)
         
 
     def isFinished(self) -> bool:

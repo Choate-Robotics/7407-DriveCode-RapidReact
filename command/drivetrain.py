@@ -94,7 +94,7 @@ class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
         else:
             self.c_count = 0
             Robot.shooter.drive_ready = False
-        print(Robot.drivetrain.chassis_speeds.omega)
+        #print(Robot.drivetrain.chassis_speeds.omega)
 
         self.subsystem.set((dx, dy), omega)
 

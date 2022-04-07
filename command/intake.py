@@ -157,8 +157,8 @@ class IntakeToggleLeft(SubsystemCommand):
         self.subsystem.toggle_left_intake()
     def isFinished(self) -> bool:
         return True
-    def end(self, interrupted=False):
-        commands2.CommandScheduler.getInstance().schedule(IntakeAutoEject(Robot.intake))
+    def end(self, interrupted=False): ...
+        #commands2.CommandScheduler.getInstance().schedule(IntakeAutoEject(Robot.intake))
 
 class IntakeToggleRight(SubsystemCommand):
     def __init__(self, subsystem: Intake):
@@ -170,8 +170,8 @@ class IntakeToggleRight(SubsystemCommand):
         self.subsystem.toggle_right_intake()
     def isFinished(self) -> bool:
         return True
-    def end(self, interrupted=False):
-        commands2.CommandScheduler.getInstance().schedule(IntakeAutoEject(Robot.intake))
+    def end(self, interrupted=False): ...
+        #commands2.CommandScheduler.getInstance().schedule(IntakeAutoEject(Robot.intake))
 
 class IntakeDinglebobOn(SubsystemCommand):
     def __init__(self, subsystem: Intake):
@@ -183,8 +183,8 @@ class IntakeDinglebobOn(SubsystemCommand):
         self.subsystem.dinglebobs_in()
     def isFinished(self) -> bool:
         return True
-    def end(self, interrupted=False):
-        commands2.CommandScheduler.getInstance().schedule(IntakeAutoEject(Robot.intake))
+    def end(self, interrupted=False): ...
+        #commands2.CommandScheduler.getInstance().schedule(IntakeAutoEject(Robot.intake))
 
 class IntakeDinglebobOff(SubsystemCommand):
     def __init__(self, subsystem: Intake):
@@ -196,8 +196,8 @@ class IntakeDinglebobOff(SubsystemCommand):
         self.subsystem.dinglebobs_off()
     def isFinished(self) -> bool:
         return True
-    def end(self, interrupted=False):
-        commands2.CommandScheduler.getInstance().schedule(IntakeAutoEject(Robot.intake))
+    def end(self, interrupted=False): ...
+        #commands2.CommandScheduler.getInstance().schedule(IntakeAutoEject(Robot.intake))
 
 class IntakeToggleReverse(SubsystemCommand):
     def __init__(self, subsystem: Intake):

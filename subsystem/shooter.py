@@ -62,7 +62,7 @@ class Shooter(Subsystem):
         else:
             self.shooter_ready = False
 
-        print(self.shooter_ready, self.drive_ready)
+        #print(self.shooter_ready, self.drive_ready)
     def set_flywheels_for_ball_velocity(self, vx: float, vy: float):
 
         final_velocity = (-0.286 + 1.475 * (vx**2 + vy**2)**.5) * m/s
