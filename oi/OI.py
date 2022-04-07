@@ -63,8 +63,8 @@ class OI:
         Keymap.Elevator.ELEVATOR_INIT().whenPressed(command.ElevatorSetupCommand())
         Keymap.Elevator.ELEVATOR_CLIMB().whenPressed(command.ElevatorClimbCommand())
 
-        Keymap.Intake.LEFT_INTAKE_TOGGLE().whenPressed(command.IntakeToggleLeft(Robot.intake))
-        Keymap.Intake.RIGHT_INTAKE_TOGGLE().whenPressed(command.IntakeToggleRight(Robot.intake))
+        Keymap.Intake.LEFT_INTAKE_TOGGLE().whenPressed(command.IntakeToggleLeft(Robot.intake)).whenReleased(command.IntakeToggleLeft(Robot.intake))
+        Keymap.Intake.RIGHT_INTAKE_TOGGLE().whenPressed(command.IntakeToggleRight(Robot.intake)).whenReleased(command.IntakeToggleRight(Robot.intake))
         Keymap.Intake.INTAKE_REVERSE_TOGGLE().whenPressed(command.IntakeToggleReverse(Robot.intake))
 
         Keymap.Shooter.SHOOTER_ENABLE().whileHeld(command.ShooterEnable(Robot.shooter))
