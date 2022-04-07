@@ -16,6 +16,7 @@ from oi.OI import OI
 from robot_systems import Robot, Pneumatics, Sensors
 from sensors.color_sensors import ColorSensors
 from sensors.rev_digit import RevDigit
+from sensors.intake_cameras import IntakeCameras
 
 
 class _Robot(wpilib.TimedRobot):
@@ -78,6 +79,7 @@ class _Robot(wpilib.TimedRobot):
     def robotPeriodic(self):
         Robot.rev_digit.update()
         commands2.CommandScheduler.getInstance().run()
+        Robot.intake_cameras.read_camera_data()
         Robot.limelight.update()
         self.network_counter -= 1
         if self.network_counter == 0:
