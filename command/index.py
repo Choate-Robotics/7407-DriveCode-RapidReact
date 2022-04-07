@@ -16,7 +16,7 @@ class IndexAutoDrive(SubsystemCommand):
         super().__init__(subsystem)
         self.done = True
         self.subsystem = subsystem
-        self.ball_distance = 18034*talon_sensor_unit
+        self.ball_distance = 17600*talon_sensor_unit
         self.desired_distance = None
 
     def initialize(self):
@@ -30,7 +30,8 @@ class IndexAutoDrive(SubsystemCommand):
                     if self.done:
                         self.done = False
                         self.desired_distance = self.subsystem.motor.get_sensor_position() + self.ball_distance
-                        # speed = 0
+
+                        speed = 0
                         #self.subsystem.motor.set_target_position(self.desired_distance)
 
                 case 1:
@@ -58,20 +59,23 @@ class IndexAutoDrive(SubsystemCommand):
                 self.subsystem.set(0)
             else:
                 print(self.subsystem.motor.get_sensor_position(), self.desired_distance)
-                # speed = .3
+
+                speed = 0.3
                 self.subsystem.set(.3)
             
         elif Robot.shooter.drive_ready and Robot.shooter.shooter_ready:
             print("READY")
-            # speed = .5
+
+            speed = 0.5
             self.subsystem.set(.5)
             Robot.intake.dinglebobs_in()
 
         else:
             if speed > 0:
                 Robot.intake.dinglebobs_in()
-            # else:
-            #     Robot.intake.dinglebobs_off()
+
+            else:
+                Robot.intake.dinglebobs_off()
             self.subsystem.set(speed)
 
 

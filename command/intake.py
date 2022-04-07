@@ -17,8 +17,6 @@ class IntakeAutoEject(SubsystemCommand):
     def initialize(self):
         pass
     def execute(self):
-
-
         if Robot.index.ball_queue == 2:
             self.subsystem.dinglebobs_off()
         elif self.subsystem.left_intake_down:
