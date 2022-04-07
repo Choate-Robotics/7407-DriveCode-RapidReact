@@ -21,7 +21,7 @@ class BallPath(SubsystemCommand[Index]):
         self.ball_distance = 17600*talon_sensor_unit
         self.desired_distance = None
 
-        self.intake_active_check = True # Set to false when trying to run something for a specified amount of time
+        self.intake_active_check = True # Set to false when trying to run something for a specified amount of time to avoid cancelling ejection
 
         self.intake_eject_left = False
         self.intake_eject_right = False
@@ -73,10 +73,11 @@ class BallPath(SubsystemCommand[Index]):
             self.index_normal = False
             Robot.index.ball_queue += 1
         elif Robot.index.ball_queue == 1 and Robot.index.photo_electric.get_value():
-            self.dinglebob_direction = "off"
+            #self.dinglebob_direction = "off"
             Robot.index.ball_queue += 1
         elif Robot.index.ball_queue == 2:
-            self.dinglebob_direction = "off"
+            #self.dinglebob_direction = "off"
+            pass
         
         if self.index_index:
             if self.desired_distance <= Robot.index.motor.get_sensor_position():
@@ -92,6 +93,7 @@ class BallPath(SubsystemCommand[Index]):
         if Robot.shooter.drive_ready and Robot.shooter.shooter_ready and Robot.limelight.get_x_offset()!=0 and Robot.limelight.get_x_offset() and abs(Robot.drivetrain.chassis_speeds()) < .1:
             self.index_shoot = True
             self.index_index = False
+            self.index_normal = False
             self.index_speed = .5
             self.dinglebob_direction = "in"
 
@@ -113,20 +115,18 @@ class BallPath(SubsystemCommand[Index]):
             Robot.intake.dinglebobs_in()
         elif self.dinglebob_direction == "out":
             Robot.intake.dinglebobs_out()
+        elif self.dinglebob_direction == "eject_left":
+            Robot.intake.dinglebob_eject_left()
+        elif self.dinglebob_direction == "eject_right":
+            Robot.intake.dinglebob_eject_right()
         elif self.dinglebob_direction == "off":
             Robot.intake.dinglebobs_off()
+
+        print(f"Index Shooting: {self.index_shoot}, Index Indexing: {self.index_index}")
+        print(f"INTAKE ACTIVE CHECK: {self.intake_active_check}")
+        print(f"Dinglebob Direction: {self.dinglebob_direction}")
+        print(f"Index Speed: ", self.index_speed)
         
-
-
-        
-
-
-                
-
-        
-
-
-
 
     def isFinished(self) -> bool:
         return False

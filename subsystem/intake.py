@@ -74,7 +74,6 @@ class Intake(Subsystem):
             self.s_left.set(wpilib.DoubleSolenoid.Value.kForward)
             self.left_intake_down = True
             self.left_intake_motor.set_raw_output(self.intake_speed)
-            self.left_intake_on = True
 
         # self.s_right.set(wpilib.DoubleSolenoid.Value.kReverse)
         # self.right_intake_down = False
@@ -115,12 +114,16 @@ class Intake(Subsystem):
         self.right_dinglebob.set_raw_output(self.dinglebob_eject_speed)
         self.left_dinglebob_in = False
         self.right_dinglebob_in = True
+        self.left_intake_down = True
+        self.left_intake_motor.set_raw_output(-self.intake_speed)
 
     def dinglebob_eject_right(self):
         self.left_dinglebob.set_raw_output(-self.dinglebob_eject_speed)
         self.right_dinglebob.set_raw_output(-self.dinglebob_eject_speed)
         self.left_dinglebob_in = True
         self.right_dinglebob_in = False
+        self.right_intake_down = True
+        self.right_intake_motor.set_raw_output(-self.intake_speed)
     
     def dinglebobs_off(self):
         self.right_dinglebob.set_raw_output(0)
