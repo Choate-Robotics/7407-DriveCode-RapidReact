@@ -71,6 +71,8 @@ class _Robot(wpilib.TimedRobot):
 
         Robot.limelight.led_off()
 
+        Robot.intake_cameras = IntakeCameras()
+
         logger.info("initialization complete")
 
     def robotPeriodic(self):
