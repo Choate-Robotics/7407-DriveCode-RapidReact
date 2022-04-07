@@ -52,6 +52,7 @@ class BallPath(SubsystemCommand[Index]):
             self.right_intake_direction = "off"
 
             if Robot.intake.left_intake_down or Robot.intake.right_intake_down:
+                print(f"Left: {Robot.intake.left_intake_down} Right: {Robot.intake.right_intake_down}")
                 self.dinglebob_direction = "in"
                 Sensors.color_sensors.multiplexer.writeBulk(bytes([0b0100]))
                 left_color = Sensors.color_sensors.color()
@@ -59,7 +60,7 @@ class BallPath(SubsystemCommand[Index]):
                 Sensors.color_sensors.multiplexer.writeBulk(bytes([0b1000]))
                 right_color = Sensors.color_sensors.color()
                 right_val = Sensors.color_sensors.get_val()
-                print(f"Left Color: {left_val}, Right Color: {right_val}, Left: {left_color}, Right: {right_color}")
+                #print(f"Left Color: {left_val}, Right Color: {right_val}, Left: {left_color}, Right: {right_color}")
                 if Robot.intake.left_intake_down and left_color != constants.TEAM and left_color != "none":
                     print("EJECT LEFT")
                     self.dinglebob_direction = "eject_right"
