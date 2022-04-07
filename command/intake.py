@@ -14,6 +14,8 @@ class IntakeAutoEject(SubsystemCommand):
         self.ejecting = False
         self.left_check = False
 
+        
+
     def initialize(self):
         pass
     def execute(self):

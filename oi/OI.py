@@ -65,15 +65,19 @@ class OI:
 
         Keymap.Intake.LEFT_INTAKE_TOGGLE().whenPressed(command.IntakeToggleLeft(Robot.intake)).whenReleased(command.IntakeToggleLeft(Robot.intake))
         Keymap.Intake.RIGHT_INTAKE_TOGGLE().whenPressed(command.IntakeToggleRight(Robot.intake)).whenReleased(command.IntakeToggleRight(Robot.intake))
-        Keymap.Intake.INTAKE_REVERSE_TOGGLE().whenPressed(command.IntakeToggleReverse(Robot.intake))
+        
+        def toggle_auto_eject():
+            Robot.intake.DISABLE_INTAKE_EJECTION = not Robot.intake.DISABLE_INTAKE_EJECTION
+        
+        Keymap.Index.TOGGLE_AUTO_EJECT().whenPressed(toggle_auto_eject)
 
-        Keymap.Shooter.SHOOTER_ENABLE().whileHeld(command.ShooterEnable(Robot.shooter))
+        #Keymap.Shooter.SHOOTER_ENABLE().whileHeld(command.ShooterEnable(Robot.shooter))
         Keymap.Shooter.SHOOTER_EJECT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, .5))
-        Keymap.Shooter.FENDER_SHOT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, .5))
-        Keymap.Shooter.SHOOTER_SHORT_EJECT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, .35))
+        #Keymap.Shooter.FENDER_SHOT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, .5))
+        #Keymap.Shooter.SHOOTER_SHORT_EJECT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, .35))
 
-        Keymap.Shooter.SHOOTER_OFFSET_UP().whenPressed(command.ShooterOffsetUp())
-        Keymap.Shooter.SHOOTER_OFFSET_DOWN().whenPressed(command.ShooterOffsetDown())
+        #Keymap.Shooter.SHOOTER_OFFSET_UP().whenPressed(command.ShooterOffsetUp())
+        #Keymap.Shooter.SHOOTER_OFFSET_DOWN().whenPressed(command.ShooterOffsetDown())
 
         # Keymap.Shooter.SHOOTER_ENABLE()\
         #     .whileHeld(ShootWhileMoving(Robot.drivetrain, Robot.shooter))\

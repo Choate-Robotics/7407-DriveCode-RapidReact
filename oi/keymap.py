@@ -25,18 +25,18 @@ class Keymap:
         ELEVATOR_DOWN = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.SELECT)
 
     class Intake:
-        LEFT_INTAKE_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.A)
-        RIGHT_INTAKE_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.B)
-        INTAKE_REVERSE_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.Y)
+        LEFT_INTAKE_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.LT)
+        RIGHT_INTAKE_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.RT)
 
     class Index:
+        INDEX_DISABLE_AUTO_EJECT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.START)
         INDEX_JOY = JoystickAxis(Controllers.OPERATOR, controllerOPERATOR.L_JOY[1])
 
     class Shooter:
-        SHOOTER_ENABLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.RT)
-        SHOOTER_EJECT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.X)
-        FENDER_SHOT = DefaultButton(Controllers.DRIVER, controllerDRIVER.LT)
-        SHOOTER_SHORT_EJECT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.LT)
-        SHOOTER_OFFSET_UP = DefaultButton(Controllers.DRIVER, controllerDRIVER.LB)
-        SHOOTER_OFFSET_DOWN = DefaultButton(Controllers.DRIVER, controllerDRIVER.RB)
+        #SHOOTER_ENABLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.RT)
+        SHOOTER_EJECT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.A)
+        #FENDER_SHOT = DefaultButton(Controllers.DRIVER, controllerDRIVER.LT)
+        #SHOOTER_SHORT_EJECT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.LT)
+        #SHOOTER_OFFSET_UP = DefaultButton(Controllers.DRIVER, controllerDRIVER.LB)
+        #SHOOTER_OFFSET_DOWN = DefaultButton(Controllers.DRIVER, controllerDRIVER.RB)
 

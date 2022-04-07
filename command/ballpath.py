@@ -44,7 +44,7 @@ class BallPath(SubsystemCommand[Index]):
     def execute(self) -> None:
         
 
-        if self.intake_active_check:
+        if self.intake_active_check and not Robot.intake.DISABLE_INTAKE_EJECTION:
 
             self.index_speed = 0
             self.dinglebob_direction = "off"
