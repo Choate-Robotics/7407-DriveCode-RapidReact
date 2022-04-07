@@ -66,10 +66,10 @@ class OI:
         Keymap.Intake.LEFT_INTAKE_TOGGLE().whenPressed(command.IntakeToggleLeft(Robot.intake)).whenReleased(command.IntakeToggleLeft(Robot.intake))
         Keymap.Intake.RIGHT_INTAKE_TOGGLE().whenPressed(command.IntakeToggleRight(Robot.intake)).whenReleased(command.IntakeToggleRight(Robot.intake))
         
-        def toggle_auto_eject():
-            Robot.intake.DISABLE_INTAKE_EJECTION = not Robot.intake.DISABLE_INTAKE_EJECTION
+        #def toggle_auto_eject():
+        #    Robot.intake.DISABLE_INTAKE_EJECTION = not Robot.intake.DISABLE_INTAKE_EJECTION
         
-        Keymap.Index.TOGGLE_AUTO_EJECT().whenPressed(toggle_auto_eject)
+        #Keymap.Index.TOGGLE_AUTO_EJECT().whenPressed(InstantCommand(toggle_auto_eject))
 
         #Keymap.Shooter.SHOOTER_ENABLE().whileHeld(command.ShooterEnable(Robot.shooter))
         Keymap.Shooter.SHOOTER_EJECT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, .5))
