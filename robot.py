@@ -79,7 +79,7 @@ class _Robot(wpilib.TimedRobot):
 
         Robot.odometry = FieldOdometry(Robot.limelight, Robot.drivetrain)
 
-        # Robot.intake_cameras = IntakeCameras()
+        Robot.intake_cameras = IntakeCameras()
 
         logger.info("initialization complete")
 

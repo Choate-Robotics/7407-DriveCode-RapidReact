@@ -15,11 +15,11 @@ class IntakeCameras:
         logger.info("started!")
 
         # Bind to it
-        self.listener = Listener(('localhost', 6000))
-        self.conn = self.listener.accept()
+        # self.listener = Listener(('localhost', 6000))
+        # self.conn = self.listener.accept()
 
     def read_camera_data(self):
-        self.conn.send("c")
-        if self.conn.poll(0.005):
-            print(self.conn.recv())
+        # self.conn.send("c")
+        # if self.conn.poll(0.005):
+        #     print(self.conn.recv())
         pass
