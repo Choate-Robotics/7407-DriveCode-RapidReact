@@ -35,7 +35,6 @@ class OI:
 
         def zero_ball_queue():
             Robot.index.ball_queue = 0
-            Robot.intake
 
         Keymap.Drivetrain.REZERO_MOTORS().whenPressed(zero_motors)
 

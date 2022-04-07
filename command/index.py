@@ -16,7 +16,7 @@ class IndexAutoDrive(SubsystemCommand):
         super().__init__(subsystem)
         self.done = True
         self.subsystem = subsystem
-        self.ball_distance = 18034*talon_sensor_unit
+        self.ball_distance = 17600*talon_sensor_unit
         self.desired_distance = None
 
     def initialize(self):

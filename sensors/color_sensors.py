@@ -27,21 +27,16 @@ class ColorSensors:
             return "blue"
         return "none"
 
-    def get_color_left(self) -> str:
-        self.multiplexer.writeBulk(bytes([0b1000]))
-        #time.sleep(.02)
-        vals = self.get_val()
-        if vals[0]-vals[2]>2000:
+    def color(self, vals):
+        if vals[0]-vals[2]>1000:
             return "red"
-        elif vals[2]-vals[0]>2000:
+        elif vals[2]-vals[0]>1000:
             return "blue"
         return "none"
+
+    def get_color_left(self) -> str:
+        self.multiplexer.writeBulk(bytes([0b1000]))
+        return self.color(self.get_val())
     def get_color_right(self) -> str:
-        self.multiplexer.writeBulk(bytes([0b100]))
-        #time.sleep(.02)
-        vals = self.get_val()
-        if vals[0]-vals[2]>2000:
-            return "red"
-        elif vals[2]-vals[0]>2000:
-            return "blue"
-        return "none" 
+        self.multiplexer.writeBulk(bytes([0b0100]))
+        return self.color(self.get_val())
