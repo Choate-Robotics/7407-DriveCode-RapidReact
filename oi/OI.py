@@ -1,4 +1,4 @@
-from commands2 import InstantCommand, CommandScheduler
+from commands2 import InstantCommand, CommandScheduler, WaitCommand
 from robotpy_toolkit_7407.utils import logger
 from wpimath.geometry import Pose2d, Rotation2d
 
@@ -63,13 +63,27 @@ class OI:
         Keymap.Elevator.ELEVATOR_INIT().whenPressed(command.ElevatorSetupCommand())
         Keymap.Elevator.ELEVATOR_CLIMB().whenPressed(command.ElevatorClimbCommand())
 
-        Keymap.Intake.LEFT_INTAKE_TOGGLE().whenPressed(command.IntakeToggleLeft(Robot.intake)).whenReleased(command.IntakeToggleLeft(Robot.intake))
+
+        def extend_dinglebob_runtime():
+            Robot.intake.dinglebob_run_extend = True
+        def stop_dinglebob_runtime():
+            Robot.intake.dinglebob_run_extend = False
+
+        Keymap.Intake.LEFT_INTAKE_TOGGLE() \
+            .whenPressed(command.IntakeToggleLeft(Robot.intake)) \
+            .whenReleased(command.IntakeToggleLeft(Robot.intake)) \
+            .whenReleased( \
+                InstantCommand(extend_dinglebob_runtime) \
+                .andThen(WaitCommand(0.5).andThen(stop_dinglebob_runtime)))
         Keymap.Intake.RIGHT_INTAKE_TOGGLE().whenPressed(command.IntakeToggleRight(Robot.intake)).whenReleased(command.IntakeToggleRight(Robot.intake))
         
-        #def toggle_auto_eject():
-        #    Robot.intake.DISABLE_INTAKE_EJECTION = not Robot.intake.DISABLE_INTAKE_EJECTION
-        
-        #Keymap.Index.TOGGLE_AUTO_EJECT().whenPressed(InstantCommand(toggle_auto_eject))
+        def change_team_color():
+            if Robot.TEAM == 'red':
+                Robot.TEAM = 'blue'
+            else:
+                Robot.TEAM = 'red'
+
+        Keymap.Index.TOGGLE_AUTO_EJECT().whenPressed(InstantCommand(change_team_color))
 
         #Keymap.Shooter.SHOOTER_ENABLE().whileHeld(command.ShooterEnable(Robot.shooter))
         Keymap.Shooter.SHOOTER_EJECT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, .5))

@@ -47,6 +47,7 @@ class Intake(Subsystem):
 
         self.dinglebobs_extra = False
 
+        self.dinglebob_run_extend = False
         self.DISABLE_INTAKE_EJECTION = False
 
     def left_intake_enable(self):

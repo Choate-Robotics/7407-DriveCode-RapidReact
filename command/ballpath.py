@@ -42,7 +42,9 @@ class BallPath(SubsystemCommand[Index]):
         self.intake_active_check = True
 
     def execute(self) -> None:
-        
+
+        if Robot.intake.dinglebob_run_extend:
+            self.dinglebob_direction = "in"
 
         if self.intake_active_check:
 
@@ -61,14 +63,14 @@ class BallPath(SubsystemCommand[Index]):
                 right_color = Sensors.color_sensors.color()
                 right_val = Sensors.color_sensors.get_val()
                 print(f"Left Color: {left_val}, Right Color: {right_val}, Left: {left_color}, Right: {right_color}")
-                if Robot.intake.left_intake_down and left_color != constants.TEAM and left_color != "none":
+                if Robot.intake.left_intake_down and left_color != Robot.TEAM and left_color != "none":
                     print("EJECT LEFT")
                     self.dinglebob_direction = "eject_right"
                     if Robot.intake.right_intake_down:
                         self.right_intake_direction = "out"
                     self.intake_active_check = False
                     commands2.CommandScheduler.getInstance().schedule(WaitCommand(.5).andThen(self.reactivate_intake_check))
-                if Robot.intake.right_intake_down and right_color != constants.TEAM and right_color != "none":
+                if Robot.intake.right_intake_down and right_color != Robot.TEAM and right_color != "none":
                     print("EJECT RIGHT")
                     self.dinglebob_direction = "eject_left"
                     if Robot.intake.left_intake_down:

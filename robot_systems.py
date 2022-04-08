@@ -10,6 +10,9 @@ from sensors.rev_digit import RevDigit
 
 
 class Robot:
+
+    TEAM = "red" # "blue", "red"
+
     drivetrain = subsystem.Drivetrain()
     intake = subsystem.Intake()
     index = subsystem.Index()
