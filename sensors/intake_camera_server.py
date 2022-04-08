@@ -1,3 +1,4 @@
+from queue import Queue
 import socket
 import struct
 import time
@@ -6,7 +7,7 @@ import serial
 from threading import Thread
 
 rgb = False
-ports = ['/dev/ttyACM0', '/dev/ttyACM1']
+ports = ['/dev/ttyACM0', '/dev/ttyACM2']
 HOST = ''
 PORT = 8504
 # max_fps = 40
