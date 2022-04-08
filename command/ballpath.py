@@ -44,7 +44,7 @@ class BallPath(SubsystemCommand[Index]):
     def execute(self) -> None:
         
 
-        if self.intake_active_check and not Robot.intake.DISABLE_INTAKE_EJECTION:
+        if self.intake_active_check:
 
             self.index_speed = 0
             self.dinglebob_direction = "off"
@@ -82,10 +82,8 @@ class BallPath(SubsystemCommand[Index]):
             self.index_normal = False
             Robot.index.ball_queue += 1
         elif Robot.index.ball_queue == 1 and Robot.index.photo_electric.get_value():
-            #self.dinglebob_direction = "off"
             Robot.index.ball_queue += 1
         elif Robot.index.ball_queue == 2:
-            #self.dinglebob_direction = "off"
             pass
         
         if self.index_index:
