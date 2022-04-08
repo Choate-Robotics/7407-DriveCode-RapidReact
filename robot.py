@@ -16,7 +16,7 @@ from oi.OI import OI
 from robot_systems import Robot, Pneumatics, Sensors
 from sensors.color_sensors import ColorSensors
 from sensors.rev_digit import RevDigit
-from sensors.intake_cameras import IntakeCameras
+# from sensors.intake_cameras import IntakeCameras
 
 
 class _Robot(wpilib.TimedRobot):
@@ -72,14 +72,14 @@ class _Robot(wpilib.TimedRobot):
 
         Robot.limelight.led_off()
 
-        Robot.intake_cameras = IntakeCameras()
+        # Robot.intake_cameras = IntakeCameras() # TODO
 
         logger.info("initialization complete")
 
     def robotPeriodic(self):
         Robot.rev_digit.update()
         commands2.CommandScheduler.getInstance().run()
-        Robot.intake_cameras.read_camera_data()
+        # Robot.intake_cameras.read_camera_data() # TODO
         Robot.limelight.update()
         self.network_counter -= 1
         if self.network_counter == 0:
@@ -118,8 +118,8 @@ class _Robot(wpilib.TimedRobot):
 
     def autonomousInit(self) -> None:
         Robot.limelight.led_off()
-        two_ball_auto.routine.run()
-        # five_ball_auto.routine.run()
+        #two_ball_auto.routine.run()
+        five_ball_auto.routine.run()
         
         # self.auto_routines[Robot.rev_digit.routine_idx].run()
         # two_ball_auto.routine.run()

@@ -6,7 +6,7 @@ import wpilib
 
 from sensors.color_sensors import ColorSensors
 from sensors.rev_digit import RevDigit
-from sensors.intake_cameras import IntakeCameras
+# from sensors.intake_cameras import IntakeCameras
 
 
 class Robot:
@@ -20,7 +20,7 @@ class Robot:
 
     rev_digit: RevDigit
 
-    intake_cameras: IntakeCameras
+    # intake_cameras: IntakeCameras
 
 
 
