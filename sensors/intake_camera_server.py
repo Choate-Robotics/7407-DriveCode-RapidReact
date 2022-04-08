@@ -3,16 +3,19 @@ import struct
 import time
 import pickle
 import serial
+import zlib
 from threading import Thread
-
 rgb = False
 ports = ['/dev/ttyACM0', '/dev/ttyACM1']
 HOST = ''
 PORT = 8504
+max_fps = 24
 # max_fps = 40
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM,)
 print('Socket created')
+
+s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
 s.bind((HOST, PORT))
 print('Socket bind complete')
@@ -50,26 +53,32 @@ def attemptConnections(ports):
         time.sleep(5)
 
 
-def dumpBuffers(buff_q):
+frames_buff = None
+def dumpBuffers():
+    global frames_buff
     while True:
         # Clock.tick(max_fps)
-        frames_buff = [b''] * len(ports)
+        temp_buff = [b''] * len(ports)
         for i in range(len(active_ports)):
             try:
-                frames_buff[i] = dump(active_ports[i])
+                temp_buff[i] = dump(active_ports[i])
             except:
                 del active_ports[i]
-        print(len(frames_buff[0]), len(frames_buff[1]))
-        buff_q.put(frames_buff)
+        frames_buff = temp_buff
+        #print(len(frames_buff[0]), len(frames_buff[1]))
+        #buff_q.put_nowait(frames_buff)
+        time.sleep(1/50)
 
 
-def send_to_clients(buff_q):
+def send_to_clients():
+    global frames_buff
     while True:
-        frames_buff = buff_q.get()
+        #frames_buff = buff_q.get()
         # print(len(frames_buff[0]),len(frames_buff[1]))
-        data = pickle.dumps(frames_buff, 0)
-        # data = zlib.compress(pickle.dumps(frames_buff, 0))
+        #data = pickle.dumps(frames_buff, 0)
+        data = zlib.compress(pickle.dumps(frames_buff, 0))
         size = len(data)
+        print(len(struct.pack(">L", size) + data), len(frames_buff[1]))
         # print(size)
         for connection in connections:
             try:
@@ -77,7 +86,7 @@ def send_to_clients(buff_q):
             except IOError:
                 connections.remove(connection)
                 print("client disconnect")
-
+        time.sleep(1/max_fps)
 
 threads = []
 
@@ -85,12 +94,11 @@ cam_conn = Thread(target=attemptConnections, args=[ports])
 threads.append(cam_conn)
 cam_conn.start()
 
-buff_q = Queue()
-buff_dumper = Thread(target=dumpBuffers, args=[buff_q, ])
+buff_dumper = Thread(target=dumpBuffers, args=[ ])
 threads.append(buff_dumper)
 buff_dumper.start()
 
-client_thread = Thread(target=send_to_clients, args=[buff_q, ])
+client_thread = Thread(target=send_to_clients, args=[ ])
 threads.append(client_thread)
 client_thread.start()
 
