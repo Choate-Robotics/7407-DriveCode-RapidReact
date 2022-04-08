@@ -4,12 +4,13 @@ import struct
 import time
 import pickle
 import serial
+import pygame
 from threading import Thread
-
 rgb = False
-ports = ['/dev/ttyACM0', '/dev/ttyACM2']
+ports = ['/dev/ttyACM0', '/dev/ttyACM1']
 HOST = ''
 PORT = 8504
+max_fps = 30
 # max_fps = 40
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -66,6 +67,7 @@ def dumpBuffers(buff_q):
 
 def send_to_clients(buff_q):
     while True:
+        Clock.tick(max_fps)
         frames_buff = buff_q.get()
         # print(len(frames_buff[0]),len(frames_buff[1]))
         data = pickle.dumps(frames_buff, 0)
@@ -90,6 +92,8 @@ buff_q = Queue()
 buff_dumper = Thread(target=dumpBuffers, args=[buff_q, ])
 threads.append(buff_dumper)
 buff_dumper.start()
+pygame.init()
+Clock = pygame.time.Clock()
 
 client_thread = Thread(target=send_to_clients, args=[buff_q, ])
 threads.append(client_thread)
