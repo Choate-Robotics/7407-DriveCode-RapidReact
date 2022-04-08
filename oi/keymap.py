@@ -29,7 +29,7 @@ class Keymap:
         RIGHT_INTAKE_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.RT)
 
     class Index:
-        INDEX_DISABLE_AUTO_EJECT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.START)
+        TOGGLE_AUTO_EJECT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.START)
         INDEX_JOY = JoystickAxis(Controllers.OPERATOR, controllerOPERATOR.L_JOY[1])
 
     class Shooter:

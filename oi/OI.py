@@ -66,15 +66,17 @@ class OI:
 
         def extend_dinglebob_runtime():
             Robot.intake.dinglebob_run_extend = True
+            print("extended")
         def stop_dinglebob_runtime():
             Robot.intake.dinglebob_run_extend = False
+            print("unextended")
 
         Keymap.Intake.LEFT_INTAKE_TOGGLE() \
             .whenPressed(command.IntakeToggleLeft(Robot.intake)) \
             .whenReleased(command.IntakeToggleLeft(Robot.intake)) \
-            .whenReleased( \
-                InstantCommand(extend_dinglebob_runtime) \
-                .andThen(WaitCommand(0.5).andThen(stop_dinglebob_runtime)))
+            #.whenReleased( \
+            #    InstantCommand(extend_dinglebob_runtime) \
+            #    .andThen(WaitCommand(0.5).andThen(stop_dinglebob_runtime)))
         Keymap.Intake.RIGHT_INTAKE_TOGGLE().whenPressed(command.IntakeToggleRight(Robot.intake)).whenReleased(command.IntakeToggleRight(Robot.intake))
         
         def change_team_color():
