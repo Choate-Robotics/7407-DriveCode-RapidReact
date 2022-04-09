@@ -20,7 +20,7 @@ first_path_end_pose = TrajectoryEndpoint(7.927611 * m - 6 * inch, -8 * m + 1.6 *
 
 second_path_start_pose = first_path_end_pose
 second_path_start_pose.angle = 163 * deg
-second_path_end_pose = TrajectoryEndpoint((7.927611 - 2) * m, (-8 + 0.6) * m + 2.6 * ft, 163 * deg)
+second_path_end_pose = TrajectoryEndpoint((7.927611 - 2) * m - 4 * inch, (-8 + 0.6) * m + 2.6 * ft + 3 * inch, 163 * deg)
 
 third_path_start_pose = second_path_end_pose
 third_path_start_pose.angle = 163 * deg
@@ -119,7 +119,16 @@ def left_intake_off():
     Robot.intake.dinglebobs_off()
 
 
+def zero():
+    Robot.drivetrain.n_00.zero()
+    Robot.drivetrain.n_01.zero()
+    Robot.drivetrain.n_10.zero()
+    Robot.drivetrain.n_11.zero()
+
+
 final_command = SequentialCommandGroup(
+    InstantCommand(zero),
+    WaitCommand(0.3),
     ParallelCommandGroup(
         first_path,
         InstantCommand(right_intake_on, Robot.intake)

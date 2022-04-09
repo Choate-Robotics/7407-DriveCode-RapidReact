@@ -1,4 +1,6 @@
 from ctre import SensorTimeBase
+
+import constants
 from sensors import limit_switch
 import subsystem
 import sensors
@@ -11,7 +13,7 @@ from sensors.rev_digit import RevDigit
 
 class Robot:
 
-    TEAM = "red" # "blue", "red"
+    TEAM = constants.TEAM  # "blue", "red"
 
     drivetrain = subsystem.Drivetrain()
     intake = subsystem.Intake()
