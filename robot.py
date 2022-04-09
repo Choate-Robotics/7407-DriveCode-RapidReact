@@ -77,8 +77,10 @@ class _Robot(wpilib.TimedRobot):
         # Robot.intake_cameras = IntakeCameras() # TODO
 
         logger.info("initialization complete")
+        #print(f"INITIALIZED TEAM COLOR: {constants.TEAM}")
 
     def robotPeriodic(self):
+        print(f"TEAM COLOR: {constants.TEAM}")
         Robot.rev_digit.update()
         commands2.CommandScheduler.getInstance().run()
         # Robot.intake_cameras.read_camera_data() # TODO
@@ -105,7 +107,7 @@ class _Robot(wpilib.TimedRobot):
         pass
 
     def teleopPeriodic(self) -> None:
-        print(Robot.TEAM)
+        #print(Robot.TEAM)
         #print("QUEUE: ", Robot.index.ball_queue)
         # logger.info(Robot.drivetrain.odometry.getPose())
         # print(Pneumatics.get_compressor())

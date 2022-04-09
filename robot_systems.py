@@ -13,7 +13,7 @@ from sensors.rev_digit import RevDigit
 
 class Robot:
 
-    TEAM = constants.TEAM  # "blue", "red"
+    TEAM = "red"  # "blue", "red"
 
     drivetrain = subsystem.Drivetrain()
     intake = subsystem.Intake()
