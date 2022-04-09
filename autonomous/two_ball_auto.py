@@ -37,7 +37,16 @@ first_turn = RotateInPlace(
 )
 
 
+def zero():
+    Robot.drivetrain.n_00.zero()
+    Robot.drivetrain.n_01.zero()
+    Robot.drivetrain.n_10.zero()
+    Robot.drivetrain.n_11.zero()
+
+
 final_command = SequentialCommandGroup(
+    InstantCommand(zero),
+    WaitCommand(0.3),
     ParallelCommandGroup(
         first_path,
         InstantCommand(lambda: Robot.intake.toggle_left_intake(), Robot.intake)
