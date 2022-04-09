@@ -80,7 +80,7 @@ class _Robot(wpilib.TimedRobot):
         #print(f"INITIALIZED TEAM COLOR: {constants.TEAM}")
 
     def robotPeriodic(self):
-        print(f"TEAM COLOR: {constants.TEAM}")
+        print(f"TEAM COLOR: {Robot.TEAM}")
         Robot.rev_digit.update()
         commands2.CommandScheduler.getInstance().run()
         # Robot.intake_cameras.read_camera_data() # TODO
@@ -123,8 +123,8 @@ class _Robot(wpilib.TimedRobot):
 
     def autonomousInit(self) -> None:
         Robot.limelight.led_off()
-        #two_ball_auto.routine.run()
-        five_ball_auto.routine.run()
+        two_ball_auto.routine.run()
+        #five_ball_auto.routine.run()
         
         # self.auto_routines[Robot.rev_digit.routine_idx].run()
         # two_ball_auto.routine.run()
