@@ -10,10 +10,11 @@ from robotpy_toolkit_7407.utils.units import m, s
 
 import command
 import constants
-from autonomous import two_ball_auto, five_ball_auto, new_five_ball_auto
+from autonomous import two_ball_auto, five_ball_auto_blue, new_five_ball_auto, five_ball_auto_red
 #from autonomous import five_ball_auto, two_ball_auto, three_ball_auto # TODO: Fix this
 from command import IndexDrive, IndexAutoDrive, IntakeAutoEject, BallPath
 from command.drivetrain import DriveSwerveCustom
+from command.elevator import WaitUntilTiltRange
 from oi.OI import OI
 from robot_systems import Robot, Pneumatics, Sensors
 from sensors.color_sensors import ColorSensors
@@ -36,7 +37,7 @@ class _Robot(wpilib.TimedRobot):
         #     three_ball_auto.routine,
         #     five_ball_auto.routine
         # ] # TODO Fix This
-        self.auto_routines = [two_ball_auto.routine, five_ball_auto.routine]
+        self.auto_routines = [two_ball_auto.routine, five_ball_auto_red.routine]
 
         # self.test_command = ShooterDataCollectCommand(Robot.shooter).alongWith(command.IndexOn)
 
@@ -80,6 +81,7 @@ class _Robot(wpilib.TimedRobot):
         #print(f"INITIALIZED TEAM COLOR: {constants.TEAM}")
 
     def robotPeriodic(self):
+        # print(Robot.drivetrain.gyro._gyro.getRoll())
         print(f"TEAM COLOR: {Robot.TEAM}")
         Robot.rev_digit.update()
         commands2.CommandScheduler.getInstance().run()
@@ -123,8 +125,10 @@ class _Robot(wpilib.TimedRobot):
 
     def autonomousInit(self) -> None:
         Robot.limelight.led_off()
-        two_ball_auto.routine.run()
-        #five_ball_auto.routine.run()
+        if constants.TEAM == "red":
+            five_ball_auto_red.routine.run()
+        else:
+            five_ball_auto_blue.routine.run()
         
         # self.auto_routines[Robot.rev_digit.routine_idx].run()
         # two_ball_auto.routine.run()

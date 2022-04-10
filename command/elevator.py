@@ -262,7 +262,35 @@ class ElevatorClimbStep7(SubsystemCommand[Elevator]):
 
     def isFinished(self) -> bool:
         return abs(self.subsystem.get_height() - constants.elevator_latch_height) <= self.tolerance
-    
+
+
+class WaitUntilTiltRange(SubsystemCommand[Elevator]):
+    def __init__(self, subsystem: T):
+        super().__init__(subsystem)
+        self.min_angle = 35
+        self.max_angle = 45
+        self.prev_angle = 0
+
+    def initialize(self) -> None:
+        pass
+
+    def execute(self) -> None:
+        pass
+
+    def isFinished(self) -> bool:
+        a = Robot.drivetrain.gyro._gyro.getRoll()
+        da = a - self.prev_angle
+        finished = self.min_angle < a < self.max_angle and da > 0
+        # print(f"ANGLE={a}, da={da}, finished={finished}")
+        self.prev_angle = a
+        # a = Robot.drivetrain.gyro._gyro.getRoll()
+        return finished
+        # return False
+        # return self.min_angle < a < self.max_angle
+
+    def runsWhenDisabled(self) -> bool:
+        return True
+
 
 def abort_fn():
     pass
@@ -280,11 +308,12 @@ ElevatorClimbCommand = lambda: ConditionalCommand(
                 ElevatorClimbStep1(Robot.elevator),
                 ElevatorClimbStep2(Robot.elevator),
                 ElevatorClimbStep4(Robot.elevator),
-                WaitCommand(0.25),
+                # WaitCommand(0.07),
+                WaitUntilTiltRange(Robot.elevator),
                 ElevatorClimbStep5(Robot.elevator),
                 ElevatorSolenoidRetract().andThen(
                     SequentialCommandGroup(
-                        WaitCommand(0.60),
+                        WaitCommand(0.75),
                         ElevatorClimbStep6(Robot.elevator),
                         WaitCommand(3.5),
                         ElevatorClimbStep1(Robot.elevator),
