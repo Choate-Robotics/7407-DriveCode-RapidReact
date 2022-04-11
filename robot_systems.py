@@ -5,6 +5,7 @@ from sensors import limit_switch
 import subsystem
 import sensors
 import wpilib
+import configuration
 
 from sensors.color_sensors import ColorSensors
 from sensors.rev_digit import RevDigit
@@ -13,7 +14,7 @@ from sensors.rev_digit import RevDigit
 
 class Robot:
 
-    TEAM = constants.TEAM  # "blue", "red"
+    TEAM = configuration.TEAM  # "blue", "red"
 
     drivetrain = subsystem.Drivetrain()
     intake = subsystem.Intake()

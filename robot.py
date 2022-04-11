@@ -8,13 +8,12 @@ from robotpy_toolkit_7407.network.network_system import Network
 from robotpy_toolkit_7407.utils import logger
 from robotpy_toolkit_7407.utils.units import m, s
 
-import command
+import configuration
 import constants
-from autonomous import two_ball_auto, five_ball_auto_blue, new_five_ball_auto, five_ball_auto_red
+from autonomous import two_ball_auto, five_ball_auto_blue, five_ball_auto_red
 #from autonomous import five_ball_auto, two_ball_auto, three_ball_auto # TODO: Fix this
-from command import IndexDrive, IndexAutoDrive, IntakeAutoEject, BallPath
+from command import BallPath
 from command.drivetrain import DriveSwerveCustom
-from command.elevator import WaitUntilTiltRange
 from oi.OI import OI
 from robot_systems import Robot, Pneumatics, Sensors
 from sensors.color_sensors import ColorSensors
@@ -42,6 +41,7 @@ class _Robot(wpilib.TimedRobot):
         # self.test_command = ShooterDataCollectCommand(Robot.shooter).alongWith(command.IndexOn)
 
     def robotInit(self):
+        wpilib.LiveWindow.disableAllTelemetry() # Disable Telemetry on Robot Startup to reduce loop time
         """
         Called on robot startup. Here the subsystems and oi are all initialized.
         """
@@ -125,10 +125,14 @@ class _Robot(wpilib.TimedRobot):
 
     def autonomousInit(self) -> None:
         Robot.limelight.led_off()
-        if constants.TEAM == "red":
-            five_ball_auto_red.routine.run()
+
+        if configuration.AUTO == "five":
+            if configuration.TEAM == "red":
+                five_ball_auto_red.routine.run()
+            else:
+                five_ball_auto_blue.routine.run()
         else:
-            five_ball_auto_blue.routine.run()
+            two_ball_auto.routine.run()
         
         # self.auto_routines[Robot.rev_digit.routine_idx].run()
         # two_ball_auto.routine.run()
