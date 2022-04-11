@@ -57,12 +57,12 @@ class IndexAutoDrive(SubsystemCommand):
                 self.desired_distance = None
                 self.subsystem.set(0)
             else:
-                print(self.subsystem.motor.get_sensor_position(), self.desired_distance)
+                #print(self.subsystem.motor.get_sensor_position(), self.desired_distance)
                 # speed = .3
                 self.subsystem.set(.3)
             
         elif Robot.shooter.drive_ready and Robot.shooter.shooter_ready:
-            print("READY")
+            #print("READY")
             # speed = .5
             self.subsystem.set(.5)
             Robot.intake.dinglebobs_in()
