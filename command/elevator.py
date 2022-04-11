@@ -1,4 +1,3 @@
-from telnetlib import EL
 import wpilib
 
 from commands2 import InstantCommand, ParallelCommandGroup, ConditionalCommand, SequentialCommandGroup, WaitCommand
@@ -20,15 +19,15 @@ class elevator_rezero(SubsystemCommand):
         pass
     def execute(self):
         if not self.subsystem.mag_sensor.get_value():
-            self.subsystem.elevator_motor.set_raw_output(-.05)
+            self.subsystem.motors.set_raw_output(-.05)
+            print("NOT DONE")
         else:
-            self.subsystem.elevator_motor.set_raw_output(0)
+            print("DONE")
+            self.subsystem.motors.set_raw_output(0)
             self.subsystem.motors.set_target_position(0 * inch * constants.elevator_gear_ratio)
             self.subsystem.motors.set_sensor_position(0 * rev)
     def isFinished(self):
         return self.subsystem.mag_sensor.get_value()
-    def end(self):
-        pass
 
 def elevator_down():
     Robot.elevator.set_height(0 * inch)
