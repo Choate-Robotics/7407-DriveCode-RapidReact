@@ -7,12 +7,28 @@ from robotpy_toolkit_7407.command import SubsystemCommand, T
 from robotpy_toolkit_7407.unum import Unum
 from robotpy_toolkit_7407.unum.units import cm
 from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit
-from robotpy_toolkit_7407.utils.units import m, s, inch
+from robotpy_toolkit_7407.utils.units import m, s, inch, rev
 
 import constants
 from robot_systems import Robot
 from subsystem import Elevator
 
+class elevator_rezero(SubsystemCommand):
+    def __init__(self, subsystem: Elevator):
+        super().__init__(subsystem)
+    def initialize(self):
+        pass
+    def execute(self):
+        if not self.subsystem.mag_sensor.get_value():
+            self.subsystem.elevator_motor.set_raw_output(-.05)
+        else:
+            self.subsystem.elevator_motor.set_raw_output(0)
+            self.subsystem.motors.set_target_position(0 * inch * constants.elevator_gear_ratio)
+            self.subsystem.motors.set_sensor_position(0 * rev)
+    def isFinished(self):
+        return self.subsystem.mag_sensor.get_value()
+    def end(self):
+        pass
 
 def elevator_down():
     Robot.elevator.set_height(0 * inch)

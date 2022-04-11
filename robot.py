@@ -8,7 +8,8 @@ from robotpy_toolkit_7407.network.network_system import Network
 from robotpy_toolkit_7407.utils import logger
 from robotpy_toolkit_7407.utils.units import m, s
 
-import configuration
+import CONFIG
+from command import elevator_rezero
 import constants
 from autonomous import two_ball_auto, five_ball_auto_blue, five_ball_auto_red
 #from autonomous import five_ball_auto, two_ball_auto, three_ball_auto # TODO: Fix this
@@ -99,7 +100,7 @@ class _Robot(wpilib.TimedRobot):
         #commands2.CommandScheduler.getInstance().schedule(IndexAutoDrive(Robot.index))
         #commands2.CommandScheduler.getInstance().schedule(IntakeAutoEject(Robot.intake))
         commands2.CommandScheduler.getInstance().schedule(BallPath(Robot.index))
-        Robot.elevator.zero_elevator()
+        commands2.CommandScheduler.getInstance().schedule(elevator_rezero(Robot.elevator))
         Robot.index.ball_queue = 0
         # if not Robot.shooter.zeroed:
         #     commands2.CommandScheduler.getInstance().schedule(ShooterZero(Robot.shooter))
@@ -126,8 +127,8 @@ class _Robot(wpilib.TimedRobot):
     def autonomousInit(self) -> None:
         Robot.limelight.led_off()
 
-        if configuration.AUTO == "five":
-            if configuration.TEAM == "red":
+        if CONFIG.AUTO == "five":
+            if CONFIG.TEAM == "red":
                 five_ball_auto_red.routine.run()
             else:
                 five_ball_auto_blue.routine.run()
