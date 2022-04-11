@@ -267,8 +267,8 @@ class ElevatorClimbStep7(SubsystemCommand[Elevator]):
 class WaitUntilTiltRange(SubsystemCommand[Elevator]):
     def __init__(self, subsystem: T):
         super().__init__(subsystem)
-        self.min_angle = 35
-        self.max_angle = 45
+        self.min_angle = 30
+        self.max_angle = 40
         self.prev_angle = 0
 
     def initialize(self) -> None:

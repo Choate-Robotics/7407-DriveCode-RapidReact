@@ -24,7 +24,7 @@ second_path_end_pose = TrajectoryEndpoint((7.927611 - 2) * m - 4 * inch, (-8 + 0
 
 third_path_start_pose = second_path_end_pose
 third_path_start_pose.angle = 163 * deg
-third_path_end_pose = TrajectoryEndpoint((7.927611 - 2) * m - 178 * inch, (-8 + 0.6) * m + 2.6 * ft + 4.5 * inch, -116 * deg)
+third_path_end_pose = TrajectoryEndpoint((7.927611 - 2) * m - 176 * inch, (-8 + 0.6) * m + 2.6 * ft + 4.5 * inch, -116 * deg)
 
 fourth_path_start_pose = dataclasses.replace(third_path_end_pose)
 fourth_path_start_pose.angle = 0 * deg
@@ -60,7 +60,7 @@ second_path = FollowPathCustom(
 
 rotate_2 = RotateInPlace(
     Robot.drivetrain,
-    -48 * deg,
+    -45 * deg,
     0.5,
     period=constants.period
 )
@@ -94,7 +94,7 @@ fourth_path = FollowPathCustom(
         9 * m/s,
         5 * m/(s*s)
     ),
-    -47 * deg,
+    -45 * deg,
     period=constants.period
 )
 
