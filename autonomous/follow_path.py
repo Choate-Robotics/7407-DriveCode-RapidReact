@@ -2,13 +2,12 @@ import time
 
 from robotpy_toolkit_7407.command import SubsystemCommand
 from robotpy_toolkit_7407.subsystem_templates.drivetrain import SwerveDrivetrain
-from robotpy_toolkit_7407.unum import Unum
 from robotpy_toolkit_7407.utils import logger
 from robotpy_toolkit_7407.utils.math import bounded_angle_diff, rotate_vector
-from robotpy_toolkit_7407.utils.units import rad, s, m, radians
+from robotpy_toolkit_7407.utils.units import radians
 from wpimath.controller import HolonomicDriveController, PIDController, ProfiledPIDControllerRadians
-from wpimath.trajectory import Trajectory, TrapezoidProfileRadians
 from wpimath.geometry import Rotation2d
+from wpimath.trajectory import Trajectory, TrapezoidProfileRadians
 
 
 class FollowPathCustom(SubsystemCommand[SwerveDrivetrain]):

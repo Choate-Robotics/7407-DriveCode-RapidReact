@@ -2,9 +2,7 @@ from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit, talon_sen
 from robotpy_toolkit_7407.unum.units import cm
 from robotpy_toolkit_7407.utils.units import rad, rev, inch, deg, m, mile, hour, s, ft
 from wpilib import DriverStation
-import CONFIG
-
-TEAM = CONFIG.TEAM  # 'red', 'blue'
+import config
 
 period = 0.08
 

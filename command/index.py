@@ -2,12 +2,9 @@ from commands2 import InstantCommand
 from robotpy_toolkit_7407.command import SubsystemCommand
 from robotpy_toolkit_7407.motors import ctre_motors
 
+from oi.keymap import Keymap
 from robot_systems import Robot
 from subsystem import Index
-from oi.keymap import Keymap
-
-from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit
-from robotpy_toolkit_7407.unum import Unum
 
 IndexOn = lambda: InstantCommand(lambda: Robot.index.set(.5), Robot.index)
 IndexOff = lambda: InstantCommand(lambda: Robot.index.set(0), Robot.index)

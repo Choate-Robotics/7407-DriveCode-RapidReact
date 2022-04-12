@@ -1,13 +1,12 @@
-from robotpy_toolkit_7407 import Subsystem
-from robotpy_toolkit_7407.motors import TalonFX, TalonGroup, TalonConfig, ctre_motors
-from robotpy_toolkit_7407.utils.units import rad, m, s, deg, radians, meters_per_second
-from robotpy_toolkit_7407.unum import Unum
-from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit, talon_sensor_vel_unit
 import math
+
+from robotpy_toolkit_7407 import Subsystem
+from robotpy_toolkit_7407.motors import TalonFX, TalonConfig, ctre_motors
+from robotpy_toolkit_7407.utils.units import rad, deg, radians, meters_per_second
 
 import constants
 from sensors import LimitSwitch
-from utils.can_optimizations import optimize_normal_talon, optimize_leader_talon, optimize_normal_talon_no_sensor
+from utils.can_optimizations import optimize_normal_talon
 from utils.shooter_targeting import ShooterTargeting
 
 

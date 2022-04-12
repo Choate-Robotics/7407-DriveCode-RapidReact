@@ -1,6 +1,5 @@
 from robotpy_toolkit_7407 import Command
 from robotpy_toolkit_7407.utils import logger
-from robotpy_toolkit_7407.utils.units import rad, s, m
 
 from command.drivetrain import curve
 from robot_systems import Robot

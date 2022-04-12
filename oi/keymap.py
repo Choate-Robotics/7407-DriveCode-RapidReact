@@ -1,4 +1,4 @@
-from robotpy_toolkit_7407.oi import XBoxController, LogitechController, JoystickAxis, DefaultButton
+from robotpy_toolkit_7407.oi import XBoxController, JoystickAxis, DefaultButton
 
 controllerDRIVER = XBoxController
 controllerOPERATOR = XBoxController

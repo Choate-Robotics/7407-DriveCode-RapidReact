@@ -1,8 +1,8 @@
 from robotpy_toolkit_7407 import Subsystem
-from robotpy_toolkit_7407.motors import TalonFX, TalonGroup, TalonConfig
-from sensors import LimitSwitch
+from robotpy_toolkit_7407.motors import TalonFX, TalonConfig
 
-from utils.can_optimizations import optimize_normal_talon, optimize_leader_talon, optimize_normal_talon_no_sensor
+from sensors import LimitSwitch
+from utils.can_optimizations import optimize_normal_talon_no_sensor
 
 _MOTOR_CFG = TalonConfig(neutral_brake=True)
 

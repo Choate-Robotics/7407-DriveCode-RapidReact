@@ -1,7 +1,6 @@
-from math import degrees, pi
-from networktables import NetworkTables
 import math
-from robotpy_toolkit_7407.utils import logger
+
+from networktables import NetworkTables
 from robotpy_toolkit_7407.utils.units import m, deg, ft, inch, rad, radians, meters
 
 

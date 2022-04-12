@@ -2,7 +2,6 @@ import time
 
 from wpilib import I2C, DigitalInput, AnalogInput
 
-
 _CHAR_TABLE = {
     "0": [0b00111111, 0b00000000],
     "1": [0b00000110, 0b00000000],

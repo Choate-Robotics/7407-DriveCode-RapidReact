@@ -1,10 +1,11 @@
-from queue import Queue
+import pickle
 import socket
 import struct
 import time
-import pickle
-import serial
+from queue import Queue
 from threading import Thread
+
+import serial
 
 rgb = False
 ports = ['/dev/ttyACM0', '/dev/ttyACM1']

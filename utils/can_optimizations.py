@@ -1,5 +1,5 @@
 from ctre import StatusFrameEnhanced
-from robotpy_toolkit_7407.motors import TalonFX, TalonGroup
+from robotpy_toolkit_7407.motors import TalonFX
 from robotpy_toolkit_7407.motors.ctre_motors import _Talon
 
 

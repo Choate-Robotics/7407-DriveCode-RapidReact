@@ -8,7 +8,7 @@ from robotpy_toolkit_7407.network.network_system import Network
 from robotpy_toolkit_7407.utils import logger
 from robotpy_toolkit_7407.utils.units import m, s
 
-import CONFIG
+import config
 from command import elevator_rezero
 import constants
 from autonomous import two_ball_auto, five_ball_auto_blue, five_ball_auto_red
@@ -74,14 +74,10 @@ class _Robot(wpilib.TimedRobot):
         # Robot.intake_cameras = IntakeCameras() # TODO
 
         logger.info("initialization complete")
-        #print(f"INITIALIZED TEAM COLOR: {constants.TEAM}")
 
     def robotPeriodic(self):
-        # print(Robot.drivetrain.gyro._gyro.getRoll())
-        print(f"TEAM COLOR: {Robot.TEAM}")
         Robot.rev_digit.update()
         commands2.CommandScheduler.getInstance().run()
-        # Robot.intake_cameras.read_camera_data() # TODO
         Robot.limelight.update()
 
     def teleopInit(self) -> None:
@@ -118,8 +114,8 @@ class _Robot(wpilib.TimedRobot):
     def autonomousInit(self) -> None:
         Robot.limelight.led_off()
 
-        if CONFIG.AUTO == "five":
-            if CONFIG.TEAM == "red":
+        if config.AUTO == "five":
+            if config.TEAM == "red":
                 five_ball_auto_red.routine.run()
             else:
                 five_ball_auto_blue.routine.run()

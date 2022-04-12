@@ -1,11 +1,13 @@
-from robot_systems import Robot, Sensors
 import commands2
-from robotpy_toolkit_7407.command import SubsystemCommand
 import wpilib
-from robot_systems import Robot
-from subsystem import Intake
-from oi.keymap import Keymap
+from robotpy_toolkit_7407.command import SubsystemCommand
+
+import config
 import constants
+from robot_systems import Robot
+from robot_systems import Sensors
+from subsystem import Intake
+
 
 class IntakeAutoEject(SubsystemCommand):
     def __init__(self, subsystem: Intake):
@@ -29,7 +31,7 @@ class IntakeAutoEject(SubsystemCommand):
             print("Left Color:", left_color)
             Sensors.color_sensors.multiplexer.writeBulk(bytes([0b0100])) #0100 = Left
 
-            if left_color != constants.TEAM and left_color != "none":
+            if left_color != config.TEAM and left_color != "none":
                 self.ejecting = True
                 self.subsystem.dinglebob_eject_right()
                 reset = False
@@ -50,7 +52,7 @@ class IntakeAutoEject(SubsystemCommand):
             print("Right Color:", right_color)
             Sensors.color_sensors.multiplexer.writeBulk(bytes([0b1000]))
 
-            if right_color != constants.TEAM and right_color != "none":
+            if right_color != config.TEAM and right_color != "none":
                 self.ejecting = True
                 self.subsystem.dinglebob_eject_left()
                 reset = False

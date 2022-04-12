@@ -1,15 +1,14 @@
-from commands2 import InstantCommand, WaitCommand
-from robotpy_toolkit_7407.command import SubsystemCommand
-from subsystem import Index, Intake
-from oi.keymap import Keymap
-from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit
-from robotpy_toolkit_7407.unum import Unum
-from robot_systems import Robot, Sensors
 import commands2
-import wpilib
+from commands2 import WaitCommand
+from robotpy_toolkit_7407.command import SubsystemCommand
+from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit
+
+import config
+from oi.keymap import Keymap
 from robot_systems import Robot
-from subsystem import Intake
-import constants
+from robot_systems import Sensors
+from subsystem import Index
+
 
 class BallPath(SubsystemCommand[Index]):
     def __init__(self, subsystem):
@@ -63,14 +62,14 @@ class BallPath(SubsystemCommand[Index]):
                 right_color = Sensors.color_sensors.color()
                 right_val = Sensors.color_sensors.get_val()
                 print(f"Left Color: {left_val}, Right Color: {right_val}, Left: {left_color}, Right: {right_color}")
-                if Robot.intake.left_intake_down and left_color != Robot.TEAM and left_color != "none":
+                if Robot.intake.left_intake_down and left_color != config.TEAM and left_color != "none":
                     #print("EJECT LEFT")
                     self.dinglebob_direction = "eject_right"
                     if Robot.intake.right_intake_down:
                         self.right_intake_direction = "out"
                     self.intake_active_check = False
                     commands2.CommandScheduler.getInstance().schedule(WaitCommand(.5).andThen(self.reactivate_intake_check))
-                if Robot.intake.right_intake_down and right_color != Robot.TEAM and right_color != "none":
+                if Robot.intake.right_intake_down and right_color != config.TEAM and right_color != "none":
                     #print("EJECT RIGHT")
                     self.dinglebob_direction = "eject_left"
                     if Robot.intake.left_intake_down:

@@ -1,14 +1,10 @@
-from re import sub
 from commands2 import InstantCommand
 from robotpy_toolkit_7407.command import SubsystemCommand
 from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit
-from robotpy_toolkit_7407.unum import Unum
 from robotpy_toolkit_7407.utils import logger
 
 from robot_systems import Robot
 from subsystem import Shooter
-from robotpy_toolkit_7407.utils.units import m, s, rad, Unum
-from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_vel_unit
 
 
 def change_offset(change: float):

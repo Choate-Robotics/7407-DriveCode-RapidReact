@@ -1,12 +1,6 @@
-import wpilib
-
 from commands2 import InstantCommand, ParallelCommandGroup, ConditionalCommand, SequentialCommandGroup, WaitCommand
-import commands2
 from robotpy_toolkit_7407.command import SubsystemCommand, T
-from robotpy_toolkit_7407.unum import Unum
-from robotpy_toolkit_7407.unum.units import cm
-from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit
-from robotpy_toolkit_7407.utils.units import m, s, inch, meters, rev
+from robotpy_toolkit_7407.utils.units import inch, meters, rev
 
 import constants
 from robot_systems import Robot

@@ -1,13 +1,13 @@
-from commands2 import InstantCommand, CommandScheduler, WaitCommand
+from commands2 import InstantCommand
 from robotpy_toolkit_7407.utils import logger
 from wpimath.geometry import Pose2d, Rotation2d
 
+import command
+import config
+from command import DriveSwerveAim
 from command.drivetrain import DriveSwerveCustom
-from command.shoot_while_moving import ShootWhileMoving
 from oi.keymap import Keymap
 from robot_systems import Robot
-import command
-from command import DriveSwerveAim
 
 
 class OI:
@@ -87,10 +87,10 @@ class OI:
         Keymap.Intake.RIGHT_INTAKE_TOGGLE().whenPressed(Robot.intake.toggle_right_intake).whenReleased(Robot.intake.toggle_right_intake)
         
         def change_team_color():
-            if Robot.TEAM == 'red':
-                Robot.TEAM = 'blue'
+            if config.TEAM == 'red':
+                config.TEAM = 'blue'
             else:
-                Robot.TEAM = 'red'
+                config.TEAM = 'red'
 
         Keymap.Index.TOGGLE_AUTO_EJECT().whenPressed(InstantCommand(change_team_color))
 

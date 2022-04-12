@@ -1,17 +1,13 @@
 # import iniconfig
+import wpilib
 from robotpy_toolkit_7407 import Subsystem
 from robotpy_toolkit_7407.motors import TalonFX, TalonGroup, TalonConfig, ctre_motors
-import wpilib
-from robotpy_toolkit_7407.unum import Unum
-from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit, talon_sensor_vel_unit, talon_sensor_accel_unit
+from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_vel_unit, talon_sensor_accel_unit
+from robotpy_toolkit_7407.utils.units import meters
 
 import constants
 from sensors import LimitSwitch
-from utils.can_optimizations import optimize_leader_talon, optimize_normal_talon, optimize_leader_talon_no_sensor, \
-    optimize_normal_talon_no_sensor
-
-from robotpy_toolkit_7407.utils import logger
-from robotpy_toolkit_7407.utils.units import inch, rev, meters
+from utils.can_optimizations import optimize_leader_talon, optimize_normal_talon_no_sensor
 
 _MOTOR_CFG = TalonConfig(
     0.1, 0, 0, 1023 / 20937,
