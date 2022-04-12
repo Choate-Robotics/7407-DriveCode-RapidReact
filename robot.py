@@ -69,8 +69,6 @@ class _Robot(wpilib.TimedRobot):
 
         commands2.CommandScheduler.getInstance().setPeriod(constants.period)
 
-        Robot.limelight.led_off()
-
         # Robot.intake_cameras = IntakeCameras() # TODO
 
         logger.info("initialization complete")
@@ -78,10 +76,8 @@ class _Robot(wpilib.TimedRobot):
     def robotPeriodic(self):
         Robot.rev_digit.update()
         commands2.CommandScheduler.getInstance().run()
-        Robot.limelight.update()
 
     def teleopInit(self) -> None:
-        Robot.limelight.led_off()
         Robot.elevator.initialized = False
         commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
         #commands2.CommandScheduler.getInstance().schedule(IndexAutoDrive(Robot.index))
@@ -112,8 +108,6 @@ class _Robot(wpilib.TimedRobot):
         pass
 
     def autonomousInit(self) -> None:
-        Robot.limelight.led_off()
-
         if config.AUTO == "five":
             if config.TEAM == "red":
                 five_ball_auto_red.routine.run()

@@ -7,31 +7,26 @@ from robot_systems import Robot
 from subsystem import Shooter
 
 
-def change_offset(change: float):
-    Robot.shooter.offset_m += change
-    logger.info(f"NEW OFFSET = {Robot.shooter.offset_m}m")
-
-
-ShooterOffsetUp = lambda: InstantCommand(lambda: change_offset(0.1))
-ShooterOffsetDown = lambda: InstantCommand(lambda: change_offset(-0.1))
-
-
 class ShooterEnable(SubsystemCommand[Shooter]):
     def __init__(self, subsystem: Shooter):
         super().__init__(subsystem)
         self.subsystem = subsystem
 
     def initialize(self) -> None:
-        Robot.limelight.ref_on()
+        pass
 
     def execute(self) -> None:
-        self.subsystem.target_stationary(Robot.limelight.calculate_distance() + Robot.shooter.offset_m)
+        d = Robot.odometry.hub_dist
+        if d is None:
+            d = 2
+
+        self.subsystem.target_stationary(d)
+
     def isFinished(self) -> bool:
         return False
 
     def end(self, interrupted: bool) -> None:
         self.subsystem.stop()
-        Robot.limelight.ref_off()
 
 
 class ShooterEnableAtDistance(SubsystemCommand[Shooter]):
