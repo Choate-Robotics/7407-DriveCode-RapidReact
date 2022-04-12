@@ -36,12 +36,12 @@ shooter_angle_gear_ratio = (266 / 10) * (36 / 12) * rad/rad
 air_resistance_constant = 0.048187
 height_difference = 1.85  # meters # In reality about 1.76m, but a slightly higher height makes the ball bounce off the back of the HUB
 gravity = 9.80665  # m/s^2
-shooter_delay = 0.05  # seconds
+shooter_delay = 0.21  # seconds
 acceptable_error = 0.25  # meters
 ideal_entry_angle = -math.pi / 3  # desired angle for the ball to enter the hub
 minimum_shooter_angle = math.pi / 4  # radians
 max_shooter_angle = math.radians(75)
-max_shooter_velocity = 30  # m/s
+max_shooter_velocity = 45  # m/s
 
 # --- ELEVATOR ---
 
