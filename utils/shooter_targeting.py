@@ -102,7 +102,7 @@ class ShooterTargeting:
         """
 
         if function is None:
-            function = cls.velocity_angle_minimize
+            function = cls.energy_minimize
 
         # Figure out the direction
         if direction is None:
