@@ -154,7 +154,7 @@ class ShooterTargeting:
 
     @classmethod
     def moving_aim(cls, distance_to_hub, robot_velocity, velocity_up=10, step_size=0.1,
-                   function=velocity_angle_minimize):
+                   function=None):
         """
         calculates how to orient the robot and what velocity to give the ball to make a shot while moving
 
@@ -171,6 +171,10 @@ class ShooterTargeting:
         The returned value is a tuple with the horizontal and vertical components of velocity, and an orientation of
         the robot in radians
         """
+
+        if function is None:
+            function = cls.velocity_angle_minimize
+
         # What velocity the ball needs to have
         required_velocity = cls.stationary_aim(distance_to_hub, velocity_up, step_size=step_size, function=function)
 

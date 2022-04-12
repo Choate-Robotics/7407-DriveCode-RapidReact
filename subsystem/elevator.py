@@ -9,6 +9,9 @@ from sensors import LimitSwitch
 from utils.can_optimizations import optimize_leader_talon, optimize_normal_talon, optimize_leader_talon_no_sensor, \
     optimize_normal_talon_no_sensor
 
+from robotpy_toolkit_7407.utils import logger
+from robotpy_toolkit_7407.utils.units import inch, rev
+
 _MOTOR_CFG = TalonConfig(
     0.1, 0, 0, 1023 / 20937,
     motion_cruise_velocity=15000*talon_sensor_vel_unit, motion_acceleration=50000*talon_sensor_accel_unit,
@@ -22,7 +25,7 @@ class Elevator(Subsystem):
     l_elevator = [LimitSwitch(2), LimitSwitch(3)]
     l_hanger_top = [LimitSwitch(4), LimitSwitch(5)]
     l_hanger_bottom = [LimitSwitch(6), LimitSwitch(7)]
-    zeroed: bool
+    mag_sensor = LimitSwitch(9)
 
     def init(self):
         self.motors.init()
@@ -30,7 +33,6 @@ class Elevator(Subsystem):
         optimize_normal_talon_no_sensor(self.motors.motors[1])
         self.solenoid = wpilib.DoubleSolenoid(1, wpilib.PneumaticsModuleType.REVPH, 4, 5)
         self.retract_solenoid()
-        self.zeroed = self.bottomed_out()
 
     def set_height(self, h: Unum):
         self.motors.set_target_position(h * constants.elevator_gear_ratio)
@@ -53,3 +55,16 @@ class Elevator(Subsystem):
 
     def bottomed_out(self):
         return not(self.l_elevator[0].get_value() or self.l_elevator[1].get_value())
+
+    def zero_elevator(self):
+        # slowly lower the elevator until it is in view of the mag sensor
+        while(self.mag_sensor.get_value() == False):
+            h = self.get_height()
+            h -= 0.1 * inch
+            self.set_height(h)
+
+        # reset motor's sensor position to 0
+        self.motors.set_target_position(0 * inch * constants.elevator_gear_ratio)
+        self.motors.set_sensor_position(0 * rev)
+        
+        
