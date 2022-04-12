@@ -2,7 +2,7 @@ from math import degrees, pi
 from networktables import NetworkTables
 import math
 from robotpy_toolkit_7407.utils import logger
-from robotpy_toolkit_7407.utils.units import m, deg, ft, inch, rad
+from robotpy_toolkit_7407.utils.units import m, deg, ft, inch, rad, radians
 
 
 class Limelight:
@@ -61,6 +61,5 @@ class Limelight:
 
         return distance.asNumber(m)
 
-    def get_x_offset(self) -> float:
-        #return self.tx
-        return self.tx * deg # BARDOE
+    def get_x_offset(self) -> radians:
+        return math.radians(self.tx)

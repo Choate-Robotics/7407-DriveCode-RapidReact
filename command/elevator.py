@@ -7,7 +7,7 @@ from robotpy_toolkit_7407.command import SubsystemCommand, T
 from robotpy_toolkit_7407.unum import Unum
 from robotpy_toolkit_7407.unum.units import cm
 from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit
-from robotpy_toolkit_7407.utils.units import m, s, inch
+from robotpy_toolkit_7407.utils.units import m, s, inch, meters
 
 import constants
 from robot_systems import Robot
@@ -15,7 +15,7 @@ from subsystem import Elevator
 
 
 def elevator_down():
-    Robot.elevator.set_height(0 * inch)
+    Robot.elevator.set_height(0)
     Robot.drivetrain.max_vel = constants.drivetrain_max_vel
 
 
@@ -39,7 +39,7 @@ ElevatorSetupCommand = lambda: ParallelCommandGroup(
 
 # pull the robot onto the mid/high bar
 class ElevatorClimbStep1(SubsystemCommand[Elevator]):
-    def __init__(self, subsystem: T, tolerance: Unum = 0.5 * cm):
+    def __init__(self, subsystem: T, tolerance: meters = 0.005):
         super().__init__(subsystem)
         self.tolerance = tolerance
         self.grabbed = False
@@ -93,7 +93,7 @@ class ElevatorClimbStep1(SubsystemCommand[Elevator]):
 
 # extend elevator so that t-rex hooks are holding onto mid/high bar
 class ElevatorClimbStep2(SubsystemCommand[Elevator]):
-    def __init__(self, subsystem: T, tolerance: Unum = 0.5 * cm):
+    def __init__(self, subsystem: T, tolerance: meters = 0.005):
         super().__init__(subsystem)
         self.tolerance = tolerance
         self.latched = False
@@ -137,7 +137,7 @@ class ElevatorClimbStep2(SubsystemCommand[Elevator]):
 
 # (mid to high) extend pistons so the the robot tilt's backwards, also extend elevator towards next bar
 class ElevatorClimbStep3(SubsystemCommand[Elevator]):
-    def __init__(self, subsystem: T, tolerance: Unum = 0.5 * cm):
+    def __init__(self, subsystem: T, tolerance: meters = 0.005):
         super().__init__(subsystem)
         self.tolerance = tolerance
         self.fired = False
@@ -159,7 +159,7 @@ class ElevatorClimbStep3(SubsystemCommand[Elevator]):
     
 # (high to traverse) extend pistons so the the robot tilt's backwards, also extend elevator just below traversal bar
 class ElevatorClimbStep4(SubsystemCommand[Elevator]):
-    def __init__(self, subsystem: T, tolerance: Unum = 0.5 * cm):
+    def __init__(self, subsystem: T, tolerance: meters = 0.005):
         super().__init__(subsystem)
         self.tolerance = tolerance
         self.fired = False
@@ -181,7 +181,7 @@ class ElevatorClimbStep4(SubsystemCommand[Elevator]):
 
 # keep extending elevator towards traversal bar
 class ElevatorClimbStep5(SubsystemCommand[Elevator]):
-    def __init__(self, subsystem: T, tolerance: Unum = 0.5 * cm):
+    def __init__(self, subsystem: T, tolerance: meters = 0.005):
         super().__init__(subsystem)
         self.tolerance = tolerance
 
@@ -197,7 +197,7 @@ class ElevatorClimbStep5(SubsystemCommand[Elevator]):
 
 # pull the robot onto the mid/high bar
 class ElevatorClimbStep6(SubsystemCommand[Elevator]):
-    def __init__(self, subsystem: T, tolerance: Unum = 0.5 * cm):
+    def __init__(self, subsystem: T, tolerance: meters = 0.005):
         super().__init__(subsystem)
         self.tolerance = tolerance
         self.grabbed = False
@@ -250,7 +250,7 @@ class ElevatorClimbStep6(SubsystemCommand[Elevator]):
 
     
 class ElevatorClimbStep7(SubsystemCommand[Elevator]):
-    def __init__(self, subsystem: T, tolerance: Unum = 0.5 * cm):
+    def __init__(self, subsystem: T, tolerance: meters = 0.005):
         super().__init__(subsystem)
         self.tolerance = tolerance
 

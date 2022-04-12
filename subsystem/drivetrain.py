@@ -2,11 +2,12 @@ import math
 from dataclasses import dataclass
 
 from ctre import CANCoder, Pigeon2, StatusFrameEnhanced
-from robotpy_toolkit_7407.motors import TalonFX, TalonConfig
+from robotpy_toolkit_7407.motors import TalonFX, TalonConfig, ctre_motors
 from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit, talon_sensor_vel_unit, talon_sensor_accel_unit, hundred_ms
 from robotpy_toolkit_7407.subsystem_templates.drivetrain import SwerveNode, SwerveDrivetrain, SwerveGyro
 from robotpy_toolkit_7407.utils import logger
-from robotpy_toolkit_7407.utils.units import rad, rev, inch, deg, m, mile, hour, s, ft, minute
+from robotpy_toolkit_7407.utils.units import rad, rev, inch, deg, m, mile, hour, s, ft, minute, radians, \
+    meters_per_second, radians_per_second, meters
 from robotpy_toolkit_7407.unum import Unum
 from wpimath.geometry import Pose2d
 
@@ -24,8 +25,8 @@ TURN_kP = 1.1
 TURN_kD = 5
 TURN_CONFIG = TalonConfig(
     TURN_kP, TURN_kI, TURN_kD, TURN_kF,
-    motion_cruise_velocity=17000*talon_sensor_vel_unit,
-    motion_acceleration=170000*talon_sensor_accel_unit,
+    motion_cruise_velocity=17000*ctre_motors.k_sensor_vel_to_rad_per_sec,
+    motion_acceleration=170000*ctre_motors.k_sensor_accel_to_rad_per_sec_sq,
     neutral_brake=True,
     integral_zone=TURN_IZone, max_integral_accumulator=TURN_I_MaxAccum
 )
@@ -48,7 +49,7 @@ class TalonFXSwerveNode(SwerveNode):
     m_move: TalonFX
     m_turn: TalonFX
     encoder: CANCoder
-    encoder_zeroed_absolute_pos_radians: Unum = 0 * rad
+    encoder_zeroed_absolute_pos_radians: radians = 0
 
     def init(self):
         super().init()
@@ -60,22 +61,22 @@ class TalonFXSwerveNode(SwerveNode):
 
     # make the turn motor set their sensor 0 to current horizontal thingy
     def zero(self):
-        current_absolute_pos_radians = self.encoder.getAbsolutePosition() * deg
+        current_absolute_pos_radians = math.radians(self.encoder.getAbsolutePosition())
         new_sensor_pos_radians = current_absolute_pos_radians - self.encoder_zeroed_absolute_pos_radians
         self.m_turn.set_sensor_position(new_sensor_pos_radians * constants.drivetrain_turn_gear_ratio)
 
     # reposition the wheels
-    def set_motor_angle(self, pos: Unum):
+    def set_motor_angle(self, pos: radians):
         self.m_turn.set_target_position(pos * constants.drivetrain_turn_gear_ratio)
 
-    def get_current_motor_angle(self) -> Unum:
+    def get_current_motor_angle(self) -> radians:
         return self.m_turn.get_sensor_position() / constants.drivetrain_turn_gear_ratio
 
     # rotate the wheel so the robot moves
-    def set_motor_velocity(self, vel: Unum):
+    def set_motor_velocity(self, vel: meters_per_second):
         self.m_move.set_target_velocity(vel * constants.drivetrain_move_gear_ratio)
 
-    def get_motor_velocity(self) -> Unum:
+    def get_motor_velocity(self) -> radians_per_second:
         return self.m_move.get_sensor_velocity() / constants.drivetrain_move_gear_ratio
 
 
@@ -101,17 +102,17 @@ class ManuallyZeroedSwerveNode(SwerveNode):
         self.m_turn.set_sensor_position(0 * constants.drivetrain_turn_gear_ratio)
 
     # reposition the wheels
-    def set_motor_angle(self, pos: Unum):
+    def set_motor_angle(self, pos: radians):
         self.m_turn.set_target_position(pos * constants.drivetrain_turn_gear_ratio)
 
-    def get_current_motor_angle(self) -> Unum:
+    def get_current_motor_angle(self) -> radians:
         return self.m_turn.get_sensor_position() / constants.drivetrain_turn_gear_ratio
 
     # rotate the wheel so the robot moves
-    def set_motor_velocity(self, vel: Unum):
+    def set_motor_velocity(self, vel: meters_per_second):
         self.m_move.set_target_velocity(vel * constants.drivetrain_move_gear_ratio)
 
-    def get_motor_velocity(self) -> Unum:
+    def get_motor_velocity(self) -> meters_per_second:
         return self.m_move.get_sensor_velocity() / constants.drivetrain_move_gear_ratio
 
 
@@ -123,8 +124,8 @@ class PigeonIMUGyro(SwerveGyro):
     def init(self):
         self.reset_angle()
 
-    def get_robot_heading(self) -> Unum:
-        return self._gyro.getYaw() * deg
+    def get_robot_heading(self) -> radians:
+        return math.radians(self._gyro.getYaw())
 
     # reset the gyro
     def reset_angle(self):
@@ -135,30 +136,30 @@ class Drivetrain(SwerveDrivetrain):
     n_00 = TalonFXSwerveNode(
         TalonFX(7, inverted=True, config=MOVE_CONFIG),
         TalonFX(8, inverted=True, config=TURN_CONFIG),
-        CANCoder(12), 26.719 * deg
+        CANCoder(12), (26.719 * deg).asNumber(rad)
     )
     n_01 = TalonFXSwerveNode(
         TalonFX(1, config=MOVE_CONFIG),
         TalonFX(2, inverted=True, config=TURN_CONFIG),
-        CANCoder(9), 298.916 * deg #316.758
+        CANCoder(9), (298.916 * deg).asNumber(rad)
     )
     n_10 = TalonFXSwerveNode(
         TalonFX(5, inverted=True, config=MOVE_CONFIG),
         TalonFX(6, inverted=True, config=TURN_CONFIG),
-        CANCoder(11), 138.516 * deg
+        CANCoder(11), (138.516 * deg).asNumber(rad)
     )
     n_11 = TalonFXSwerveNode(
         TalonFX(3, config=MOVE_CONFIG),
         TalonFX(4, inverted=True, config=TURN_CONFIG),
-        CANCoder(10), 313.506 * deg
+        CANCoder(10), (313.506 * deg).asNumber(rad)
     )
     gyro = PigeonIMUGyro()
     axis_dx = Keymap.Drivetrain.DRIVE_X_AXIS
     axis_dy = Keymap.Drivetrain.DRIVE_Y_AXIS
     axis_rotation = Keymap.Drivetrain.DRIVE_ROTATION_AXIS
-    track_width: Unum = constants.track_width
-    max_vel: Unum = constants.drivetrain_max_vel
-    max_angular_vel: Unum = constants.drivetrain_max_angular_vel
-    deadzone_velocity: Unum = 0.01 * m / s
-    deadzone_angular_velocity: Unum = 5 * deg / s
+    track_width: meters = constants.track_width
+    max_vel: meters_per_second = constants.drivetrain_max_vel
+    max_angular_vel: radians_per_second = constants.drivetrain_max_angular_vel
+    deadzone_velocity: meters_per_second = 0.01
+    deadzone_angular_velocity: radians_per_second = (5 * deg/s).asNumber(rad/s)
     start_pose: Pose2d = Pose2d(0, 0, 0)

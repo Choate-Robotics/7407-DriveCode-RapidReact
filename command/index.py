@@ -1,5 +1,6 @@
 from commands2 import InstantCommand
 from robotpy_toolkit_7407.command import SubsystemCommand
+from robotpy_toolkit_7407.motors import ctre_motors
 
 from robot_systems import Robot
 from subsystem import Index
@@ -16,7 +17,7 @@ class IndexAutoDrive(SubsystemCommand):
         super().__init__(subsystem)
         self.done = True
         self.subsystem = subsystem
-        self.ball_distance = 17600*talon_sensor_unit
+        self.ball_distance = 17600 * ctre_motors.k_sensor_pos_to_radians
         self.desired_distance = None
 
     def initialize(self):
