@@ -72,7 +72,7 @@ class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
 
     def execute(self) -> None:
         dx, dy = self.subsystem.axis_dx.value, self.subsystem.axis_dy.value
-        d_omega = self.old_limelight-Robot.limelight.get_x_offset().asNumber(deg)
+        d_omega = math.degrees(self.old_limelight - Robot.limelight.get_x_offset())
         omega = self.KP * math.degrees(Robot.limelight.get_x_offset()) + self.KD * d_omega
         self.old_limelight = Robot.limelight.get_x_offset()
 

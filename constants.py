@@ -26,8 +26,8 @@ shooter_top_wheel_radius = (2 * inch).asNumber(m)
 shooter_bottom_wheel_radius = (2 * inch).asNumber(m)
 
 # For m/s (ball exit velocity) to rad/s (motor velocity)
-shooter_top_gear_ratio = ((1 * rad / shooter_top_wheel_radius) * (38 / 42)).asNumber(rad/m)
-shooter_bottom_gear_ratio = ((1 * rad / shooter_bottom_wheel_radius) * (1 / 1)).asNumber(rad/m)
+shooter_top_gear_ratio = (1 / shooter_top_wheel_radius) * (38 / 42)
+shooter_bottom_gear_ratio = (1 / shooter_bottom_wheel_radius) * (1 / 1)
 
 # Shooter angle to motor angle
 shooter_angle_gear_ratio = (266 / 10) * (36 / 12)

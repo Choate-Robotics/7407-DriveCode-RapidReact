@@ -10,6 +10,7 @@ from subsystem import Shooter
 from robotpy_toolkit_7407.utils.units import m, s, rad, Unum
 from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_vel_unit
 
+
 def change_offset(change: float):
     Robot.shooter.offset_m += change
     logger.info(f"NEW OFFSET = {Robot.shooter.offset_m}m")
