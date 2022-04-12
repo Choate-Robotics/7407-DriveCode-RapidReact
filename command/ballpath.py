@@ -1,7 +1,7 @@
 from commands2 import InstantCommand, WaitCommand
 from robotpy_toolkit_7407.command import SubsystemCommand
 from subsystem import Index, Intake
-from oi.keymap import Keymap
+from oi.keymap import Keymap, Controllers
 from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit
 from robotpy_toolkit_7407.unum import Unum
 from robot_systems import Robot, Sensors
@@ -27,6 +27,8 @@ class BallPath(SubsystemCommand[Index]):
         self.intake_eject_left = False
         self.intake_eject_right = False
 
+        self.intake_force_stop = False
+
         self.index_shoot = False
         self.index_index = False
         self.index_normal = True
@@ -43,8 +45,20 @@ class BallPath(SubsystemCommand[Index]):
 
     def execute(self) -> None:
 
+        Sensors.color_sensors.multiplexer.writeBulk(bytes([0b0100]))
+        left_color = Sensors.color_sensors.color()
+        left_val = Sensors.color_sensors.get_val()
+        Sensors.color_sensors.multiplexer.writeBulk(bytes([0b1000]))
+        right_color = Sensors.color_sensors.color()
+        right_val = Sensors.color_sensors.get_val()
+
         if Robot.intake.dinglebob_run_extend:
             self.dinglebob_direction = "in"
+
+        if (Robot.index.ball_queue == 1 and (left_color != 'none' or right_color != 'none')) or Robot.index.ball_queue == 2: #(Robot.index.ball_queue == 1 and (left_color != 'none' or right_color != 'none')) or 
+            self.intake_force_stop = True
+        else:
+            self.intake_force_stop = False
 
         if self.intake_active_check:
 
@@ -56,12 +70,6 @@ class BallPath(SubsystemCommand[Index]):
             if Robot.intake.left_intake_down or Robot.intake.right_intake_down:
                 #print(f"Left: {Robot.intake.left_intake_down} Right: {Robot.intake.right_intake_down}")
                 self.dinglebob_direction = "in"
-                Sensors.color_sensors.multiplexer.writeBulk(bytes([0b0100]))
-                left_color = Sensors.color_sensors.color()
-                left_val = Sensors.color_sensors.get_val()
-                Sensors.color_sensors.multiplexer.writeBulk(bytes([0b1000]))
-                right_color = Sensors.color_sensors.color()
-                right_val = Sensors.color_sensors.get_val()
                 print(f"Left Color: {left_val}, Right Color: {right_val}, Left: {left_color}, Right: {right_color}")
                 if Robot.intake.left_intake_down and left_color != Robot.TEAM and left_color != "none":
                     #print("EJECT LEFT")
@@ -86,9 +94,18 @@ class BallPath(SubsystemCommand[Index]):
         elif Robot.index.ball_queue == 1 and Robot.index.photo_electric.get_value():
             Robot.index.ball_queue += 1
         elif Robot.index.ball_queue == 2:
-            pass
-
-        print(Robot.index.ball_queue)
+            if Robot.index.photo_electric.get_value():
+                wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, .4)
+                self.dinglebob_direction = "off"
+            else:
+                Robot.index.ball_queue -= 1
+        
+        if Robot.index.ball_queue < 2:
+            wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, 0)
+        elif (left_color != Robot.TEAM and left_color != 'none') or (right_color != Robot.TEAM and right_color != 'none'):
+            wpilib.XboxController(Controllers.OPERATOR).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, 1)
+        else:
+            wpilib.XboxController(Controllers.OPERATOR).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, 0)
         
         if self.index_index:
             if self.desired_distance <= Robot.index.motor.get_sensor_position():
@@ -107,6 +124,14 @@ class BallPath(SubsystemCommand[Index]):
             self.index_normal = False
             self.index_speed = .5
             self.dinglebob_direction = "in"
+
+        if self.intake_force_stop:
+            print("FORCED OUT")
+            Robot.intake.DISABLE_INTAKES = True
+            Robot.intake.left_intake_disable()
+            Robot.intake.right_intake_disable()
+        else:
+            Robot.intake.DISABLE_INTAKES = False
 
         left_joy = Keymap.Index.INDEX_JOY.value
 
@@ -134,6 +159,7 @@ class BallPath(SubsystemCommand[Index]):
             Robot.intake.dinglebob_eject_right()
         elif self.dinglebob_direction == "off":
             Robot.intake.dinglebobs_off()
+        print(self.dinglebob_direction)
 
         # print(f"Index Shooting: {self.index_shoot}, Index Indexing: {self.index_index}")
         # print(f"INTAKE ACTIVE CHECK: {self.intake_active_check}")
