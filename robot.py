@@ -9,7 +9,7 @@ from robotpy_toolkit_7407.utils import logger
 from robotpy_toolkit_7407.utils.units import m, s
 
 import config
-from command import elevator_rezero
+from command import ElevatorRezero
 import constants
 from autonomous import two_ball_auto, five_ball_auto_blue, five_ball_auto_red
 #from autonomous import five_ball_auto, two_ball_auto, three_ball_auto # TODO: Fix this
@@ -87,7 +87,7 @@ class _Robot(wpilib.TimedRobot):
         #commands2.CommandScheduler.getInstance().schedule(IndexAutoDrive(Robot.index))
         #commands2.CommandScheduler.getInstance().schedule(IntakeAutoEject(Robot.intake))
         commands2.CommandScheduler.getInstance().schedule(BallPath(Robot.index))
-        commands2.CommandScheduler.getInstance().schedule(elevator_rezero(Robot.elevator))
+        commands2.CommandScheduler.getInstance().schedule(ElevatorRezero(Robot.elevator))
         Robot.index.ball_queue = 0
         # if not Robot.shooter.zeroed:
         #     commands2.CommandScheduler.getInstance().schedule(ShooterZero(Robot.shooter))

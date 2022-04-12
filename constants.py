@@ -4,7 +4,7 @@ from robotpy_toolkit_7407.utils.units import rad, rev, inch, deg, m, mile, hour,
 from wpilib import DriverStation
 import config
 
-period = 0.08
+period = 0.02
 
 # --- DRIVETRAIN ---
 
