@@ -1,6 +1,6 @@
 # import iniconfig
 from robotpy_toolkit_7407 import Subsystem
-from robotpy_toolkit_7407.motors import TalonFX, TalonGroup, TalonConfig
+from robotpy_toolkit_7407.motors import TalonFX, TalonGroup, TalonConfig, ctre_motors
 import wpilib
 from robotpy_toolkit_7407.unum import Unum
 from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit, talon_sensor_vel_unit, talon_sensor_accel_unit
@@ -11,7 +11,7 @@ from utils.can_optimizations import optimize_leader_talon, optimize_normal_talon
     optimize_normal_talon_no_sensor
 
 from robotpy_toolkit_7407.utils import logger
-from robotpy_toolkit_7407.utils.units import inch, rev
+from robotpy_toolkit_7407.utils.units import inch, rev, meters
 
 _MOTOR_CFG = TalonConfig(
     0.1, 0, 0, 1023 / 20937,
@@ -36,7 +36,7 @@ class Elevator(Subsystem):
         self.solenoid = wpilib.DoubleSolenoid(1, wpilib.PneumaticsModuleType.REVPH, 4, 5)
         self.retract_solenoid()
 
-    def set_height(self, h: Unum):
+    def set_height(self, h: meters):
         self.motors.set_target_position(h * constants.elevator_gear_ratio)
 
     def get_height(self):
@@ -62,21 +62,21 @@ class Elevator(Subsystem):
         # slowly lower the elevator until it is in view of the mag sensor
         while(self.mag_sensor.get_value() == False):
             h = self.get_height()
-            h -= 0.1 * inch
+            h -= 0.005
             self.set_height(h)
 
         # reset motor's sensor position to 0
-        self.motors.set_target_position(0 * inch * constants.elevator_gear_ratio)
-        self.motors.set_sensor_position(0 * rev)
+        self.motors.set_target_position(0)
+        self.motors.set_sensor_position(0)
         
 
     def set_climb_speed(self):
-        _MOTOR_CFG = TalonConfig(
-        0.1, 0, 0, 1023 / 20937,
-        motion_cruise_velocity=15000*talon_sensor_vel_unit, motion_acceleration=50000*talon_sensor_accel_unit,
-        neutral_brake=True
+        motor_cfg = TalonConfig(
+            0.1, 0, 0, 1023 / 20937,
+            motion_cruise_velocity=15000*ctre_motors.k_sensor_vel_to_rad_per_sec, motion_acceleration=50000*ctre_motors.k_sensor_accel_to_rad_per_sec_sq,
+            neutral_brake=True
         )
         
-        self.motors: TalonGroup = TalonGroup(TalonFX(17, inverted=True), TalonFX(18, inverted=False), config=_MOTOR_CFG)
+        self.motors: TalonGroup = TalonGroup(TalonFX(17, inverted=True), TalonFX(18, inverted=False), config=motor_cfg)
         
         self.motors.init()

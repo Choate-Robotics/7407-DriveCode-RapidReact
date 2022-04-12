@@ -28,10 +28,10 @@ class ShootWhileMoving(Command):
 
         logger.info(f"offset={angle_offset}")
 
-        omega = 0.07 * hub_angle * rad/s
+        omega = 0.07 * hub_angle
 
         self.drivetrain.set(
-            (curve(dx) * self.drivetrain.max_vel.asUnit(m / s), curve(-dy) * self.drivetrain.max_vel.asUnit(m / s)),
+            (curve(dx) * self.drivetrain.max_vel, curve(-dy) * self.drivetrain.max_vel),
             omega
         )
 

@@ -26,8 +26,6 @@ class _Robot(wpilib.TimedRobot):
     """
     Main robot class. Initializes OI and subsystems, and runs the command scheduler.
     """
-    loops_per_net_update: int = 8 #10
-    network_counter: int
 
     def __init__(self):
         super().__init__(constants.period)
@@ -54,9 +52,6 @@ class _Robot(wpilib.TimedRobot):
         subsystems: list[Subsystem] = list(
             {k: v for k, v in Robot.__dict__.items() if isinstance(v, Subsystem)}.values()
         )
-
-        Network.robot_init(subsystems)
-        self.network_counter = self.loops_per_net_update
 
         for subsystem in subsystems:
             subsystem.init()
@@ -88,10 +83,6 @@ class _Robot(wpilib.TimedRobot):
         commands2.CommandScheduler.getInstance().run()
         # Robot.intake_cameras.read_camera_data() # TODO
         Robot.limelight.update()
-        self.network_counter -= 1
-        if self.network_counter == 0:
-            self.network_counter = self.loops_per_net_update
-            Network.robot_send_status()
 
     def teleopInit(self) -> None:
         Robot.limelight.led_off()

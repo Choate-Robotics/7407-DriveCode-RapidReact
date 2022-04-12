@@ -36,8 +36,8 @@ class DriveSwerveCustom(SubsystemCommand[SwerveDrivetrain]):
         d_theta = curve(d_theta)
 
         # TODO normalize this to circle somehow
-        dx *= self.subsystem.max_vel.asUnit(m/s)
-        dy *= -self.subsystem.max_vel.asUnit(m/s)
+        dx *= self.subsystem.max_vel
+        dy *= -self.subsystem.max_vel
 
         if DriveSwerveCustom.driver_centric:
             self.subsystem.set_driver_centric((dy, -dx), d_theta * self.subsystem.max_angular_vel)
@@ -45,10 +45,10 @@ class DriveSwerveCustom(SubsystemCommand[SwerveDrivetrain]):
             self.subsystem.set((dx, dy), d_theta * self.subsystem.max_angular_vel)
 
     def end(self, interrupted: bool) -> None:
-        self.subsystem.n_00.set(0 * m/s, 0 * rad)
-        self.subsystem.n_01.set(0 * m/s, 0 * rad)
-        self.subsystem.n_10.set(0 * m/s, 0 * rad)
-        self.subsystem.n_11.set(0 * m/s, 0 * rad)
+        self.subsystem.n_00.set(0, 0)
+        self.subsystem.n_01.set(0, 0)
+        self.subsystem.n_10.set(0, 0)
+        self.subsystem.n_11.set(0, 0)
 
     def isFinished(self) -> bool:
         return False
@@ -62,39 +62,34 @@ class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
         super().__init__(subsystem)
         self.ready_counts = ready_counts
         self.c_count = 0
-        self.KP = -0.06 # -0.06
-        self.KD = .040 # 0.035
-        # The PID is actually really good rn don't change it pls
+        self.KP = -0.06
+        self.KD = .040
+        self.old_limelight = 0
 
     def initialize(self) -> None:
         Robot.limelight.ref_on()
-        self.old_limelight=Robot.limelight.get_x_offset().asNumber(deg) #Bardoe for the damping
+        self.old_limelight = Robot.limelight.get_x_offset()
 
     def execute(self) -> None:
         dx, dy = self.subsystem.axis_dx.value, self.subsystem.axis_dy.value
-        #omega = self.controller.calculate(0, self.cam.get_x_offset()) * rad / s #NOT BARDOE
-        d_omega=self.old_limelight-Robot.limelight.get_x_offset().asNumber(deg) # BARDOE
-        #omega = -0.06 * Robot.limelight.get_x_offset()* rad / s #(The 3 is adjustable, p-gain) #.07
-        omega = (self.KP * Robot.limelight.get_x_offset().asNumber(deg) +self.KD*d_omega)* rad / s  # BARDOE (tune constants) # KD should be smaller than KD
-        self.old_limelight=Robot.limelight.get_x_offset().asNumber(deg) #BARDOE
+        d_omega = math.degrees(self.old_limelight - Robot.limelight.get_x_offset())
+        omega = self.KP * math.degrees(Robot.limelight.get_x_offset()) + self.KD * d_omega
+        self.old_limelight = Robot.limelight.get_x_offset()
 
         dx = curve(dx)
         dy = curve(dy)
 
         # TODO normalize this to circle somehow
-        dx *= self.subsystem.max_vel.asUnit(m / s)
-        dy *= -self.subsystem.max_vel.asUnit(m / s)
+        dx *= self.subsystem.max_vel
+        dy *= -self.subsystem.max_vel
 
-        #if abs(Robot.drivetrain.chassis_speeds.omega) < .1 and Robot.limelight.get_x_offset() != 0:
-        if abs(Robot.drivetrain.chassis_speeds.omega) < .1 and Robot.limelight.get_x_offset().asNumber(rad)!=0: # BARDOE Why did we have it so the x_offset is not zero?
-
-            self.c_count += 1 # Why do we do this?
+        if abs(Robot.drivetrain.chassis_speeds.omega) < .1 and Robot.limelight.get_x_offset() != 0:
+            self.c_count += 1
             if self.c_count >= self.ready_counts:
                 Robot.shooter.drive_ready = True
         else:
             self.c_count = 0
             Robot.shooter.drive_ready = False
-        #print(Robot.drivetrain.chassis_speeds.omega)
 
         self.subsystem.set((dx, dy), omega)
 

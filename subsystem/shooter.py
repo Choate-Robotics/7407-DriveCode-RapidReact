@@ -1,6 +1,6 @@
 from robotpy_toolkit_7407 import Subsystem
-from robotpy_toolkit_7407.motors import TalonFX, TalonGroup, TalonConfig
-from robotpy_toolkit_7407.utils.units import rad, m, s, deg
+from robotpy_toolkit_7407.motors import TalonFX, TalonGroup, TalonConfig, ctre_motors
+from robotpy_toolkit_7407.utils.units import rad, m, s, deg, radians, meters_per_second
 from robotpy_toolkit_7407.unum import Unum
 from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit, talon_sensor_vel_unit
 import math
@@ -27,10 +27,10 @@ class Shooter(Subsystem):
     #     neutral_brake=False))
     m_angle = TalonFX(20, inverted=True, config=TalonConfig(
         0.3, 0.005, 1, 1023 * 0.1 / 917, integral_zone=1000, max_integral_accumulator=10000,
-        neutral_brake=True, motion_cruise_velocity=6000*talon_sensor_vel_unit))
+        neutral_brake=True, motion_cruise_velocity=6000*ctre_motors.k_sensor_vel_to_rad_per_sec))
 
-    sensor_zero_angle = 15 * deg
-    angle_range = 45 * deg
+    sensor_zero_angle = (15 * deg).asNumber(rad)
+    angle_range = (45 * deg).asNumber(rad)
 
     left_limit = LimitSwitch(1)
     zeroed: bool
@@ -49,11 +49,11 @@ class Shooter(Subsystem):
         self.drive_ready = False
         self.shooter_ready = False
 
-    def set_launch_angle(self, theta: Unum):
-        theta = 90 * deg - theta - self.sensor_zero_angle
-        self.m_angle.set_target_position(max(min(theta, self.angle_range), 0 * rad) * constants.shooter_angle_gear_ratio)
+    def set_launch_angle(self, theta: radians):
+        theta = math.radians(90) - theta - self.sensor_zero_angle
+        self.m_angle.set_target_position(max(min(theta, self.angle_range), 0) * constants.shooter_angle_gear_ratio)
 
-    def set_flywheels(self, top_vel: Unum, bottom_vel: Unum):
+    def set_flywheels(self, top_vel: meters_per_second, bottom_vel: meters_per_second):
         self.m_top.set_target_velocity(top_vel * constants.shooter_top_gear_ratio)
         self.m_bottom.set_target_velocity(bottom_vel * constants.shooter_bottom_gear_ratio)
         tolerance = .08 # 0.06
@@ -63,10 +63,9 @@ class Shooter(Subsystem):
             self.shooter_ready = False
 
         #print(self.shooter_ready, self.drive_ready)
-    def set_flywheels_for_ball_velocity(self, vx: float, vy: float):
-
-        final_velocity = (-0.286 + 1.475 * (vx**2 + vy**2)**.5) * m/s
-        final_angle = math.atan(vy / vx) * rad
+    def set_flywheels_for_ball_velocity(self, vx: meters_per_second, vy: meters_per_second):
+        final_velocity = (-0.286 + 1.475 * (vx**2 + vy**2)**.5)
+        final_angle = math.atan(vy / vx)
         self.set_launch_angle(final_angle)
         self.set_flywheels(final_velocity, final_velocity)
 
@@ -83,4 +82,4 @@ class Shooter(Subsystem):
     def stop(self):
         self.m_top.set_raw_output(0)
         self.m_bottom.set_raw_output(0)
-        self.m_angle.set_target_position(0 * rad)
+        self.m_angle.set_target_position(0)
