@@ -32,10 +32,12 @@ class BallPath(SubsystemCommand[Index]):
         self.index_shoot = False
         self.index_index = False
         self.index_normal = True
+        self.dinglebob_dinglebob = False
 
         self.normal = True
 
         self.operator_index = False
+        
 
     def initialize(self) -> None:
         pass
@@ -57,6 +59,7 @@ class BallPath(SubsystemCommand[Index]):
 
         if (Robot.index.ball_queue == 1 and (left_color != 'none' or right_color != 'none')) or Robot.index.ball_queue == 2: #(Robot.index.ball_queue == 1 and (left_color != 'none' or right_color != 'none')) or 
             self.intake_force_stop = True
+            self.dinglebob_dinglebob = True
         else:
             self.intake_force_stop = False
 
@@ -90,7 +93,6 @@ class BallPath(SubsystemCommand[Index]):
             self.desired_distance = Robot.index.motor.get_sensor_position() + self.ball_distance
             self.index_index = True
             self.index_normal = False
-            Robot.index.ball_queue += 1
         elif Robot.index.ball_queue == 1 and Robot.index.photo_electric.get_value():
             Robot.index.ball_queue += 1
         elif Robot.index.ball_queue == 2:
@@ -108,15 +110,23 @@ class BallPath(SubsystemCommand[Index]):
             wpilib.XboxController(Controllers.OPERATOR).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, 0)
         
         if self.index_index:
-            if self.desired_distance <= Robot.index.motor.get_sensor_position():
+            if not Robot.index.photo_electric.get_value():
                 self.index_index = False
                 self.index_normal = True
                 self.index_speed = 0
                 self.desired_distance = None
+                Robot.index.ball_queue += 1
             else:
                 self.index_speed = .3
         else:
             self.desired_distance = None
+
+        if self.dinglebob_dinglebob:
+            if Robot.index.photo_electric.get_value():
+                self.dinglebob_dinglebob = False
+                self.dinglebob_direction = 'off'
+            else:
+                self.dinglebob_direction = 'in'
         
         if Robot.shooter.drive_ready and Robot.shooter.shooter_ready: # and Robot.limelight.get_x_offset()!=0 and Robot.limelight.get_x_offset() and abs(Robot.drivetrain.chassis_speeds) < .1:
             self.index_shoot = True
@@ -161,10 +171,7 @@ class BallPath(SubsystemCommand[Index]):
             Robot.intake.dinglebobs_off()
         print(self.dinglebob_direction)
 
-        # print(f"Index Shooting: {self.index_shoot}, Index Indexing: {self.index_index}")
-        # print(f"INTAKE ACTIVE CHECK: {self.intake_active_check}")
-        # print(f"Dinglebob Direction: {self.dinglebob_direction}")
-        # print(f"Index Speed: ", self.index_speed)
+        print(Robot.index.ball_queue)
         
 
     def isFinished(self) -> bool:
