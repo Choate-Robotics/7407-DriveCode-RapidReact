@@ -1,4 +1,5 @@
 import commands2
+import wpilib
 from commands2 import WaitCommand
 from robotpy_toolkit_7407.command import SubsystemCommand
 from subsystem import Index, Intake
@@ -20,7 +21,6 @@ class BallPath(SubsystemCommand[Index]):
         self.left_intake_direction = "off"
         self.right_intake_direction = "off"
 
-        self.ball_distance = 17600*.9*talon_sensor_unit
         self.desired_distance = None
 
         self.intake_active_check = True # Set to false when trying to run something for a specified amount of time to avoid cancelling ejection
@@ -91,7 +91,7 @@ class BallPath(SubsystemCommand[Index]):
                     commands2.CommandScheduler.getInstance().schedule(WaitCommand(.5).andThen(self.reactivate_intake_check))
 
         if Robot.index.ball_queue == 0 and Robot.index.photo_electric.get_value():
-            self.desired_distance = Robot.index.motor.get_sensor_position() + self.ball_distance
+            # self.desired_distance = Robot.index.motor.get_sensor_position() + self.ball_distance
             self.index_index = True
             self.index_normal = False
         elif Robot.index.ball_queue == 1 and Robot.index.photo_electric.get_value():
@@ -105,7 +105,7 @@ class BallPath(SubsystemCommand[Index]):
 
         if Robot.index.ball_queue < 2:
             wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, 0)
-        elif (left_color != Robot.TEAM and left_color != 'none') or (right_color != Robot.TEAM and right_color != 'none'):
+        elif (left_color != config.TEAM and left_color != 'none') or (right_color != config.TEAM and right_color != 'none'):
             wpilib.XboxController(Controllers.OPERATOR).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, 1)
         else:
             wpilib.XboxController(Controllers.OPERATOR).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, 0)
@@ -173,7 +173,6 @@ class BallPath(SubsystemCommand[Index]):
         print(self.dinglebob_direction)
 
         print(Robot.index.ball_queue)
-        
 
     def isFinished(self) -> bool:
         return False
