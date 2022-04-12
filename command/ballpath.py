@@ -19,7 +19,7 @@ class BallPath(SubsystemCommand[Index]):
         self.left_intake_direction = "off"
         self.right_intake_direction = "off"
 
-        self.ball_distance = 17600*talon_sensor_unit
+        self.ball_distance = 17600*.9*talon_sensor_unit
         self.desired_distance = None
 
         self.intake_active_check = True # Set to false when trying to run something for a specified amount of time to avoid cancelling ejection
@@ -87,6 +87,8 @@ class BallPath(SubsystemCommand[Index]):
             Robot.index.ball_queue += 1
         elif Robot.index.ball_queue == 2:
             pass
+
+        print(Robot.index.ball_queue)
         
         if self.index_index:
             if self.desired_distance <= Robot.index.motor.get_sensor_position():

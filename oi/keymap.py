@@ -3,7 +3,6 @@ from robotpy_toolkit_7407.oi import XBoxController, LogitechController, Joystick
 controllerDRIVER = XBoxController
 controllerOPERATOR = XBoxController
 
-
 class Controllers:
     DRIVER = 0
     OPERATOR = 1
