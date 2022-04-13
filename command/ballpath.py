@@ -58,13 +58,7 @@ class BallPath(SubsystemCommand[Index]):
         if Robot.intake.dinglebob_run_extend:
             self.dinglebob_direction = "in"
 
-        if (Robot.index.ball_queue == 1 and (left_color == config.TEAM or (right_color == config.TEAM))) or Robot.index.ball_queue == 2: #(Robot.index.ball_queue == 1 and (left_color != 'none' or right_color != 'none')) or
-            self.intake_force_stop = True
-            if not Robot.index.photo_electric.get_value():
-                self.dinglebob_dinglebob = True
-        else:
-            print("NO RIGHT COLORED BALL")
-            self.intake_force_stop = False
+        
 
         if self.intake_active_check:
             print("CHECKING")
@@ -73,6 +67,14 @@ class BallPath(SubsystemCommand[Index]):
             self.dinglebob_direction = "off"
             self.left_intake_direction = "off"
             self.right_intake_direction = "off"
+
+            if (Robot.index.ball_queue == 1 and (left_color == config.TEAM or (right_color == config.TEAM))) or Robot.index.ball_queue == 2: #(Robot.index.ball_queue == 1 and (left_color != 'none' or right_color != 'none')) or
+                self.intake_force_stop = True
+                if not Robot.index.photo_electric.get_value():
+                    self.dinglebob_dinglebob = True
+            else:
+                print("NO RIGHT COLORED BALL")
+                self.intake_force_stop = False
 
             if Robot.intake.left_intake_down or Robot.intake.right_intake_down:
                 print("CHECKING V2")
