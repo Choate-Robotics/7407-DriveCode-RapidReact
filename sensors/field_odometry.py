@@ -44,8 +44,8 @@ class FieldOdometry:
             if new_pose is not None:
                 self.drivetrain.odometry.resetPosition(new_pose, self.robot_pose.rotation())
             self.last_update_time = t
-            print(f"hub_dist={self.hub_dist}, limelight_angle={self.hub_angle}")
-            print(f"new_pose={new_pose}, limelight_vals={self._l_tx, self._l_dist}")
+            # print(f"hub_dist={self.hub_dist}, limelight_angle={self.hub_angle}")
+            # print(f"new_pose={new_pose}, limelight_vals={self._l_tx, self._l_dist}")
 
     def _calc_values_from_pose(self):
         offset = self._hub_pose.relativeTo(self.robot_pose)

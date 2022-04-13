@@ -21,6 +21,7 @@ from oi.OI import OI
 from robot_systems import Robot, Pneumatics, Sensors
 from sensors.color_sensors import ColorSensors
 from sensors.field_odometry import FieldOdometry
+from sensors.intake_cameras import IntakeCameras
 from sensors.rev_digit import RevDigit
 # from sensors.intake_cameras import IntakeCameras
 
@@ -75,7 +76,7 @@ class _Robot(wpilib.TimedRobot):
 
         commands2.CommandScheduler.getInstance().setPeriod(constants.period)
 
-        # Robot.intake_cameras = IntakeCameras() # TODO
+        Robot.intake_cameras = IntakeCameras()  # TODO
 
         Robot.odometry = FieldOdometry(Robot.drivetrain)
 
