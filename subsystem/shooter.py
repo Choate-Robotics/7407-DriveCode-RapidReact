@@ -69,6 +69,7 @@ class Shooter(Subsystem):
         self.set_flywheels(final_velocity, final_velocity)
 
     def target_stationary(self, limelight_dist):
+        limelight_dist -= 2.55-1.68
         vx, vy = ShooterTargeting.stationary_aim(limelight_dist)
         self.set_flywheels_for_ball_velocity(vx, vy)
    

@@ -27,8 +27,8 @@ class IntakeAutoEject(SubsystemCommand):
             self.subsystem.dinglebobs_off()
         elif self.subsystem.left_intake_down:
             left_color = Sensors.color_sensors.color()
-            print("Lefty: ", Sensors.color_sensors.get_val())
-            print("Left Color:", left_color)
+            #print("Lefty: ", Sensors.color_sensors.get_val())
+            #print("Left Color:", left_color)
             Sensors.color_sensors.multiplexer.writeBulk(bytes([0b0100])) #0100 = Left
 
             if left_color != config.TEAM and left_color != "none":
@@ -48,8 +48,8 @@ class IntakeAutoEject(SubsystemCommand):
 
         elif self.subsystem.right_intake_down:
             right_color = Sensors.color_sensors.color()
-            print("Righty: ", Sensors.color_sensors.get_val())
-            print("Right Color:", right_color)
+            #print("Righty: ", Sensors.color_sensors.get_val())
+            #print("Right Color:", right_color)
             Sensors.color_sensors.multiplexer.writeBulk(bytes([0b1000]))
 
             if right_color != config.TEAM and right_color != "none":

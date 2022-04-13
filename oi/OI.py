@@ -66,10 +66,10 @@ class OI:
 
         def extend_dinglebob_runtime():
             Robot.intake.dinglebob_run_extend = True
-            print("extended")
+            #print("extended")
         def stop_dinglebob_runtime():
             Robot.intake.dinglebob_run_extend = False
-            print("unextended")
+            #print("unextended")
 
         # Keymap.Intake.LEFT_INTAKE_TOGGLE() \
         #     .whenPressed(command.IntakeToggleLeft(Robot.intake)) \

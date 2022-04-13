@@ -8,6 +8,7 @@ import wpilib
 import config
 
 from sensors.color_sensors import ColorSensors
+from sensors.field_odometry import FieldOdometry
 from sensors.rev_digit import RevDigit
 from sensors.intake_cameras import IntakeCameras
 
@@ -19,7 +20,7 @@ class Robot:
     elevator = subsystem.Elevator()
     shooter = subsystem.Shooter()
 
-    limelight = sensors.Limelight()
+    odometry: FieldOdometry
 
     rev_digit: RevDigit
 

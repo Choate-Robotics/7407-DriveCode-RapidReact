@@ -61,17 +61,17 @@ class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
         self.c_count = 0
         self.KP = -0.06
         self.KD = .040
-        self.old_limelight = 0
+        self.old_hub_angle = 0
 
     def initialize(self) -> None:
-        Robot.limelight.ref_on()
-        self.old_limelight = Robot.limelight.get_x_offset()
+        self.old_hub_angle = Robot.odometry.hub_angle
 
     def execute(self) -> None:
+        hub_angle = Robot.odometry.hub_angle
         dx, dy = self.subsystem.axis_dx.value, self.subsystem.axis_dy.value
-        d_omega = math.degrees(self.old_limelight - Robot.limelight.get_x_offset())
-        omega = self.KP * math.degrees(Robot.limelight.get_x_offset()) + self.KD * d_omega
-        self.old_limelight = Robot.limelight.get_x_offset()
+        d_omega = math.degrees(self.old_hub_angle - hub_angle)
+        omega = self.KP * math.degrees(hub_angle) + self.KD * d_omega
+        self.old_hub_angle = hub_angle
 
         dx = curve(dx)
         dy = curve(dy)
@@ -80,7 +80,7 @@ class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
         dx *= self.subsystem.max_vel
         dy *= -self.subsystem.max_vel
 
-        if abs(Robot.drivetrain.chassis_speeds.omega) < .1 and Robot.limelight.get_x_offset() != 0:
+        if abs(Robot.drivetrain.chassis_speeds.omega) < .1 and hub_angle != 0:
             self.c_count += 1
             if self.c_count >= self.ready_counts:
                 Robot.shooter.drive_ready = True
@@ -92,7 +92,6 @@ class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
 
     def end(self, interrupted: bool) -> None:
         Robot.shooter.drive_ready = False
-        Robot.limelight.ref_off()
 
     def isFinished(self) -> bool:
         return False

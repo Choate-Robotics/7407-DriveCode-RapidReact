@@ -15,7 +15,7 @@ class ColorSensors:
     def color(self) -> str:
         vals = self.get_val()
         if vals[0] == 0:
-            print("COLOR SENSOR NO WORK AHHHH")
+            # print("COLOR SENSOR NO WORK AHHHH")
             self.multiplexer = I2C(I2C.Port.kMXP, 0x71)
             self.sensor = ColorSensorV3(I2C.Port.kMXP)
         if vals[0]-vals[2]>800:
