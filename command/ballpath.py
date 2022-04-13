@@ -55,8 +55,6 @@ class BallPath(SubsystemCommand[Index]):
         right_color = Sensors.color_sensors.color()
         right_val = Sensors.color_sensors.get_val()
 
-        print(f"Left Color: {left_val}, Right Color: {right_val}, Left: {left_color}, Right: {right_color}")
-
         if Robot.intake.dinglebob_run_extend:
             self.dinglebob_direction = "in"
 

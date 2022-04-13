@@ -124,8 +124,8 @@ class Intake(Subsystem):
             self.right_intake_motor.set_raw_output(0)
 
     def dinglebobs_out(self):
-        self.left_dinglebob.set_raw_output(self.dinglebob_speed)
-        self.right_dinglebob.set_raw_output(-self.dinglebob_speed)
+        self.left_dinglebob.set_raw_output(self.dinglebob_speed-.3)
+        self.right_dinglebob.set_raw_output(-self.dinglebob_speed-.3)
         self.left_dinglebob_in = True
         self.right_dinglebob_in = True
 
