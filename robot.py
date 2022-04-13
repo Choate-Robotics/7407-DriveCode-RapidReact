@@ -7,11 +7,13 @@ from robotpy_toolkit_7407 import Subsystem
 from robotpy_toolkit_7407.network.network_system import Network
 from robotpy_toolkit_7407.utils import logger
 from robotpy_toolkit_7407.utils.units import m, s
+from wpimath.geometry import Pose2d
 
 import config
+from autonomous.auto_routine import AutoRoutine
 from command import ElevatorRezero
 import constants
-from autonomous import two_ball_auto, five_ball_auto_blue, five_ball_auto_red
+from autonomous import two_ball_auto, five_ball_auto
 #from autonomous import five_ball_auto, two_ball_auto, three_ball_auto # TODO: Fix this
 from command import BallPath
 from command.drivetrain import DriveSwerveCustom
@@ -36,7 +38,10 @@ class _Robot(wpilib.TimedRobot):
         #     three_ball_auto.routine,
         #     five_ball_auto.routine
         # ] # TODO Fix This
-        self.auto_routines = [two_ball_auto.routine, five_ball_auto_red.routine]
+        self.auto_routines = [two_ball_auto.routine, five_ball_auto.routine]
+
+        self.auto_routine: AutoRoutine | None = None
+        self.initial_pose: Pose2d | None = None
 
         # self.test_command = ShooterDataCollectCommand(Robot.shooter).alongWith(command.IndexOn)
 
@@ -74,9 +79,27 @@ class _Robot(wpilib.TimedRobot):
 
         Robot.odometry = FieldOdometry(Robot.drivetrain)
 
+        if config.AUTO == "five":
+            # if config.TEAM == "red":
+            #     self.auto_routine = five_ball_auto_red.routine
+            # else:
+            #     self.auto_routine = five_ball_auto_blue.routine
+            self.auto_routine = five_ball_auto.routine
+        else:
+            self.auto_routine = two_ball_auto.routine
+
+        self.initial_pose = self.auto_routine.initial_robot_pose
+        # self.initial_pose = Pose2d(0, 0, 0)
+
+        Robot.drivetrain.gyro._gyro.setYaw(
+            self.initial_pose.rotation().degrees()
+        )
+        Robot.drivetrain.odometry.resetPosition(self.initial_pose, self.initial_pose.rotation())
+
         logger.info("initialization complete")
 
     def robotPeriodic(self):
+        # print(Robot.drivetrain.odometry.getPose())
         Robot.rev_digit.update()
         Robot.odometry.update()
         commands2.CommandScheduler.getInstance().run()
@@ -97,44 +120,12 @@ class _Robot(wpilib.TimedRobot):
         pass
 
     def teleopPeriodic(self) -> None:
-        #print(Robot.TEAM)
-        #print("QUEUE: ", Robot.index.ball_queue)
-        # logger.info(Robot.drivetrain.odometry.getPose())
-        # print(Pneumatics.get_compressor())
-        #print(Robot.index.photo_electric.get_value())
-        # for i in range(10):
-        #     print(f"Limit Switch {i}: {Robot.limit_switches[i].get_value()}")
-        # z = Robot.limelight.calculate_distance()
-        # print(f"Limelight: {z}"
-        # logger.info(f"{Robot.limelight.calculate_distance()}")
-        #print("Sensor: ", Robot.index.motor.get_sensor_position())
-        #print("BALL QUEUE: ", Robot.index.ball_queue)
         pass
 
     def autonomousInit(self) -> None:
-        if config.AUTO == "five":
-            if config.TEAM == "red":
-                five_ball_auto_red.routine.run()
-            else:
-                five_ball_auto_blue.routine.run()
-        else:
-            two_ball_auto.routine.run()
-        
-        # self.auto_routines[Robot.rev_digit.routine_idx].run()
-        # two_ball_auto.routine.run()
-        # two_ball_auto.routine.run() # TODO: Fix this
-        # Robot.elevator.set_height(0 * inch)
-        # Robot.shooter.target(5)
-        pass
+        self.auto_routine.run()
 
     def autonomousPeriodic(self) -> None:
-        # logger.info(Robot.drivetrain.odometry.getPose())
-        # c = ""
-        # for i, sw in enumerate(Robot.limit_switches):
-        #     if sw.get_value():
-        #         c += f"{i} "
-        # if c != "":
-        #     logger.info(c)
         pass
 
     def disabledInit(self) -> None:

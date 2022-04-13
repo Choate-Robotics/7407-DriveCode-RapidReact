@@ -13,17 +13,22 @@ from command.shooter import ShooterEnableAtDistance
 from robot_systems import Robot
 
 initial_gyro_angle = -90 * deg
-initial_robot_pose = Pose2d(7.927611, -6.613358, initial_gyro_angle.asNumber(rad))
 
-first_path_end_pose = TrajectoryEndpoint(7.927611 * m - 6 * inch, -8 * m + 1.6 * ft, initial_gyro_angle.asNumber(rad))
+old_initial_robot_pose = Pose2d(7.927611, -6.613358, initial_gyro_angle.asNumber(rad))
+initial_robot_pose = Pose2d(8, 1.7714, initial_gyro_angle.asNumber(rad))
+
+dx = (initial_robot_pose.X() - old_initial_robot_pose.X()) * m
+dy = (initial_robot_pose.Y() - old_initial_robot_pose.Y()) * m
+
+first_path_end_pose = TrajectoryEndpoint(7.927611 * m - 6 * inch + dx, -8 * m + 1.6 * ft + dy, initial_gyro_angle.asNumber(rad))
 
 second_path_start_pose = first_path_end_pose
 second_path_start_pose.angle = 163 * deg
-second_path_end_pose = TrajectoryEndpoint((7.927611 - 2) * m - 4 * inch, (-8 + 0.6) * m + 2.6 * ft + 3 * inch, 163 * deg)
+second_path_end_pose = TrajectoryEndpoint((7.927611 - 2) * m - 4 * inch + dx, (-8 + 0.6) * m + 2.6 * ft + 3 * inch + dy, 163 * deg)
 
 third_path_start_pose = second_path_end_pose
 third_path_start_pose.angle = 163 * deg
-third_path_end_pose = TrajectoryEndpoint((7.927611 - 2) * m - 175.5 * inch, (-8 + 0.6) * m + 2.6 * ft + 7 * inch, -116 * deg)
+third_path_end_pose = TrajectoryEndpoint((7.927611 - 2) * m - 175.5 * inch + dx, (-8 + 0.6) * m + 2.6 * ft + 7 * inch + dy, -116 * deg)
 
 fourth_path_start_pose = dataclasses.replace(third_path_end_pose)
 fourth_path_start_pose.angle = 0 * deg

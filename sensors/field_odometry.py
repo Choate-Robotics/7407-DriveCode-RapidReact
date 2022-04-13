@@ -23,7 +23,7 @@ class FieldOdometry:
         self._l_ty: radians | None = None
         self._l_dist: meters | None = None
 
-        self._limelight_pose = Pose2d(8, 8, 0)
+        self._hub_pose = Pose2d(8.56, 4.196, 0)
 
         self.last_update_time = None
         self.min_update_wait_time = 5
@@ -41,11 +41,14 @@ class FieldOdometry:
         t = time.time()
         if self.last_update_time is None or t > self.last_update_time + self.min_update_wait_time:
             new_pose = self._calc_pose_from_limelight(self.robot_pose.rotation())
+            if new_pose is not None:
+                self.drivetrain.odometry.resetPosition(new_pose, self.robot_pose.rotation())
             self.last_update_time = t
+            print(f"hub_dist={self.hub_dist}, limelight_angle={self.hub_angle}")
             print(f"new_pose={new_pose}, limelight_vals={self._l_tx, self._l_dist}")
 
     def _calc_values_from_pose(self):
-        offset = self._limelight_pose.relativeTo(self.robot_pose)
+        offset = self._hub_pose.relativeTo(self.robot_pose)
 
         d_out = offset.Y()
         d_horizontal = offset.X()
@@ -58,20 +61,28 @@ class FieldOdometry:
             return None
 
         r_translation = Translation2d(
-            self._l_dist * math.cos(self._l_tx),
-            self._l_dist * math.sin(self._l_tx)
+            self._l_dist * math.sin(self._l_tx),
+            self._l_dist * math.cos(self._l_tx)
         ).rotateBy(gyro_angle)  # Might have to flip direction of rotation
 
-        return Pose2d(r_translation, gyro_angle)
+        return Pose2d(
+            self._hub_pose.X() - r_translation.X(),
+            self._hub_pose.Y() - r_translation.Y(),
+            gyro_angle
+        )
 
     def _collect_limelight_data(self):
         self._l_tx = self._limelight.getNumber('tx', None)
-        if self._l_tx is not None:
+        if self._l_tx:
             self._l_tx = math.radians(self._l_tx)
+        else:
+            self._l_tx = None
 
         self._l_ty = self._limelight.getNumber('ty', None)
-        if self._l_ty is not None:
+        if self._l_ty:
             self._l_ty = math.radians(self._l_ty)
+        else:
+            self._l_ty = None
 
         self._l_dist = self._calculate_limelight_distance()
 
@@ -80,6 +91,7 @@ class FieldOdometry:
             return None
         true_angle = math.radians(43) + self._l_ty  # Camera angle
         distance = (2.6416 - 0.813) / math.tan(true_angle)  # Hub height minus camera height
+        distance += 2.55-1.68
         return distance
 
     def _led_on(self):

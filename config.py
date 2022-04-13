@@ -1,2 +1,2 @@
-TEAM = "blue"  # "blue", "red"
+TEAM = "red"  # "blue", "red"
 AUTO = "five"  # "five", "two"
