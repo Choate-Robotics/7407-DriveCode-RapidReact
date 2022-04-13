@@ -12,6 +12,8 @@ class FieldOdometry:
     def __init__(self, drivetrain: Drivetrain):
         self.drivetrain = drivetrain
 
+        self.robot_pose: Pose2d | None = None
+
         self.hub_angle: radians | None = None
         self.hub_dist: meters | None = None
 
@@ -26,18 +28,24 @@ class FieldOdometry:
         self.last_update_time = None
         self.min_update_wait_time = 5
 
+        self._led_on()
+
     def update(self):
         self._collect_limelight_data()
-        self._calc_values_from_pose(self.drivetrain.odometry.getPose())
+        self.robot_pose = Pose2d(
+            self.drivetrain.odometry.getPose().translation(),
+            Rotation2d(self.drivetrain.gyro.get_robot_heading())
+        )
+        self._calc_values_from_pose()
 
         t = time.time()
         if self.last_update_time is None or t > self.last_update_time + self.min_update_wait_time:
-            new_pose = self._calc_pose_from_limelight(self.drivetrain.odometry.getPose().rotation())
+            new_pose = self._calc_pose_from_limelight(self.robot_pose.rotation())
             self.last_update_time = t
             print(f"new_pose={new_pose}, limelight_vals={self._l_tx, self._l_dist}")
 
-    def _calc_values_from_pose(self, pose: Pose2d):
-        offset = self._limelight_pose.relativeTo(pose)
+    def _calc_values_from_pose(self):
+        offset = self._limelight_pose.relativeTo(self.robot_pose)
 
         d_out = offset.Y()
         d_horizontal = offset.X()
@@ -73,3 +81,9 @@ class FieldOdometry:
         true_angle = math.radians(43) + self._l_ty  # Camera angle
         distance = (2.6416 - 0.813) / math.tan(true_angle)  # Hub height minus camera height
         return distance
+
+    def _led_on(self):
+        self._limelight.putNumber("ledMode", 3)
+
+    def _led_off(self):
+        self._limelight.putNumber("ledMode", 1)
