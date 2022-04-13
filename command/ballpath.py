@@ -61,7 +61,6 @@ class BallPath(SubsystemCommand[Index]):
         
 
         if self.intake_active_check:
-            print("CHECKING")
 
             self.index_speed = 0
             self.dinglebob_direction = "off"
@@ -85,15 +84,15 @@ class BallPath(SubsystemCommand[Index]):
                     print("ejecting right")
                     if Robot.intake.right_intake_down:
                         self.right_intake_direction = "out"
-                    self.intake_active_check = False
-                    commands2.CommandScheduler.getInstance().schedule(WaitCommand(.5).andThen(self.reactivate_intake_check))
+                    self.intake_active_check = False #.5
+                    commands2.CommandScheduler.getInstance().schedule(WaitCommand(.6).andThen(self.reactivate_intake_check))
                 if Robot.intake.right_intake_down and right_color != config.TEAM and right_color != "none":
                     self.dinglebob_direction = "eject_left"
                     print("ejecting left")
                     if Robot.intake.left_intake_down:
                         self.left_intake_direction = "out"
                     self.intake_active_check = False
-                    commands2.CommandScheduler.getInstance().schedule(WaitCommand(.5).andThen(self.reactivate_intake_check))
+                    commands2.CommandScheduler.getInstance().schedule(WaitCommand(.6).andThen(self.reactivate_intake_check))
 
         if Robot.index.ball_queue == 0 and Robot.index.photo_electric.get_value():
             # self.desired_distance = Robot.index.motor.get_sensor_position() + self.ball_distance
@@ -180,6 +179,15 @@ class BallPath(SubsystemCommand[Index]):
 
         print(Robot.index.ball_queue)
         print(self.dinglebob_direction)
+
+        ball_list = [(0, 1), (0, .4)]
+
+        if ball_list:
+            min_ball = min(x[1] for x in ball_list)
+            wpilib.XboxController(Controllers.OPERATOR).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, 1-min_ball)
+        else:
+            wpilib.XboxController(Controllers.OPERATOR).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, 0)
+
 
     def isFinished(self) -> bool:
         return False
