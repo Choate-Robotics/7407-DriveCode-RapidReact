@@ -26,7 +26,7 @@ class FieldOdometry:
         self._hub_pose = Pose2d(8.56, 4.196, 0)
 
         self.last_update_time = None
-        self.min_update_wait_time = 5
+        self.min_update_wait_time = .2
 
         self._led_on()
 
