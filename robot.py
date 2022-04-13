@@ -18,6 +18,7 @@ from command.drivetrain import DriveSwerveCustom
 from oi.OI import OI
 from robot_systems import Robot, Pneumatics, Sensors
 from sensors.color_sensors import ColorSensors
+from sensors.field_odometry import FieldOdometry
 from sensors.rev_digit import RevDigit
 # from sensors.intake_cameras import IntakeCameras
 
@@ -71,10 +72,13 @@ class _Robot(wpilib.TimedRobot):
 
         # Robot.intake_cameras = IntakeCameras() # TODO
 
+        Robot.odometry = FieldOdometry(Robot.drivetrain)
+
         logger.info("initialization complete")
 
     def robotPeriodic(self):
         Robot.rev_digit.update()
+        Robot.odometry.update()
         commands2.CommandScheduler.getInstance().run()
 
     def teleopInit(self) -> None:

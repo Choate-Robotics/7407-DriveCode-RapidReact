@@ -74,7 +74,7 @@ class BallPath(SubsystemCommand[Index]):
             if Robot.intake.left_intake_down or Robot.intake.right_intake_down:
                 #print(f"Left: {Robot.intake.left_intake_down} Right: {Robot.intake.right_intake_down}")
                 self.dinglebob_direction = "in"
-                print(f"Left Color: {left_val}, Right Color: {right_val}, Left: {left_color}, Right: {right_color}")
+                #print(f"Left Color: {left_val}, Right Color: {right_val}, Left: {left_color}, Right: {right_color}")
                 if Robot.intake.left_intake_down and left_color != config.TEAM and left_color != "none":
                     #print("EJECT LEFT")
                     self.dinglebob_direction = "eject_right"
@@ -137,7 +137,7 @@ class BallPath(SubsystemCommand[Index]):
             self.dinglebob_direction = "in"
 
         if self.intake_force_stop:
-            print("FORCED OUT")
+            #print("FORCED OUT")
             Robot.intake.DISABLE_INTAKES = True
             Robot.intake.left_intake_disable()
             Robot.intake.right_intake_disable()
@@ -170,9 +170,9 @@ class BallPath(SubsystemCommand[Index]):
             Robot.intake.dinglebob_eject_right()
         elif self.dinglebob_direction == "off":
             Robot.intake.dinglebobs_off()
-        print(self.dinglebob_direction)
+        #print(self.dinglebob_direction)
 
-        print(Robot.index.ball_queue)
+        #print(Robot.index.ball_queue)
 
     def isFinished(self) -> bool:
         return False

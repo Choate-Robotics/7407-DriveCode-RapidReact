@@ -20,7 +20,7 @@ class Robot:
     elevator = subsystem.Elevator()
     shooter = subsystem.Shooter()
 
-    odometry = FieldOdometry()
+    odometry: FieldOdometry
 
     rev_digit: RevDigit
 
