@@ -55,16 +55,21 @@ class BallPath(SubsystemCommand[Index]):
         right_color = Sensors.color_sensors.color()
         right_val = Sensors.color_sensors.get_val()
 
+        print(f"Left Color: {left_val}, Right Color: {right_val}, Left: {left_color}, Right: {right_color}")
+
         if Robot.intake.dinglebob_run_extend:
             self.dinglebob_direction = "in"
 
-        if (Robot.index.ball_queue == 1 and (left_color != 'none' or right_color != 'none')) or Robot.index.ball_queue == 2: #(Robot.index.ball_queue == 1 and (left_color != 'none' or right_color != 'none')) or
+        if (Robot.index.ball_queue == 1 and (left_color == config.TEAM or (right_color == config.TEAM))) or Robot.index.ball_queue == 2: #(Robot.index.ball_queue == 1 and (left_color != 'none' or right_color != 'none')) or
             self.intake_force_stop = True
-            self.dinglebob_dinglebob = True
+            if not Robot.index.photo_electric.get_value():
+                self.dinglebob_dinglebob = True
         else:
+            print("NO RIGHT COLORED BALL")
             self.intake_force_stop = False
 
         if self.intake_active_check:
+            print("CHECKING")
 
             self.index_speed = 0
             self.dinglebob_direction = "off"
@@ -72,19 +77,19 @@ class BallPath(SubsystemCommand[Index]):
             self.right_intake_direction = "off"
 
             if Robot.intake.left_intake_down or Robot.intake.right_intake_down:
+                print("CHECKING V2")
                 #print(f"Left: {Robot.intake.left_intake_down} Right: {Robot.intake.right_intake_down}")
                 self.dinglebob_direction = "in"
-                print(f"Left Color: {left_val}, Right Color: {right_val}, Left: {left_color}, Right: {right_color}")
                 if Robot.intake.left_intake_down and left_color != config.TEAM and left_color != "none":
-                    #print("EJECT LEFT")
                     self.dinglebob_direction = "eject_right"
+                    print("ejecting right")
                     if Robot.intake.right_intake_down:
                         self.right_intake_direction = "out"
                     self.intake_active_check = False
                     commands2.CommandScheduler.getInstance().schedule(WaitCommand(.5).andThen(self.reactivate_intake_check))
                 if Robot.intake.right_intake_down and right_color != config.TEAM and right_color != "none":
-                    #print("EJECT RIGHT")
                     self.dinglebob_direction = "eject_left"
+                    print("ejecting left")
                     if Robot.intake.left_intake_down:
                         self.left_intake_direction = "out"
                     self.intake_active_check = False
@@ -123,6 +128,7 @@ class BallPath(SubsystemCommand[Index]):
             self.desired_distance = None
 
         if self.dinglebob_dinglebob:
+            print("dinglebob_dinglebob")
             if Robot.index.photo_electric.get_value():
                 self.dinglebob_dinglebob = False
                 self.dinglebob_direction = 'off'
@@ -173,6 +179,7 @@ class BallPath(SubsystemCommand[Index]):
         print(self.dinglebob_direction)
 
         print(Robot.index.ball_queue)
+        print(self.dinglebob_direction)
 
     def isFinished(self) -> bool:
         return False

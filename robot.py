@@ -19,7 +19,7 @@ from oi.OI import OI
 from robot_systems import Robot, Pneumatics, Sensors
 from sensors.color_sensors import ColorSensors
 from sensors.rev_digit import RevDigit
-# from sensors.intake_cameras import IntakeCameras
+from sensors.intake_cameras import IntakeCameras
 
 
 class _Robot(wpilib.TimedRobot):
@@ -71,7 +71,7 @@ class _Robot(wpilib.TimedRobot):
 
         Robot.limelight.led_off()
 
-        # Robot.intake_cameras = IntakeCameras() # TODO
+        Robot.intake_cameras = IntakeCameras() # TODO
 
         logger.info("initialization complete")
 
