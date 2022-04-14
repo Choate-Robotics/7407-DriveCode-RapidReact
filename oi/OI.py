@@ -4,7 +4,6 @@ from wpimath.geometry import Pose2d, Rotation2d
 
 import command
 import config
-from command import DriveSwerveAim
 from command.drivetrain import DriveSwerveCustom, ShootWhileMoving
 from oi.keymap import Keymap
 from robot_systems import Robot
