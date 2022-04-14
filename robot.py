@@ -105,6 +105,17 @@ class _Robot(wpilib.TimedRobot):
         Robot.odometry.update()
         commands2.CommandScheduler.getInstance().run()
 
+        wpilib.SmartDashboard.putString('DB/String 0', f'Team Color: {config.TEAM}')
+        wpilib.SmartDashboard.putString('DB/String 1', f'Auto Mode: {config.AUTO}')
+        wpilib.SmartDashboard.putString('DB/String 2', f'Elevator Zeroed: {Robot.elevator.zeroed}')
+        wpilib.SmartDashboard.putString('DB/String 3', f'Shooter Zeroed: {Robot.shooter.zeroed}')
+        wpilib.SmartDashboard.putString('DB/String 4', f'Compressor Value: {Pneumatics.compressor.getPressure()}')
+        wpilib.SmartDashboard.putString('DB/String 5', f'') # Drive Temperature
+        # CTRE Check
+        # SENSOR Check
+
+
+
     def teleopInit(self) -> None:
         Robot.elevator.initialized = False
         commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
