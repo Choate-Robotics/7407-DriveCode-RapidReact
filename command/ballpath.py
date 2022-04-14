@@ -140,6 +140,8 @@ class BallPath(SubsystemCommand[Index]):
             self.index_normal = False
             self.index_speed = .5
             self.dinglebob_direction = "in"
+        
+        print(Robot.shooter.ready)
 
         if self.intake_force_stop:
             # print("FORCED OUT")
