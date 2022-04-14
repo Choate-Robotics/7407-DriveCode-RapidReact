@@ -1,6 +1,4 @@
-import pygame
 import cv2
-import imutils
 import numpy as np
 
 team_color = "RED"
@@ -22,21 +20,36 @@ old_pts = [None,None]
 max_balls = 5
 
 
-r_threshold = [15,80,13]
-def cvimage_to_pygame(image):
-    return pygame.image.frombuffer(image.tostring(), image.shape[1::-1],"RGB")
+r_threshold = [15,80,40]
+# def cvimage_to_pygame(image):
+#     return pygame.image.frombuffer(image.tostring(), image.shape[1::-1],"RGB")
 
 
-def pygame_to_cvimage(surface):
-    view = pygame.surfarray.array3d(surface)
-    view = view.transpose([1,0,2])
-    #view = cv2.cvtColor(view,cv2.COLOR_RGB2BGR)
-    return view
+# def pygame_to_cvimage(surface):
+#     view = pygame.surfarray.array3d(surface)
+#     view = view.transpose([1,0,2])
+#     #view = cv2.cvtColor(view,cv2.COLOR_RGB2BGR)
+#     return view
+
+
+# def cvimage_to_pygame(image):
+#     return pygame.image.frombuffer(image.tostring(), image.shape[1::-1],"RGB")
+
+
+# def pygame_to_cvimage(surface):
+#     view = pygame.surfarray.array3d(surface)
+#     view = view.transpose([1,0,2])
+#     #view = cv2.cvtColor(view,cv2.COLOR_RGB2BGR)
+#     return view
+
 
 def generate_circles(frame):
     #temp = frame
     #frame = pygame_to_cvimage(temp)
-    frame = imutils.resize(frame, width=600)
+    #frame = cv2.resize
+    #frame = imutils.resize(frame, width=600)
+    # print(frame)
+    # print("bruh")
     blurred = cv2.GaussianBlur(frame, (11, 11), 0)
     hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
     if team_color == "RED":
