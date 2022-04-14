@@ -7,11 +7,11 @@ import zlib
 from threading import Thread
 import detect_balls
 import numpy as np
-from PIL import Image
-import pygame
+import cv2
 
 rgb = False
 ports = ['/dev/ttyACM0', '/dev/ttyACM1']
+#/dev/tty.usbmodem3051395331301
 HOST = ''
 PORT = 8510
 max_fps = 24
@@ -38,7 +38,10 @@ active_ports = []
 
 def convert_buff(buffer):
     try:
-        buff = np.asarray(Image.frombuffer("RGB", img_size, buffer, "jpeg", "RGB", ""))
+        #buff = np.asarray(Image.frombuffer("RGB", img_size, buffer, "jpeg", "RGB", ""))
+        nparr = np.frombuffer(buffer, np.uint8)
+        buff = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        #buff = cv2.cvtColor(buff,cv2.COLOR_BGR2RGB)
         #print(buff)
     except Exception as e:
         print ("JPEG decode error (%s)"%(e))
@@ -47,6 +50,7 @@ def convert_buff(buffer):
     if (buff.size != (img_size[0]*img_size[1]*3)):
         return None
     return (img_size[0], img_size[1], buff.reshape((img_size[1], img_size[0], 3)))
+
 
 def dump(s_port):
     s_port.write("snap".encode())
@@ -120,16 +124,12 @@ def detect_ball_loop():
         fb1 = convert_buff(raw2)
         fb2 = convert_buff(raw)
         if fb1 != None:
-            image = pygame.image.frombuffer(fb1[2].flat[0:], (fb1[0], fb1[1]), 'BGR')
-            image = pygame.transform.scale(image, (img_size[0]*image_scale, img_size[1]*image_scale))
-            image = detect_balls.pygame_to_cvimage(image)
+            image = cv2.resize(fb1[2],(fb1[0]*image_scale,fb1[1]*image_scale))
             [balls,image] = detect_balls.generate_circles(image)
             #image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
             lr_balls[0] = balls
         if fb2 != None:
-            image = pygame.image.frombuffer(fb1[2].flat[0:], (fb1[0], fb1[1]), 'BGR')
-            image = pygame.transform.scale(image, (img_size[0]*image_scale, img_size[1]*image_scale))
-            image = detect_balls.pygame_to_cvimage(image)
+            image = cv2.resize(fb2[2],(fb2[0]*image_scale,fb2[1]*image_scale))
             [balls,image] = detect_balls.generate_circles(image)
             #image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
             lr_balls[1] = balls
