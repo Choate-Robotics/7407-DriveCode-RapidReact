@@ -16,6 +16,7 @@ class Index(Subsystem):
         optimize_normal_talon_no_sensor(self.motor)
         self.ball_queue = 0
         self.running = False
+        self.refresh = False
         
 
     def set(self, motor_speed: float):

@@ -1,8 +1,10 @@
+from trace import Trace
 from commands2 import InstantCommand
 from robotpy_toolkit_7407.utils import logger
 from wpimath.geometry import Pose2d, Rotation2d
 
 import command
+from command import ballpath
 import config
 from command.drivetrain import DriveSwerveCustom, ShootWhileMoving
 from oi.keymap import Keymap
@@ -33,8 +35,10 @@ class OI:
             Robot.drivetrain.n_11.zero()
 
         def zero_ball_queue():
-            Robot.index.ball_queue = 0
             Robot.shooter.ready = False
+            if not Robot.index.photo_electric.get_value():
+                Robot.index.ball_queue = 0
+                Robot.index.refresh = True
 
         Keymap.Drivetrain.REZERO_MOTORS().whenPressed(zero_motors)
 
