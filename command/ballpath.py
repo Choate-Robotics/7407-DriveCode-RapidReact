@@ -1,3 +1,4 @@
+from turtle import left
 import commands2
 import wpilib
 from commands2 import WaitCommand
@@ -143,11 +144,8 @@ class BallPath(SubsystemCommand[Index]):
 
         if self.intake_force_stop:
             print("FORCED OUT")
-            Robot.intake.DISABLE_INTAKES = True
             Robot.intake.left_intake_disable()
             Robot.intake.right_intake_disable()
-        else:
-            Robot.intake.DISABLE_INTAKES = False
 
         left_joy = Keymap.Index.INDEX_JOY.value
 
@@ -180,13 +178,31 @@ class BallPath(SubsystemCommand[Index]):
         print(Robot.index.ball_queue)
         print(self.dinglebob_direction)
 
-        ball_list = [(0, 1), (0, .4)]
-
-        if ball_list:
-            min_ball = min(x[1] for x in ball_list)
-            wpilib.XboxController(Controllers.OPERATOR).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, 1-min_ball)
+        if not self.intake_force_stop and not Robot.intake.AUTO_INTAKE:
+            Robot.intake.DISABLE_INTAKES = False
         else:
-            wpilib.XboxController(Controllers.OPERATOR).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, 0)
+            Robot.intake.DISABLE_INTAKES = True
+
+        if Robot.intake.intake_camera_left_found:
+            left_min_ball = min(x[1] for x in Robot.intake.intake_camera_left_found)
+            wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, 1-left_min_ball)
+            if Robot.intake.AUTO_INTAKE:
+                if left_min_ball < .1:
+                    Robot.intake.left_intake_auto_enable()
+                else:
+                    Robot.intake.left_intake_disable()
+        else:
+            wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, 0)
+        if Robot.intake.intake_camera_right_found:
+            right_min_ball = min(x[1] for x in Robot.intake.intake_camera_right_found)
+            wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 1-right_min_ball)
+            if Robot.intake.AUTO_INTAKE:
+                if right_min_ball < .1:
+                    Robot.intake.right_intake_auto_enable()
+                else:
+                    Robot.intake.right_intake_disable()
+        else:
+            wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 0)
 
 
     def isFinished(self) -> bool:

@@ -77,14 +77,19 @@ class OI:
         Keymap.Intake.LEFT_INTAKE_TOGGLE() \
             .whenPressed(Robot.intake.left_intake_enable) \
             .whenReleased(Robot.intake.left_intake_disable) \
-                    #.whenReleased( \
-            #    InstantCommand(extend_dinglebob_runtime) \
-            #    .andThen(WaitCommand(0.5).andThen(stop_dinglebob_runtime)))
-            ### TODO: CALL SID!!! - SID
-        #Keymap.Intake.RIGHT_INTAKE_TOGGLE().whenPressed(command.IntakeToggleRight(Robot.intake)).whenReleased(command.IntakeToggleRight(Robot.intake)) ### TODO: SID SAYS CALL TO FIX INTAKES!!!!!
+                    
         Keymap.Intake.RIGHT_INTAKE_TOGGLE() \
             .whenPressed(Robot.intake.right_intake_enable) \
             .whenReleased(Robot.intake.right_intake_disable)
+
+        def auto_intake_on():
+            Robot.intake.AUTO_INTAKE = True
+        def auto_intake_off():
+            Robot.intake.AUTO_INTAKE = False
+
+        Keymap.Intake.AUTO_INTAKE_TOGGLE() \
+            .whenPressed(auto_intake_on) \
+            .whenReleased(auto_intake_off)
         
         def change_team_color():
             if config.TEAM == 'red':

@@ -48,12 +48,21 @@ class Intake(Subsystem):
 
         self.dinglebob_run_extend = False
         self.DISABLE_INTAKES = False
+        self.AUTO_INTAKE = False
+
+        self.intake_camera_left_found = []
+        self.intake_camera_right_found = []
 
     def left_intake_enable(self):
         if not self.DISABLE_INTAKES:
             self.s_left.set(wpilib.DoubleSolenoid.Value.kForward)
             self.left_intake_down = True
             self.left_intake_motor.set_raw_output(self.intake_speed)
+    
+    def left_intake_auto_enable(self):
+        self.s_left.set(wpilib.DoubleSolenoid.Value.kForward)
+        self.left_intake_down = True
+        self.left_intake_motor.set_raw_output(self.intake_speed)
         
     def left_intake_disable(self):
         self.dinglebobs_extra = True
@@ -61,12 +70,16 @@ class Intake(Subsystem):
         self.left_intake_down = False
         self.left_intake_motor.set_raw_output(0)
 
-
     def right_intake_enable(self):
         if not self.DISABLE_INTAKES:
             self.s_right.set(wpilib.DoubleSolenoid.Value.kForward)
             self.right_intake_down = True
             self.right_intake_motor.set_raw_output(self.intake_speed)
+
+    def right_intake_auto_enable(self):
+        self.s_right.set(wpilib.DoubleSolenoid.Value.kForward)
+        self.right_intake_down = True
+        self.right_intake_motor.set_raw_output(self.intake_speed)
 
     def right_intake_disable(self):
         self.dinglebobs_extra = True
