@@ -57,11 +57,12 @@ class Shooter(Subsystem):
     def set_flywheels(self, top_vel: meters_per_second, bottom_vel: meters_per_second):
         self.m_top.set_target_velocity(top_vel * constants.shooter_top_gear_ratio)
         self.m_bottom.set_target_velocity(bottom_vel * constants.shooter_bottom_gear_ratio)
-        tolerance = .08 # 0.06
-        if abs(self.m_top.get_sensor_velocity()-top_vel*constants.shooter_top_gear_ratio)<tolerance*(top_vel*constants.shooter_top_gear_ratio) and abs(self.m_bottom.get_sensor_velocity()-bottom_vel*constants.shooter_bottom_gear_ratio)<tolerance*(bottom_vel*constants.shooter_bottom_gear_ratio): 
-            self.shooter_ready = True
-        else:
-            self.shooter_ready = False
+        # tolerance = .08 # 0.06
+        # if abs(self.m_top.get_sensor_velocity()-top_vel*constants.shooter_top_gear_ratio)<tolerance*(top_vel*constants.shooter_top_gear_ratio) and abs(self.m_bottom.get_sensor_velocity()-bottom_vel*constants.shooter_bottom_gear_ratio)<tolerance*(bottom_vel*constants.shooter_bottom_gear_ratio):
+        #     self.shooter_ready = True
+        # else:
+        #     self.shooter_ready = False
+        self.shooter_ready = True
 
         #print(self.shooter_ready, self.drive_ready)
     def set_flywheels_for_ball_velocity(self, vx: meters_per_second, vy: meters_per_second):
@@ -71,8 +72,16 @@ class Shooter(Subsystem):
         self.set_launch_angle(final_angle)
         self.set_flywheels(final_velocity, final_velocity)
 
+    def get_current_ball_exit_velocity(self) -> tuple[meters_per_second, meters_per_second]:
+        v1 = self.m_top.get_sensor_velocity() / constants.shooter_top_gear_ratio
+        v2 = self.m_bottom.get_sensor_velocity() / constants.shooter_bottom_gear_ratio
+        v = 0.5 * (v1 + v2)
+        v_adj = (v + 0.286) / 1.475
+        sensor_theta = self.m_angle.get_sensor_position() / constants.shooter_angle_gear_ratio
+        launch_angle = math.radians(90) - sensor_theta - self.sensor_zero_angle
+        return v * math.cos(launch_angle), v_adj * math.sin(launch_angle)
+
     def target_stationary(self, limelight_dist):
-        limelight_dist -= 2.55-1.68
         vx, vy = ShooterTargeting.stationary_aim(limelight_dist)
         self.set_flywheels_for_ball_velocity(vx, vy)
    
@@ -85,7 +94,16 @@ class Shooter(Subsystem):
                 return angle_to_hub, False
             (vx, vy), theta = setting
             self.set_flywheels_for_ball_velocity(vx, vy)
-            should_shoot = ShooterTargeting.should_shoot(angle_to_hub, adjusted_robot_vel, limelight_dist, (vx, vy))
+            v_current = self.get_current_ball_exit_velocity()
+            try:
+                should_shoot = ShooterTargeting.should_shoot(
+                    angle_to_hub,
+                    adjusted_robot_vel,
+                    limelight_dist,
+                    v_current
+                )
+            except ValueError:
+                should_shoot = False
             return -theta, should_shoot
         else:
             self.set_flywheels_for_ball_velocity(*self.prev_flywheel_vel)

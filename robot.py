@@ -102,7 +102,6 @@ class _Robot(wpilib.TimedRobot):
     def robotPeriodic(self):
         # print(Robot.drivetrain.odometry.getPose())
         Robot.rev_digit.update()
-        Robot.odometry.update()
         commands2.CommandScheduler.getInstance().run()
 
     def teleopInit(self) -> None:
@@ -121,7 +120,7 @@ class _Robot(wpilib.TimedRobot):
         pass
 
     def teleopPeriodic(self) -> None:
-        pass
+        Robot.odometry.update()
 
     def autonomousInit(self) -> None:
         self.auto_routine.run()

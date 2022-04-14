@@ -6,6 +6,7 @@ from robotpy_toolkit_7407.subsystem_templates.drivetrain.swerve_drivetrain impor
 from wpimath.controller import ProfiledPIDControllerRadians
 from wpimath.trajectory import TrapezoidProfileRadians
 
+import constants
 from robot_systems import Robot
 from subsystem import Drivetrain, Shooter
 
@@ -20,11 +21,11 @@ def curve(x):
     return curve_abs(x)
 
 
-AIM_kP = 3
+AIM_kP = 3.5
 AIM_kI = 0
 AIM_kD = 0
 AIM_max_angular_vel = 6
-AIM_max_angular_accel = 12
+AIM_max_angular_accel = 6
 
 
 class DriveSwerveCustom(SubsystemCommand[SwerveDrivetrain]):
@@ -74,7 +75,7 @@ class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
             AIM_kP, AIM_kI, AIM_kD,
             TrapezoidProfileRadians.Constraints(
                 AIM_max_angular_vel, AIM_max_angular_accel
-            )
+            ), constants.period
         )
 
     def initialize(self) -> None:
@@ -125,14 +126,16 @@ class ShootWhileMoving(Command):
             AIM_kP, AIM_kI, AIM_kD,
             TrapezoidProfileRadians.Constraints(
                 AIM_max_angular_vel, AIM_max_angular_accel
-            )
+            ), constants.period
         )
 
         self.should_shoot_time = None
         self.shoot_vel = None
 
     def initialize(self) -> None:
-        pass
+        self.should_shoot_time = None
+        self.shoot_vel = None
+        self.drivetrain.max_vel = constants.drivetrain_target_max_vel
 
     def execute(self) -> None:
         hub_angle = Robot.odometry.hub_angle
@@ -170,6 +173,7 @@ class ShootWhileMoving(Command):
     def end(self, interrupted: bool) -> None:
         Robot.shooter.drive_ready = False
         Robot.shooter.stop()
+        self.drivetrain.max_vel = constants.drivetrain_max_vel
 
     def isFinished(self) -> bool:
         return False

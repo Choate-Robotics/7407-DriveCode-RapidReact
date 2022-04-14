@@ -1,4 +1,5 @@
 import dataclasses
+import math
 
 from commands2 import SequentialCommandGroup, ParallelCommandGroup, InstantCommand, WaitCommand
 from robotpy_toolkit_7407.utils.units import m, rad, deg, s, ft, inch
@@ -44,7 +45,7 @@ first_path = FollowPathCustom(
 
 rotate_1 = RotateInPlace(
     Robot.drivetrain,
-    -17 * deg,
+    -14 * deg,
     0.8,
     period=constants.period
 )
@@ -64,7 +65,7 @@ second_path = FollowPathCustom(
 
 rotate_2 = RotateInPlace(
     Robot.drivetrain,
-    -48 * deg,
+    -51 * deg,
     0.5,
     period=constants.period
 )
@@ -98,7 +99,7 @@ fourth_path = FollowPathCustom(
         9 * m/s,
         5 * m/(s*s)
     ),
-    -47 * deg,
+    -49 * deg,
     period=constants.period
 )
 
@@ -131,7 +132,7 @@ def zero():
 
 
 def rezero():
-    Robot.drivetrain.gyro._gyro.setYaw(Robot.drivetrain.gyro.get_robot_heading().asNumber(deg) + 90)
+    Robot.drivetrain.gyro._gyro.setYaw(math.degrees(Robot.drivetrain.gyro.get_robot_heading()) + 90)
 
 
 final_command = SequentialCommandGroup(
@@ -147,7 +148,7 @@ final_command = SequentialCommandGroup(
             rotate_1,
             IndexOn().alongWith(InstantCommand(Robot.intake.dinglebobs_in, Robot.intake))
         ),
-        ShooterEnableAtDistance(Robot.shooter, 2.65)
+        ShooterEnableAtDistance(Robot.shooter, 2.7)
     ).withTimeout(1.5),
     InstantCommand(right_intake_off, Robot.intake),
     IndexOff(), InstantCommand(Robot.intake.dinglebobs_off, Robot.intake),
@@ -164,7 +165,7 @@ final_command = SequentialCommandGroup(
             ),
             IndexOn().alongWith(InstantCommand(lambda: Robot.intake.dinglebobs_in(), Robot.intake))
         ),
-        ShooterEnableAtDistance(Robot.shooter, 2.9)
+        ShooterEnableAtDistance(Robot.shooter, 3.1)
     ).withTimeout(1.5),
     IndexOff(), InstantCommand(lambda: Robot.intake.dinglebobs_off(), Robot.intake),
     ParallelCommandGroup(
@@ -191,7 +192,7 @@ final_command = SequentialCommandGroup(
             InstantCommand(rezero),
             IndexOn().alongWith(InstantCommand(lambda: Robot.intake.dinglebobs_in(), Robot.intake))
         ),
-        ShooterEnableAtDistance(Robot.shooter, 2.7),
+        ShooterEnableAtDistance(Robot.shooter, 3),
         WaitCommand(1).andThen(InstantCommand(left_intake_off)),
     )
 )
