@@ -6,7 +6,7 @@ from robotpy_toolkit_7407.utils.units import rad, rev, inch, deg, m, mile, hour,
 from wpilib import DriverStation
 import config
 
-period = 0.02
+period = 0.03
 
 # --- DRIVETRAIN ---
 
@@ -37,8 +37,8 @@ shooter_angle_gear_ratio = (266 / 10) * (36 / 12)
 air_resistance_constant = 0.048187
 height_difference = 1.85  # meters # In reality about 1.76m, but a slightly higher height makes the ball bounce off the back of the HUB
 gravity = 9.80665  # m/s^2
-shooter_delay = 0.21  # seconds
-acceptable_error = 0.25  # meters
+shooter_delay = -0.1  # seconds
+acceptable_error = 0.5  # meters
 ideal_entry_angle = -math.pi / 3  # desired angle for the ball to enter the hub
 minimum_shooter_angle = math.pi / 4  # radians
 max_shooter_angle = math.radians(75)

@@ -36,6 +36,8 @@ class Shooter(Subsystem):
 
     offset_m = -0.12
 
+    prev_flywheel_vel = (0, 0)
+
     def init(self):
         self.m_top.init()
         self.m_bottom.init()
@@ -63,6 +65,7 @@ class Shooter(Subsystem):
 
         #print(self.shooter_ready, self.drive_ready)
     def set_flywheels_for_ball_velocity(self, vx: meters_per_second, vy: meters_per_second):
+        self.prev_flywheel_vel = (vx, vy)
         final_velocity = (-0.286 + 1.475 * (vx**2 + vy**2)**.5)
         final_angle = math.atan(vy / vx)
         self.set_launch_angle(final_angle)
@@ -73,11 +76,20 @@ class Shooter(Subsystem):
         vx, vy = ShooterTargeting.stationary_aim(limelight_dist)
         self.set_flywheels_for_ball_velocity(vx, vy)
    
-    def target_with_motion(self, limelight_dist, angle_to_hub, robot_vel) -> float:
+    def target_with_motion(self, limelight_dist, angle_to_hub, robot_vel) -> tuple[float, bool]:
+        limelight_dist -= 0.3
         adjusted_robot_vel = ShooterTargeting.real_velocity_to_shooting(robot_vel, angle_to_hub)
-        (vx, vy), theta = ShooterTargeting.moving_aim_ahead(angle_to_hub, adjusted_robot_vel, limelight_dist)
-        self.set_flywheels_for_ball_velocity(vx, vy)
-        return theta
+        if setting := ShooterTargeting.moving_aim_ahead(angle_to_hub, adjusted_robot_vel, limelight_dist):
+            if setting[0] is None or setting[1] is None:
+                self.set_flywheels_for_ball_velocity(*self.prev_flywheel_vel)
+                return angle_to_hub, False
+            (vx, vy), theta = setting
+            self.set_flywheels_for_ball_velocity(vx, vy)
+            should_shoot = ShooterTargeting.should_shoot(angle_to_hub, adjusted_robot_vel, limelight_dist, (vx, vy))
+            return -theta, should_shoot
+        else:
+            self.set_flywheels_for_ball_velocity(*self.prev_flywheel_vel)
+            return angle_to_hub, False
 
     def stop(self):
         self.m_top.set_raw_output(0)

@@ -5,7 +5,7 @@ from wpimath.geometry import Pose2d, Rotation2d
 import command
 import config
 from command import DriveSwerveAim
-from command.drivetrain import DriveSwerveCustom
+from command.drivetrain import DriveSwerveCustom, ShootWhileMoving
 from oi.keymap import Keymap
 from robot_systems import Robot
 
@@ -40,9 +40,14 @@ class OI:
 
         Keymap.Drivetrain.REZERO_MOTORS().whenPressed(zero_motors)
 
+        # Keymap.Drivetrain.AIM_SWERVE() \
+        #     .whileHeld(DriveSwerveAim(Robot.drivetrain)) \
+        #     .whileHeld(command.ShooterEnable(Robot.shooter)) \
+        #     .whenReleased(DriveSwerveCustom(Robot.drivetrain)) \
+        #     .whenReleased(InstantCommand(zero_ball_queue))
+
         Keymap.Drivetrain.AIM_SWERVE() \
-            .whileHeld(DriveSwerveAim(Robot.drivetrain)) \
-            .whileHeld(command.ShooterEnable(Robot.shooter)) \
+            .whileHeld(ShootWhileMoving(Robot.drivetrain, Robot.shooter)) \
             .whenReleased(DriveSwerveCustom(Robot.drivetrain)) \
             .whenReleased(InstantCommand(zero_ball_queue))
 

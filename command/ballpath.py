@@ -58,7 +58,7 @@ class BallPath(SubsystemCommand[Index]):
         if Robot.intake.dinglebob_run_extend:
             self.dinglebob_direction = "in"
 
-        
+        # print("6969696969696969696969696969942049240242094269966969696")
 
         if self.intake_active_check:
 
@@ -72,23 +72,23 @@ class BallPath(SubsystemCommand[Index]):
                 if not Robot.index.photo_electric.get_value():
                     self.dinglebob_dinglebob = True
             else:
-                print("NO RIGHT COLORED BALL")
+                # print("NO RIGHT COLORED BALL")
                 self.intake_force_stop = False
 
             if Robot.intake.left_intake_down or Robot.intake.right_intake_down:
-                print("CHECKING V2")
+                # print("CHECKING V2")
                 #print(f"Left: {Robot.intake.left_intake_down} Right: {Robot.intake.right_intake_down}")
                 self.dinglebob_direction = "in"
                 if Robot.intake.left_intake_down and left_color != config.TEAM and left_color != "none":
                     self.dinglebob_direction = "eject_right"
-                    print("ejecting right")
+                    # print("ejecting right")
                     if Robot.intake.right_intake_down:
                         self.right_intake_direction = "out"
                     self.intake_active_check = False #.5
                     commands2.CommandScheduler.getInstance().schedule(WaitCommand(.6).andThen(self.reactivate_intake_check))
                 if Robot.intake.right_intake_down and right_color != config.TEAM and right_color != "none":
                     self.dinglebob_direction = "eject_left"
-                    print("ejecting left")
+                    # print("ejecting left")
                     if Robot.intake.left_intake_down:
                         self.left_intake_direction = "out"
                     self.intake_active_check = False
@@ -127,7 +127,7 @@ class BallPath(SubsystemCommand[Index]):
             self.desired_distance = None
 
         if self.dinglebob_dinglebob:
-            print("dinglebob_dinglebob")
+            # print("dinglebob_dinglebob")
             if Robot.index.photo_electric.get_value():
                 self.dinglebob_dinglebob = False
                 self.dinglebob_direction = 'off'
@@ -142,7 +142,7 @@ class BallPath(SubsystemCommand[Index]):
             self.dinglebob_direction = "in"
 
         if self.intake_force_stop:
-            print("FORCED OUT")
+            # print("FORCED OUT")
             Robot.intake.DISABLE_INTAKES = True
             Robot.intake.left_intake_disable()
             Robot.intake.right_intake_disable()
@@ -175,18 +175,18 @@ class BallPath(SubsystemCommand[Index]):
             Robot.intake.dinglebob_eject_right()
         elif self.dinglebob_direction == "off":
             Robot.intake.dinglebobs_off()
-        print(self.dinglebob_direction)
+        # print(self.dinglebob_direction)
 
-        print(Robot.index.ball_queue)
-        print(self.dinglebob_direction)
+        # print(Robot.index.ball_queue)
+        # print(self.dinglebob_direction)
 
-        ball_list = [(0, 1), (0, .4)]
-
-        if ball_list:
-            min_ball = min(x[1] for x in ball_list)
-            wpilib.XboxController(Controllers.OPERATOR).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, 1-min_ball)
-        else:
-            wpilib.XboxController(Controllers.OPERATOR).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, 0)
+        # ball_list = [(0, 1), (0, .4)]
+        #
+        # if ball_list:
+        #     min_ball = min(x[1] for x in ball_list)
+        #     wpilib.XboxController(Controllers.OPERATOR).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, 1-min_ball)
+        # else:
+        #     wpilib.XboxController(Controllers.OPERATOR).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, 0)
 
 
     def isFinished(self) -> bool:
