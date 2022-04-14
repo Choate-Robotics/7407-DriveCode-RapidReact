@@ -13,14 +13,14 @@ redLower2 = np.array([160,100,20])
 redUpper2 = np.array([179,255,255])
 
 
-bumperThres = 400
+bumperThres = 420
 #upperThres = 100
 
 old_pts = [None,None]
 max_balls = 5
 
 
-r_threshold = [15,80,40]
+r_threshold = [15,80,15]
 # def cvimage_to_pygame(image):
 #     return pygame.image.frombuffer(image.tostring(), image.shape[1::-1],"RGB")
 
