@@ -5,11 +5,20 @@ import pickle
 import serial
 import zlib
 from threading import Thread
+import detect_balls
+import numpy as np
+from PIL import Image
+import pygame
+
 rgb = False
 ports = ['/dev/ttyACM0', '/dev/ttyACM1']
 HOST = ''
 PORT = 8510
 max_fps = 24
+img_size = (320, 240)
+
+
+
 # max_fps = 40
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM,)
@@ -24,6 +33,20 @@ print('Socket now listening')
 connections = []
 active_ports = []
 
+
+
+
+def convert_buff(buffer):
+    try:
+        buff = np.asarray(Image.frombuffer("RGB", img_size, buffer, "jpeg", "RGB", ""))
+        #print(buff)
+    except Exception as e:
+        print ("JPEG decode error (%s)"%(e))
+        return None
+    
+    if (buff.size != (img_size[0]*img_size[1]*3)):
+        return None
+    return (img_size[0], img_size[1], buff.reshape((img_size[1], img_size[0], 3)))
 
 def dump(s_port):
     s_port.write("snap".encode())
@@ -57,7 +80,6 @@ frames_buff = None
 def dumpBuffers():
     global frames_buff
     while True:
-        # Clock.tick(max_fps)
         temp_buff = [b''] * len(ports)
         for i in range(len(active_ports)):
             try:
@@ -69,19 +91,17 @@ def dumpBuffers():
                     pass
         frames_buff = temp_buff
         #print(len(frames_buff[0]), len(frames_buff[1]))
-        #buff_q.put_nowait(frames_buff)
         time.sleep(1/30)
 
 
 def send_to_clients():
     global frames_buff
     while True:
-        #frames_buff = buff_q.get()
         # print(len(frames_buff[0]),len(frames_buff[1]))
         #data = pickle.dumps(frames_buff, 0)
         data = zlib.compress(pickle.dumps(frames_buff, 0))
         size = len(data)
-        # print(len(struct.pack(">L", size) + data), len(frames_buff[1]))
+        print(len(struct.pack(">L", size) + data), len(frames_buff[1]))
         # print(size)
         for connection in connections:
             try:
@@ -90,6 +110,40 @@ def send_to_clients():
                 connections.remove(connection)
                 print("client disconnect")
         time.sleep(1/max_fps)
+
+image_scale = 2
+def detect_ball_loop():
+    global frames_buff
+    while True:
+        lr_balls = [[],[]]
+        (raw,raw2) = frames_buff
+        fb1 = convert_buff(raw2)
+        fb2 = convert_buff(raw)
+        if fb1 != None:
+            image = pygame.image.frombuffer(fb1[2].flat[0:], (fb1[0], fb1[1]), 'RGB')
+            image = pygame.transform.scale(image, (img_size[0]*image_scale, img_size[1]*image_scale))
+            image = detect_balls.pygame_to_cvimage(image)
+            balls = detect_balls.generate_circles(image)
+            lr_balls[0] = balls
+        if fb2 != None:
+            image = pygame.image.frombuffer(fb2[2].flat[0:], (fb2[0], fb2[1]), 'RGB')
+            image = pygame.transform.scale(image, (img_size[0]*image_scale, img_size[1]*image_scale))
+            image = detect_balls.pygame_to_cvimage(image)
+            balls = detect_balls.generate_circles(image)
+            lr_balls[1] = balls
+
+
+        #SEND SID lr_balls
+        print(lr_balls)
+        time.sleep(1/30)
+
+
+
+
+
+
+
+
 
 threads = []
 
@@ -104,6 +158,10 @@ buff_dumper.start()
 client_thread = Thread(target=send_to_clients, args=[ ])
 threads.append(client_thread)
 client_thread.start()
+
+ball_detector = Thread(target=detect_ball_loop, args=[ ])
+threads.append(ball_detector)
+ball_detector.start()
 
 while True:
     conn, addr = s.accept()
