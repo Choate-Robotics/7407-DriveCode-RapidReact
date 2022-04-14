@@ -72,7 +72,7 @@ class Shooter(Subsystem):
         v_adj = (v + 0.286) / 1.475
         sensor_theta = self.m_angle.get_sensor_position() / constants.shooter_angle_gear_ratio
         launch_angle = math.radians(90) - sensor_theta - self.sensor_zero_angle
-        return v * math.cos(launch_angle), v_adj * math.sin(launch_angle)
+        return v_adj * math.cos(launch_angle), v_adj * math.sin(launch_angle)
 
     def target_stationary(self, limelight_dist):
         vx, vy = ShooterTargeting.stationary_aim(limelight_dist)
