@@ -66,54 +66,6 @@ class DriveSwerveCustom(SubsystemCommand[SwerveDrivetrain]):
         return False
 
 
-class DriveSwerveAim(SubsystemCommand[SwerveDrivetrain]):
-    def __init__(self, subsystem, ready_counts=2):
-        super().__init__(subsystem)
-        self.ready_counts = ready_counts
-        self.c_count = 0
-        self.pid_controller = ProfiledPIDControllerRadians(
-            AIM_kP, AIM_kI, AIM_kD,
-            TrapezoidProfileRadians.Constraints(
-                AIM_max_angular_vel, AIM_max_angular_accel
-            ), constants.period
-        )
-
-    def initialize(self) -> None:
-        pass
-
-    def execute(self) -> None:
-        hub_angle = Robot.odometry.hub_angle
-        dx, dy = self.subsystem.axis_dx.value, self.subsystem.axis_dy.value
-
-        omega = self.pid_controller.calculate(hub_angle, 0)
-
-        dx = curve(dx)
-        dy = curve(dy)
-
-        # TODO normalize this to circle somehow
-        dx *= self.subsystem.max_vel
-        dy *= -self.subsystem.max_vel
-
-        if abs(Robot.drivetrain.chassis_speeds.omega) < .1 and hub_angle != 0:
-            self.c_count += 1
-            if self.c_count >= self.ready_counts:
-                Robot.shooter.drive_ready = True
-        else:
-            self.c_count = 0
-            Robot.shooter.drive_ready = False
-
-        self.subsystem.set((dx, dy), omega)
-
-    def end(self, interrupted: bool) -> None:
-        Robot.shooter.drive_ready = False
-
-    def isFinished(self) -> bool:
-        return False
-
-    def runsWhenDisabled(self) -> bool:
-        return False
-
-
 class ShootWhileMoving(Command):
     def __init__(self, drivetrain: Drivetrain, shooter: Shooter):
         super().__init__()
@@ -159,19 +111,19 @@ class ShootWhileMoving(Command):
         dy *= -self.drivetrain.max_vel
 
         if should_shoot:
-            Robot.shooter.drive_ready = True
+            Robot.shooter.ready = True
             self.shoot_vel = robot_vel
             self.should_shoot_time = time.time()
         elif self.should_shoot_time is None or self.should_shoot_time + 0.3 < time.time():
-            Robot.shooter.drive_ready = False
+            Robot.shooter.ready = False
 
-        if Robot.shooter.drive_ready:
+        if Robot.shooter.ready:
             self.drivetrain.set_driver_centric(self.shoot_vel, omega)
         else:
             self.drivetrain.set((dx, dy), omega)
 
     def end(self, interrupted: bool) -> None:
-        Robot.shooter.drive_ready = False
+        Robot.shooter.ready = False
         Robot.shooter.stop()
         self.drivetrain.max_vel = constants.drivetrain_max_vel
 

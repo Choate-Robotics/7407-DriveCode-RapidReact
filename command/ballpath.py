@@ -134,7 +134,7 @@ class BallPath(SubsystemCommand[Index]):
             else:
                 self.dinglebob_direction = 'in'
 
-        if Robot.shooter.drive_ready and Robot.shooter.shooter_ready: # and Robot.limelight.get_x_offset()!=0 and Robot.limelight.get_x_offset() and abs(Robot.drivetrain.chassis_speeds) < .1:
+        if Robot.shooter.ready: # and Robot.limelight.get_x_offset()!=0 and Robot.limelight.get_x_offset() and abs(Robot.drivetrain.chassis_speeds) < .1:
             self.index_shoot = True
             self.index_index = False
             self.index_normal = False

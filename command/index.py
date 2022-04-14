@@ -59,7 +59,7 @@ class IndexAutoDrive(SubsystemCommand):
                 # speed = .3
                 self.subsystem.set(.3)
             
-        elif Robot.shooter.drive_ready and Robot.shooter.shooter_ready:
+        elif Robot.shooter.ready:
             #print("READY")
             # speed = .5
             self.subsystem.set(.5)

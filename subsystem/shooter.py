@@ -32,7 +32,9 @@ class Shooter(Subsystem):
     angle_range = (45 * deg).asNumber(rad)
 
     left_limit = LimitSwitch(1)
+
     zeroed: bool
+    ready: bool
 
     offset_m = -0.12
 
@@ -46,9 +48,7 @@ class Shooter(Subsystem):
         optimize_normal_talon(self.m_bottom)
         optimize_normal_talon(self.m_angle)
         self.zeroed = self.left_limit.get_value()
-
-        self.drive_ready = False
-        self.shooter_ready = False
+        self.ready = False
 
     def set_launch_angle(self, theta: radians):
         theta = math.radians(90) - theta - self.sensor_zero_angle
@@ -57,14 +57,7 @@ class Shooter(Subsystem):
     def set_flywheels(self, top_vel: meters_per_second, bottom_vel: meters_per_second):
         self.m_top.set_target_velocity(top_vel * constants.shooter_top_gear_ratio)
         self.m_bottom.set_target_velocity(bottom_vel * constants.shooter_bottom_gear_ratio)
-        # tolerance = .08 # 0.06
-        # if abs(self.m_top.get_sensor_velocity()-top_vel*constants.shooter_top_gear_ratio)<tolerance*(top_vel*constants.shooter_top_gear_ratio) and abs(self.m_bottom.get_sensor_velocity()-bottom_vel*constants.shooter_bottom_gear_ratio)<tolerance*(bottom_vel*constants.shooter_bottom_gear_ratio):
-        #     self.shooter_ready = True
-        # else:
-        #     self.shooter_ready = False
-        self.shooter_ready = True
 
-        #print(self.shooter_ready, self.drive_ready)
     def set_flywheels_for_ball_velocity(self, vx: meters_per_second, vy: meters_per_second):
         self.prev_flywheel_vel = (vx, vy)
         final_velocity = (-0.286 + 1.475 * (vx**2 + vy**2)**.5)
