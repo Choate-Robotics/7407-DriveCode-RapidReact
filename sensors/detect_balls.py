@@ -18,6 +18,9 @@ redUpper2 = np.array([179,255,255])
 bumperThres = 400
 #upperThres = 100
 
+old_pts = [None,None]
+max_balls = 5
+
 
 r_threshold = [15,80,13]
 def cvimage_to_pygame(image):
@@ -27,7 +30,7 @@ def cvimage_to_pygame(image):
 def pygame_to_cvimage(surface):
     view = pygame.surfarray.array3d(surface)
     view = view.transpose([1,0,2])
-    view = cv2.cvtColor(view,cv2.COLOR_RGB2BGR)
+    #view = cv2.cvtColor(view,cv2.COLOR_RGB2BGR)
     return view
 
 def generate_circles(frame):
@@ -59,10 +62,10 @@ def generate_circles(frame):
                 cv2.rectangle(frame, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)
     cv2.line(frame,(0,bumperThres),(frame.shape[1],bumperThres),(0,255,0),2)
     #print(valid_circles)
-    #frame = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
+    #cv2.imshow('image',frame)
     #pygame_img = cvimage_to_pygame(frame)
-    #v2.imshow('image',mask)
-    return valid_circles
+    #cv2.imshow('image',frame)
+    return [valid_circles,frame]
 
 
 

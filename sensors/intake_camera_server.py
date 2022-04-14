@@ -120,21 +120,22 @@ def detect_ball_loop():
         fb1 = convert_buff(raw2)
         fb2 = convert_buff(raw)
         if fb1 != None:
-            image = pygame.image.frombuffer(fb1[2].flat[0:], (fb1[0], fb1[1]), 'RGB')
+            image = pygame.image.frombuffer(fb1[2].flat[0:], (fb1[0], fb1[1]), 'BGR')
             image = pygame.transform.scale(image, (img_size[0]*image_scale, img_size[1]*image_scale))
             image = detect_balls.pygame_to_cvimage(image)
-            balls = detect_balls.generate_circles(image)
+            [balls,image] = detect_balls.generate_circles(image)
+            #image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
             lr_balls[0] = balls
         if fb2 != None:
-            image = pygame.image.frombuffer(fb2[2].flat[0:], (fb2[0], fb2[1]), 'RGB')
+            image = pygame.image.frombuffer(fb1[2].flat[0:], (fb1[0], fb1[1]), 'BGR')
             image = pygame.transform.scale(image, (img_size[0]*image_scale, img_size[1]*image_scale))
             image = detect_balls.pygame_to_cvimage(image)
-            balls = detect_balls.generate_circles(image)
+            [balls,image] = detect_balls.generate_circles(image)
+            #image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
             lr_balls[1] = balls
 
 
         #SEND SID lr_balls
-        print(lr_balls)
         time.sleep(1/30)
 
 
