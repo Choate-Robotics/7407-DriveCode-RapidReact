@@ -1,4 +1,3 @@
-from turtle import left
 import commands2
 import wpilib
 from commands2 import WaitCommand
@@ -144,8 +143,11 @@ class BallPath(SubsystemCommand[Index]):
 
         if self.intake_force_stop:
             print("FORCED OUT")
+            Robot.intake.DISABLE_INTAKES = True
             Robot.intake.left_intake_disable()
             Robot.intake.right_intake_disable()
+        else:
+            Robot.intake.DISABLE_INTAKES = False
 
         left_joy = Keymap.Index.INDEX_JOY.value
 
@@ -159,6 +161,7 @@ class BallPath(SubsystemCommand[Index]):
                 self.index_speed = -.5
                 self.dinglebob_direction = "out"
             self.subsystem.ball_queue = 0
+            self.dinglebob_dinglebob = False
 
         Robot.index.set(self.index_speed)
         if self.dinglebob_direction == "in":
@@ -178,17 +181,12 @@ class BallPath(SubsystemCommand[Index]):
         print(Robot.index.ball_queue)
         print(self.dinglebob_direction)
 
-        if not self.intake_force_stop and not Robot.intake.AUTO_INTAKE:
-            Robot.intake.DISABLE_INTAKES = False
-        else:
-            Robot.intake.DISABLE_INTAKES = True
-
         if Robot.intake.intake_camera_left_found:
             left_min_ball = min(x[1] for x in Robot.intake.intake_camera_left_found)
             wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, 1-left_min_ball)
             if Robot.intake.AUTO_INTAKE:
-                if left_min_ball < .1:
-                    Robot.intake.left_intake_auto_enable()
+                if left_min_ball <= .1:
+                    Robot.intake.left_intake_enable()
                 else:
                     Robot.intake.left_intake_disable()
         else:
@@ -197,8 +195,8 @@ class BallPath(SubsystemCommand[Index]):
             right_min_ball = min(x[1] for x in Robot.intake.intake_camera_right_found)
             wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 1-right_min_ball)
             if Robot.intake.AUTO_INTAKE:
-                if right_min_ball < .1:
-                    Robot.intake.right_intake_auto_enable()
+                if right_min_ball <= .1:
+                    Robot.intake.right_intake_enable()
                 else:
                     Robot.intake.right_intake_disable()
         else:
