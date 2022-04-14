@@ -1,5 +1,6 @@
 # HARTFORD READY
 
+import math
 import commands2
 import wpilib
 from commands2 import WaitCommand
@@ -8,6 +9,7 @@ from robotpy_toolkit_7407.network.network_system import Network
 from robotpy_toolkit_7407.utils import logger
 from robotpy_toolkit_7407.utils.units import m, s
 from wpimath.geometry import Pose2d
+from command import drivetrain
 
 import config
 from autonomous.auto_routine import AutoRoutine
@@ -23,6 +25,7 @@ from sensors.color_sensors import ColorSensors
 from sensors.field_odometry import FieldOdometry
 from sensors.intake_cameras import IntakeCameras
 from sensors.rev_digit import RevDigit
+from subsystem.drivetrain import TalonFXSwerveNode
 # from sensors.intake_cameras import IntakeCameras
 
 
@@ -107,10 +110,8 @@ class _Robot(wpilib.TimedRobot):
 
         wpilib.SmartDashboard.putString('DB/String 0', f'Team Color: {config.TEAM}')
         wpilib.SmartDashboard.putString('DB/String 1', f'Auto Mode: {config.AUTO}')
-        wpilib.SmartDashboard.putString('DB/String 2', f'Elevator Zeroed: {Robot.elevator.zeroed}')
-        wpilib.SmartDashboard.putString('DB/String 3', f'Shooter Zeroed: {Robot.shooter.zeroed}')
-        wpilib.SmartDashboard.putString('DB/String 4', f'Compressor Value: {Pneumatics.compressor.getPressure()}')
-        wpilib.SmartDashboard.putString('DB/String 5', f'')
+        wpilib.SmartDashboard.putString('DB/String 2', f'Compressor Value: {round(Pneumatics.compressor.getPressure(), 2)}')
+        wpilib.SmartDashboard.putString('DB/String 3', f'D_Motor Temp (C): {(Robot.drivetrain.n_00.m_move._motor.getTemperature()+Robot.drivetrain.n_01.m_move._motor.getTemperature()+Robot.drivetrain.n_10.m_move._motor.getTemperature()+Robot.drivetrain.n_11.m_move._motor.getTemperature())/4}')
 
     def teleopInit(self) -> None:
         Robot.elevator.initialized = False

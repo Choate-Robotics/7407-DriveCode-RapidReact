@@ -41,4 +41,4 @@ class ColorSensors:
             return "red"
         elif vals[2]-vals[0]>2000:
             return "blue"
-        return "none" 
+        return "none"
