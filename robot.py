@@ -104,6 +104,11 @@ class _Robot(wpilib.TimedRobot):
         Robot.rev_digit.update()
         commands2.CommandScheduler.getInstance().run()
 
+        wpilib.SmartDashboard.putString('DB/String 0', f'Team Color: {config.TEAM}')
+        wpilib.SmartDashboard.putString('DB/String 1', f'Auto Mode: {config.AUTO}')
+        wpilib.SmartDashboard.putString('DB/String 2', f'Compressor Value: {round(Pneumatics.compressor.getPressure(), 0)}')
+        wpilib.SmartDashboard.putString('DB/String 3', f'D_Motor Temp (C): {(Robot.drivetrain.n_00.m_move._motor.getTemperature()+Robot.drivetrain.n_01.m_move._motor.getTemperature()+Robot.drivetrain.n_10.m_move._motor.getTemperature()+Robot.drivetrain.n_11.m_move._motor.getTemperature())/4}')
+
     def teleopInit(self) -> None:
         Robot.elevator.initialized = False
         commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
