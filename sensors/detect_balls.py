@@ -44,12 +44,8 @@ r_threshold = [15,80,15]
 
 
 def generate_circles(frame):
-    #temp = frame
-    #frame = pygame_to_cvimage(temp)
-    #frame = cv2.resize
-    #frame = imutils.resize(frame, width=600)
-    # print(frame)
-    # print("bruh")
+    #frame = imutils.resize(frame,width=600)
+    frame = cv2.resize(frame,(600,450))
     blurred = cv2.GaussianBlur(frame, (11, 11), 0)
     hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
     if team_color == "RED":
@@ -59,10 +55,10 @@ def generate_circles(frame):
     else: #color is blue
         mask = cv2.inRange(hsv, blueLower1,blueUpper1)
 
-    mask = cv2.erode(mask, None, iterations=3)
-    mask = cv2.dilate(mask, None, iterations=3)
-
-    circles = cv2.HoughCircles(mask, cv2.HOUGH_GRADIENT, .4, 60 , param1=200, param2=13, minRadius=r_threshold[0], maxRadius=r_threshold[1]+r_threshold[2])
+    mask = cv2.erode(mask, None, iterations=4)
+    mask = cv2.dilate(mask, None, iterations=4)
+    #cv2.imshow('mask',mask)
+    circles = cv2.HoughCircles(mask, cv2.HOUGH_GRADIENT, .4, 60 , param1=200, param2=14, minRadius=r_threshold[0], maxRadius=r_threshold[1]+r_threshold[2])
     valid_circles = []
     if circles is not None:
 	    # convert the (x, y) coordinates and radius of the circles to integers
@@ -74,10 +70,6 @@ def generate_circles(frame):
                 cv2.circle(frame, (x, y), r, (0, 255, 0), 4)
                 cv2.rectangle(frame, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)
     cv2.line(frame,(0,bumperThres),(frame.shape[1],bumperThres),(0,255,0),2)
-    #print(valid_circles)
-    #cv2.imshow('image',frame)
-    #pygame_img = cvimage_to_pygame(frame)
-    #cv2.imshow('image',frame)
     return [valid_circles,frame]
 
 

@@ -5,11 +5,20 @@ import pickle
 import serial
 import zlib
 from threading import Thread
+import detect_balls
+import numpy as np
+import cv2
+
 rgb = False
-ports = ['/dev/ttyACM1', '/dev/ttyACM2']
+ports = ['/dev/ttyACM0','/dev/ttyACM1','/dev/ttyACM2']
+#/dev/tty.usbmodem3051395331301
 HOST = ''
 PORT = 8510
-max_fps = 24
+max_fps = 20
+img_size = (320, 240)
+
+
+
 # max_fps = 40
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM,)
@@ -23,6 +32,26 @@ s.listen(10)
 print('Socket now listening')
 connections = []
 active_ports = []
+
+
+
+
+def convert_buff(buffer):
+    try:
+        #buff = np.asarray(Image.frombuffer("RGB", img_size, buffer, "jpeg", "RGB", ""))
+        nparr = np.frombuffer(buffer, np.uint8)
+        buff = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        #buff = cv2.cvtColor(buff,cv2.COLOR_BGR2RGB)
+        #print(buff)
+    except Exception as e:
+        #print ("JPEG decode error (%s)"%(e))
+        return None
+    
+    if (buff.size != (img_size[0]*img_size[1]*3)):
+        return None
+
+    return (img_size[0], img_size[1], buff.reshape((img_size[1], img_size[0], 3)))
+
 
 
 def dump(s_port):
@@ -57,7 +86,6 @@ frames_buff = None
 def dumpBuffers():
     global frames_buff
     while True:
-        # Clock.tick(max_fps)
         temp_buff = [b''] * len(ports)
         for i in range(len(active_ports)):
             try:
@@ -67,21 +95,19 @@ def dumpBuffers():
                     del active_ports[i]
                 except:
                     pass
-        frames_buff = temp_buff
+        frames_buff = temp_buff[:2]
         #print(len(frames_buff[0]), len(frames_buff[1]))
-        #buff_q.put_nowait(frames_buff)
         time.sleep(1/30)
 
 
 def send_to_clients():
     global frames_buff
     while True:
-        #frames_buff = buff_q.get()
         # print(len(frames_buff[0]),len(frames_buff[1]))
         #data = pickle.dumps(frames_buff, 0)
         data = zlib.compress(pickle.dumps(frames_buff, 0))
         size = len(data)
-        # print(len(struct.pack(">L", size) + data), len(frames_buff[1]))
+        print(len(struct.pack(">L", size) + data), len(frames_buff[1]))
         # print(size)
         for connection in connections:
             try:
@@ -90,6 +116,35 @@ def send_to_clients():
                 connections.remove(connection)
                 print("client disconnect")
         time.sleep(1/max_fps)
+
+image_scale = 2
+def detect_ball_loop():
+    global frames_buff
+    while True:
+        lr_balls = [[],[]]
+        (raw,raw2) = frames_buff
+        fb1 = convert_buff(raw2)
+        fb2 = convert_buff(raw)
+        if fb1 != None:
+            [balls,_] = detect_balls.generate_circles(fb1[2])
+            #image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
+            lr_balls[0] = balls
+        if fb2 != None:
+            [balls,_] = detect_balls.generate_circles(fb2[2])
+            #image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
+            lr_balls[1] = balls
+        print(lr_balls)
+
+        #SEND SID lr_balls
+        time.sleep(1/30)
+
+
+
+
+
+
+
+
 
 threads = []
 
@@ -104,6 +159,10 @@ buff_dumper.start()
 client_thread = Thread(target=send_to_clients, args=[ ])
 threads.append(client_thread)
 client_thread.start()
+
+ball_detector = Thread(target=detect_ball_loop, args=[ ])
+threads.append(ball_detector)
+ball_detector.start()
 
 while True:
     conn, addr = s.accept()
