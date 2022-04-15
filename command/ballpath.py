@@ -1,3 +1,5 @@
+import time
+
 import commands2
 import wpilib
 from commands2 import WaitCommand
@@ -41,6 +43,8 @@ class BallPath(SubsystemCommand[Index]):
 
         self.operator_index = False
 
+        self.dinglebob_dinglebob_true_time = None
+
 
     def initialize(self) -> None:
         pass
@@ -60,7 +64,7 @@ class BallPath(SubsystemCommand[Index]):
         if left_val[0] != 0 and right_val[0] != 0:
             Sensors.color_sensors.working = True
         else:
-            print(left_val, right_val)
+            # print(left_val, right_val)
             Sensors.color_sensors.working = False
 
         if Robot.intake.dinglebob_run_extend:
@@ -79,6 +83,7 @@ class BallPath(SubsystemCommand[Index]):
                 self.intake_force_stop = True
                 if not Robot.index.photo_electric.get_value():
                     self.dinglebob_dinglebob = True
+                    self.dinglebob_dinglebob_true_time = time.time()
             else:
                 self.intake_force_stop = False
 
@@ -144,7 +149,7 @@ class BallPath(SubsystemCommand[Index]):
             self.desired_distance = None
 
         if self.dinglebob_dinglebob:
-            if Robot.index.photo_electric.get_value():
+            if Robot.index.photo_electric.get_value() or (self.dinglebob_dinglebob_true_time is not None and time.time() - self.dinglebob_dinglebob_true_time > 1):
                 self.dinglebob_dinglebob = False
                 self.dinglebob_direction = 'off'
             else:
@@ -156,8 +161,6 @@ class BallPath(SubsystemCommand[Index]):
             self.index_normal = False
             self.index_speed = .5
             self.dinglebob_direction = "in"
-        
-        print(Robot.shooter.ready)
 
         if self.intake_force_stop:
             Robot.intake.DISABLE_INTAKES = True
@@ -197,13 +200,26 @@ class BallPath(SubsystemCommand[Index]):
         # print(Robot.index.ball_queue)
         # print(self.dinglebob_direction)
 
-        # ball_list = [(0, 1), (0, .4)]
-        #
-        # if ball_list:
-        #     min_ball = min(x[1] for x in ball_list)
-        #     wpilib.XboxController(Controllers.OPERATOR).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, 1-min_ball)
-        # else:
-        #     wpilib.XboxController(Controllers.OPERATOR).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, 0)
+        if Robot.intake.intake_camera_left_found:
+            left_min_ball = max(x[1] for x in Robot.intake.intake_camera_left_found)
+            wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, left_min_ball)
+            # if Robot.intake.AUTO_INTAKE:
+            #     if left_min_ball >= .8:
+            #         Robot.intake.left_intake_enable()
+            #     else:
+            #         Robot.intake.left_intake_disable()
+        else:
+            wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, 0)
+        if Robot.intake.intake_camera_right_found:
+            right_min_ball = max(x[1] for x in Robot.intake.intake_camera_right_found)
+            wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kRightRumble, right_min_ball)
+            # if Robot.intake.AUTO_INTAKE:
+            #     if right_min_ball >= .8:
+            #         Robot.intake.right_intake_enable()
+            #     else:
+            #         Robot.intake.right_intake_disable()
+        else:
+            wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 0)
 
 
     def isFinished(self) -> bool:

@@ -24,6 +24,9 @@ class Intake(Subsystem):
     left_dinglebob_in: bool
     right_dinglebob_in: bool
 
+    intake_camera_left_found: list[list[float]]
+    intake_camera_right_found: list[list[float]]
+
     def init(self):
         self.left_intake_motor.init()
         self.right_intake_motor.init()
@@ -48,6 +51,10 @@ class Intake(Subsystem):
 
         self.dinglebob_run_extend = False
         self.DISABLE_INTAKES = False
+        self.AUTO_INTAKE = False
+
+        self.intake_camera_left_found = [[0, 1, 1], [0, .5, 1], [1, .1, 1]]
+        self.intake_camera_right_found = [[0, 8, 1], [0, .9, 1]]
 
     def left_intake_enable(self):
         if not self.DISABLE_INTAKES:
