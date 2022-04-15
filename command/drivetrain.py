@@ -1,6 +1,7 @@
 import math
 import time
 
+import commands2
 from robotpy_toolkit_7407.command import SubsystemCommand, Command
 from robotpy_toolkit_7407.subsystem_templates.drivetrain.swerve_drivetrain import SwerveDrivetrain
 from wpimath.controller import ProfiledPIDControllerRadians
@@ -21,16 +22,6 @@ def curve(x):
     return curve_abs(x)
 
 
-def curve_abs_rotation(x):
-    return x ** 2
-
-
-def curve_rotation(x):
-    if x < 0:
-        return -curve_abs(-x)
-    return curve_abs(x)
-
-
 AIM_kP = 3.5
 AIM_kI = 0
 AIM_kD = 0
@@ -38,8 +29,9 @@ AIM_max_angular_vel = 6
 AIM_max_angular_accel = 6
 
 
-class DriveSwerveCustom(SubsystemCommand[SwerveDrivetrain]):
+class DriveSwerveCustom(SubsystemCommand[Drivetrain]):
     driver_centric = False
+    driver_centric_reversed = False
 
     def initialize(self) -> None:
         pass
@@ -60,6 +52,8 @@ class DriveSwerveCustom(SubsystemCommand[SwerveDrivetrain]):
 
         if DriveSwerveCustom.driver_centric:
             self.subsystem.set_driver_centric((dy, -dx), d_theta * self.subsystem.max_angular_vel)
+        elif DriveSwerveCustom.driver_centric_reversed:
+            self.subsystem.set_driver_centric((-dy, dx), d_theta * self.subsystem.max_angular_vel)
         else:
             self.subsystem.set((dx, dy), d_theta * self.subsystem.max_angular_vel)
 
@@ -93,11 +87,12 @@ class ShootWhileMoving(Command):
 
         self.should_shoot_time = None
         self.shoot_vel = None
+        self.shooter.shooting_over = False
 
     def initialize(self) -> None:
         self.should_shoot_time = None
         self.shoot_vel = None
-        self.drivetrain.max_vel = constants.drivetrain_target_max_vel
+        self.shooter.shooting_over = False
 
     def execute(self) -> None:
         hub_angle = Robot.odometry.hub_angle
@@ -117,28 +112,34 @@ class ShootWhileMoving(Command):
         dy = curve(dy)
 
         # TODO normalize this to circle somehow
-        dx *= self.drivetrain.max_vel
-        dy *= -self.drivetrain.max_vel
+        dx *= constants.drivetrain_target_max_vel
+        dy *= -constants.drivetrain_target_max_vel
 
-        if should_shoot:
-            Robot.shooter.ready = True
+        if should_shoot and not self.shooter.shooting_over:
+            self.shooter.ready = True
             self.shoot_vel = robot_vel
             self.should_shoot_time = time.time()
         elif self.should_shoot_time is None or self.should_shoot_time + 0.3 < time.time():
-            Robot.shooter.ready = False
+            self.shooter.ready = False
 
-        if Robot.shooter.ready:
+        if self.shooter.ready:
             self.drivetrain.set_driver_centric(self.shoot_vel, omega)
         else:
             self.drivetrain.set((dx, dy), omega)
 
     def end(self, interrupted: bool) -> None:
-        Robot.shooter.ready = False
-        Robot.shooter.stop()
-        self.drivetrain.max_vel = constants.drivetrain_max_vel
+        self.shooter.ready = False
+        self.shooter.stop()
 
     def isFinished(self) -> bool:
-        return False
+        finished = not self.shooter.ready and self.shooter.shooting_over
+        if finished:
+            commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
+            Robot.shooter.ready = False
+            if not Robot.index.photo_electric.get_value():
+                Robot.index.ball_queue = 0
+                Robot.index.refresh = True
+        return finished
 
     def runsWhenDisabled(self) -> bool:
         return False

@@ -110,6 +110,11 @@ class _Robot(wpilib.TimedRobot):
         wpilib.SmartDashboard.putString('DB/String 3', f'D_Motor Temp (C): {(Robot.drivetrain.n_00.m_move._motor.getTemperature()+Robot.drivetrain.n_01.m_move._motor.getTemperature()+Robot.drivetrain.n_10.m_move._motor.getTemperature()+Robot.drivetrain.n_11.m_move._motor.getTemperature())/4}')
         wpilib.SmartDashboard.putString('DB/String 5', f'Color Sensors: {"WORKING" if Sensors.color_sensors.working == True else "FAILED" if not Sensors.color_sensors.working else Sensors.color_sensors.working}')
 
+        color_status = 'WORKING'
+        if not Sensors.color_sensors.working:
+            color_status = 'FAILED'
+        wpilib.SmartDashboard.putString('DB/String 5', f'Color Sens: {color_status}')
+
     def teleopInit(self) -> None:
         Robot.elevator.initialized = False
         commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))

@@ -48,10 +48,12 @@ class OI:
         #     .whenReleased(DriveSwerveCustom(Robot.drivetrain)) \
         #     .whenReleased(InstantCommand(zero_ball_queue))
 
+        def stop_shooting():
+            Robot.shooter.shooting_over = True
+
         Keymap.Drivetrain.AIM_SWERVE() \
-            .whileHeld(ShootWhileMoving(Robot.drivetrain, Robot.shooter)) \
-            .whenReleased(DriveSwerveCustom(Robot.drivetrain)) \
-            .whenReleased(InstantCommand(zero_ball_queue))
+            .whenPressed(ShootWhileMoving(Robot.drivetrain, Robot.shooter)) \
+            .whenReleased(InstantCommand(stop_shooting))
 
         def driver_centric_enable():
             DriveSwerveCustom.driver_centric = True
@@ -59,7 +61,14 @@ class OI:
         def driver_centric_disable():
             DriveSwerveCustom.driver_centric = False
 
+        def driver_centric_reversed_enable():
+            DriveSwerveCustom.driver_centric_reversed = True
+
+        def driver_centric_reversed_disable():
+            DriveSwerveCustom.driver_centric_reversed = False
+
         Keymap.Drivetrain.DRIVER_CENTRIC().whenPressed(driver_centric_enable).whenReleased(driver_centric_disable)
+        Keymap.Drivetrain.DRIVER_CENTRIC_REVERSED().whenPressed(driver_centric_reversed_enable).whenReleased(driver_centric_reversed_disable)
 
         # Keymap.Elevator.ELEVATOR_UP().whileHeld(command.ElevatorUp)
         # Keymap.Elevator.ELEVATOR_UP().whenReleased(command.ElevatorStop)
@@ -109,7 +118,7 @@ class OI:
             else:
                 config.TEAM = 'red'
 
-        Keymap.Index.TOGGLE_AUTO_EJECT().whenPressed(InstantCommand(change_team_color))
+        # Keymap.Index.TOGGLE_AUTO_EJECT().whenPressed(InstantCommand(change_team_color))
 
         #Keymap.Shooter.SHOOTER_ENABLE().whileHeld(command.ShooterEnable(Robot.shooter))
         Keymap.Shooter.SHOOTER_EJECT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, 5)) # .5

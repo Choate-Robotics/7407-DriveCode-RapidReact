@@ -108,7 +108,7 @@ class BallPath(SubsystemCommand[Index]):
             Robot.index.ball_queue += 1
         elif Robot.index.ball_queue == 2:
             if Robot.index.photo_electric.get_value():
-                wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, .4)
+                wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, 1)
                 self.dinglebob_direction = "off"
             else:
                 Robot.index.ball_queue -= 1
@@ -229,6 +229,8 @@ class BallPath(SubsystemCommand[Index]):
         print(Robot.intake.intake_camera_left_found)
         print(Robot.intake.intake_camera_right_found)
 
+        print("Left Color: ", left_color, left_val)
+        print("Right Color", right_color, right_val)
 
     def isFinished(self) -> bool:
         return False
