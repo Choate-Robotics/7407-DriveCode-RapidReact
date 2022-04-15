@@ -53,8 +53,8 @@ class Intake(Subsystem):
         self.DISABLE_INTAKES = False
         self.AUTO_INTAKE = False
 
-        self.intake_camera_left_found = [[0, 1, 1], [0, .5, 1], [1, .1, 1]]
-        self.intake_camera_right_found = [[0, 8, 1], [0, .9, 1]]
+        self.intake_camera_left_found = []
+        self.intake_camera_right_found = []
 
     def left_intake_enable(self):
         if not self.DISABLE_INTAKES:
