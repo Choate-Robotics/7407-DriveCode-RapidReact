@@ -2,26 +2,14 @@ import socket
 import struct
 import time
 import pickle
-from multiprocessing.connection import Client
-from queue import Queue
-
 import serial
 import zlib
 from threading import Thread
-import detect_balls
-import numpy as np
-import cv2
-
 rgb = False
 ports = ['/dev/ttyACM0', '/dev/ttyACM1']
-#/dev/tty.usbmodem3051395331301
 HOST = ''
 PORT = 8510
 max_fps = 24
-img_size = (320, 240)
-
-
-
 # max_fps = 40
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM,)
@@ -35,22 +23,6 @@ s.listen(10)
 print('Socket now listening')
 connections = []
 active_ports = []
-
-
-def convert_buff(buffer):
-    try:
-        #buff = np.asarray(Image.frombuffer("RGB", img_size, buffer, "jpeg", "RGB", ""))
-        nparr = np.frombuffer(buffer, np.uint8)
-        buff = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-        #buff = cv2.cvtColor(buff,cv2.COLOR_BGR2RGB)
-        #print(buff)
-    except Exception as e:
-        # print ("JPEG decode error (%s)"%(e))
-        return None
-    
-    if (buff.size != (img_size[0]*img_size[1]*3)):
-        return None
-    return (img_size[0], img_size[1], buff.reshape((img_size[1], img_size[0], 3)))
 
 
 def dump(s_port):
@@ -81,10 +53,11 @@ def attemptConnections(ports):
         time.sleep(5)
 
 
-frames_buff = [b"", b""]
+frames_buff = None
 def dumpBuffers():
     global frames_buff
     while True:
+        # Clock.tick(max_fps)
         temp_buff = [b''] * len(ports)
         for i in range(len(active_ports)):
             try:
@@ -96,12 +69,14 @@ def dumpBuffers():
                     pass
         frames_buff = temp_buff
         #print(len(frames_buff[0]), len(frames_buff[1]))
+        #buff_q.put_nowait(frames_buff)
         time.sleep(1/30)
 
 
 def send_to_clients():
     global frames_buff
     while True:
+        #frames_buff = buff_q.get()
         # print(len(frames_buff[0]),len(frames_buff[1]))
         #data = pickle.dumps(frames_buff, 0)
         data = zlib.compress(pickle.dumps(frames_buff, 0))
@@ -116,42 +91,6 @@ def send_to_clients():
                 print("client disconnect")
         time.sleep(1/max_fps)
 
-image_scale = 2
-def detect_ball_loop(queue: Queue):
-    global frames_buff
-    while True:
-        # print(frames_buff)
-        lr_balls = [[],[]]
-        (raw,raw2) = frames_buff
-        fb1 = convert_buff(raw2)
-        fb2 = convert_buff(raw)
-        if fb1 != None:
-            image = cv2.resize(fb1[2],(fb1[0]*image_scale,fb1[1]*image_scale))
-            [balls,image] = detect_balls.generate_circles(image)
-            #image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
-            lr_balls[0] = balls
-        if fb2 != None:
-            image = cv2.resize(fb2[2],(fb2[0]*image_scale,fb2[1]*image_scale))
-            [balls,image] = detect_balls.generate_circles(image)
-            #image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
-            lr_balls[1] = balls
-
-        queue.put(lr_balls)
-        time.sleep(1/30)
-
-
-def send_rio_data(queue: Queue):
-    client = Client(('localhost', 6000))
-
-    while client.recv():
-        if not queue.empty():
-            client.send(queue.get())
-        else:
-            client.send(None)
-
-
-rio_data_queue = Queue(1)
-
 threads = []
 
 cam_conn = Thread(target=attemptConnections, args=[ports])
@@ -165,15 +104,6 @@ buff_dumper.start()
 client_thread = Thread(target=send_to_clients, args=[ ])
 threads.append(client_thread)
 client_thread.start()
-
-ball_detector = Thread(target=detect_ball_loop, args=[rio_data_queue])
-threads.append(ball_detector)
-ball_detector.start()
-
-rio_data_sender = Thread(target=send_rio_data, args=[rio_data_queue])
-threads.append(rio_data_sender)
-rio_data_sender.start()
-
 
 while True:
     conn, addr = s.accept()
