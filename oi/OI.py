@@ -92,7 +92,17 @@ class OI:
         Keymap.Intake.RIGHT_INTAKE_TOGGLE() \
             .whenPressed(Robot.intake.right_intake_enable) \
             .whenReleased(Robot.intake.right_intake_disable)
-        
+
+        def auto_intake_on():
+            Robot.intake.AUTO_INTAKE = True
+
+        def auto_intake_off():
+            Robot.intake.AUTO_INTAKE = False
+
+        Keymap.Intake.AUTO_INTAKE_TOGGLE() \
+            .whenPressed(auto_intake_on) \
+            .whenReleased(auto_intake_off)
+
         def change_team_color():
             if config.TEAM == 'red':
                 config.TEAM = 'blue'

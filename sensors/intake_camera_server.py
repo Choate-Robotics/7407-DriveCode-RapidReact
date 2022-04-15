@@ -2,6 +2,9 @@ import socket
 import struct
 import time
 import pickle
+from multiprocessing.connection import Client
+from queue import Queue
+
 import serial
 import zlib
 from threading import Thread
@@ -34,8 +37,6 @@ connections = []
 active_ports = []
 
 
-
-
 def convert_buff(buffer):
     try:
         #buff = np.asarray(Image.frombuffer("RGB", img_size, buffer, "jpeg", "RGB", ""))
@@ -44,7 +45,7 @@ def convert_buff(buffer):
         #buff = cv2.cvtColor(buff,cv2.COLOR_BGR2RGB)
         #print(buff)
     except Exception as e:
-        print ("JPEG decode error (%s)"%(e))
+        # print ("JPEG decode error (%s)"%(e))
         return None
     
     if (buff.size != (img_size[0]*img_size[1]*3)):
@@ -80,7 +81,7 @@ def attemptConnections(ports):
         time.sleep(5)
 
 
-frames_buff = None
+frames_buff = [b"", b""]
 def dumpBuffers():
     global frames_buff
     while True:
@@ -105,7 +106,7 @@ def send_to_clients():
         #data = pickle.dumps(frames_buff, 0)
         data = zlib.compress(pickle.dumps(frames_buff, 0))
         size = len(data)
-        print(len(struct.pack(">L", size) + data), len(frames_buff[1]))
+        # print(len(struct.pack(">L", size) + data), len(frames_buff[1]))
         # print(size)
         for connection in connections:
             try:
@@ -116,9 +117,10 @@ def send_to_clients():
         time.sleep(1/max_fps)
 
 image_scale = 2
-def detect_ball_loop():
+def detect_ball_loop(queue: Queue):
     global frames_buff
     while True:
+        # print(frames_buff)
         lr_balls = [[],[]]
         (raw,raw2) = frames_buff
         fb1 = convert_buff(raw2)
@@ -134,17 +136,21 @@ def detect_ball_loop():
             #image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
             lr_balls[1] = balls
 
-
-        #SEND SID lr_balls
+        queue.put(lr_balls)
         time.sleep(1/30)
 
 
+def send_rio_data(queue: Queue):
+    client = Client(('localhost', 6000))
+
+    while client.recv():
+        if not queue.empty():
+            client.send(queue.get())
+        else:
+            client.send(None)
 
 
-
-
-
-
+rio_data_queue = Queue(1)
 
 threads = []
 
@@ -160,9 +166,14 @@ client_thread = Thread(target=send_to_clients, args=[ ])
 threads.append(client_thread)
 client_thread.start()
 
-ball_detector = Thread(target=detect_ball_loop, args=[ ])
+ball_detector = Thread(target=detect_ball_loop, args=[rio_data_queue])
 threads.append(ball_detector)
 ball_detector.start()
+
+rio_data_sender = Thread(target=send_rio_data, args=[rio_data_queue])
+threads.append(rio_data_sender)
+rio_data_sender.start()
+
 
 while True:
     conn, addr = s.accept()

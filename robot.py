@@ -76,7 +76,7 @@ class _Robot(wpilib.TimedRobot):
 
         commands2.CommandScheduler.getInstance().setPeriod(constants.period)
 
-        Robot.intake_cameras = IntakeCameras()  # TODO
+        Robot.intake_cameras = IntakeCameras(Robot.intake)  # TODO
 
         Robot.odometry = FieldOdometry(Robot.drivetrain)
 
@@ -127,6 +127,7 @@ class _Robot(wpilib.TimedRobot):
 
     def teleopPeriodic(self) -> None:
         Robot.odometry.update()
+        Robot.intake_cameras.read_camera_data()
 
     def autonomousInit(self) -> None:
         self.auto_routine.run()

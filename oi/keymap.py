@@ -26,6 +26,7 @@ class Keymap:
     class Intake:
         LEFT_INTAKE_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.LT)
         RIGHT_INTAKE_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.RT)
+        AUTO_INTAKE_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.X)
 
     class Index:
         TOGGLE_AUTO_EJECT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.START)
