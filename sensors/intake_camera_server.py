@@ -8,6 +8,10 @@ from threading import Thread
 import detect_balls
 import numpy as np
 import cv2
+from multiprocessing.connection import Client
+from queue import Queue
+
+
 
 rgb = False
 ports = ['/dev/ttyACM0','/dev/ttyACM1','/dev/ttyACM2']
@@ -82,7 +86,7 @@ def attemptConnections(ports):
         time.sleep(5)
 
 
-frames_buff = None
+frames_buff = [b''] * len(ports)
 def dumpBuffers():
     global frames_buff
     while True:
@@ -118,7 +122,7 @@ def send_to_clients():
         time.sleep(1/max_fps)
 
 image_scale = 2
-def detect_ball_loop():
+def detect_ball_loop(queue: Queue):
     global frames_buff
     while True:
         lr_balls = [[],[]]
@@ -135,13 +139,20 @@ def detect_ball_loop():
             lr_balls[1] = balls
         print(lr_balls)
 
-        #SEND SID lr_balls
+        queue.put(lr_balls)
         time.sleep(1/30)
 
 
+def send_rio_data(queue: Queue):
+    client = Client(('localhost', 6000))
 
+    while client.recv():
+        if not queue.empty():
+            client.send(queue.get())
+        else:
+            client.send(None)
 
-
+rio_data_queue = Queue(1)
 
 
 
@@ -160,9 +171,14 @@ client_thread = Thread(target=send_to_clients, args=[ ])
 threads.append(client_thread)
 client_thread.start()
 
-ball_detector = Thread(target=detect_ball_loop, args=[ ])
+ball_detector = Thread(target=detect_ball_loop, args=[rio_data_queue])
 threads.append(ball_detector)
 ball_detector.start()
+
+rio_data_sender = Thread(target=send_rio_data, args=[rio_data_queue])
+threads.append(rio_data_sender)
+rio_data_sender.start()
+
 
 while True:
     conn, addr = s.accept()
