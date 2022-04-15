@@ -44,6 +44,7 @@ class BallPath(SubsystemCommand[Index]):
         self.operator_index = False
 
         self.dinglebob_dinglebob_true_time = None
+        self.index_refresh_true_time = None
 
 
     def initialize(self) -> None:
@@ -71,6 +72,7 @@ class BallPath(SubsystemCommand[Index]):
             self.dinglebob_direction = "in"
 
         if not config.EJECT_ENABLE:
+            self.index_speed = 0
             if Robot.intake.left_intake_down or Robot.intake.right_intake_down:
                 self.dinglebob_direction = "in"
             else:
@@ -130,12 +132,13 @@ class BallPath(SubsystemCommand[Index]):
             self.index_index = False
             self.index_normal = False
             self.index_refresh = True
-            self.desired_distance = Robot.index.motor.get_sensor_position() - self.ball_distance
+            self.index_refresh_true_time = time.time()
             Robot.index.refresh = False
 
         elif self.index_refresh:
-            if Robot.index.motor.get_sensor_position() > self.desired_distance:
+            if (time.time()-self.index_refresh_true_time) < 1 and not Robot.index.photo_electric.get_value():
                 self.index_speed = -.3
+                print(time.time()-self.index_refresh_true_time)
             else:
                 self.index_refresh = False
                 self.index_normal = True
@@ -225,18 +228,18 @@ class BallPath(SubsystemCommand[Index]):
         # else:
         #     wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 0)
 
-        print("INDEX INDEX: ", self.index_index)
-        print("DINGLE_DING:" , self.dinglebob_dinglebob)
-        print("BALLS QUEUE: ", Robot.index.ball_queue)
-        print("LEFT COLOR: ", left_color, left_val)
-        print("RIGHT COLOR: ", right_color, right_val)
-        print("DINGL   DIR: ", self.dinglebob_direction)
+        # print("INDEX INDEX: ", self.index_index)
+        # print("DINGLE_DING:" , self.dinglebob_dinglebob)
+        # print("BALLS QUEUE: ", Robot.index.ball_queue)
+        # print("LEFT COLOR: ", left_color, left_val)
+        # print("RIGHT COLOR: ", right_color, right_val)
+        # print("DINGL   DIR: ", self.dinglebob_direction)
 
-        print(Robot.intake.intake_camera_left_found)
-        print(Robot.intake.intake_camera_right_found)
+        # print(Robot.intake.intake_camera_left_found)
+        # print(Robot.intake.intake_camera_right_found)
 
-        print("Left Color: ", left_color, left_val)
-        print("Right Color", right_color, right_val)
+        # print("Left Color: ", left_color, left_val)
+        # print("Right Color", right_color, right_val)
 
     def isFinished(self) -> bool:
         return False
