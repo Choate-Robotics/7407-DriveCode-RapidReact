@@ -21,6 +21,16 @@ def curve(x):
     return curve_abs(x)
 
 
+def curve_abs_rotation(x):
+    return x ** 2
+
+
+def curve_rotation(x):
+    if x < 0:
+        return -curve_abs(-x)
+    return curve_abs(x)
+
+
 AIM_kP = 3.5
 AIM_kI = 0
 AIM_kD = 0

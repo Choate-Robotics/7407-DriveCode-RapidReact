@@ -6,7 +6,7 @@ import serial
 import zlib
 from threading import Thread
 rgb = False
-ports = ['/dev/ttyACM0', '/dev/ttyACM1']
+ports = ['/dev/ttyACM1', '/dev/ttyACM2']
 HOST = ''
 PORT = 8510
 max_fps = 24
