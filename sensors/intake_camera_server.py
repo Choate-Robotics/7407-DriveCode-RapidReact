@@ -121,9 +121,13 @@ def send_to_clients():
                 print("client disconnect")
         time.sleep(1/max_fps)
 
+
+rio_data = [[], []]
+new_rio_data = True
+
 image_scale = 2
-def detect_ball_loop(queue: Queue):
-    global frames_buff
+def detect_ball_loop():
+    global frames_buff, rio_data, new_rio_data
     while True:
         lr_balls = [[],[]]
         (raw,raw2) = frames_buff
@@ -139,23 +143,23 @@ def detect_ball_loop(queue: Queue):
             lr_balls[1] = balls
         print(lr_balls)
 
-        queue.put(lr_balls)
+        rio_data = lr_balls
+        new_rio_data = True
+
         time.sleep(1/30)
 
 
-def send_rio_data(queue: Queue):
+def send_rio_data():
+    global new_rio_data
+
     client = Client(('localhost', 6000))
 
     while client.recv():
-        if not queue.empty():
-            client.send(queue.get())
+        if new_rio_data:
+            client.send(rio_data)
+            new_rio_data = False
         else:
             client.send(None)
-
-rio_data_queue = Queue(1)
-
-
-
 
 threads = []
 
@@ -171,11 +175,11 @@ client_thread = Thread(target=send_to_clients, args=[ ])
 threads.append(client_thread)
 client_thread.start()
 
-ball_detector = Thread(target=detect_ball_loop, args=[rio_data_queue])
-threads.append(ball_detector)
-ball_detector.start()
+# ball_detector = Thread(target=detect_ball_loop, args=[])
+# threads.append(ball_detector)
+# ball_detector.start()
 
-rio_data_sender = Thread(target=send_rio_data, args=[rio_data_queue])
+rio_data_sender = Thread(target=send_rio_data, args=[])
 threads.append(rio_data_sender)
 rio_data_sender.start()
 

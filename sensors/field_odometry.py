@@ -73,7 +73,7 @@ class FieldOdometry:
 
     def _collect_limelight_data(self):
         self._l_tx = self._limelight.getNumber('tx', None)
-        if self._l_tx:
+        if self._l_tx and abs(self._l_tx) < 38:
             self._l_tx = math.radians(self._l_tx)
         else:
             self._l_tx = None

@@ -198,26 +198,26 @@ class BallPath(SubsystemCommand[Index]):
         # print(Robot.index.ball_queue)
         # print(self.dinglebob_direction)
 
-        if Robot.intake.intake_camera_left_found:
-            left_min_ball = max(x[1] for x in Robot.intake.intake_camera_left_found)
-            wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, left_min_ball)
-            if Robot.intake.AUTO_INTAKE:
-                if left_min_ball >= .8:
-                    Robot.intake.left_intake_enable()
-                else:
-                    Robot.intake.left_intake_disable()
-        else:
-            wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, 0)
-        if Robot.intake.intake_camera_right_found:
-            right_min_ball = max(x[1] for x in Robot.intake.intake_camera_right_found)
-            wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kRightRumble, right_min_ball)
-            if Robot.intake.AUTO_INTAKE:
-                if right_min_ball >= .8:
-                    Robot.intake.right_intake_enable()
-                else:
-                    Robot.intake.right_intake_disable()
-        else:
-            wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 0)
+        # if Robot.intake.intake_camera_left_found:
+        #     left_min_ball = max(x[1] for x in Robot.intake.intake_camera_left_found)
+        #     wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, left_min_ball)
+        #     if Robot.intake.AUTO_INTAKE:
+        #         if left_min_ball >= .8:
+        #             Robot.intake.left_intake_enable()
+        #         else:
+        #             Robot.intake.left_intake_disable()
+        # else:
+        #     wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, 0)
+        # if Robot.intake.intake_camera_right_found:
+        #     right_min_ball = max(x[1] for x in Robot.intake.intake_camera_right_found)
+        #     wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kRightRumble, right_min_ball)
+        #     if Robot.intake.AUTO_INTAKE:
+        #         if right_min_ball >= .8:
+        #             Robot.intake.right_intake_enable()
+        #         else:
+        #             Robot.intake.right_intake_disable()
+        # else:
+        #     wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 0)
 
         print("INDEX INDEX: ", self.index_index)
         print("DINGLE_DING:" , self.dinglebob_dinglebob)
