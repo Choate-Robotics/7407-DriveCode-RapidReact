@@ -17,7 +17,7 @@ track_width = (24.2 * inch).asNumber(m)
 
 # TODO Maybe change these
 drivetrain_max_vel = (20 * mile/hour).asNumber(m/s)
-drivetrain_target_max_vel = (10 * mile/hour).asNumber(m/s)
+drivetrain_target_max_vel = (7 * mile/hour).asNumber(m/s)
 drivetrain_max_angular_vel = (2 * rev/s).asNumber(rad/s)
 drivetrain_max_climb_vel = (2 * mile/hour).asNumber(m/s)
 
@@ -39,7 +39,7 @@ air_resistance_constant = 0.048187
 height_difference = 1.85  # meters # In reality about 1.76m, but a slightly higher height makes the ball bounce off the back of the HUB
 gravity = 9.80665  # m/s^2
 shooter_delay = -0.1  # seconds
-acceptable_error = 0.4 # meters
+acceptable_error = 0.55 # meters
 ideal_entry_angle = -math.pi / 3  # desired angle for the ball to enter the hub
 minimum_shooter_angle = math.pi / 4  # radians
 max_shooter_angle = math.radians(75)
