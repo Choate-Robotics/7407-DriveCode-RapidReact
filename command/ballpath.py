@@ -70,7 +70,13 @@ class BallPath(SubsystemCommand[Index]):
         if Robot.intake.dinglebob_run_extend:
             self.dinglebob_direction = "in"
 
-        if self.intake_active_check:
+        if not config.EJECT_ENABLE:
+            if Robot.intake.left_intake_down or Robot.intake.right_intake_down:
+                self.dinglebob_direction = "in"
+            else:
+                self.dinglebob_direction = "off"
+
+        if self.intake_active_check and config.EJECT_ENABLE:
 
             self.index_speed = 0
             self.dinglebob_direction = "off"
