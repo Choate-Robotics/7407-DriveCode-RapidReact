@@ -154,6 +154,7 @@ class Drivetrain(SwerveDrivetrain):
     axis_dx = Keymap.Drivetrain.DRIVE_X_AXIS
     axis_dy = Keymap.Drivetrain.DRIVE_Y_AXIS
     axis_rotation = Keymap.Drivetrain.DRIVE_ROTATION_AXIS
+    axis_y2 = Keymap.Drivetrain.DRIVE_Y2_AXIS
     track_width: meters = constants.track_width
     max_vel: meters_per_second = constants.drivetrain_max_vel
     max_angular_vel: radians_per_second = constants.drivetrain_max_angular_vel

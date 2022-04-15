@@ -40,6 +40,8 @@ class Shooter(Subsystem):
 
     prev_flywheel_vel = (0, 0)
 
+    shooting_over: bool = False
+
     def init(self):
         self.m_top.init()
         self.m_bottom.init()
@@ -49,6 +51,7 @@ class Shooter(Subsystem):
         optimize_normal_talon(self.m_angle)
         self.zeroed = self.left_limit.get_value()
         self.ready = False
+        self.shooting_over = False
 
     def set_launch_angle(self, theta: radians):
         theta = math.radians(90) - theta - self.sensor_zero_angle

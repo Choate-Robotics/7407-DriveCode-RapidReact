@@ -1,3 +1,5 @@
+import math
+
 from commands2 import SequentialCommandGroup, ParallelCommandGroup, InstantCommand, WaitCommand
 from robotpy_toolkit_7407.utils.units import m, rad, deg, s, inch
 from wpimath.geometry import Pose2d
@@ -41,6 +43,10 @@ def zero():
     Robot.drivetrain.n_11.zero()
 
 
+def rezero():
+    Robot.drivetrain.gyro._gyro.setYaw(math.degrees(Robot.drivetrain.gyro.get_robot_heading()) + 90)
+
+
 final_command = SequentialCommandGroup(
     InstantCommand(zero),
     WaitCommand(0.3),
@@ -56,7 +62,7 @@ final_command = SequentialCommandGroup(
         ShooterEnableAtDistance(Robot.shooter, 2.65),
         WaitCommand(0.6).andThen(IndexOn().alongWith(InstantCommand(lambda: Robot.intake.dinglebobs_in(), Robot.intake)))
     ).withTimeout(1.5),
-    IndexOff(), InstantCommand(lambda: Robot.intake.dinglebobs_off(), Robot.intake)
+    IndexOff(), InstantCommand(lambda: Robot.intake.dinglebobs_off(), Robot.intake), InstantCommand(rezero)
 )
 
 #routine = AutoRoutine(initial_robot_pose, final_command)

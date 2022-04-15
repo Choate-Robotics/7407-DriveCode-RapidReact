@@ -50,7 +50,7 @@ def convert_buff(buffer):
     except Exception as e:
         #print ("JPEG decode error (%s)"%(e))
         return None
-    
+
     if (buff.size != (img_size[0]*img_size[1]*3)):
         return None
 
