@@ -108,12 +108,17 @@ class _Robot(wpilib.TimedRobot):
         wpilib.SmartDashboard.putString('DB/String 1', f'Auto Mode: {config.AUTO}')
         wpilib.SmartDashboard.putString('DB/String 2', f'Compressor Value: {round(Pneumatics.compressor.getPressure(), 1)}')
         wpilib.SmartDashboard.putString('DB/String 3', f'D_Motor Temp (C): {(Robot.drivetrain.n_00.m_move._motor.getTemperature()+Robot.drivetrain.n_01.m_move._motor.getTemperature()+Robot.drivetrain.n_10.m_move._motor.getTemperature()+Robot.drivetrain.n_11.m_move._motor.getTemperature())/4}')
-        wpilib.SmartDashboard.putString('DB/String 5', f'Color Sensors: {"WORKING" if Sensors.color_sensors.working == True else "FAILED" if not Sensors.color_sensors.working else Sensors.color_sensors.working}')
+        #wpilib.SmartDashboard.putString('DB/String 5', f'Color Sensors: {"WORKING" if Sensors.color_sensors.working == True else "FAILED" if not Sensors.color_sensors.working else Sensors.color_sensors.working}')
+        wpilib.SmartDashboard.putString('DB/String 6', f'EJECTION_ON: {config.EJECT_ENABLE}')
 
         color_status = 'WORKING'
         if not Sensors.color_sensors.working:
             color_status = 'FAILED'
         wpilib.SmartDashboard.putString('DB/String 5', f'Color Sens: {color_status}')
+
+        # wpilib.SmartDashboard.putBoolean("DB/Button 1", config.EJECT_ENABLE)
+        # config.EJECT_ENABLE = wpilib.SmartDashboard.getBoolean("DB/Button 1", False)
+        # print("EJECTION BUTTON = ", wpilib.SmartDashboard.getBoolean("DB/Button 1", False))
 
     def teleopInit(self) -> None:
         Robot.elevator.initialized = False
