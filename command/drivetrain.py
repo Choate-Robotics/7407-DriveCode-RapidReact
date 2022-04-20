@@ -104,7 +104,7 @@ class ShootWhileMoving(Command):
 
         robot_vel = Robot.drivetrain.chassis_speeds.vx, Robot.drivetrain.chassis_speeds.vy
 
-        target_angle, should_shoot = self.shooter.target_with_motion(robot_dist, hub_angle, robot_vel)
+        target_angle, should_shoot = self.shooter.target_with_motion(robot_dist - 0.2, hub_angle, robot_vel)
 
         omega = self.pid_controller.calculate(target_angle, 0)
 
@@ -119,7 +119,9 @@ class ShootWhileMoving(Command):
             self.shooter.ready = True
             self.shoot_vel = robot_vel
             self.should_shoot_time = time.time()
-        elif self.should_shoot_time is None or self.should_shoot_time + 0.3 < time.time():
+        # elif self.should_shoot_time is None or self.should_shoot_time + 0.3 < time.time():
+        #     self.shooter.ready = False
+        else:
             self.shooter.ready = False
 
         if self.shooter.ready:

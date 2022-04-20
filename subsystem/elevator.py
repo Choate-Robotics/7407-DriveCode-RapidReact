@@ -64,15 +64,15 @@ class Elevator(Subsystem):
         # reset motor's sensor position to 0
         self.motors.set_target_position(0)
         self.motors.set_sensor_position(0)
-        
 
     def set_climb_speed(self):
-        motor_cfg = TalonConfig(
-            0.1, 0, 0, 1023 / 20937,
-            motion_cruise_velocity=15000*ctre_motors.k_sensor_vel_to_rad_per_sec, motion_acceleration=50000*ctre_motors.k_sensor_accel_to_rad_per_sec_sq,
-            neutral_brake=True
-        )
+        motor_cfg = TalonConfig(motion_cruise_velocity=15000*ctre_motors.k_sensor_vel_to_rad_per_sec, motion_acceleration=50000*ctre_motors.k_sensor_accel_to_rad_per_sec_sq)
         
-        self.motors: TalonGroup = TalonGroup(TalonFX(17, inverted=True), TalonFX(18, inverted=False), config=motor_cfg)
-        
-        self.motors.init()
+        for m in self.motors.motors:
+            m._set_config(motor_cfg)
+
+    def set_high_climb_speed(self):
+        motor_cfg = TalonConfig(motion_cruise_velocity=30000*ctre_motors.k_sensor_vel_to_rad_per_sec, motion_acceleration=100000*ctre_motors.k_sensor_accel_to_rad_per_sec_sq)
+
+        for m in self.motors.motors:
+            m._set_config(motor_cfg)
