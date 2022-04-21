@@ -1,3 +1,3 @@
-TEAM = "red"  # "blue", "red"
-AUTO = "two"  # "five", "two"
-EJECT_ENABLE = False
+TEAM = "blue"  # "blue", "red"
+AUTO = "five"  # "five", "two"
+EJECT_ENABLE = True

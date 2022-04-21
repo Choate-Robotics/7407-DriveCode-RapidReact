@@ -61,6 +61,7 @@ class BallPath(SubsystemCommand[Index]):
         Sensors.color_sensors.multiplexer.writeBulk(bytes([0b1000]))
         right_color = Sensors.color_sensors.color()
         right_val = Sensors.color_sensors.get_val()
+        print(left_val, right_val)
 
         if left_val[0] != 0 and right_val[0] != 0:
             Sensors.color_sensors.working = True

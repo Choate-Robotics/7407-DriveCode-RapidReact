@@ -17,7 +17,7 @@ rgb = False
 ports = ['/dev/ttyACM0','/dev/ttyACM1','/dev/ttyACM2']
 #/dev/tty.usbmodem3051395331301
 HOST = ''
-PORT = 8510
+PORT = 5810
 max_fps = 20
 img_size = (320, 240)
 
