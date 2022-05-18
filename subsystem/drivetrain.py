@@ -133,7 +133,7 @@ class Drivetrain(SwerveDrivetrain):
     n_00 = TalonFXSwerveNode(
         TalonFX(7, inverted=True, config=MOVE_CONFIG),
         TalonFX(8, inverted=True, config=TURN_CONFIG),
-        CANCoder(12), (26.719 * deg).asNumber(rad)
+        CANCoder(12), (129.463 * deg).asNumber(rad)
     )
     n_01 = TalonFXSwerveNode(
         TalonFX(1, config=MOVE_CONFIG),

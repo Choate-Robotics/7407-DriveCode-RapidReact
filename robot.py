@@ -13,7 +13,7 @@ import config
 from autonomous.auto_routine import AutoRoutine
 from command import ElevatorRezero
 import constants
-from autonomous import two_ball_auto, five_ball_auto
+from autonomous import two_ball_auto, five_ball_auto_red, five_ball_auto_blue
 #from autonomous import five_ball_auto, two_ball_auto, three_ball_auto # TODO: Fix this
 from command import BallPath
 from command.drivetrain import DriveSwerveCustom
@@ -39,10 +39,13 @@ class _Robot(wpilib.TimedRobot):
         #     three_ball_auto.routine,
         #     five_ball_auto.routine
         # ] # TODO Fix This
-        self.auto_routines = [two_ball_auto.routine, five_ball_auto.routine]
+        self.auto_routines = [two_ball_auto.routine, five_ball_auto_red.routine]
 
         self.auto_routine: AutoRoutine | None = None
         self.initial_pose: Pose2d | None = None
+
+        self.button_1_last = None
+        self.button_2_last = None
 
         # self.test_command = ShooterDataCollectCommand(Robot.shooter).alongWith(command.IndexOn)
 
@@ -80,23 +83,6 @@ class _Robot(wpilib.TimedRobot):
 
         Robot.odometry = FieldOdometry(Robot.drivetrain)
 
-        if config.AUTO == "five":
-            # if config.TEAM == "red":
-            #     self.auto_routine = five_ball_auto_red.routine
-            # else:
-            #     self.auto_routine = five_ball_auto_blue.routine
-            self.auto_routine = five_ball_auto.routine
-        else:
-            self.auto_routine = two_ball_auto.routine
-
-        self.initial_pose = self.auto_routine.initial_robot_pose
-        # self.initial_pose = Pose2d(0, 0, 0)
-
-        Robot.drivetrain.gyro._gyro.setYaw(
-            self.initial_pose.rotation().degrees()
-        )
-        Robot.drivetrain.odometry.resetPosition(self.initial_pose, self.initial_pose.rotation())
-
         logger.info("initialization complete")
 
     def robotPeriodic(self):
@@ -115,6 +101,26 @@ class _Robot(wpilib.TimedRobot):
         if not Sensors.color_sensors.working:
             color_status = 'FAILED'
         wpilib.SmartDashboard.putString('DB/String 5', f'Color Sens: {color_status}')
+
+        if self.button_1_last is None:
+            self.button_1_last = wpilib.SmartDashboard.getBoolean('DB/Button 1', False)
+
+        if self.button_2_last is None:
+            self.button_2_last = wpilib.SmartDashboard.getBoolean('DB/Button 2', False)
+
+        if wpilib.SmartDashboard.getBoolean('DB/Button 1', self.button_1_last) != self.button_1_last:
+            self.button_1_last = not self.button_1_last
+            if config.TEAM == "red":
+                config.TEAM = "blue"
+            else:
+                config.TEAM = "red"
+
+        if wpilib.SmartDashboard.getBoolean('DB/Button 2', self.button_2_last) != self.button_2_last:
+            self.button_2_last = not self.button_2_last
+            if config.AUTO == "five":
+                config.AUTO = "two"
+            else:
+                config.AUTO = "five"
 
         # wpilib.SmartDashboard.putBoolean("DB/Button 1", config.EJECT_ENABLE)
         # config.EJECT_ENABLE = wpilib.SmartDashboard.getBoolean("DB/Button 1", False)
@@ -140,6 +146,23 @@ class _Robot(wpilib.TimedRobot):
         Robot.intake_cameras.read_camera_data()
 
     def autonomousInit(self) -> None:
+        if config.AUTO == "five":
+            if config.TEAM == "red":
+                self.auto_routine = five_ball_auto_red.routine
+            else:
+                self.auto_routine = five_ball_auto_blue.routine
+            # self.auto_routine = five_ball_auto.routine
+        else:
+            self.auto_routine = two_ball_auto.routine
+
+        self.initial_pose = self.auto_routine.initial_robot_pose
+        # self.initial_pose = Pose2d(0, 0, 0)
+
+        Robot.drivetrain.gyro._gyro.setYaw(
+            self.initial_pose.rotation().degrees()
+        )
+        Robot.drivetrain.odometry.resetPosition(self.initial_pose, self.initial_pose.rotation())
+
         self.auto_routine.run()
 
     def autonomousPeriodic(self) -> None:

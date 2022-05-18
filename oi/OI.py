@@ -118,7 +118,7 @@ class OI:
             else:
                 config.TEAM = 'red'
 
-        # Keymap.Index.TOGGLE_AUTO_EJECT().whenPressed(InstantCommand(change_team_color))
+        Keymap.Index.TOGGLE_AUTO_EJECT().whenPressed(InstantCommand(change_team_color))
 
         #Keymap.Shooter.SHOOTER_ENABLE().whileHeld(command.ShooterEnable(Robot.shooter))
         Keymap.Shooter.SHOOTER_EJECT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, 5)) # .5

@@ -21,7 +21,7 @@ initial_robot_pose = Pose2d(8, 1.7714, initial_gyro_angle.asNumber(rad))
 dx = (initial_robot_pose.X() - old_initial_robot_pose.X()) * m
 dy = (initial_robot_pose.Y() - old_initial_robot_pose.Y()) * m
 
-first_path_end_pose = TrajectoryEndpoint(7.927611 * m - 6 * inch + dx, -8 * m + 1.6 * ft + dy, initial_gyro_angle.asNumber(rad))
+first_path_end_pose = TrajectoryEndpoint(7.927611 * m - 6 * inch + dx, -8 * m + 1.6 * ft - 2 * inch + dy, initial_gyro_angle.asNumber(rad))
 
 second_path_start_pose = first_path_end_pose
 second_path_start_pose.angle = 163 * deg
@@ -29,7 +29,7 @@ second_path_end_pose = TrajectoryEndpoint((7.927611 - 2) * m - 4 * inch + dx, (-
 
 third_path_start_pose = second_path_end_pose
 third_path_start_pose.angle = 163 * deg
-third_path_end_pose = TrajectoryEndpoint((7.927611 - 2) * m - 175.5 * inch + dx, (-8 + 0.6) * m + 2.6 * ft + 7 * inch + dy, -116 * deg)
+third_path_end_pose = TrajectoryEndpoint((7.927611 - 2) * m - 177.5 * inch + dx, (-8 + 0.6) * m + 2.6 * ft + 2 * inch + dy, -116 * deg)
 
 fourth_path_start_pose = dataclasses.replace(third_path_end_pose)
 fourth_path_start_pose.angle = 0 * deg
@@ -45,7 +45,7 @@ first_path = FollowPathCustom(
 
 rotate_1 = RotateInPlace(
     Robot.drivetrain,
-    -14 * deg,
+    -11 * deg,
     0.8,
     period=constants.period
 )
@@ -192,7 +192,7 @@ final_command = SequentialCommandGroup(
             InstantCommand(rezero),
             IndexOn().alongWith(InstantCommand(lambda: Robot.intake.dinglebobs_in(), Robot.intake))
         ),
-        ShooterEnableAtDistance(Robot.shooter, 3),
+        ShooterEnableAtDistance(Robot.shooter, 2.9),
         WaitCommand(1).andThen(InstantCommand(left_intake_off)),
     )
 )

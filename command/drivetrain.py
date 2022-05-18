@@ -55,7 +55,7 @@ class DriveSwerveCustom(SubsystemCommand[Drivetrain]):
         elif DriveSwerveCustom.driver_centric_reversed:
             self.subsystem.set_driver_centric((dy, -dx), d_theta * self.subsystem.max_angular_vel)
         else:
-            self.subsystem.set((dx, dy), d_theta * self.subsystem.max_angular_vel)
+            self.subsystem.set_driver_centric((dx, dy), d_theta * self.subsystem.max_angular_vel)
 
     def end(self, interrupted: bool) -> None:
         self.subsystem.n_00.set(0, 0)
@@ -125,9 +125,9 @@ class ShootWhileMoving(Command):
             self.shooter.ready = False
 
         if self.shooter.ready:
-            self.drivetrain.set_driver_centric(self.shoot_vel, omega)
+            self.drivetrain.set_robot_centric(self.shoot_vel, omega)
         else:
-            self.drivetrain.set((dx, dy), omega)
+            self.drivetrain.set_driver_centric((dx, dy), omega)
 
     def end(self, interrupted: bool) -> None:
         self.shooter.ready = False

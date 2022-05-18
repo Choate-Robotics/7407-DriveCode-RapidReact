@@ -52,11 +52,11 @@ class FollowPathCustom(SubsystemCommand[SwerveDrivetrain]):
             speeds.vx, speeds.vy,
             self.subsystem.odometry.getPose().rotation().radians()
         )
-        self.subsystem.set((vx, vy), speeds.omega)
+        self.subsystem.set_driver_centric((vx, vy), speeds.omega)
         # self.subsystem.set((vx, vy), 0 * rad/s)
 
     def end(self, interrupted: bool) -> None:
-        self.subsystem.set((0, 0), 0)
+        self.subsystem.set_robot_centric((0, 0), 0)
 
     def isFinished(self) -> bool:
         return self.finished
@@ -103,10 +103,10 @@ class RotateInPlace(SubsystemCommand[SwerveDrivetrain]):
         goal = self.subsystem.odometry.getPose()
         goal_theta = self.theta_i + self.omega * self.t
         speeds = self.controller.calculate(goal, goal, 0, Rotation2d(goal_theta))
-        self.subsystem.set((0, 0), speeds.omega)
+        self.subsystem.set_robot_centric((0, 0), speeds.omega)
 
     def end(self, interrupted: bool) -> None:
-        self.subsystem.set((0, 0), 0)
+        self.subsystem.set_driver_centric((0, 0), 0)
 
     def isFinished(self) -> bool:
         return self.finished

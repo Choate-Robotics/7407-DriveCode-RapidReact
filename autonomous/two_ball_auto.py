@@ -47,22 +47,42 @@ def rezero():
     Robot.drivetrain.gyro._gyro.setYaw(math.degrees(Robot.drivetrain.gyro.get_robot_heading()) + 90)
 
 
+def right_intake_on():
+    Robot.intake.right_intake_enable()
+    Robot.intake.dinglebobs_in()
+
+
+def right_intake_off():
+    Robot.intake.right_intake_disable()
+    Robot.intake.dinglebobs_off()
+
+
+def left_intake_on():
+    Robot.intake.left_intake_enable()
+    Robot.intake.dinglebobs_in()
+
+
+def left_intake_off():
+    Robot.intake.left_intake_disable()
+    Robot.intake.dinglebobs_off()
+
+
 final_command = SequentialCommandGroup(
     InstantCommand(zero),
     WaitCommand(0.3),
     ParallelCommandGroup(
         first_path,
-        InstantCommand(lambda: Robot.intake.toggle_left_intake(), Robot.intake)
+        InstantCommand(left_intake_on, Robot.intake)
     ),
     ParallelCommandGroup(
         first_turn,
-        WaitCommand(0.75).andThen(InstantCommand(lambda: Robot.intake.toggle_left_intake(), Robot.intake))
+        WaitCommand(0.75).andThen(InstantCommand(left_intake_off, Robot.intake))
     ),
     ParallelCommandGroup(
         ShooterEnableAtDistance(Robot.shooter, 2.65),
-        WaitCommand(0.6).andThen(IndexOn().alongWith(InstantCommand(lambda: Robot.intake.dinglebobs_in(), Robot.intake)))
+        WaitCommand(0.6).andThen(IndexOn().alongWith(InstantCommand(Robot.intake.dinglebobs_in, Robot.intake)))
     ).withTimeout(1.5),
-    IndexOff(), InstantCommand(lambda: Robot.intake.dinglebobs_off(), Robot.intake), InstantCommand(rezero)
+    IndexOff(), InstantCommand(Robot.intake.dinglebobs_off, Robot.intake), InstantCommand(rezero)
 )
 
 #routine = AutoRoutine(initial_robot_pose, final_command)
