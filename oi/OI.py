@@ -108,9 +108,9 @@ class OI:
         def auto_intake_off():
             Robot.intake.AUTO_INTAKE = False
 
-        Keymap.Intake.AUTO_INTAKE_TOGGLE() \
-            .whenPressed(auto_intake_on) \
-            .whenReleased(auto_intake_off)
+        # Keymap.Intake.AUTO_INTAKE_TOGGLE() \
+        #     .whenPressed(auto_intake_on) \
+        #     .whenReleased(auto_intake_off)
 
         def change_team_color():
             if config.TEAM == 'red':
@@ -121,8 +121,8 @@ class OI:
         def toggle_auto_eject():
             config.EJECT_ENABLE = not config.EJECT_ENABLE
 
-        Keymap.Index.TOGGLE_AUTO_EJECT_COLOR().whenPressed(InstantCommand(change_team_color))
-        Keymap.Index.TOGGLE_AUTO_EJECT().whenPressed(InstantCommand(toggle_auto_eject))
+        Keymap.BallPath.TOGGLE_AUTO_EJECT_COLOR().whenPressed(InstantCommand(change_team_color))
+        Keymap.BallPath.TOGGLE_AUTO_EJECT().whenPressed(InstantCommand(toggle_auto_eject))
 
         #Keymap.Shooter.SHOOTER_ENABLE().whileHeld(command.ShooterEnable(Robot.shooter))
         Keymap.Shooter.SHOOTER_EJECT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, 5)) # .5

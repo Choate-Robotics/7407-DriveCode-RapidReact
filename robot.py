@@ -19,6 +19,7 @@ from command import BallPath
 from command.drivetrain import DriveSwerveCustom
 from oi.OI import OI
 from robot_systems import Robot, Pneumatics, Sensors
+import sensors
 from sensors.color_sensors import ColorSensors
 from sensors.field_odometry import FieldOdometry
 from sensors.intake_cameras import IntakeCameras
