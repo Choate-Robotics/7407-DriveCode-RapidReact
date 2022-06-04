@@ -24,8 +24,8 @@ dy = (initial_robot_pose.Y() - old_initial_robot_pose.Y()) * m
 first_path_end_pose = TrajectoryEndpoint(7.927611 * m - 6 * inch + dx, -8 * m + 1.6 * ft + dy, initial_gyro_angle.asNumber(rad))
 
 second_path_start_pose = first_path_end_pose
-second_path_start_pose.angle = 163 * deg
-second_path_end_pose = TrajectoryEndpoint((7.927611 - 2) * m - 4 * inch + dx, (-8 + 0.6) * m + 2.6 * ft + 3 * inch + dy, 163 * deg)
+second_path_start_pose.angle = 163 * deg                       #below it should be -4                     3
+second_path_end_pose = TrajectoryEndpoint((7.927611 - 2) * m - 7 * inch + dx, (-8 + 0.6) * m + 2.6 * ft + 6 * inch + dy, 163 * deg)
 
 third_path_start_pose = second_path_end_pose
 third_path_start_pose.angle = 163 * deg
@@ -45,7 +45,7 @@ first_path = FollowPathCustom(
 
 rotate_1 = RotateInPlace(
     Robot.drivetrain,
-    -14 * deg,
+    -12 * deg, #-14
     0.8,
     period=constants.period
 )
@@ -148,7 +148,7 @@ final_command = SequentialCommandGroup(
             rotate_1,
             IndexOn().alongWith(InstantCommand(Robot.intake.dinglebobs_in, Robot.intake))
         ),
-        ShooterEnableAtDistance(Robot.shooter, 2.7)
+        ShooterEnableAtDistance(Robot.shooter, 2.4) # Was 2.7
     ).withTimeout(1.5),
     InstantCommand(right_intake_off, Robot.intake),
     IndexOff(), InstantCommand(Robot.intake.dinglebobs_off, Robot.intake),
@@ -192,7 +192,7 @@ final_command = SequentialCommandGroup(
             InstantCommand(rezero),
             IndexOn().alongWith(InstantCommand(lambda: Robot.intake.dinglebobs_in(), Robot.intake))
         ),
-        ShooterEnableAtDistance(Robot.shooter, 3),
+        ShooterEnableAtDistance(Robot.shooter, 2.7), # Was 3
         WaitCommand(1).andThen(InstantCommand(left_intake_off)),
     )
 )

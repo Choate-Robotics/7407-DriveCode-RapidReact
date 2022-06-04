@@ -1,5 +1,6 @@
 from rev import ColorSensorV3
 from wpilib import I2C
+#import time
 
 
 class ColorSensors:
@@ -10,6 +11,7 @@ class ColorSensors:
         self.multiplexer.writeBulk(bytes([0b1000]))
         self.sensor = ColorSensorV3(I2C.Port.kMXP)
         self.working = "ples_enable"
+        #self.starttime = time.time()
 
     def get_val(self) -> tuple[float, float, float, int]:
         c = self.sensor.getRawColor()
@@ -17,6 +19,10 @@ class ColorSensors:
 
     def color(self) -> str:
         vals = self.get_val()
+        # with open("/home/lvuser/color_sensor_log.txt", "w") as f:
+        #     if (time.time()-self.starttime) % 5 < .5:
+        #         f.write(f"TIME: {time.time()-self.starttime}\n")
+        #     f.write(f"COLORS: {vals},\n")
         if vals[0] == 0:
             # print("COLOR SENSOR NO WORK AHHHH")
             self.multiplexer = I2C(I2C.Port.kMXP, 0x71)
