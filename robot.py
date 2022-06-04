@@ -43,6 +43,9 @@ class _Robot(wpilib.TimedRobot):
 
         self.auto_routine: AutoRoutine | None = None
         self.initial_pose: Pose2d | None = None
+        
+        self.button_1_last = None
+        self.button_2_last = None
 
         # self.test_command = ShooterDataCollectCommand(Robot.shooter).alongWith(command.IndexOn)
 
@@ -116,9 +119,25 @@ class _Robot(wpilib.TimedRobot):
             color_status = 'FAILED'
         wpilib.SmartDashboard.putString('DB/String 5', f'Color Sens: {color_status}')
 
-        # wpilib.SmartDashboard.putBoolean("DB/Button 1", config.EJECT_ENABLE)
-        # config.EJECT_ENABLE = wpilib.SmartDashboard.getBoolean("DB/Button 1", False)
-        # print("EJECTION BUTTON = ", wpilib.SmartDashboard.getBoolean("DB/Button 1", False))
+        if self.button_1_last is None:
+            self.button_1_last = wpilib.SmartDashboard.getBoolean('DB/Button 1', False)
+
+        if self.button_2_last is None:
+            self.button_2_last = wpilib.SmartDashboard.getBoolean('DB/Button 2', False)
+
+        if wpilib.SmartDashboard.getBoolean('DB/Button 1', self.button_1_last) != self.button_1_last:
+            self.button_1_last = not self.button_1_last
+            if config.TEAM == "red":
+                config.TEAM = "blue"
+            else:
+                config.TEAM = "red"
+
+        if wpilib.SmartDashboard.getBoolean('DB/Button 2', self.button_2_last) != self.button_2_last:
+            self.button_2_last = not self.button_2_last
+            if config.AUTO == "five":
+                config.AUTO = "two"
+            else:
+                config.AUTO = "five"
 
     def teleopInit(self) -> None:
         Robot.elevator.initialized = False

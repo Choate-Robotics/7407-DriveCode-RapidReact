@@ -165,7 +165,7 @@ final_command = SequentialCommandGroup(
             ),
             IndexOn().alongWith(InstantCommand(lambda: Robot.intake.dinglebobs_in(), Robot.intake))
         ),
-        ShooterEnableAtDistance(Robot.shooter, 3.1)
+        ShooterEnableAtDistance(Robot.shooter, 2.8) # CHANGED FROM 3.1 - SID JUN 3 2022
     ).withTimeout(1.5),
     IndexOff(), InstantCommand(lambda: Robot.intake.dinglebobs_off(), Robot.intake),
     ParallelCommandGroup(
