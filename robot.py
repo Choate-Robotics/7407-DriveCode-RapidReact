@@ -13,7 +13,7 @@ import config
 from autonomous.auto_routine import AutoRoutine
 from command import ElevatorRezero
 import constants
-from autonomous import two_ball_auto, five_ball_auto
+from autonomous import two_ball_auto, five_ball_auto, five_ball_auto_blue, five_ball_auto_red
 #from autonomous import five_ball_auto, two_ball_auto, three_ball_auto # TODO: Fix this
 from command import BallPath
 from command.drivetrain import DriveSwerveCustom
@@ -40,7 +40,7 @@ class _Robot(wpilib.TimedRobot):
         #     three_ball_auto.routine,
         #     five_ball_auto.routine
         # ] # TODO Fix This
-        self.auto_routines = [two_ball_auto.routine, five_ball_auto.routine]
+        self.auto_routines = [two_ball_auto.routine, five_ball_auto.routine, five_ball_auto_red.routine. five_ball_auto_blue.routine]
 
         self.auto_routine: AutoRoutine | None = None
         self.initial_pose: Pose2d | None = None
@@ -84,12 +84,12 @@ class _Robot(wpilib.TimedRobot):
 
         Robot.odometry = FieldOdometry(Robot.drivetrain)
 
-        if config.AUTO == "five":
-            # if config.TEAM == "red":
-            #     self.auto_routine = five_ball_auto_red.routine
-            # else:
-            #     self.auto_routine = five_ball_auto_blue.routine
-            self.auto_routine = five_ball_auto.routine
+        if config.AUTO == "five" and config.COLOR == "red":
+            if config.TEAM == "red":
+                self.auto_routine = five_ball_auto_red.routine
+            else:
+                self.auto_routine = five_ball_auto_blue.routine
+            
         else:
             self.auto_routine = two_ball_auto.routine
 

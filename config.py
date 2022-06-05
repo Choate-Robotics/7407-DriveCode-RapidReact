@@ -1,4 +1,4 @@
-TEAM = "red"  # "blue", "red"
+TEAM = "blue"  # "blue", "red"
 AUTO = "five"  # "five", "two"
 EJECT_ENABLE = True
 
