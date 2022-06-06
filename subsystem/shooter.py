@@ -12,10 +12,10 @@ from utils.shooter_targeting import ShooterTargeting
 
 class Shooter(Subsystem):
     m_top = TalonFX(21, inverted=True, config=TalonConfig(
-        0.09, 0, 5, 1023 / 20369, integral_zone=1000, max_integral_accumulator=100000,
+        0.09, 0, 5*1.05, 1023 / 20369, integral_zone=1000, max_integral_accumulator=100000, # INCREASED D BY 5 PERCENT
         neutral_brake=False))
     m_bottom = TalonFX(19, inverted=False, config=TalonConfig(
-        0.1, 0, 0.5, 1023 / 20101, integral_zone=1000, max_integral_accumulator=100000,
+        0.1, 0, 0.5*1.05, 1023 / 20101, integral_zone=1000, max_integral_accumulator=100000, # INCREASED D BY 5 PERCENT
         neutral_brake=False))
     # OLD VALUES
     # m_top = TalonFX(21, inverted=True, config=TalonConfig(
@@ -41,6 +41,10 @@ class Shooter(Subsystem):
     prev_flywheel_vel = (0, 0)
 
     shooting_over: bool = False
+    
+    desired_m_top = 0
+    desired_m_bottom = 0
+    
 
     def init(self):
         self.m_top.init()
@@ -58,8 +62,13 @@ class Shooter(Subsystem):
         self.m_angle.set_target_position(max(min(theta, self.angle_range), 0) * constants.shooter_angle_gear_ratio)
 
     def set_flywheels(self, top_vel: meters_per_second, bottom_vel: meters_per_second):
-        self.m_top.set_target_velocity(top_vel * constants.shooter_top_gear_ratio)
-        self.m_bottom.set_target_velocity(bottom_vel * constants.shooter_bottom_gear_ratio)
+        self.desired_m_top = top_vel * constants.shooter_top_gear_ratio
+        self.desired_m_bottom = bottom_vel * constants.shooter_bottom_gear_ratio
+        
+        self.m_top.set_target_velocity(self.desired_m_top)
+        self.m_bottom.set_target_velocity(self.desired_m_bottom)
+        print("M_TOP_DESIRED: ", self.desired_m_top)
+        print("M_BOTTOM_DESIRED: ", self.desired_m_bottom)
 
     def set_flywheels_for_ball_velocity(self, vx: meters_per_second, vy: meters_per_second):
         self.prev_flywheel_vel = (vx, vy)

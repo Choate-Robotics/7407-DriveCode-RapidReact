@@ -111,7 +111,7 @@ def send_to_clients():
         #data = pickle.dumps(frames_buff, 0)
         data = zlib.compress(pickle.dumps(frames_buff, 0))
         size = len(data)
-        print(len(struct.pack(">L", size) + data), len(frames_buff[1]))
+        #print(len(struct.pack(">L", size) + data), len(frames_buff[1]))
         # print(size)
         for connection in connections:
             try:
@@ -141,7 +141,7 @@ def detect_ball_loop():
             [balls,_] = detect_balls.generate_circles(fb2[2])
             #image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
             lr_balls[1] = balls
-        print(lr_balls)
+        #print(lr_balls)
 
         rio_data = lr_balls
         new_rio_data = True
@@ -187,6 +187,6 @@ rio_data_sender.start()
 while True:
     conn, addr = s.accept()
     connections.append(conn)
-    print(threads)
+    #print(threads)
 
 s.close()

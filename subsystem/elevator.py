@@ -48,8 +48,8 @@ class Elevator(Subsystem):
         return True
         # return all(m.get_value() for m in self.l_elevator)
 
-    def bar_on_grab_hooks(self) -> bool:
-        return (self.l_hanger_top[0].get_value() or self.l_hanger_bottom[0].get_value()) and \
+    def bar_on_grab_hooks(self) -> bool:                                                # should be and
+        return (self.l_hanger_top[0].get_value() or self.l_hanger_bottom[0].get_value()) or \
                (self.l_hanger_top[1].get_value() or self.l_hanger_bottom[1].get_value())
 
     def bottomed_out(self):

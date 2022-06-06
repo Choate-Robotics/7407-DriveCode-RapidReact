@@ -61,7 +61,7 @@ class BallPath(SubsystemCommand[Index]):
         Sensors.color_sensors.multiplexer.writeBulk(bytes([0b1000]))
         right_color = Sensors.color_sensors.color()
         right_val = Sensors.color_sensors.get_val()
-        print(left_val, right_val)
+        #print(left_val, right_val)
 
         if left_val[0] != 0 and right_val[0] != 0:
             Sensors.color_sensors.working = True
@@ -139,7 +139,7 @@ class BallPath(SubsystemCommand[Index]):
         elif self.index_refresh:
             if (time.time()-self.index_refresh_true_time) < 1 and not Robot.index.photo_electric.get_value():
                 self.index_speed = -.3
-                print(time.time()-self.index_refresh_true_time)
+                #print(time.time()-self.index_refresh_true_time)
             else:
                 self.index_refresh = False
                 self.index_normal = True
