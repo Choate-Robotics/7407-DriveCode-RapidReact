@@ -1,10 +1,8 @@
-from trace import Trace
 from commands2 import InstantCommand
 from robotpy_toolkit_7407.utils import logger
 from wpimath.geometry import Pose2d, Rotation2d
 
 import command
-from command import ballpath
 import config
 from command.drivetrain import DriveSwerveCustom, ShootWhileMoving
 from oi.keymap import Keymap
@@ -68,7 +66,8 @@ class OI:
             DriveSwerveCustom.driver_centric_reversed = False
 
         Keymap.Drivetrain.DRIVER_CENTRIC().whenPressed(driver_centric_enable).whenReleased(driver_centric_disable)
-        Keymap.Drivetrain.DRIVER_CENTRIC_REVERSED().whenPressed(driver_centric_reversed_enable).whenReleased(driver_centric_reversed_disable)
+        Keymap.Drivetrain.DRIVER_CENTRIC_REVERSED().whenPressed(driver_centric_reversed_enable).whenReleased(
+            driver_centric_reversed_disable)
 
         # Keymap.Elevator.ELEVATOR_UP().whileHeld(command.ElevatorUp)
         # Keymap.Elevator.ELEVATOR_UP().whenReleased(command.ElevatorStop)
@@ -79,13 +78,13 @@ class OI:
         Keymap.Elevator.ELEVATOR_INIT().whenPressed(command.ElevatorSetupCommand())
         Keymap.Elevator.ELEVATOR_CLIMB().whenPressed(command.ElevatorClimbCommand())
 
-
         def extend_dinglebob_runtime():
             Robot.intake.dinglebob_run_extend = True
-            #print("extended")
+            # print("extended")
+
         def stop_dinglebob_runtime():
             Robot.intake.dinglebob_run_extend = False
-            #print("unextended")
+            # print("unextended")
 
         # Keymap.Intake.LEFT_INTAKE_TOGGLE() \
         #     .whenPressed(command.IntakeToggleLeft(Robot.intake)) \
@@ -93,11 +92,12 @@ class OI:
         Keymap.Intake.LEFT_INTAKE_TOGGLE() \
             .whenPressed(Robot.intake.left_intake_enable) \
             .whenReleased(Robot.intake.left_intake_disable) \
-                    #.whenReleased( \
-            #    InstantCommand(extend_dinglebob_runtime) \
-            #    .andThen(WaitCommand(0.5).andThen(stop_dinglebob_runtime)))
-            ### TODO: CALL SID!!! - SID
-        #Keymap.Intake.RIGHT_INTAKE_TOGGLE().whenPressed(command.IntakeToggleRight(Robot.intake)).whenReleased(command.IntakeToggleRight(Robot.intake)) ### TODO: SID SAYS CALL TO FIX INTAKES!!!!!
+            # .whenReleased( \
+        #    InstantCommand(extend_dinglebob_runtime) \
+        #    .andThen(WaitCommand(0.5).andThen(stop_dinglebob_runtime)))
+        # TODO: CALL SID!!! - SID
+        # Keymap.Intake.RIGHT_INTAKE_TOGGLE().whenPressed(command.IntakeToggleRight(Robot.intake)).whenReleased(command.IntakeToggleRight(Robot.intake)) ### TODO: SID SAYS CALL TO FIX INTAKES!!!!!
+
         Keymap.Intake.RIGHT_INTAKE_TOGGLE() \
             .whenPressed(Robot.intake.right_intake_enable) \
             .whenReleased(Robot.intake.right_intake_disable)
@@ -117,20 +117,20 @@ class OI:
                 config.TEAM = 'blue'
             else:
                 config.TEAM = 'red'
-                
+
         def toggle_auto_eject():
             config.EJECT_ENABLE = not config.EJECT_ENABLE
 
         Keymap.BallPath.TOGGLE_AUTO_EJECT_COLOR().whenPressed(InstantCommand(change_team_color))
         Keymap.BallPath.TOGGLE_AUTO_EJECT().whenPressed(InstantCommand(toggle_auto_eject))
 
-        #Keymap.Shooter.SHOOTER_ENABLE().whileHeld(command.ShooterEnable(Robot.shooter))
-        Keymap.Shooter.SHOOTER_EJECT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, 5)) # .5
-        #Keymap.Shooter.FENDER_SHOT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, .5))
-        #Keymap.Shooter.SHOOTER_SHORT_EJECT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, .35))
+        # Keymap.Shooter.SHOOTER_ENABLE().whileHeld(command.ShooterEnable(Robot.shooter))
+        Keymap.Shooter.SHOOTER_EJECT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, 5))  # .5
+        # Keymap.Shooter.FENDER_SHOT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, .5))
+        # Keymap.Shooter.SHOOTER_SHORT_EJECT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, .35))
 
-        #Keymap.Shooter.SHOOTER_OFFSET_UP().whenPressed(command.ShooterOffsetUp())
-        #Keymap.Shooter.SHOOTER_OFFSET_DOWN().whenPressed(command.ShooterOffsetDown())
+        # Keymap.Shooter.SHOOTER_OFFSET_UP().whenPressed(command.ShooterOffsetUp())
+        # Keymap.Shooter.SHOOTER_OFFSET_DOWN().whenPressed(command.ShooterOffsetDown())
 
         # Keymap.Shooter.SHOOTER_ENABLE()\
         #     .whileHeld(ShootWhileMoving(Robot.drivetrain, Robot.shooter))\

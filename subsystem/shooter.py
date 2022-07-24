@@ -12,21 +12,19 @@ from utils.shooter_targeting import ShooterTargeting
 
 class Shooter(Subsystem):
     m_top = TalonFX(21, inverted=True, config=TalonConfig(
-        0.09, 0, 5*1.05, 1023 / 20369, integral_zone=1000, max_integral_accumulator=100000, # INCREASED D BY 5 PERCENT
+        0.09, 0, 5 * 1.05, 1023 / 20369, integral_zone=1000, max_integral_accumulator=100000,
+        # INCREASED D BY 5 PERCENT
         neutral_brake=False))
     m_bottom = TalonFX(19, inverted=False, config=TalonConfig(
-        0.1, 0, 0.5*1.05, 1023 / 20101, integral_zone=1000, max_integral_accumulator=100000, # INCREASED D BY 5 PERCENT
+        0.1, 0, 0.5 * 1.05, 1023 / 20101, integral_zone=1000, max_integral_accumulator=100000,
+        # INCREASED D BY 5 PERCENT
         neutral_brake=False))
-    # OLD VALUES
-    # m_top = TalonFX(21, inverted=True, config=TalonConfig(
-    #     0.09, 0.001, 5, 1023 / 20369, integral_zone=1000, max_integral_accumulator=100000,
-    #     neutral_brake=False))
-    # m_bottom = TalonFX(19, inverted=False, config=TalonConfig(
-    #     0.14, 0.002, 10, 1023 / 20101, integral_zone=1000, max_integral_accumulator=100000,
-    #     neutral_brake=False))
     m_angle = TalonFX(20, inverted=True, config=TalonConfig(
         0.3, 0.005, 1, 1023 * 0.1 / 917, integral_zone=1000, max_integral_accumulator=10000,
-        neutral_brake=True, motion_cruise_velocity=6000*ctre_motors.k_sensor_vel_to_rad_per_sec))
+        neutral_brake=True, motion_cruise_velocity=6000 * ctre_motors.k_sensor_vel_to_rad_per_sec))
+    m_turret = TalonFX(25, inverted=False, config=TalonConfig(
+        0.3, 0.005, 1, 1023 * 0.1 / 917, integral_zone=1000, max_integral_accumulator=10000,
+        neutral_brake=True, motion_cruise_velocity=6000 * ctre_motors.k_sensor_vel_to_rad_per_sec))
 
     sensor_zero_angle = (15 * deg).asNumber(rad)
     angle_range = (45 * deg).asNumber(rad)
@@ -41,10 +39,9 @@ class Shooter(Subsystem):
     prev_flywheel_vel = (0, 0)
 
     shooting_over: bool = False
-    
+
     desired_m_top = 0
     desired_m_bottom = 0
-    
 
     def init(self):
         self.m_top.init()
@@ -64,7 +61,7 @@ class Shooter(Subsystem):
     def set_flywheels(self, top_vel: meters_per_second, bottom_vel: meters_per_second):
         self.desired_m_top = top_vel * constants.shooter_top_gear_ratio
         self.desired_m_bottom = bottom_vel * constants.shooter_bottom_gear_ratio
-        
+
         self.m_top.set_target_velocity(self.desired_m_top)
         self.m_bottom.set_target_velocity(self.desired_m_bottom)
         print("M_TOP_DESIRED: ", self.desired_m_top)
@@ -72,7 +69,7 @@ class Shooter(Subsystem):
 
     def set_flywheels_for_ball_velocity(self, vx: meters_per_second, vy: meters_per_second):
         self.prev_flywheel_vel = (vx, vy)
-        final_velocity = (-0.286 + 1.475 * (vx**2 + vy**2)**.5)
+        final_velocity = (-0.286 + 1.475 * (vx ** 2 + vy ** 2) ** .5)
         final_angle = math.atan(vy / vx)
         self.set_launch_angle(final_angle)
         self.set_flywheels(final_velocity, final_velocity)
@@ -89,7 +86,7 @@ class Shooter(Subsystem):
     def target_stationary(self, limelight_dist):
         vx, vy = ShooterTargeting.stationary_aim(limelight_dist)
         self.set_flywheels_for_ball_velocity(vx, vy)
-   
+
     def target_with_motion(self, limelight_dist, angle_to_hub, robot_vel) -> tuple[float, bool]:
         limelight_dist -= 0.3
         adjusted_robot_vel = ShooterTargeting.real_velocity_to_shooting(robot_vel, angle_to_hub)

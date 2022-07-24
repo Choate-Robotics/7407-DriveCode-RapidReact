@@ -9,6 +9,7 @@ from subsystem import Index
 IndexOn = lambda: InstantCommand(lambda: Robot.index.set(.5), Robot.index)
 IndexOff = lambda: InstantCommand(lambda: Robot.index.set(0), Robot.index)
 
+
 class IndexAutoDrive(SubsystemCommand):
     def __init__(self, subsystem: Index):
         super().__init__(subsystem)
@@ -19,6 +20,7 @@ class IndexAutoDrive(SubsystemCommand):
 
     def initialize(self):
         pass
+
     def execute(self):
         speed = 0
 
@@ -29,7 +31,7 @@ class IndexAutoDrive(SubsystemCommand):
                         self.done = False
                         self.desired_distance = self.subsystem.motor.get_sensor_position() + self.ball_distance
                         # speed = 0
-                        #self.subsystem.motor.set_target_position(self.desired_distance)
+                        # self.subsystem.motor.set_target_position(self.desired_distance)
 
                 case 1:
                     speed = 0
@@ -55,12 +57,12 @@ class IndexAutoDrive(SubsystemCommand):
                 self.desired_distance = None
                 self.subsystem.set(0)
             else:
-                #print(self.subsystem.motor.get_sensor_position(), self.desired_distance)
+                # print(self.subsystem.motor.get_sensor_position(), self.desired_distance)
                 # speed = .3
                 self.subsystem.set(.3)
-            
+
         elif Robot.shooter.ready:
-            #print("READY")
+            # print("READY")
             # speed = .5
             self.subsystem.set(.5)
             Robot.intake.dinglebobs_in()
@@ -71,7 +73,6 @@ class IndexAutoDrive(SubsystemCommand):
             # else:
             #     Robot.intake.dinglebobs_off()
             self.subsystem.set(speed)
-
 
         """
         LOGIC
@@ -101,8 +102,10 @@ class IndexAutoDrive(SubsystemCommand):
 
     def isFinished(self) -> bool:
         return False
+
     def end(self, interrupted=False):
         pass
+
 
 class IndexDrive(SubsystemCommand[Index]):
     def __init__(self, subsystem: Index):

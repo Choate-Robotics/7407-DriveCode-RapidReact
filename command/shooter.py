@@ -6,7 +6,6 @@ from robotpy_toolkit_7407.utils import logger
 from robot_systems import Robot
 from subsystem import Shooter
 
-
 class ShooterEnable(SubsystemCommand[Shooter]):
     def __init__(self, subsystem: Shooter):
         super().__init__(subsystem)
