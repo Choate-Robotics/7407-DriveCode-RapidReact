@@ -2,7 +2,7 @@ import math
 
 from robotpy_toolkit_7407 import Subsystem
 from robotpy_toolkit_7407.motors import TalonFX, TalonConfig, ctre_motors
-from robotpy_toolkit_7407.utils.units import rad, deg, radians, meters_per_second
+from robotpy_toolkit_7407.utils.units import rad, deg, radians, meters_per_second, m, s
 
 import constants
 from sensors import LimitSwitch
@@ -27,7 +27,11 @@ class Shooter(Subsystem):
         neutral_brake=True, motion_cruise_velocity=6000 * ctre_motors.k_sensor_vel_to_rad_per_sec))
 
     sensor_zero_angle = (15 * deg).asNumber(rad)
+    turret_zero_angle = 0  # TODO Calculate this
     angle_range = (45 * deg).asNumber(rad)
+    turret_range = (246 * deg).asNumber(rad)
+
+    max_turret_turn_velocity = 1 * m/s
 
     left_limit = LimitSwitch(1)
 
@@ -57,6 +61,22 @@ class Shooter(Subsystem):
     def set_launch_angle(self, theta: radians):
         theta = math.radians(90) - theta - self.sensor_zero_angle
         self.m_angle.set_target_position(max(min(theta, self.angle_range), 0) * constants.shooter_angle_gear_ratio)
+
+    def set_turret_angle(self, theta: radians):
+        theta = math.radians(90) - theta - self.turret_zero_angle
+        self.m_turret.set_target_position(max(min(theta, self.turret_range), 0) * constants.turret_angle_gear_ratio)
+
+    def get_turret_rotation_velocity(self):
+        return self.m_turret.get_sensor_velocity() / constants.turret_angle_gear_ratio
+
+    def get_turret_rotation_angle(self):
+        return self.m_turret.get_sensor_position() / constants.turret_angle_gear_ratio
+
+    def set_turret_rotation_velocity(self, vel: meters_per_second):
+        if abs(vel) > self.max_turret_turn_velocity:
+            self.m_turret.set_target_velocity(self.max_turret_turn_velocity * constants.turret_angle_gear_ratio)
+        else:
+            self.m_turret.set_target_velocity(vel * constants.turret_angle_gear_ratio)
 
     def set_flywheels(self, top_vel: meters_per_second, bottom_vel: meters_per_second):
         self.desired_m_top = top_vel * constants.shooter_top_gear_ratio

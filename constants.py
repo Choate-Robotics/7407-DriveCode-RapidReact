@@ -34,6 +34,9 @@ shooter_bottom_gear_ratio = (1 / shooter_bottom_wheel_radius) * (1 / 1)
 # Shooter angle to motor angle
 shooter_angle_gear_ratio = (266 / 10) * (36 / 12)
 
+# TURRET RELATED THINGS:
+turret_angle_gear_ratio = (266 / 10) * (36 / 12)
+
 # Targeting constants
 air_resistance_constant = 0.048187
 height_difference = 1.85  # meters # In reality about 1.76m, but a slightly higher height makes the ball bounce off the back of the HUB

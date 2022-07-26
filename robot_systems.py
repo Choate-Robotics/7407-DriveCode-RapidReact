@@ -11,6 +11,7 @@ from sensors.color_sensors import ColorSensors
 from sensors.field_odometry import FieldOdometry
 from sensors.rev_digit import RevDigit
 from sensors.intake_cameras import IntakeCameras
+from sensors.limelight import Limelight
 
 
 class Robot:
@@ -20,10 +21,9 @@ class Robot:
     elevator = subsystem.Elevator()
     shooter = subsystem.Shooter()
 
+    limelight: Limelight
     odometry: FieldOdometry
-
     rev_digit: RevDigit
-
     intake_cameras: IntakeCameras
 
 
