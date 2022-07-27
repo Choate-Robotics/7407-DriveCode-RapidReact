@@ -85,12 +85,28 @@ ssh = ["bcrypt (>=3.1.5)"]
 test = ["pytest (>=6.2.0)", "pytest-benchmark", "pytest-cov", "pytest-subtests", "pytest-xdist", "pretend", "iso8601", "pytz", "hypothesis (>=1.11.4,!=3.79.2)"]
 
 [[package]]
+name = "future"
+version = "0.18.2"
+description = "Clean single-source support for Python 3 and 2"
+category = "main"
+optional = false
+python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
+
+[[package]]
 name = "iniconfig"
 version = "1.1.1"
 description = "iniconfig: brain-dead simple config-ini parsing"
 category = "main"
 optional = false
 python-versions = "*"
+
+[[package]]
+name = "iso8601"
+version = "1.0.2"
+description = "Simple module to parse ISO 8601 dates"
+category = "main"
+optional = false
+python-versions = ">=3.6.2,<4.0"
 
 [[package]]
 name = "numpy"
@@ -309,6 +325,14 @@ python-versions = ">=3.6.1,<4.0.0"
 pytest = ">=4.6"
 
 [[package]]
+name = "pyyaml"
+version = "6.0"
+description = "YAML parser and emitter for Python"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[[package]]
 name = "robotpy"
 version = "2022.4.8"
 description = "Meta package to make installing robotpy easier"
@@ -460,6 +484,19 @@ optional = false
 python-versions = ">=3.6"
 
 [[package]]
+name = "serial"
+version = "0.0.97"
+description = "A framework for serializing/deserializing JSON/YAML/XML into python class instances and vice versa"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+future = ">=0.17.1"
+iso8601 = ">=0.1.12"
+pyyaml = ">=3.13"
+
+[[package]]
 name = "six"
 version = "1.16.0"
 description = "Python 2 and 3 compatibility utilities"
@@ -500,7 +537,7 @@ robotpy-wpiutil = ">=2022.4.1.1,<2023.0.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "27f95a12eec169b9f6a55aa210a3e584f33120e223bf892bcd9eb10e82159b4c"
+content-hash = "6ffdffd85ceb61792cb62753f81f89f7d63d5c05c92acf0678a4be083b5e6d96"
 
 [metadata.files]
 atomicwrites = [
@@ -608,10 +645,12 @@ cryptography = [
     {file = "cryptography-37.0.2-pp39-pypy39_pp73-win_amd64.whl", hash = "sha256:3b8398b3d0efc420e777c40c16764d6870bcef2eb383df9c6dbb9ffe12c64452"},
     {file = "cryptography-37.0.2.tar.gz", hash = "sha256:f224ad253cc9cea7568f49077007d2263efa57396a2f2f78114066fd54b5c68e"},
 ]
+future = []
 iniconfig = [
     {file = "iniconfig-1.1.1-py2.py3-none-any.whl", hash = "sha256:011e24c64b7f47f6ebd835bb12a743f2fbe9a26d4cecaa7f53bc4f35ee9da8b3"},
     {file = "iniconfig-1.1.1.tar.gz", hash = "sha256:bc3af051d7d14b2ee5ef9969666def0cd1a000e121eaea580d4a313df4b37f32"},
 ]
+iso8601 = []
 numpy = [
     {file = "numpy-1.22.4-cp310-cp310-macosx_10_14_x86_64.whl", hash = "sha256:ba9ead61dfb5d971d77b6c131a9dbee62294a932bf6a356e48c75ae684e635b3"},
     {file = "numpy-1.22.4-cp310-cp310-macosx_10_15_x86_64.whl", hash = "sha256:1ce7ab2053e36c0a71e7a13a7475bd3b1f54750b4b433adc96313e127b870887"},
@@ -759,6 +798,7 @@ pytest-reraise = [
     {file = "pytest-reraise-2.1.1.tar.gz", hash = "sha256:ee900ff9f8ceffd8891216bd0bdaa461e05d297ffd0914df6bb20dce0a425420"},
     {file = "pytest_reraise-2.1.1-py3-none-any.whl", hash = "sha256:127aa3ef028bfd2edd0b6c4ebbd5b488eb5c4cc68d40ea05a8929c300b97367c"},
 ]
+pyyaml = []
 robotpy = [
     {file = "robotpy-2022.4.8-py3-none-any.whl", hash = "sha256:2afc74e041f7520b6dd214a35b79dd36b3765e12623f39e46f2341ba323154bf"},
     {file = "robotpy-2022.4.8.tar.gz", hash = "sha256:71a58289a76013172bcd769bee5aa3c607fa2c7a8e1a80b5f59d7db336788cce"},
@@ -901,6 +941,7 @@ robotpy-wpiutil = [
     {file = "robotpy_wpiutil-2022.4.1.2-cp39-cp39-manylinux_2_27_x86_64.whl", hash = "sha256:b2ef708d0c91dfc5321ac6ee86d2dbf921866d16aaf24cdea9ae28ff2840c618"},
     {file = "robotpy_wpiutil-2022.4.1.2-cp39-cp39-win_amd64.whl", hash = "sha256:7b2c1807ee87d26f85914887d561e4a4a8c0a87b7ada6994013aa2e3431c80c1"},
 ]
+serial = []
 six = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
     {file = "six-1.16.0.tar.gz", hash = "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926"},

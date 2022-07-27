@@ -35,7 +35,7 @@ shooter_bottom_gear_ratio = (1 / shooter_bottom_wheel_radius) * (1 / 1)
 shooter_angle_gear_ratio = (266 / 10) * (36 / 12)
 
 # TURRET RELATED THINGS:
-turret_angle_gear_ratio = (266 / 10) * (36 / 12)
+turret_angle_gear_ratio = (266 / 10) * (36 / 12)  # TODO This is random
 
 # Targeting constants
 air_resistance_constant = 0.048187
