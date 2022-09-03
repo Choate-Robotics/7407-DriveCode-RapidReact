@@ -132,23 +132,24 @@ class PigeonIMUGyro(SwerveGyro):
 class Drivetrain(SwerveDrivetrain):
     n_00 = TalonFXSwerveNode(
         TalonFX(7, inverted=True, config=MOVE_CONFIG),
-        TalonFX(8, inverted=True, config=TURN_CONFIG),
-        CANCoder(12), (129.463 * deg).asNumber(rad)
+        TalonFX(15, inverted=True, config=TURN_CONFIG),
+        CANCoder(12), (129.463 * deg).asNumber(rad) # 129.463
     )
+
     n_01 = TalonFXSwerveNode(
         TalonFX(1, config=MOVE_CONFIG),
         TalonFX(2, inverted=True, config=TURN_CONFIG),
-        CANCoder(9), (298.916 * deg).asNumber(rad)
+        CANCoder(9), (298.916 * deg).asNumber(rad) # 298.916
     )
     n_10 = TalonFXSwerveNode(
-        TalonFX(5, inverted=True, config=MOVE_CONFIG),
+        TalonFX(27, inverted=True, config=MOVE_CONFIG),
         TalonFX(6, inverted=True, config=TURN_CONFIG),
-        CANCoder(11), (138.516 * deg).asNumber(rad)
+        CANCoder(11), (138.516 * deg).asNumber(rad) # 138.516
     )
     n_11 = TalonFXSwerveNode(
         TalonFX(3, config=MOVE_CONFIG),
         TalonFX(4, inverted=True, config=TURN_CONFIG),
-        CANCoder(10), (313.506 * deg).asNumber(rad)
+        CANCoder(10), (313.506 * deg).asNumber(rad) # 313.506
     )
     gyro = PigeonIMUGyro()
     axis_dx = Keymap.Drivetrain.DRIVE_X_AXIS

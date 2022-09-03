@@ -86,20 +86,6 @@ class _Robot(wpilib.TimedRobot):
 
         Robot.limelight = Limelight()
 
-        # if config.AUTO == "five":
-        #     if config.TEAM == "red":
-        #         self.auto_routine = five_ball_auto_red.routine
-        #         wpilib.SmartDashboard.putString('DB/String 7', f'AUTO: RED')
-        #     else:
-        #         self.auto_routine = five_ball_auto_blue.routine
-        #         wpilib.SmartDashboard.putString('DB/String 7', f'AUTO: BLUE')
-
-        # else:
-        #     self.auto_routine = two_ball_auto.routine
-        #     wpilib.SmartDashboard.putString('DB/String 7', f'AUTO: TWO')
-        # self.auto_routine = two_ball_auto.routine
-        # wpilib.SmartDashboard.putString('DB/String 7', f'AUTO: TWO')
-
         self.auto_routine = five_ball_auto_red.routine
         self.auto_combo = "Five RED"
         self.emergency = False
@@ -153,18 +139,31 @@ class _Robot(wpilib.TimedRobot):
             else:
                 config.AUTO = "five"
 
+        # print(Sensors.color_sensors.get_val_left(), Sensors.color_sensors.get_val_right())
+        # print(Robot.elevator.mag_sensor.get_value())
+        # print(Robot.shooter.mag_sensor.get_value())
+        # print(Robot.index.photo_electric.get_value())
+
     def teleopInit(self) -> None:
         Robot.elevator.initialized = False
         commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
-        commands2.CommandScheduler.getInstance().schedule(BallPath(Robot.index))
-        commands2.CommandScheduler.getInstance().schedule(TurretAim(Robot.shooter))
+        # commands2.CommandScheduler.getInstance().schedule(BallPath(Robot.index))
+        # commands2.CommandScheduler.getInstance().schedule(TurretAim(Robot.shooter))
         commands2.CommandScheduler.getInstance().schedule(ElevatorRezero(Robot.elevator))
         Robot.index.ball_queue = 0
+
+        while not Robot.shooter.mag_sensor.get_value():
+            Robot.shooter.m_turret.set_target_velocity(-10)
+        Robot.shooter.m_turret.set_target_velocity(0)
         pass
 
     def teleopPeriodic(self) -> None:
-        Robot.odometry.update()
-        Robot.intake_cameras.read_camera_data()
+        # Robot.odometry.update()
+        # Robot.intake_cameras.read_camera_data()
+        # while not Robot.shooter.mag_sensor.get_value():
+        #     Robot.shooter.m_turret.set_raw_output(-.05)
+        # Robot.shooter.m_turret.set_raw_output(0)
+        pass
 
     def autonomousInit(self) -> None:
         self.auto_routine.run()

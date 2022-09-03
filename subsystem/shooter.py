@@ -11,19 +11,20 @@ from utils.shooter_targeting import ShooterTargeting
 
 
 class Shooter(Subsystem):
-    m_top = TalonFX(21, inverted=True, config=TalonConfig(
+    m_top = TalonFX(8, inverted=True, config=TalonConfig(
         0.09, 0, 5 * 1.05, 1023 / 20369, integral_zone=1000, max_integral_accumulator=100000,
         # INCREASED D BY 5 PERCENT
         neutral_brake=False))
-    m_bottom = TalonFX(19, inverted=False, config=TalonConfig(
+    m_bottom = TalonFX(5, inverted=False, config=TalonConfig(
         0.1, 0, 0.5 * 1.05, 1023 / 20101, integral_zone=1000, max_integral_accumulator=100000,
         # INCREASED D BY 5 PERCENT
         neutral_brake=False))
-    m_angle = TalonFX(20, inverted=True, config=TalonConfig(
+    m_angle = TalonFX(9, inverted=True, config=TalonConfig(
         0.3, 0.005, 1, 1023 * 0.1 / 917, integral_zone=1000, max_integral_accumulator=10000,
         neutral_brake=True, motion_cruise_velocity=6000 * ctre_motors.k_sensor_vel_to_rad_per_sec))
-    m_turret = TalonFX(25, inverted=False, config=TalonConfig(
-        0.3, 0.005, 1, 1023 * 0.1 / 917, integral_zone=1000, max_integral_accumulator=10000,
+
+    m_turret = TalonFX(20, inverted=False, config=TalonConfig(
+        k_P=0.175, k_I=0, k_D=90, k_F=0, integral_zone=1000, max_integral_accumulator=10000,
         neutral_brake=True, motion_cruise_velocity=6000 * ctre_motors.k_sensor_vel_to_rad_per_sec))
 
     sensor_zero_angle = (15 * deg).asNumber(rad)
@@ -34,6 +35,8 @@ class Shooter(Subsystem):
     max_turret_turn_velocity = 1 * m/s
 
     left_limit = LimitSwitch(1)
+
+    mag_sensor = LimitSwitch(8)
 
     zeroed: bool
     ready: bool
@@ -51,9 +54,11 @@ class Shooter(Subsystem):
         self.m_top.init()
         self.m_bottom.init()
         self.m_angle.init()
+        self.m_turret.init()
         optimize_normal_talon(self.m_top)
         optimize_normal_talon(self.m_bottom)
         optimize_normal_talon(self.m_angle)
+        optimize_normal_talon(self.m_turret)
         self.zeroed = self.left_limit.get_value()
         self.ready = False
         self.shooting_over = False

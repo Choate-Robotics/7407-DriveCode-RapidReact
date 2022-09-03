@@ -78,6 +78,7 @@ class TurretAim(SubsystemCommand[Shooter]):
         self.old_limelight = Robot.limelight.get_x_offset().asNumber(deg)
 
     def execute(self) -> None:
+        """ Test this once we are sure turret moves correctly
         self.old_limelight = Robot.limelight.get_x_offset().asNumber(deg)
 
         d_theta = self.subsystem.get_turret_rotation_velocity().asNumber(m / s)
@@ -95,6 +96,7 @@ class TurretAim(SubsystemCommand[Shooter]):
             self.subsystem.ready = False
 
         self.subsystem.set_turret_rotation_velocity(d_theta)
+        """
 
     def end(self, interrupted: bool) -> None:
         Robot.shooter.ready = False
