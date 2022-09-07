@@ -23,6 +23,10 @@ from sensors.intake_cameras import IntakeCameras
 from sensors.limelight import Limelight
 from sensors.rev_digit import RevDigit
 
+from robotpy_toolkit_7407.utils.units import rad, deg, radians, meters_per_second, m, s
+
+import math
+
 
 # from sensors.intake_cameras import IntakeCameras
 
@@ -144,25 +148,29 @@ class _Robot(wpilib.TimedRobot):
         # print(Robot.shooter.mag_sensor.get_value())
         # print(Robot.index.photo_electric.get_value())
 
+        logger.info(f"TURRET CURRENT POSITION IN DEGREES: {math.degrees(Robot.shooter.m_turret.get_sensor_position()/constants.turret_angle_gear_ratio)}")
+
     def teleopInit(self) -> None:
         Robot.elevator.initialized = False
         commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
-        # commands2.CommandScheduler.getInstance().schedule(BallPath(Robot.index))
+        commands2.CommandScheduler.getInstance().schedule(BallPath(Robot.index))
         # commands2.CommandScheduler.getInstance().schedule(TurretAim(Robot.shooter))
         commands2.CommandScheduler.getInstance().schedule(ElevatorRezero(Robot.elevator))
         Robot.index.ball_queue = 0
 
+        # This will become a command soon
         while not Robot.shooter.mag_sensor.get_value():
-            Robot.shooter.m_turret.set_target_velocity(-10)
-        Robot.shooter.m_turret.set_target_velocity(0)
-        pass
+            Robot.shooter.m_turret.set_raw_output(-.1)
+            # Manually set raw output
+
+        Robot.shooter.m_turret.set_raw_output(0)
+        Robot.shooter.m_turret.set_sensor_position(0)
 
     def teleopPeriodic(self) -> None:
-        # Robot.odometry.update()
-        # Robot.intake_cameras.read_camera_data()
-        # while not Robot.shooter.mag_sensor.get_value():
-        #     Robot.shooter.m_turret.set_raw_output(-.05)
-        # Robot.shooter.m_turret.set_raw_output(0)
+        degrees = 125
+        radia = math.radians(degrees)
+        # print("Turret current angle: ", Robot.shooter.get_turret_rotation_angle())
+        print("TURRET DESIRED ANGLE: ", Robot.shooter.set_turret_angle(radia * rad))
         pass
 
     def autonomousInit(self) -> None:

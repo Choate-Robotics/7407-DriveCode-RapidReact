@@ -9,28 +9,31 @@ from sensors import LimitSwitch
 from utils.can_optimizations import optimize_normal_talon
 from utils.shooter_targeting import ShooterTargeting
 
+from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit
+
 
 class Shooter(Subsystem):
     m_top = TalonFX(8, inverted=True, config=TalonConfig(
         0.09, 0, 5 * 1.05, 1023 / 20369, integral_zone=1000, max_integral_accumulator=100000,
-        # INCREASED D BY 5 PERCENT
         neutral_brake=False))
     m_bottom = TalonFX(5, inverted=False, config=TalonConfig(
         0.1, 0, 0.5 * 1.05, 1023 / 20101, integral_zone=1000, max_integral_accumulator=100000,
-        # INCREASED D BY 5 PERCENT
         neutral_brake=False))
     m_angle = TalonFX(9, inverted=True, config=TalonConfig(
         0.3, 0.005, 1, 1023 * 0.1 / 917, integral_zone=1000, max_integral_accumulator=10000,
         neutral_brake=True, motion_cruise_velocity=6000 * ctre_motors.k_sensor_vel_to_rad_per_sec))
-
     m_turret = TalonFX(20, inverted=False, config=TalonConfig(
-        k_P=0.175, k_I=0, k_D=90, k_F=0, integral_zone=1000, max_integral_accumulator=10000,
-        neutral_brake=True, motion_cruise_velocity=6000 * ctre_motors.k_sensor_vel_to_rad_per_sec))
+        k_P=.2, k_I=0, k_D=0, k_F=1023 / 20101, integral_zone=10000, max_integral_accumulator=100000,
+        neutral_brake=True, motion_cruise_velocity=12000 * ctre_motors.k_sensor_vel_to_rad_per_sec, motion_acceleration=100000 * ctre_motors.k_sensor_accel_to_rad_per_sec_sq))
+
+    # BEST ACCELERATION FOR TURRET IS 100000
 
     sensor_zero_angle = (15 * deg).asNumber(rad)
-    turret_zero_angle = 0  # TODO Calculate this
+    turret_zero_units = 0
+    turret_max_units = 70459 * talon_sensor_unit
+    turret_max_angle = 246 * deg
     angle_range = (45 * deg).asNumber(rad)
-    turret_range = (246 * deg).asNumber(rad)
+    turret_range = (236 * deg).asNumber(rad)
 
     max_turret_turn_velocity = 1 * m/s
 
@@ -68,8 +71,9 @@ class Shooter(Subsystem):
         self.m_angle.set_target_position(max(min(theta, self.angle_range), 0) * constants.shooter_angle_gear_ratio)
 
     def set_turret_angle(self, theta: radians):
-        theta = math.radians(90) - theta - self.turret_zero_angle
-        self.m_turret.set_target_position(max(min(theta, self.turret_range), 0) * constants.turret_angle_gear_ratio)
+        self.m_turret.set_target_position(theta * constants.turret_angle_gear_ratio)
+        # self.m_turret.set_target_position(max(min(theta, self.turret_max_angle), 0) * constants.turret_angle_gear_ratio)
+        return theta * constants.turret_angle_gear_ratio
 
     def get_turret_rotation_velocity(self):
         return self.m_turret.get_sensor_velocity() / constants.turret_angle_gear_ratio
