@@ -22,12 +22,13 @@ class Shooter(Subsystem):
     m_angle = TalonFX(9, inverted=True, config=TalonConfig(
         0.3, 0.005, 1, 1023 * 0.1 / 917, integral_zone=1000, max_integral_accumulator=10000,
         neutral_brake=True, motion_cruise_velocity=6000 * ctre_motors.k_sensor_vel_to_rad_per_sec))
-    # m_turret = TalonFX(20, inverted=False, config=TalonConfig(
-    #     k_P=0, k_I=0, k_D=0, k_F=0, integral_zone=10000, max_integral_accumulator=100000,
-    #     neutral_brake=True, motion_cruise_velocity=12000 * ctre_motors.k_sensor_vel_to_rad_per_sec, motion_acceleration=100000 * ctre_motors.k_sensor_accel_to_rad_per_sec_sq))
-    m_turret = TalonFX(20, inverted=False)
+    m_turret = TalonFX(20, inverted=False, config=TalonConfig(
+        k_P=.2, k_I=0, k_D=0, k_F=1023 / 20101, integral_zone=10000, max_integral_accumulator=100000,
+        neutral_brake=True, motion_cruise_velocity=12000 * ctre_motors.k_sensor_vel_to_rad_per_sec,
+        motion_acceleration=100000 * ctre_motors.k_sensor_accel_to_rad_per_sec_sq))
+    # m_turret = TalonFX(20, inverted=False) # Set it to this to test by setting values in Pheonix, and commend the m_turret defenition above.
 
-    # BEST ACCELERATION FOR TURRET IS 100000
+    # BEST ACCELERATION FOR TURRET Position PID IS 100000
 
     sensor_zero_angle = (15 * deg).asNumber(rad)
     turret_zero_units = 0
