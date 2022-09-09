@@ -159,18 +159,22 @@ class _Robot(wpilib.TimedRobot):
         Robot.index.ball_queue = 0
 
         # This will become a command soon
-        while not Robot.shooter.mag_sensor.get_value():
-            Robot.shooter.m_turret.set_raw_output(-.1)
-            # Manually set raw output
-
-        Robot.shooter.m_turret.set_raw_output(0)
-        Robot.shooter.m_turret.set_sensor_position(0)
+        # while not Robot.shooter.mag_sensor.get_value():
+        #     Robot.shooter.m_turret.set_raw_output(-.1)
+        #     # Manually set raw output
+        #
+        # Robot.shooter.m_turret.set_raw_output(0)
+        # Robot.shooter.m_turret.set_sensor_position(0)
+        #
+        # degrees = 125
+        # radia = math.radians(degrees)
+        #
+        # print("TURRET DESIRED ANGLE: ", Robot.shooter.set_turret_angle(radia * rad))
 
     def teleopPeriodic(self) -> None:
-        degrees = 125
-        radia = math.radians(degrees)
         # print("Turret current angle: ", Robot.shooter.get_turret_rotation_angle())
-        print("TURRET DESIRED ANGLE: ", Robot.shooter.set_turret_angle(radia * rad))
+
+        # Robot.shooter.m_turret.set_target_velocity(4)
         pass
 
     def autonomousInit(self) -> None:
