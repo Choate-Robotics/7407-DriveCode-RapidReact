@@ -154,22 +154,22 @@ class _Robot(wpilib.TimedRobot):
         Robot.elevator.initialized = False
         commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
         commands2.CommandScheduler.getInstance().schedule(BallPath(Robot.index))
-        # commands2.CommandScheduler.getInstance().schedule(TurretAim(Robot.shooter))
+        commands2.CommandScheduler.getInstance().schedule(TurretAim(Robot.shooter))
         commands2.CommandScheduler.getInstance().schedule(ElevatorRezero(Robot.elevator))
         Robot.index.ball_queue = 0
 
         # This will become a command soon
-        while not Robot.shooter.mag_sensor.get_value():
-            Robot.shooter.m_turret.set_raw_output(-.1)
-            # Manually set raw output
-
-        Robot.shooter.m_turret.set_raw_output(0)
-        Robot.shooter.m_turret.set_sensor_position(0)
-
-        degrees = 125
-        radia = math.radians(degrees)
-
-        print("TURRET DESIRED ANGLE: ", Robot.shooter.set_turret_angle(radia * rad))
+        # while not Robot.shooter.mag_sensor.get_value():
+        #     Robot.shooter.m_turret.set_raw_output(-.1)
+        #     # Manually set raw output
+        #
+        # Robot.shooter.m_turret.set_raw_output(0)
+        # Robot.shooter.m_turret.set_sensor_position(0)
+        #
+        # degrees = 125
+        # radia = math.radians(degrees)
+        #
+        # print("TURRET DESIRED ANGLE: ", Robot.shooter.set_turret_angle(radia * rad))
 
     def teleopPeriodic(self) -> None:
         # print("Turret current angle: ", Robot.shooter.get_turret_rotation_angle())

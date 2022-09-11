@@ -35,7 +35,9 @@ class ShooterEnableAtDistance(SubsystemCommand[Shooter]):
         self.distance = distance
 
     def initialize(self) -> None:
-        self.subsystem.target_stationary(self.distance)
+        # self.subsystem.target_stationary(self.distance)
+        self.subsystem.m_top.set_raw_output(.80)
+        self.subsystem.m_bottom.set_raw_output(.75)
 
     def execute(self) -> None:
         pass
@@ -71,12 +73,13 @@ class TurretAim(SubsystemCommand[Shooter]):
     def __init__(self, subsystem, ready_counts=2):
         super().__init__(subsystem)
         self.old_offset = .01
-        self.old_offset_diff = .01
+        self.old_offset_ratio = 0
         self.ready_counts = ready_counts
         self.c_count = 0
         self.power = 0
-        self.max_power = .06
-        self.min_power = -.06
+        self.max_power = .10
+        self.min_power = -.10
+        self.min_movement_power = .3
 
     def initialize(self) -> None:
         # self.old_offset = Robot.limelight.table.getNumber('tx', None)
@@ -86,22 +89,37 @@ class TurretAim(SubsystemCommand[Shooter]):
 
         current_offset = Robot.limelight.table.getNumber('tx', None)
 
-        print(current_offset)
-        print(self.old_offset)
+        if abs(current_offset) > 3:
+            print("----------------")
+            print("TRYING TO AIM")
+            print("Current Offset:", current_offset)
+            print("Old Offset:", self.old_offset)
 
-        print("OFFSET DIFFERENCE!", current_offset / self.old_offset)
-        if current_offset / self.old_offset > self.old_offset_diff:
-            self.power = max(self.min_power, min(-self.power, self.max_power))
-        elif current_offset / self.old_offset < self.old_offset_diff:
-            self.power = max(self.min_power, min(self.power * (current_offset / self.old_offset) / self.old_offset_diff,
-                                                 self.max_power))
+            if current_offset > 0:
+                self.power = self.min_movement_power
+            elif current_offset < 0:
+                self.power = -1 * self.min_movement_power
 
-        print("POWER: ", self.power)
+            self.old_offset = current_offset
 
-        if self.power == 0 and (current_offset / self.old_offset > .02):
-            self.power = .1
+            print("POWER: ", self.power)
 
-        self.old_offset = current_offset
+            self.subsystem.m_turret.set_raw_output(self.power)
+
+        elif abs(current_offset) > 2:
+            if current_offset > 0:
+                self.power = self.min_movement_power * .2
+            elif current_offset < 0:
+                self.power = -1 * self.min_movement_power * .2
+
+            self.old_offset = current_offset
+
+            print("POWER: ", self.power)
+
+            self.subsystem.m_turret.set_raw_output(self.power)
+
+        else:
+            self.subsystem.m_turret.set_raw_output(0)
 
         # self.old_limelight = Robot.limelight.get_x_offset()
 
