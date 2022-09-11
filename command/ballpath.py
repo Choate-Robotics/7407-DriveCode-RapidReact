@@ -36,7 +36,7 @@ class BallPath(SubsystemCommand[Index]):
         else:
             Sensors.color_sensors.working = False
 
-        if Robot.intake.left_intake_down or Robot.intake.right_intake_down and not self.subsystem.photo_electric.get_value():
+        if Robot.intake.left_intake_down or Robot.intake.right_intake_down:
             Robot.intake.dinglebobs_in()
         else:
             Robot.intake.dinglebobs_off()

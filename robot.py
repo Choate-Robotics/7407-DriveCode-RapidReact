@@ -84,7 +84,7 @@ class _Robot(wpilib.TimedRobot):
 
         commands2.CommandScheduler.getInstance().setPeriod(constants.period)
 
-        Robot.intake_cameras = IntakeCameras(Robot.intake)  # TODO
+        # Robot.intake_cameras = IntakeCameras(Robot.intake)  # TODO
 
         Robot.odometry = FieldOdometry(Robot.drivetrain)
 
@@ -148,7 +148,7 @@ class _Robot(wpilib.TimedRobot):
         # print(Robot.shooter.mag_sensor.get_value())
         # print(Robot.index.photo_electric.get_value())
 
-        logger.info(f"TURRET CURRENT POSITION IN DEGREES: {math.degrees(Robot.shooter.m_turret.get_sensor_position()/constants.turret_angle_gear_ratio)}")
+        # logger.info(f"TURRET CURRENT POSITION IN DEGREES: {math.degrees(Robot.shooter.m_turret.get_sensor_position()/constants.turret_angle_gear_ratio)}")
 
     def teleopInit(self) -> None:
         Robot.elevator.initialized = False
@@ -159,22 +159,22 @@ class _Robot(wpilib.TimedRobot):
         Robot.index.ball_queue = 0
 
         # This will become a command soon
-        # while not Robot.shooter.mag_sensor.get_value():
-        #     Robot.shooter.m_turret.set_raw_output(-.1)
-        #     # Manually set raw output
-        #
-        # Robot.shooter.m_turret.set_raw_output(0)
-        # Robot.shooter.m_turret.set_sensor_position(0)
-        #
-        # degrees = 125
-        # radia = math.radians(degrees)
-        #
-        # print("TURRET DESIRED ANGLE: ", Robot.shooter.set_turret_angle(radia * rad))
+        while not Robot.shooter.mag_sensor.get_value():
+            Robot.shooter.m_turret.set_raw_output(-.1)
+            # Manually set raw output
+
+        Robot.shooter.m_turret.set_raw_output(0)
+        Robot.shooter.m_turret.set_sensor_position(0)
+
+        degrees = 125
+        radia = math.radians(degrees)
+
+        print("TURRET DESIRED ANGLE: ", Robot.shooter.set_turret_angle(radia * rad))
 
     def teleopPeriodic(self) -> None:
         # print("Turret current angle: ", Robot.shooter.get_turret_rotation_angle())
 
-        Robot.shooter.m_turret.set_target_velocity(4)
+        # Robot.shooter.m_turret.set_target_velocity(4)
         pass
 
     def autonomousInit(self) -> None:

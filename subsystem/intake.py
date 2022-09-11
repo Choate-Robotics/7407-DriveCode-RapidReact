@@ -4,7 +4,7 @@ from robotpy_toolkit_7407.motors import TalonFX, TalonConfig
 
 from utils.can_optimizations import optimize_normal_talon_no_sensor
 
-_MOTOR_CFG = TalonConfig(neutral_brake=False)
+_MOTOR_CFG = TalonConfig(neutral_brake=True)
 
 
 class Intake(Subsystem):
@@ -42,7 +42,7 @@ class Intake(Subsystem):
         self.left_intake_down = False
         self.right_intake_down = False
         self.intake_speed = .7
-        self.dinglebob_speed = .3
+        self.dinglebob_speed = .5
         self.dinglebob_eject_speed = 1
         self.left_dinglebob_in = True
         self.right_dinglebob_in = True

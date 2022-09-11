@@ -70,31 +70,58 @@ class ShooterZero(SubsystemCommand[Shooter]):
 class TurretAim(SubsystemCommand[Shooter]):
     def __init__(self, subsystem, ready_counts=2):
         super().__init__(subsystem)
-        self.old_limelight = None
+        self.old_offset = .01
+        self.old_offset_diff = .01
         self.ready_counts = ready_counts
         self.c_count = 0
+        self.power = 0
+        self.max_power = .06
+        self.min_power = -.06
 
     def initialize(self) -> None:
-        self.old_limelight = Robot.limelight.get_x_offset().asNumber(deg)
+        # self.old_offset = Robot.limelight.table.getNumber('tx', None)
+        self.power = 0
 
     def execute(self) -> None:
-        self.old_limelight = Robot.limelight.get_x_offset().asNumber(deg)
 
-        d_theta = self.subsystem.get_turret_rotation_velocity().asNumber(m / s)
-        d_current = Robot.limelight.get_x_offset().asNumber(deg)
-        d_omega = self.old_limelight - d_current
+        current_offset = Robot.limelight.table.getNumber('tx', None)
 
-        d_theta = d_theta*d_current/d_omega
+        print(current_offset)
+        print(self.old_offset)
 
-        if abs(self.subsystem.get_turret_rotation_velocity()) < .1 and Robot.limelight.get_x_offset().asNumber(rad) != 0:
-            self.c_count += 1
-            if self.c_count >= self.ready_counts:
-                self.subsystem.ready = True
-        else:
-            self.c_count = 0
-            self.subsystem.ready = False
+        print("OFFSET DIFFERENCE!", current_offset / self.old_offset)
+        if current_offset / self.old_offset > self.old_offset_diff:
+            self.power = max(self.min_power, min(-self.power, self.max_power))
+        elif current_offset / self.old_offset < self.old_offset_diff:
+            self.power = max(self.min_power, min(self.power * (current_offset / self.old_offset) / self.old_offset_diff,
+                                                 self.max_power))
 
-        self.subsystem.set_turret_rotation_velocity(d_theta)
+        print("POWER: ", self.power)
+
+        if self.power == 0 and (current_offset / self.old_offset > .02):
+            self.power = .1
+
+        self.old_offset = current_offset
+
+        # self.old_limelight = Robot.limelight.get_x_offset()
+
+        # d_theta = self.subsystem.get_turret_rotation_velocity()
+        # d_current = Robot.limelight.get_x_offset()
+        # d_omega = self.old_limelight - d_current
+
+        # d_theta = d_theta*d_current/d_omega
+        #
+        # if abs(self.subsystem.get_turret_rotation_velocity()) < .1 and Robot.limelight.get_x_offset() != 0:
+        #     self.c_count += 1
+        #     if self.c_count >= self.ready_counts:
+        #         self.subsystem.ready = True
+        # else:
+        #     self.c_count = 0
+        #     self.subsystem.ready = False
+        #
+        # print(d_theta)
+
+        # self.subsystem.m_turret.set_raw_output(d_theta)
 
     def end(self, interrupted: bool) -> None:
         Robot.shooter.ready = False
@@ -102,3 +129,20 @@ class TurretAim(SubsystemCommand[Shooter]):
 
     def isFinished(self) -> bool:
         return False
+
+
+class NaiveDemoShot(SubsystemCommand[Shooter]):
+    def __init__(self, subsystem: Shooter):
+        super().__init__(subsystem)
+
+    def initialize(self) -> None:
+        self.subsystem.set_launch_angle(.2)
+
+    def execute(self) -> None:
+        pass
+
+    def isFinished(self) -> bool:
+        return False
+
+    def end(self, interrupted: bool) -> None:
+        self.subsystem.stop()

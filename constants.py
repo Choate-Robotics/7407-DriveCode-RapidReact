@@ -32,7 +32,8 @@ shooter_top_gear_ratio = (1 / shooter_top_wheel_radius) * (38 / 42)
 shooter_bottom_gear_ratio = (1 / shooter_bottom_wheel_radius) * (1 / 1)
 
 # Shooter angle to motor angle
-shooter_angle_gear_ratio = (266 / 10) * (36 / 12)
+# shooter_angle_gear_ratio = (266 / 10) * (36 / 12)
+shooter_angle_gear_ratio = 57.5
 
 # TURRET RELATED THINGS:
 turret_angle_gear_ratio = 50.347 # How many motor radians in one rev of the turret
