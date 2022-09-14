@@ -20,7 +20,7 @@ class Robot:
     index = subsystem.Index()
     elevator = subsystem.Elevator()
     shooter = subsystem.Shooter()
-
+    
     limelight: Limelight
     odometry: FieldOdometry
     rev_digit: RevDigit

@@ -79,11 +79,11 @@ class OI:
         Keymap.Elevator.ELEVATOR_CLIMB().whenPressed(command.ElevatorClimbCommand())
 
         def extend_dinglebob_runtime():
-            Robot.intake.dinglebob_run_extend = True
+            Robot.index.dinglebob_run_extend = True
             # print("extended")
 
         def stop_dinglebob_runtime():
-            Robot.intake.dinglebob_run_extend = False
+            Robot.index.dinglebob_run_extend = False
             # print("unextended")
 
         # Keymap.Intake.LEFT_INTAKE_TOGGLE() \
