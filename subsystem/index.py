@@ -123,7 +123,7 @@ class Index(Subsystem):
         elif Dir == "Left":
             self.left_dinglebob.set_raw_output(self.dinglebob_speed)
     
-    def dinglebobs_control(self, Pos: "None", Dir):
+    def dinglebobs_control(self, Dir, Pos = "None"):
         '''
         Control Dinglebobs based on ball location
 

@@ -15,12 +15,10 @@ from robot_systems import Robot
 from robot_systems import Sensors
 from subsystem import Index
 
-ball_count = 0
-ball = 0
 
 class Ball():
     ball_count = 0
-    ball = 0
+    ball = []
 
     def __init__(self, pos):
         self.position = pos
@@ -35,7 +33,7 @@ class Ball():
             x = pos
             i = 0
             while i < self.ball_count + 1:
-                if ball[i].position == x:
+                if self.ball[i].position == x:
                     return i
                 else:
                    i += 1
@@ -68,33 +66,41 @@ class Ball():
             case "Left":
                 if Index.left_oc != False:
                     path_clear = "Left"
+                    print("Left Blocked")
                 elif Index.staged_oc != False:
                     path_clear = "Stage Block"
+                    print("Stage Block Left")
             case "Right":
                 if Index.right_oc != False:
                     path_clear = "Right"
+                    print("Right Blocked")
                 elif Index.staged_oc != False:
                     path_clear = "Stage Block"
+                    print("Stage Block Right")
             case "Staged":
                 if Index.staged_oc != False:
                     path_clear = "Staged"
-        if not path_clear:
-            return path_clear
+                    print("Stage Blocked")
+
+        return path_clear
 
     def move(self, pos):
         cPos = self.position
         match pos:
             case "Left":
-                Left = InstantCommand(lambda: Robot.index.dinglebobs_control("Left"), Robot.index)
-                return Left
+                print("Dinglebobs Left")
+                InstantCommand(Robot.index.dinglebobs_control("Left"), Robot.index)
+                #return Left
             case "Right":
-                Right = InstantCommand(lambda: Robot.index.dinglebobs_control("Right"), Robot.index)
-                return Right
+                print("Dinglebobs Right")
+                InstantCommand(Robot.index.dinglebobs_control("Right"), Robot.index).until(Robot.index.left_limit.get_value())
+                #return Right
             case "Stage":
-                Stage = InstantCommand(lambda: Robot.index.dinglebobs_control(cPos, "Stage"), Robot.index)        
-                return Stage
+                print("Dinglebobs Stage")
+                InstantCommand(Robot.index.dinglebobs_control(cPos, "Stage"), Robot.index)        
+                #return Stage
 
-    def setPos(self, pos, timeout: 5):
+    def setPos(self, pos, timeout = 5):
         '''
         Moves the ball based on position
 
@@ -113,21 +119,25 @@ class Ball():
         elif pos == "Right":
             x = Index.right_limit.get_value()
         else:
+            print("False Position")
             return "False Position"
         cPos = self.position
         nPos = pos
         if self.findBalls(nPos) != True:
+            print(self.findBalls(nPos))
             return self.findBalls(nPos)
         else:
+            print("Moving Dinglebobs")
             self.moving = nPos
-            time = time.time() + timeout
-            if not x:
-                self.move(nPos)
-                if time.time() > timeout:
-                    return "Timeout"
-            else:
-                self.position = nPos
-                return True
+            #time = time.time() + timeout
+            # if not x:
+            self.move(nPos)
+                #if time.time() > timeout:
+                    #return "Timeout"
+            # else:
+            self.position = nPos
+            self.moving = False
+            return True
 
     def purge(self):
         if not Index.left_limit.get_value() and not Index.right_limit.get_value() and not Index.photo_electric.get_value():
@@ -145,7 +155,7 @@ class BallPath(SubsystemCommand[Index]):
         pass
 
     def execute(self) -> None:
-
+        Ball.ball_count = 0 #onlt for testing -- remove when production
         Sensors.color_sensors.multiplexer.writeBulk(bytes([0b0100]))
         left_color = Sensors.color_sensors.color()
         left_val = Sensors.color_sensors.get_val()
@@ -158,33 +168,35 @@ class BallPath(SubsystemCommand[Index]):
         else:
             Sensors.color_sensors.working = False
             
-        if Ball.ball_count > 0:
-            i = 0
-            while i < Ball.ball_count + 1:
-                if not Ball.ball[i].removed and Ball.ball[i].moving != False:
-                    Ball.ball[i].setPos(ball[i].moving)
-                i += 1
+        # if Ball.ball_count > 0:
+        #     i = 0
+        #     while i != Ball.ball_count:
+        #         if not Ball.ball[i].removed and Ball.ball[i].moving != False:
+        #             Ball.ball[i].setPos(Ball.ball[i].moving)
+        #         i += 1
 
         #print(Robot.index.left_limit.get_value())
-        print(Robot.index.right_limit.get_value())
         if Robot.intake.left_intake_down or Robot.intake.right_intake_down:
             if Robot.intake.left_intake_down:
-                if Robot.index.left_limit.get_value():
-                    Ball.ball_count += 1
+                if Robot.index.left_limit.get_value() and not Robot.index.left_oc:
+
                     c = Ball.ball_count
-                    Ball.ball[c] = Ball("Left")
+                    Ball.ball.append(Ball("Left"))
                     #print("Lefty: ", Sensors.color_sensors.get_val())
                     #print("Left Color:", left_color)
                     Sensors.color_sensors.multiplexer.writeBulk(bytes([0b0100])) #0100 = Left
                     #if ball is team ball then store right, if not then stage ball
                     if left_color != config.TEAM and left_color != "none":
+                        print("OPP BALL")
                         Ball.ball[c].team = False
-                        if Ball.isPos("Staged") != False:
+                        if Ball.ball[c].isPos("Staged") != False:
                             self.subsystem.dinglebobs_off()
                     else:
+                        print("TEAM BALL")
                         Ball.ball[c].team = True
                         if not Index.right_limit.get_value():
                             Ball.ball[c].setPos("Right")
+                Ball.ball_count += 1
             #Robot.intake.dinglebobs_in()
             #Robot.index.left_dinglebob.set_raw_output(-.7)
         else:
