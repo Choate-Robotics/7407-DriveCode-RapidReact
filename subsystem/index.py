@@ -81,6 +81,16 @@ class Index(Subsystem):
         self.left_dinglebob_in = True
         self.right_dinglebob_in = True
 
+    def isLeftLimit(self):
+        if self.left_limit.get_value():
+            return True
+        return False
+
+    def isRightLimit(self):
+        if self.right_limit.get_value():
+            return True
+        return False
+
     def dinglebob_eject_left(self):
         self.left_dinglebob.set_raw_output(self.dinglebob_eject_speed)
         self.right_dinglebob.set_raw_output(self.dinglebob_eject_speed)

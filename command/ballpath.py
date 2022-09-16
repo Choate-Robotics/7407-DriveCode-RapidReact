@@ -103,25 +103,37 @@ class Ball():
             case "Staged":
                 Index.staged_oc = True
     
-    def move(self, pos):
-        cPos = self.position
-        match pos:
-            case "Left":
-                print("Dinglebobs Left")
-                InstantCommand(Robot.index.dinglebobs_control("Left"), Robot.index).withInterrupt(Robot.index.left_limit.get_value()).andThen(self.finMove("Left"))
-                #return Left
-            case "Right":
-                print("Dinglebobs Right")
-                InstantCommand(Robot.index.dinglebobs_control("Right"), Robot.index).withInterrupt(Robot.index.right_limit.get_value()).andThen(self.finMove("Right"))
-            case "Stage":
-                print("Dinglebobs Stage")
-                InstantCommand(Robot.index.dinglebobs_control("Stage", cPos), Robot.index).withInterrupt(Robot.index.photo_electric.get_value()).andThen(self.finMove("Stage"))    
-                #return Stage
     def finMove(self, nPos):
         self.disableOC(self.position)
         self.position = nPos
         self.enableOC(self.position)
         self.moving = False
+
+    def __move(self, pos):
+        cPos = self.position
+        x
+        y
+        match pos:
+            case "Left":
+                print("Dinglebobs Left")
+                x = InstantCommand(Robot.index.dinglebobs_control("Left"), Robot.index)
+                y = Robot.index.left_limit
+                #return Left
+            case "Right":
+                print("Dinglebobs Right")
+                x = InstantCommand(Robot.index.dinglebobs_control("Right"), Robot.index)
+                y = Robot.index.right_limit
+                #commands2.ParallelRaceGroup(InstantCommand(Robot.index.dinglebobs_control("Right"), Robot.index), InstantCommand(Robot.index.isLeftLimit, Robot.index))
+            case "Stage":
+                print("Dinglebobs Stage")
+                x = InstantCommand(Robot.index.dinglebobs_control("Stage", cPos), Robot.index)
+                y = Robot.index.photo_electric
+                #return Stage
+        if not y.get_value():
+            x
+        else:
+            InstantCommand(Robot.index.dinglebobs_off, Robot.index)
+            self.finMove(pos)
 
     def setPos(self, pos, timeout = 5):
         '''
@@ -154,7 +166,7 @@ class Ball():
             self.moving = nPos
             #time = time.time() + timeout
             # if not x:
-            self.move(nPos)
+            self.__move(nPos)
                 #if time.time() > timeout:
                     #return "Timeout"
             # else:
