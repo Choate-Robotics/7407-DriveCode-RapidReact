@@ -49,9 +49,10 @@ class Ball():
 
     def findBalls(self, nPos):
         path_clear = True
+        #code break here
         if self.isPos("Left"):
             Index.left_oc = True
-        else:
+        else: # testing only remove all of these in production
             Index.left_oc = False
         if self.isPos("Right"):
             Index.right_oc = True
@@ -84,21 +85,43 @@ class Ball():
 
         return path_clear
 
+    def disableOC(self, pos):
+        match pos:
+            case "Left":
+                Index.left_oc = False
+            case "Right":
+                Index.right_oc = False
+            case "Staged":
+                Index.staged_oc = False
+    
+    def enableOC(self, pos):
+        match pos:
+            case "Left":
+                Index.left_oc = True
+            case "Right":
+                Index.right_oc = True
+            case "Staged":
+                Index.staged_oc = True
+    
     def move(self, pos):
         cPos = self.position
         match pos:
             case "Left":
                 print("Dinglebobs Left")
-                InstantCommand(Robot.index.dinglebobs_control("Left"), Robot.index)
+                InstantCommand(Robot.index.dinglebobs_control("Left"), Robot.index).withInterrupt(Robot.index.left_limit.get_value()).andThen(self.finMove("Left"))
                 #return Left
             case "Right":
                 print("Dinglebobs Right")
-                InstantCommand(Robot.index.dinglebobs_control("Right"), Robot.index).until(Robot.index.left_limit.get_value())
-                #return Right
+                InstantCommand(Robot.index.dinglebobs_control("Right"), Robot.index).withInterrupt(Robot.index.right_limit.get_value()).andThen(self.finMove("Right"))
             case "Stage":
                 print("Dinglebobs Stage")
-                InstantCommand(Robot.index.dinglebobs_control(cPos, "Stage"), Robot.index)        
+                InstantCommand(Robot.index.dinglebobs_control("Stage", cPos), Robot.index).withInterrupt(Robot.index.photo_electric.get_value()).andThen(self.finMove("Stage"))    
                 #return Stage
+    def finMove(self, nPos):
+        self.disableOC(self.position)
+        self.position = nPos
+        self.enableOC(self.position)
+        self.moving = False
 
     def setPos(self, pos, timeout = 5):
         '''
@@ -135,15 +158,12 @@ class Ball():
                 #if time.time() > timeout:
                     #return "Timeout"
             # else:
-            self.position = nPos
-            self.moving = False
             return True
 
     def purge(self):
         if not Index.left_limit.get_value() and not Index.right_limit.get_value() and not Index.photo_electric.get_value():
-            Index.dinglebobs_control("None", "Out")
+            Index.dinglebobs_control("Out")
 
-    
     def remove(self):
         self.removed = True
 
@@ -194,13 +214,13 @@ class BallPath(SubsystemCommand[Index]):
                     else:
                         print("TEAM BALL")
                         Ball.ball[c].team = True
-                        if not Index.right_limit.get_value():
-                            Ball.ball[c].setPos("Right")
+                        #if not Index.right_limit.get_value(): #not sure about this. will comment out for now
+                        Ball.ball[c].setPos("Right")
                 Ball.ball_count += 1
             #Robot.intake.dinglebobs_in()
             #Robot.index.left_dinglebob.set_raw_output(-.7)
-        else:
-            Robot.index.dinglebobs_off()
+        else: ...
+            #Robot.index.dinglebobs_off()
 
         # logging.info(f"Color Sensors {left_val, right_val}")
 
