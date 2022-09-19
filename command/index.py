@@ -18,8 +18,6 @@ from subsystem.intake import Intake
 IndexOn = lambda: InstantCommand(lambda: Robot.index.set(.5), Robot.index)
 IndexOff = lambda: InstantCommand(lambda: Robot.index.set(0), Robot.index)
 
-ball_count = 0
-ball = 0
 """
 class IndexAutoDrive(SubsystemCommand):
     def __init__(self, subsystem: Index):

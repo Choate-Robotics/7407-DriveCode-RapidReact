@@ -22,9 +22,9 @@ class Index(Subsystem):
     left_dinglebob_in: bool
     right_dinglebob_in: bool
 
-    left_oc: bool
-    right_oc: bool
-    staged_oc: bool
+    left_oc = False
+    right_oc = False 
+    staged_oc = False
 
     
 
@@ -99,14 +99,20 @@ class Index(Subsystem):
         # self.left_intake_motor.set_raw_output(-self.intake_speed)
 
     def dinglebob_travel(self, Dir):
-        self.left_dinglebob.set_raw_output(self.dinglebob_eject_speed)
-        self.right_dinglebob.set_raw_output(self.dinglebob_eject_speed)
+        l: int
+        r: int
         if Dir == "Left":
             self.left_dinglebob_in = False
+            l = 1
             self.right_dinglebob_in = True
+            r = 1
         elif Dir == "Right":
             self.left_dinglebob_in = True
+            l = -1
             self.right_dinglebob_in = False
+            r = -1
+        self.left_dinglebob.set_raw_output(l * self.dinglebob_eject_speed)
+        self.right_dinglebob.set_raw_output(r * self.dinglebob_eject_speed)
 
     def dinglebob_eject_right(self):
         self.left_dinglebob.set_raw_output(-self.dinglebob_eject_speed)
@@ -132,8 +138,16 @@ class Index(Subsystem):
             self.right_dinglebob.set_raw_output(-self.dinglebob_speed)
         elif Dir == "Left":
             self.left_dinglebob.set_raw_output(self.dinglebob_speed)
+
+    def single_dinglebob_off(self, Dir):
+        if Dir == "Right":
+            self.right_dinglebob.set_raw_output(0)
+            self.left_dinglebob_in = False
+        elif Dir == "Left":
+            self.left_dinglebob.set_raw_output(0)
+            self.left_dinglebob_in = False
     
-    def dinglebobs_control(self, Dir, Pos = "None"):
+    def dinglebobs_control(self, Dir: str, Pos = "None"):
         '''
         Control Dinglebobs based on ball location
 
@@ -160,4 +174,11 @@ class Index(Subsystem):
         elif Dir == "Stage":
             self.single_dinglebob_in(Pos)
 
+    def moveBall(self, Dir, Bool, pos = "none"): #jank as hell but for the time being works
+        self.dinglebobs_control(Dir, pos)
+        if not Bool.get_value(): ...
+            #print("Button Not Pressed")
+        else:
+            #print("Button Pressed")
+            self.dinglebobs_off()
 
