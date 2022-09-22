@@ -42,7 +42,7 @@ class Intake(Subsystem):
 
         self.left_intake_down = False
         self.right_intake_down = False
-        self.intake_speed = .7
+        self.intake_speed = 1
         # self.dinglebob_speed = .5
         # self.dinglebob_eject_speed = 1
         # self.left_dinglebob_in = True
