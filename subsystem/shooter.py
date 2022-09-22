@@ -20,13 +20,13 @@ class Shooter(Subsystem):
         0.1, 0, 0.5 * 1.05, 1023 / 20101, integral_zone=1000, max_integral_accumulator=100000,
         neutral_brake=False))
     m_angle = TalonFX(9, inverted=False, config=TalonConfig(
-        0.3, 0.005, 1, 2046 * 0.1 / 917, integral_zone=1000, max_integral_accumulator=10000, # 1023 * 0.1 / 917
-        neutral_brake=True, motion_cruise_velocity=6000 * ctre_motors.k_sensor_vel_to_rad_per_sec))
+        0.3, 0.005, 2, 2046 * 0.1 / 917, integral_zone=1000, max_integral_accumulator=10000, # 1023 * 0.1 / 917
+        neutral_brake=True, motion_cruise_velocity=6000 * ctre_motors.k_sensor_vel_to_rad_per_sec,
+        motion_acceleration=10000 * ctre_motors.k_sensor_accel_to_rad_per_sec_sq))
     m_turret = TalonFX(20, inverted=False, config=TalonConfig(
         k_P=.2, k_I=0, k_D=0, k_F=1023 / 20101, integral_zone=10000, max_integral_accumulator=100000,
         neutral_brake=True, motion_cruise_velocity=12000 * ctre_motors.k_sensor_vel_to_rad_per_sec,
         motion_acceleration=100000 * ctre_motors.k_sensor_accel_to_rad_per_sec_sq))
-    # m_turret = TalonFX(20, inverted=False) # Set it to this to test by setting values in Pheonix, and commend the m_turret defenition above.
 
     # BEST ACCELERATION FOR TURRET Position PID IS 100000
 
@@ -70,7 +70,7 @@ class Shooter(Subsystem):
 
     def set_launch_angle(self, theta: radians):
         theta = math.radians(90) - theta - self.sensor_zero_angle
-        print("TARGET ANGLE: ", max(min(theta, self.angle_range), 0) * constants.shooter_angle_gear_ratio)
+        print("TARGET ANGLE: ", theta * constants.shooter_angle_gear_ratio)
         self.m_angle.set_target_position(max(min(theta, self.angle_range), 0) * constants.shooter_angle_gear_ratio)
 
     def set_turret_angle(self, theta: radians):
@@ -94,7 +94,7 @@ class Shooter(Subsystem):
         self.desired_m_top = top_vel * constants.shooter_top_gear_ratio
         self.desired_m_bottom = bottom_vel * constants.shooter_bottom_gear_ratio
 
-        self.m_top.set_target_velocity(self.desired_m_top)
+        # self.m_top.set_target_velocity(self.desired_m_top)
         self.m_bottom.set_target_velocity(self.desired_m_bottom)
         print("M_TOP_DESIRED: ", self.desired_m_top)
         print("M_BOTTOM_DESIRED: ", self.desired_m_bottom)
@@ -103,7 +103,8 @@ class Shooter(Subsystem):
         self.prev_flywheel_vel = (vx, vy)
         final_velocity = (-0.286 + 1.475 * (vx ** 2 + vy ** 2) ** .5)
         final_angle = math.atan(vy / vx)
-        # self.set_launch_angle(final_angle)
+        print("FINAL ANGLE: ", final_angle)
+        self.set_launch_angle(final_angle)
         self.set_flywheels(final_velocity, final_velocity)
 
     def get_current_ball_exit_velocity(self) -> tuple[meters_per_second, meters_per_second]:

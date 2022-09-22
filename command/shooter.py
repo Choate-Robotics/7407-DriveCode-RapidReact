@@ -6,6 +6,8 @@ from robotpy_toolkit_7407.utils.units import deg, rad, s, m
 from robot_systems import Robot
 from subsystem import Shooter
 
+import math
+
 
 class ShooterEnable(SubsystemCommand[Shooter]):
     def __init__(self, subsystem: Shooter):
@@ -35,9 +37,7 @@ class ShooterEnableAtDistance(SubsystemCommand[Shooter]):
         self.distance = distance
 
     def initialize(self) -> None:
-        # self.subsystem.target_stationary(self.distance)
-        self.subsystem.m_top.set_raw_output(.80)
-        self.subsystem.m_bottom.set_raw_output(.75)
+        self.subsystem.target_stationary(self.distance)
 
     def execute(self) -> None:
         pass
@@ -79,7 +79,12 @@ class TurretAim(SubsystemCommand[Shooter]):
         self.power = 0
         self.max_power = .10
         self.min_power = -.10
-        self.min_movement_power = .3
+        self.min_movement_power = .1
+
+        self.new_run = True
+        self.initial_offset = 1
+
+        self.multiplier = .9
 
     def initialize(self) -> None:
         # self.old_offset = Robot.limelight.table.getNumber('tx', None)
@@ -90,35 +95,37 @@ class TurretAim(SubsystemCommand[Shooter]):
         current_offset = Robot.limelight.table.getNumber('tx', None)
 
         if abs(current_offset) > 3:
-            print("----------------")
-            print("TRYING TO AIM")
-            print("Current Offset:", current_offset)
-            print("Old Offset:", self.old_offset)
-
-            if current_offset > 0:
+            if self.new_run:
+                print("NEW RUN, SETTING INITIAL OFFSET TO CURRENT OFFSET")
+                self.initial_offset = int(current_offset)
                 self.power = self.min_movement_power
-            elif current_offset < 0:
-                self.power = -1 * self.min_movement_power
+            self.new_run = False
 
-            self.old_offset = current_offset
-
-            print("POWER: ", self.power)
-
-            self.subsystem.m_turret.set_raw_output(self.power)
-
-        elif abs(current_offset) > 2:
             if current_offset > 0:
-                self.power = self.min_movement_power * .2
+                sign = 1
             elif current_offset < 0:
-                self.power = -1 * self.min_movement_power * .2
+                sign = -1
 
-            self.old_offset = current_offset
+            offset_ratio = max(min(current_offset/self.initial_offset, 1), -1)
+            self.power = abs(max(min(self.power*(offset_ratio), self.max_power), self.min_power)) * sign
 
             print("POWER: ", self.power)
+            print("INITIAL OFFSET:", self.initial_offset, "CURRENT OFFSET: ", current_offset)
+            print("OFFSET RATIO: ", offset_ratio)
 
             self.subsystem.m_turret.set_raw_output(self.power)
 
+        elif current_offset:
+            self.new_run = True
+            self.initial_offset = 1
+            true_angle = Robot.limelight.k_cam_angle + Robot.limelight.table.getNumber('ty', None)
+            distance = (Robot.limelight.k_h_hub_height - Robot.limelight.k_cam_height) / math.tan(true_angle)
+            # self.subsystem.target_stationary(distance)
+            self.subsystem.m_turret.set_raw_output(0)
         else:
+            self.new_run = True
+            self.initial_offset = 1
+            self.subsystem.stop()
             self.subsystem.m_turret.set_raw_output(0)
 
         # self.old_limelight = Robot.limelight.get_x_offset()
