@@ -4,7 +4,6 @@ from wpimath.geometry import Pose2d, Rotation2d
 
 import command
 import config
-from command import ballpath
 from command.drivetrain import DriveSwerveCustom, ShootWhileMoving
 from oi.keymap import Keymap
 from robot_systems import Robot
@@ -50,15 +49,18 @@ class OI:
         def stop_shooting():
             Robot.shooter.shooting_over = True
 
-        def stage_balls():
-            InstantCommand(ballpath.stage, ballpath)
+        def stage():
+            Robot.index.stage = True
+    
+        def deStage():
+            Robot.index.destageBall = True
 
-        def destage_balls():
-            InstantCommand(ballpath.destage, ballpath)
+        def resetBall():
+            Robot.index.resetBall = True
 
         Keymap.Drivetrain.AIM_SWERVE() \
-            .whenPressed(stage_balls) \
-            .whenReleased(destage_balls)
+            .whenPressed(stage()) \
+            .whenReleased(deStage())
 
         def driver_centric_enable():
             DriveSwerveCustom.driver_centric = True
@@ -109,6 +111,7 @@ class OI:
             .whenPressed(Robot.intake.right_intake_enable) \
             .whenReleased(Robot.intake.right_intake_disable)
 
+        Keymap.Index.A_BUTTON().whenPressed(resetBall())
         def auto_intake_on():
             Robot.intake.AUTO_INTAKE = True
 

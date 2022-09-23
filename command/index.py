@@ -18,6 +18,7 @@ from subsystem.intake import Intake
 IndexOn = lambda: InstantCommand(lambda: Robot.index.set(.5), Robot.index)
 IndexOff = lambda: InstantCommand(lambda: Robot.index.set(0), Robot.index)
 
+
 """
 class IndexAutoDrive(SubsystemCommand):
     def __init__(self, subsystem: Index):
@@ -164,7 +165,7 @@ class IndexAutoDrive(SubsystemCommand):
 
 
         
-        left_joy = Keymap.Index.INDEX_JOY.value
+        left_joy = 0
         if abs(left_joy) < .1:
             pass
         else:
