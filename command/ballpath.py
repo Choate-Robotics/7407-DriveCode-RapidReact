@@ -280,7 +280,7 @@ class BallPath(SubsystemCommand[Index]):
         else:
             Sensors.color_sensors.working = False
         
-        #Manual Control overide
+        #Manual Control overide hopefuly it works
         left_joy = Keymap.Index.LEFT_JOY.value
 
         right_joy = Keymap.Index.RIGHT_JOY.value
