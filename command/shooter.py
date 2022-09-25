@@ -107,7 +107,8 @@ class TurretAim(SubsystemCommand[Shooter]):
                 sign = -1
 
             offset_ratio = max(min(current_offset/self.initial_offset, 1), -1)
-            self.power = abs(max(min(self.power*(offset_ratio), self.max_power), self.min_power)) * sign
+            # self.power = abs(max(min(self.power*(offset_ratio), self.max_power), self.min_power)) * sign
+            self.power = abs(max(min(self.power, self.max_power), self.min_power)) * sign
 
             print("POWER: ", self.power)
             print("INITIAL OFFSET:", self.initial_offset, "CURRENT OFFSET: ", current_offset)
