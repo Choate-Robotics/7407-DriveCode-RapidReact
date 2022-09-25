@@ -34,7 +34,7 @@ class Keymap:
         #LEFT_JOY and RIGHT_JOY are used in ballpath command
         LEFT_JOY = JoystickAxis(Controllers.OPERATOR, controllerOPERATOR.L_JOY[1])
         RIGHT_JOY = JoystickAxis(Controllers.OPERATOR, controllerOPERATOR.R_JOY[1])
-        A_BUTTON = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.A)
+        RESET_BALL = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.Y)
         
     class BallPath:
         TOGGLE_AUTO_EJECT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.START)

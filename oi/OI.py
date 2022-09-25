@@ -113,7 +113,7 @@ class OI:
             .whileHeld(Robot.intake.toggle_right_intake) \
             .whenReleased(Robot.intake.right_intake_disable)
 
-        Keymap.Index.A_BUTTON().whenPressed(resetBall)
+        Keymap.Index.RESET_BALL().whenPressed(resetBall)
         def auto_intake_on():
             Robot.intake.AUTO_INTAKE = True
 

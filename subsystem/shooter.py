@@ -94,7 +94,7 @@ class Shooter(Subsystem):
         self.desired_m_top = top_vel * constants.shooter_top_gear_ratio
         self.desired_m_bottom = bottom_vel * constants.shooter_bottom_gear_ratio
 
-        # self.m_top.set_target_velocity(self.desired_m_top)
+        self.m_top.set_target_velocity(self.desired_m_top)
         self.m_bottom.set_target_velocity(self.desired_m_bottom)
         print("M_TOP_DESIRED: ", self.desired_m_top)
         print("M_BOTTOM_DESIRED: ", self.desired_m_bottom)

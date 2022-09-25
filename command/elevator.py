@@ -36,11 +36,14 @@ ElevatorSolenoidExtend = lambda: InstantCommand(Robot.elevator.extend_solenoid, 
 ElevatorSolenoidRetract = lambda: InstantCommand(Robot.elevator.retract_solenoid, Robot.elevator)
 ElevatorSolenoidToggle = lambda: InstantCommand(Robot.elevator.solenoid.toggle, Robot.elevator)
 
+
 def restrict_robot_vel():
     Robot.drivetrain.max_vel = constants.drivetrain_max_climb_vel
 
+
 def set_initialized():
     Robot.elevator.initialized = True
+
 
 ElevatorSetupCommand = lambda: ParallelCommandGroup(
     InstantCommand(lambda: restrict_robot_vel()),
@@ -48,6 +51,7 @@ ElevatorSetupCommand = lambda: ParallelCommandGroup(
     InstantCommand(set_initialized),
     ElevatorSolenoidRetract()
 )
+
 
 # pull the robot onto the mid/high bar
 class ElevatorClimbStep1(SubsystemCommand[Elevator]):
@@ -86,7 +90,7 @@ class ElevatorClimbStep1(SubsystemCommand[Elevator]):
         # set grab status to true if limit switches on elevator hooks are pressed
         if self.subsystem.bar_on_climb_hooks():
             self.grabbed = True
-            
+
         # if we're not grabbed onto the bar and the elevator went pass the bar height, and send the elevator all the way back up again
         if self.subsystem.get_height() <= constants.elevator_min_bar_contact_height:
             if not self.grabbed:
@@ -97,7 +101,7 @@ class ElevatorClimbStep1(SubsystemCommand[Elevator]):
     # finish when the robot is pulled onto the bar and elevator not going up and down like crazy
     def isFinished(self) -> bool:
         return self.at_setpoint() and not (self.aborted or self.aborted2)
-    
+
     # check if we're at the height we tell the elevator to be
     def at_setpoint(self) -> bool:
         return abs(self.subsystem.get_height() - self.setpoint) <= self.tolerance
@@ -116,7 +120,7 @@ class ElevatorClimbStep2(SubsystemCommand[Elevator]):
         self.latched = False
         self.setpoint = constants.elevator_latch_height
         self.aborted = False
-        
+
     def execute(self) -> None:
         self.subsystem.set_height(self.setpoint)
 
@@ -136,13 +140,13 @@ class ElevatorClimbStep2(SubsystemCommand[Elevator]):
                 if not self.latched:
                     self.aborted = True
                     self.setpoint = constants.elevator_pull_down_height
-                    return False 
+                    return False
                 return True
             else:
                 self.aborted = False
                 self.setpoint = constants.elevator_latch_height
         return False
-    
+
     def at_setpoint(self) -> bool:
         return abs(self.subsystem.get_height() - self.setpoint) <= self.tolerance
 
@@ -157,7 +161,6 @@ class ElevatorClimbStep3(SubsystemCommand[Elevator]):
     def initialize(self) -> None:
         self.fired = False
 
-    
     # pull the elevator back, and if we pull the elevator pass a certain stage, extend the pistons
     def execute(self) -> None:
         self.subsystem.set_height(constants.elevator_extended_height)
@@ -167,8 +170,8 @@ class ElevatorClimbStep3(SubsystemCommand[Elevator]):
 
     def isFinished(self) -> bool:
         return abs(self.subsystem.get_height() - constants.elevator_extended_height) <= self.tolerance
-    
-    
+
+
 # (high to traverse) extend pistons so the the robot tilt's backwards, also extend elevator just below traversal bar
 class ElevatorClimbStep4(SubsystemCommand[Elevator]):
     def __init__(self, subsystem: T, tolerance: meters = 0.005):
@@ -179,7 +182,6 @@ class ElevatorClimbStep4(SubsystemCommand[Elevator]):
     def initialize(self) -> None:
         self.fired = False
 
-    
     # pull the elevator back, and if we pull the elevator pass a certain stage, extend the pistons
     def execute(self) -> None:
         self.subsystem.set_height(constants.elevator_below_extended_height)
@@ -260,7 +262,7 @@ class ElevatorClimbStep6(SubsystemCommand[Elevator]):
     def at_setpoint(self) -> bool:
         return abs(self.subsystem.get_height() - self.setpoint) <= self.tolerance
 
-    
+
 class ElevatorClimbStep7(SubsystemCommand[Elevator]):
     def __init__(self, subsystem: T, tolerance: meters = 0.005):
         super().__init__(subsystem)
@@ -268,7 +270,7 @@ class ElevatorClimbStep7(SubsystemCommand[Elevator]):
 
     def initialize(self) -> None:
         pass
-    
+
     def execute(self) -> None:
         self.subsystem.set_height(constants.elevator_latch_height)
 
@@ -308,37 +310,114 @@ def abort_fn():
     pass
 
 
-ElevatorClimbCommand = lambda: ConditionalCommand(
-    SequentialCommandGroup(
-        InstantCommand(lambda: Robot.elevator.set_climb_speed(), Robot.elevator),
-        ElevatorClimbStep1(Robot.elevator),
-        ElevatorClimbStep2(Robot.elevator),
-        ElevatorClimbStep3(Robot.elevator),
-        ElevatorSolenoidRetract().andThen(
-            SequentialCommandGroup(
-                WaitCommand(0.5),
-                ElevatorClimbStep1(Robot.elevator),
-                ElevatorClimbStep2(Robot.elevator),
-                InstantCommand(Robot.elevator.set_high_climb_speed),
-                ElevatorClimbStep4(Robot.elevator),
-                InstantCommand(Robot.elevator.set_climb_speed),
-                # WaitCommand(0.07),
-                WaitUntilTiltRange(Robot.elevator),
-                ElevatorClimbStep5(Robot.elevator),
-                ElevatorSolenoidRetract().andThen(
-                    SequentialCommandGroup(
-                        WaitCommand(0.75),
-                        ElevatorClimbStep6(Robot.elevator),
-                        WaitCommand(3.5),
-                        ElevatorClimbStep1(Robot.elevator),
-                        ElevatorClimbStep7(Robot.elevator)
-                    )
-                )
-            )
-        )
-    ),
-    InstantCommand(abort_fn), 
-    lambda: Robot.elevator.initialized
-)
+# ElevatorClimbCommand = lambda: ConditionalCommand(
+#     SequentialCommandGroup(
+#         InstantCommand(lambda: Robot.elevator.set_climb_speed(), Robot.elevator),
+#         ElevatorClimbStep1(Robot.elevator),
+#         ElevatorClimbStep2(Robot.elevator),
+#         ElevatorClimbStep3(Robot.elevator),
+#         ElevatorSolenoidRetract().andThen(
+#             SequentialCommandGroup(
+#                 WaitCommand(0.5),
+#                 ElevatorClimbStep1(Robot.elevator),
+#                 ElevatorClimbStep2(Robot.elevator),
+#                 InstantCommand(Robot.elevator.set_high_climb_speed),
+#                 ElevatorClimbStep4(Robot.elevator),
+#                 InstantCommand(Robot.elevator.set_climb_speed),
+#                 # WaitCommand(0.07),
+#                 WaitUntilTiltRange(Robot.elevator),
+#                 ElevatorClimbStep5(Robot.elevator),
+#                 ElevatorSolenoidRetract().andThen(
+#                     SequentialCommandGroup(
+#                         WaitCommand(0.75),
+#                         ElevatorClimbStep6(Robot.elevator),
+#                         WaitCommand(3.5),
+#                         ElevatorClimbStep1(Robot.elevator),
+#                         ElevatorClimbStep7(Robot.elevator)
+#                     )
+#                 )
+#             )
+#         )
+#     ),
+#     InstantCommand(abort_fn),
+#     lambda: Robot.elevator.initialized
+# )
 
-# changed the last wait command from 1 to 0.5, untested
+class ElevatorDownAllTheWay(SubsystemCommand[Elevator]):
+    def __init__(self, subsystem: T, tolerance: meters = 0.005):
+        super().__init__(subsystem)
+        self.tolerance = tolerance
+        self.setpoint = constants.elevator_pull_down_height
+
+    def initialize(self) -> None:
+        self.setpoint = constants.elevator_pull_down_height
+
+    def execute(self) -> None:
+        self.subsystem.set_height(self.setpoint)
+
+    def isFinished(self) -> bool:
+        return self.at_setpoint()
+
+    def at_setpoint(self) -> bool:
+        return abs(self.subsystem.get_height() - self.setpoint) <= self.tolerance
+
+class ElevatorUpTillTrex(SubsystemCommand[Elevator]):
+    def __init__(self, subsystem: T, tolerance: meters = 0.005):
+        super().__init__(subsystem)
+        self.tolerance = tolerance
+        self.setpoint = constants.elevator_fire_height
+
+    def initialize(self) -> None:
+        self.setpoint = constants.elevator_fire_height
+
+    def execute(self) -> None:
+        self.subsystem.set_height(self.setpoint)
+
+    def isFinished(self) -> bool:
+        return self.at_setpoint()
+
+    def at_setpoint(self) -> bool:
+        return abs(self.subsystem.get_height() - self.setpoint) <= self.tolerance
+
+class ElevatorUpTillBelowExtendedHeight(SubsystemCommand[Elevator]):
+    def __init__(self, subsystem: T, tolerance: meters = 0.005):
+        super().__init__(subsystem)
+        self.tolerance = tolerance
+        self.setpoint = constants.elevator_below_extended_height
+
+    def initialize(self) -> None:
+        self.setpoint = constants.elevator_below_extended_height
+
+    def execute(self) -> None:
+        self.subsystem.set_height(self.setpoint)
+
+    def isFinished(self) -> bool:
+        return self.at_setpoint()
+
+    def at_setpoint(self) -> bool:
+        return abs(self.subsystem.get_height() - self.setpoint) <= self.tolerance
+
+ElevatorClimbCommand = lambda: SequentialCommandGroup(
+        InstantCommand(lambda: Robot.elevator.set_climb_speed(), Robot.elevator),
+        ElevatorDownAllTheWay(Robot.elevator),
+        ElevatorUpTillTrex(Robot.elevator),
+        ElevatorSolenoidExtend(),
+        ElevatorUpTillBelowExtendedHeight(Robot.elevator)
+    )
+
+"""
+E CLimb LOGIC:
+
+1. Extend elevator to the top (Separate command)
+
+CLIMB COMMAND
+1. Retract elevator until set position - POSITION
+2. Extend elevator a little bit to catch the trex hooks - TIME
+3. Activate elevator solenoid while extending elevator - BOOL/TIME
+4. Grab the bar, keep pulling until set position - POSITION
+5. Extend elevator a little bit to catch the trex hooks - TIME
+6. Activate elevator solenoid while extending elevator - BOOL/TIME
+7. Grab the bar, keep pulling until set position - POSITION
+
+
+"""

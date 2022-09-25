@@ -77,9 +77,9 @@ class TurretAim(SubsystemCommand[Shooter]):
         self.ready_counts = ready_counts
         self.c_count = 0
         self.power = 0
-        self.max_power = .10
-        self.min_power = -.10
-        self.min_movement_power = .1
+        self.max_power = .30
+        self.min_power = -.30
+        self.min_movement_power = .3
 
         self.new_run = True
         self.initial_offset = 1

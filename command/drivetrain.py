@@ -30,7 +30,7 @@ AIM_max_angular_accel = 6
 
 
 class DriveSwerveCustom(SubsystemCommand[Drivetrain]):
-    driver_centric = True
+    driver_centric = False
     driver_centric_reversed = False
 
     def initialize(self) -> None:
