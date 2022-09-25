@@ -115,7 +115,7 @@ class ManuallyZeroedSwerveNode(SwerveNode):
 
 class PigeonIMUGyro(SwerveGyro):
     def __init__(self):
-        self._gyro = Pigeon2(13)
+        self._gyro = Pigeon2(26)
         self._gyro.configMountPose(0, 0, 0)
 
     def init(self):

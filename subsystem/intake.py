@@ -94,12 +94,7 @@ class Intake(Subsystem):
 
     def toggle_left_intake(self):
         if not self.DISABLE_INTAKES:
-            if self.left_intake_down:
-                #self.dinglebobs_extra = True
-                self.s_left.set(wpilib.DoubleSolenoid.Value.kReverse)
-                self.left_intake_down = False
-                self.left_intake_motor.set_raw_output(0)
-            else:
+            if not self.right_intake_down:
                 self.s_left.set(wpilib.DoubleSolenoid.Value.kForward)
                 self.left_intake_down = True
                 self.left_intake_motor.set_raw_output(self.intake_speed)
@@ -112,12 +107,7 @@ class Intake(Subsystem):
 
     def toggle_right_intake(self):
         if not self.DISABLE_INTAKES:
-            if self.right_intake_down:
-                #self.dinglebobs_extra = True
-                self.s_right.set(wpilib.DoubleSolenoid.Value.kReverse)
-                self.right_intake_down = False
-                self.right_intake_motor.set_raw_output(0)
-            else:
+            if not self.left_intake_down:
                 self.s_right.set(wpilib.DoubleSolenoid.Value.kForward)
                 self.right_intake_down = True
                 self.right_intake_motor.set_raw_output(self.intake_speed)

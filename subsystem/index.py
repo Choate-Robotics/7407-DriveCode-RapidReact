@@ -4,7 +4,6 @@ from robotpy_toolkit_7407.motors import TalonFX, TalonConfig
 
 from sensors import LimitSwitch
 from utils.can_optimizations import optimize_normal_talon_no_sensor
-
 import time
 
 _MOTOR_CFG = TalonConfig(neutral_brake=True)
@@ -17,7 +16,8 @@ class Index(Subsystem):
     photo_electric = LimitSwitch(0)
     left_limit = LimitSwitch(3)
     right_limit = LimitSwitch(5)
-
+    #ctre.BaseTalon.getSupplyCurrent #input
+    #ctre.BaseTalon.getStatorCurrent #output
     dinglebob_speed: float
     left_dinglebob_in: bool
     right_dinglebob_in: bool
@@ -30,6 +30,7 @@ class Index(Subsystem):
     resetBall = False
     destageBall = False
     
+    aiming = False
 
     def init(self):
         #self.motor.init()
@@ -46,8 +47,8 @@ class Index(Subsystem):
         self.right_oc = False
         self.staged_oc = False
 
-        self.dinglebob_speed = 1
-        self.dinglebob_eject_speed = 1
+        self.dinglebob_speed = .75
+        self.dinglebob_eject_speed = .75
         self.left_dinglebob_in = True
         self.right_dinglebob_in = True
 
@@ -133,14 +134,18 @@ class Index(Subsystem):
     def single_dinglebob_in(self, Dir):
         if Dir == "Right":
             self.right_dinglebob.set_raw_output(self.dinglebob_speed)
+            self.right_dinglebob_in = True
         elif Dir == "Left":
             self.left_dinglebob.set_raw_output(-self.dinglebob_speed)
+            self.left_dinglebob_in = True
 
     def single_dinglebob_out(self, Dir):
         if Dir == "Right":
             self.right_dinglebob.set_raw_output(-self.dinglebob_speed)
+            self.right_dinglebob_in = False
         elif Dir == "Left":
             self.left_dinglebob.set_raw_output(self.dinglebob_speed)
+            self.left_dinglebob_in = False
 
     def single_dinglebob_off(self, Dir):
         if Dir == "Right":
@@ -150,7 +155,7 @@ class Index(Subsystem):
             self.left_dinglebob.set_raw_output(0)
             self.left_dinglebob_in = False
     
-    def dinglebobs_control(self, Dir: str, Pos = "None"):
+    def dinglebobs_control(self, Dir: str, Pos: str):
         '''
         Control Dinglebobs based on ball location
 
@@ -172,11 +177,11 @@ class Index(Subsystem):
         elif Dir == "Left" or Dir == "Right":
             if not self.staged_oc:
                 self.dinglebob_travel(Dir)
-            elif Pos == "Staged":
+            elif Pos == "Stage":
                 self.single_dinglebob_out(Dir)
         elif Dir == "Stage":
             self.single_dinglebob_in(Pos)
 
-    def moveBall(self, Dir, pos = "none"): #jank as hell but for the time being works
+    def moveBall(self, Dir:str, pos:str = "none"):
         self.dinglebobs_control(Dir, pos)
 
