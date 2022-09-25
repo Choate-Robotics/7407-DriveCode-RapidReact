@@ -142,7 +142,6 @@ class _Robot(wpilib.TimedRobot):
                 config.AUTO = "two"
             else:
                 config.AUTO = "five"
-
         # print(Sensors.color_sensors.get_val_left(), Sensors.color_sensors.get_val_right())
         # print(Robot.elevator.mag_sensor.get_value())
         # print(Robot.shooter.mag_sensor.get_value())

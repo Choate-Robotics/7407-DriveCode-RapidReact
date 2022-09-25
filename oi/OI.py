@@ -49,9 +49,20 @@ class OI:
         def stop_shooting():
             Robot.shooter.shooting_over = True
 
-        Keymap.Drivetrain.AIM_SWERVE() \
-            .whenPressed(ShootWhileMoving(Robot.drivetrain, Robot.shooter)) \
-            .whenReleased(InstantCommand(stop_shooting))
+        def stage():
+            #print("Stage Keybind")
+            Robot.index.stage = True
+            Robot.index.aiming = True
+    
+        def deStage():
+            #print("DeStage Keybind")
+            Robot.index.destageBall = True
+            Robot.index.aiming = False
+        def resetBall():
+            #print("Reset ball keybind")
+            Robot.index.resetBall = True
+
+        Keymap.Drivetrain.AIM_SWERVE().whenPressed(stage).whenReleased(deStage)
 
         def driver_centric_enable():
             DriveSwerveCustom.driver_centric = True
@@ -79,18 +90,18 @@ class OI:
         Keymap.Elevator.ELEVATOR_CLIMB().whenPressed(command.ElevatorClimbCommand())
 
         def extend_dinglebob_runtime():
-            Robot.intake.dinglebob_run_extend = True
+            Robot.index.dinglebob_run_extend = True
             # print("extended")
 
         def stop_dinglebob_runtime():
-            Robot.intake.dinglebob_run_extend = False
+            Robot.index.dinglebob_run_extend = False
             # print("unextended")
 
         # Keymap.Intake.LEFT_INTAKE_TOGGLE() \
         #     .whenPressed(command.IntakeToggleLeft(Robot.intake)) \
         #     .whenReleased(command.IntakeToggleLeft(Robot.intake)) \
         Keymap.Intake.LEFT_INTAKE_TOGGLE() \
-            .whenPressed(Robot.intake.left_intake_enable) \
+            .whileHeld(Robot.intake.toggle_left_intake) \
             .whenReleased(Robot.intake.left_intake_disable) \
             # .whenReleased( \
         #    InstantCommand(extend_dinglebob_runtime) \
@@ -99,9 +110,10 @@ class OI:
         # Keymap.Intake.RIGHT_INTAKE_TOGGLE().whenPressed(command.IntakeToggleRight(Robot.intake)).whenReleased(command.IntakeToggleRight(Robot.intake)) ### TODO: SID SAYS CALL TO FIX INTAKES!!!!!
 
         Keymap.Intake.RIGHT_INTAKE_TOGGLE() \
-            .whenPressed(Robot.intake.right_intake_enable) \
+            .whileHeld(Robot.intake.toggle_right_intake) \
             .whenReleased(Robot.intake.right_intake_disable)
 
+        Keymap.Index.A_BUTTON().whenPressed(resetBall)
         def auto_intake_on():
             Robot.intake.AUTO_INTAKE = True
 

@@ -19,9 +19,9 @@ _MOTOR_CFG = TalonConfig(
 class Elevator(Subsystem):
     motors: TalonGroup = TalonGroup(TalonFX(17, inverted=True), TalonFX(18, inverted=False), config=_MOTOR_CFG)
     solenoid: wpilib.DoubleSolenoid
-    l_elevator = [LimitSwitch(2), LimitSwitch(3)]
-    l_hanger_top = [LimitSwitch(4), LimitSwitch(5)]
-    l_hanger_bottom = [LimitSwitch(6), LimitSwitch(7)]
+    #l_elevator = [LimitSwitch(2), LimitSwitch(3)]
+    #l_hanger_top = [LimitSwitch(4), LimitSwitch(5)]
+    #l_hanger_bottom = [LimitSwitch(6), LimitSwitch(7)]
     mag_sensor = LimitSwitch(9)
     initialized: bool = False
 
