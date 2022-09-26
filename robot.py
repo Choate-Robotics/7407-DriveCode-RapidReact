@@ -171,7 +171,7 @@ class _Robot(wpilib.TimedRobot):
         # print("TURRET DESIRED ANGLE: ", Robot.shooter.set_turret_angle(radia * rad))
 
     def teleopPeriodic(self) -> None:
-        print(Robot.drivetrain.gyro.get_robot_heading())
+        # print(Robot.drivetrain.gyro.get_robot_heading())
         # print("Turret current angle: ", Robot.shooter.get_turret_rotation_angle())
 
         # Robot.shooter.m_turret.set_target_velocity(4)
