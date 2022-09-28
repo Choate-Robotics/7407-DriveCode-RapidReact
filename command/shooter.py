@@ -1,3 +1,4 @@
+import wpilib
 from networktables import NetworkTables
 from robotpy_toolkit_7407.command import SubsystemCommand
 from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit
@@ -79,7 +80,7 @@ class TurretAim(SubsystemCommand[Shooter]):
         self.power = 0
         self.max_power = .30
         self.min_power = -.30
-        self.min_movement_power = .3
+        self.min_movement_power = .1
 
         self.new_run = True
         self.initial_offset = 1
@@ -94,6 +95,23 @@ class TurretAim(SubsystemCommand[Shooter]):
 
         current_offset = Robot.limelight.table.getNumber('tx', None)
 
+        wpilib.SmartDashboard.putNumber("current_offset", current_offset)
+        wpilib.SmartDashboard.putNumber("power", self.power)
+
+        est_ty = Robot.limelight.table.getNumber('ty', None)
+
+        true_angle = Robot.limelight.k_cam_angle + math.radians(est_ty)
+        distance = (Robot.limelight.k_h_hub_height - Robot.limelight.k_cam_height) / math.tan(true_angle)
+
+        wpilib.SmartDashboard.putNumber("cam_angle", Robot.limelight.k_cam_angle)
+        wpilib.SmartDashboard.putNumber("est_ty", est_ty)
+        wpilib.SmartDashboard.putNumber("est_ty_degrees", math.radians(est_ty))
+        wpilib.SmartDashboard.putNumber("true_angle", true_angle)
+
+        wpilib.SmartDashboard.putNumber("distance", distance)
+
+        self.subsystem.target_stationary(distance)
+
         if abs(current_offset) > 3:
             if self.new_run:
                 print("NEW RUN, SETTING INITIAL OFFSET TO CURRENT OFFSET")
@@ -106,7 +124,7 @@ class TurretAim(SubsystemCommand[Shooter]):
             elif current_offset < 0:
                 sign = -1
 
-            offset_ratio = max(min(current_offset/self.initial_offset, 1), -1)
+            offset_ratio = max(min(current_offset / self.initial_offset, 1), -1)
             # self.power = abs(max(min(self.power*(offset_ratio), self.max_power), self.min_power)) * sign
             self.power = abs(max(min(self.power, self.max_power), self.min_power)) * sign
 
