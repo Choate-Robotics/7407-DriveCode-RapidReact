@@ -79,13 +79,13 @@ class TurretAim(SubsystemCommand[Shooter]):
         self.c_count = 0
         self.power = 0
         self.max_power = .30
-        self.min_power = -.30
-        self.min_movement_power = .1
+        self.min_power = .10
+        self.min_movement_power = .20
+
+        self.multiplier = .02  # Multiplies current offset by this multiplier to get power
 
         self.new_run = True
         self.initial_offset = 1
-
-        self.multiplier = .9
 
     def initialize(self) -> None:
         # self.old_offset = Robot.limelight.table.getNumber('tx', None)
@@ -96,7 +96,6 @@ class TurretAim(SubsystemCommand[Shooter]):
         current_offset = Robot.limelight.table.getNumber('tx', None)
 
         wpilib.SmartDashboard.putNumber("current_offset", current_offset)
-        wpilib.SmartDashboard.putNumber("power", self.power)
 
         est_ty = Robot.limelight.table.getNumber('ty', None)
 
@@ -126,6 +125,8 @@ class TurretAim(SubsystemCommand[Shooter]):
 
             offset_ratio = max(min(current_offset / self.initial_offset, 1), -1)
             # self.power = abs(max(min(self.power*(offset_ratio), self.max_power), self.min_power)) * sign
+            self.power = current_offset * self.multiplier
+            wpilib.SmartDashboard.putNumber("power", self.power)
             self.power = abs(max(min(self.power, self.max_power), self.min_power)) * sign
 
             print("POWER: ", self.power)
