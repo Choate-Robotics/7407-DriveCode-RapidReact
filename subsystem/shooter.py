@@ -1,5 +1,6 @@
 import math
 
+import ctre
 from robotpy_toolkit_7407 import Subsystem
 from robotpy_toolkit_7407.motors import TalonFX, TalonConfig, ctre_motors
 from robotpy_toolkit_7407.utils.units import rad, deg, radians, meters_per_second, m, s

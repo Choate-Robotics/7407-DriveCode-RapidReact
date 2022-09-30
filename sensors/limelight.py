@@ -12,7 +12,7 @@ class Limelight:
         self.ty = 0
         self.refs = 0
         self.k_cam_height: meters = .864  # Height from ground to camera # .813
-        self.k_cam_angle: radians = (43 * deg).asNumber(rad)  # Angle from horizontal # 43 45
+        self.k_cam_angle: radians = (38 * deg).asNumber(rad)  # Angle from horizontal # 43 45 48
         self.k_h_hub_height = (8 * ft + 8 * inch).asNumber(m)
 
     def led_on(self):

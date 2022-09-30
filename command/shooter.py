@@ -73,104 +73,95 @@ class ShooterZero(SubsystemCommand[Shooter]):
 class TurretAim(SubsystemCommand[Shooter]):
     def __init__(self, subsystem, ready_counts=2):
         super().__init__(subsystem)
-        self.old_offset = .01
-        self.old_offset_ratio = 0
-        self.ready_counts = ready_counts
-        self.c_count = 0
         self.power = 0
-        self.max_power = .30
-        self.min_power = .10
-        self.min_movement_power = .20
 
-        self.multiplier = .02  # Multiplies current offset by this multiplier to get power
+        self.min_absolute_power = .10
+        self.max_absolute_power = .30
 
-        self.new_run = True
-        self.initial_offset = 1
+        self.limit_backward = False
+        self.limit_forward = False
+
+        self.default_movement_power = .20
+
+        self.p = .02  # Multiplies current offset by this multiplier to get power
+        self.i = 0
+        self.d = 0
+
+        self.min_angle = 0
+        self.max_angle = math.radians(self.subsystem.turret_max_angle)
 
     def initialize(self) -> None:
-        # self.old_offset = Robot.limelight.table.getNumber('tx', None)
-        self.power = 0
+        pass
 
     def execute(self) -> None:
+        # Soft limit based on turret range
+        current_angle = math.degrees(Robot.shooter.get_turret_rotation_angle())
+        wpilib.SmartDashboard.putNumber("current_angle", current_angle)
+        wpilib.SmartDashboard.putNumber("limit_backward", self.limit_backward)
+        wpilib.SmartDashboard.putNumber("limit_forward", self.limit_forward)
+
+        if current_angle <= 45:
+            self.limit_backward = True
+        else:
+            self.limit_backward = False
+
+        if current_angle >= 200:
+            self.limit_forward = True
+        else:
+            self.limit_forward = False
 
         current_offset = Robot.limelight.table.getNumber('tx', None)
 
-        wpilib.SmartDashboard.putNumber("current_offset", current_offset)
-
-        est_ty = Robot.limelight.table.getNumber('ty', None)
-
-        true_angle = Robot.limelight.k_cam_angle + math.radians(est_ty)
-        distance = (Robot.limelight.k_h_hub_height - Robot.limelight.k_cam_height) / math.tan(true_angle)
-
-        wpilib.SmartDashboard.putNumber("cam_angle", Robot.limelight.k_cam_angle)
-        wpilib.SmartDashboard.putNumber("est_ty", est_ty)
-        wpilib.SmartDashboard.putNumber("est_ty_degrees", math.radians(est_ty))
-        wpilib.SmartDashboard.putNumber("true_angle", true_angle)
-
-        wpilib.SmartDashboard.putNumber("distance", distance)
-
-        self.subsystem.target_stationary(distance)
-
-        if abs(current_offset) > 3:
-            if self.new_run:
-                print("NEW RUN, SETTING INITIAL OFFSET TO CURRENT OFFSET")
-                self.initial_offset = int(current_offset)
-                self.power = self.min_movement_power
-            self.new_run = False
-
-            if current_offset > 0:
-                sign = 1
-            elif current_offset < 0:
-                sign = -1
-
-            offset_ratio = max(min(current_offset / self.initial_offset, 1), -1)
-            # self.power = abs(max(min(self.power*(offset_ratio), self.max_power), self.min_power)) * sign
-            self.power = current_offset * self.multiplier
-            wpilib.SmartDashboard.putNumber("power", self.power)
-            self.power = abs(max(min(self.power, self.max_power), self.min_power)) * sign
-
-            print("POWER: ", self.power)
-            print("INITIAL OFFSET:", self.initial_offset, "CURRENT OFFSET: ", current_offset)
-            print("OFFSET RATIO: ", offset_ratio)
-
-            self.subsystem.m_turret.set_raw_output(self.power)
-
-        elif current_offset:
-            self.new_run = True
-            self.initial_offset = 1
-            true_angle = Robot.limelight.k_cam_angle + Robot.limelight.table.getNumber('ty', None)
+        if current_offset is not None:
+            est_ty = Robot.limelight.table.getNumber('ty', None)
+            true_angle = Robot.limelight.k_cam_angle + math.radians(est_ty)
             distance = (Robot.limelight.k_h_hub_height - Robot.limelight.k_cam_height) / math.tan(true_angle)
-            # self.subsystem.target_stationary(distance)
-            self.subsystem.m_turret.set_raw_output(0)
+            self.subsystem.target_stationary(distance)
+
+            # wpilib.SmartDashboard.putNumber("current_offset", current_offset)
+            # wpilib.SmartDashboard.putNumber("cam_angle", Robot.limelight.k_cam_angle)
+            # wpilib.SmartDashboard.putNumber("est_ty", est_ty)
+            # wpilib.SmartDashboard.putNumber("est_ty_degrees", math.radians(est_ty))
+            # wpilib.SmartDashboard.putNumber("true_angle", true_angle)
+            # wpilib.SmartDashboard.putNumber("distance", distance)
+
+            if abs(current_offset) > 3:
+                self.power = self.default_movement_power
+
+                if current_offset > 0:
+                    if self.limit_forward:
+                        sign = 0
+                    else:
+                        sign = 1
+                elif current_offset < 0:
+                    if self.limit_backward:
+                        sign = 0
+                    else:
+                        sign = -1
+                else:
+                    sign = 0
+
+                self.power = abs(max(min(self.power, self.max_absolute_power), self.min_absolute_power)) * sign
+
+                self.subsystem.m_turret.set_raw_output(self.power)
+                wpilib.SmartDashboard.putNumber("power", self.power)
+
+            elif current_offset:
+                self.subsystem.m_turret.set_raw_output(0)
+
+            else:
+                self.subsystem.stop()
+                self.subsystem.m_turret.set_raw_output(0)
+
         else:
-            self.new_run = True
-            self.initial_offset = 1
             self.subsystem.stop()
             self.subsystem.m_turret.set_raw_output(0)
-
-        # self.old_limelight = Robot.limelight.get_x_offset()
-
-        # d_theta = self.subsystem.get_turret_rotation_velocity()
-        # d_current = Robot.limelight.get_x_offset()
-        # d_omega = self.old_limelight - d_current
-
-        # d_theta = d_theta*d_current/d_omega
-        #
-        # if abs(self.subsystem.get_turret_rotation_velocity()) < .1 and Robot.limelight.get_x_offset() != 0:
-        #     self.c_count += 1
-        #     if self.c_count >= self.ready_counts:
-        #         self.subsystem.ready = True
-        # else:
-        #     self.c_count = 0
-        #     self.subsystem.ready = False
-        #
-        # print(d_theta)
-
-        # self.subsystem.m_turret.set_raw_output(d_theta)
 
     def end(self, interrupted: bool) -> None:
         Robot.shooter.ready = False
         Robot.limelight.ref_off()
+        Robot.shooter.stop()
+        Robot.shooter.m_turret.set_raw_output(0)
 
     def isFinished(self) -> bool:
         return False
