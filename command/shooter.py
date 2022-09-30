@@ -75,20 +75,22 @@ class TurretAim(SubsystemCommand[Shooter]):
         super().__init__(subsystem)
         self.power = 0
 
-        self.min_absolute_power = .10
-        self.max_absolute_power = .30
+        self.min_absolute_power = .07
+        self.max_absolute_power = .80
 
         self.limit_backward = False
         self.limit_forward = False
 
         self.default_movement_power = .20
 
-        self.p = .02  # Multiplies current offset by this multiplier to get power
+        self.p = .0275  # Multiplies current offset by this multiplier to get power .03
         self.i = 0
         self.d = 0
 
         self.min_angle = 0
-        self.max_angle = math.radians(self.subsystem.turret_max_angle)
+        self.max_angle = self.subsystem.turret_max_angle
+
+        self.limelight_angle_threshold = 2
 
     def initialize(self) -> None:
         pass
@@ -100,12 +102,12 @@ class TurretAim(SubsystemCommand[Shooter]):
         wpilib.SmartDashboard.putNumber("limit_backward", self.limit_backward)
         wpilib.SmartDashboard.putNumber("limit_forward", self.limit_forward)
 
-        if current_angle <= 45:
+        if current_angle <= (self.min_angle + 10):
             self.limit_backward = True
         else:
             self.limit_backward = False
 
-        if current_angle >= 200:
+        if current_angle >= (self.max_angle - 10):
             self.limit_forward = True
         else:
             self.limit_forward = False
@@ -118,15 +120,17 @@ class TurretAim(SubsystemCommand[Shooter]):
             distance = (Robot.limelight.k_h_hub_height - Robot.limelight.k_cam_height) / math.tan(true_angle)
             self.subsystem.target_stationary(distance)
 
-            # wpilib.SmartDashboard.putNumber("current_offset", current_offset)
+            wpilib.SmartDashboard.putNumber("current_offset", current_offset)
+            wpilib.SmartDashboard.putNumber("pid power", current_offset * self.p)
             # wpilib.SmartDashboard.putNumber("cam_angle", Robot.limelight.k_cam_angle)
             # wpilib.SmartDashboard.putNumber("est_ty", est_ty)
             # wpilib.SmartDashboard.putNumber("est_ty_degrees", math.radians(est_ty))
             # wpilib.SmartDashboard.putNumber("true_angle", true_angle)
             # wpilib.SmartDashboard.putNumber("distance", distance)
 
-            if abs(current_offset) > 3:
-                self.power = self.default_movement_power
+            if abs(current_offset) > self.limelight_angle_threshold:
+                # self.power = self.default_movement_power
+                self.power = abs(current_offset * self.p)
 
                 if current_offset > 0:
                     if self.limit_forward:

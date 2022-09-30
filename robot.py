@@ -55,6 +55,9 @@ class _Robot(wpilib.TimedRobot):
         self.emergency = True
 
     def robotInit(self):
+
+        self.turret_zeroed = False
+
         wpilib.LiveWindow.disableAllTelemetry()  # Disable Telemetry on Robot Startup to reduce loop time
         """
         Called on robot startup. Here the subsystems and oi are all initialized.
@@ -150,25 +153,29 @@ class _Robot(wpilib.TimedRobot):
         # logger.info(f"TURRET CURRENT POSITION IN DEGREES: {math.degrees(Robot.shooter.m_turret.get_sensor_position()/constants.turret_angle_gear_ratio)}")
 
     def teleopInit(self) -> None:
+
+        if not self.turret_zeroed:
+            # This will become a command soon
+            while not Robot.shooter.mag_sensor.get_value():
+                Robot.shooter.m_turret.set_raw_output(-.1)
+                # Manually set raw output
+
+            Robot.shooter.m_turret.set_raw_output(0)
+            Robot.shooter.m_turret.set_sensor_position(0)
+
+            # degrees = 125
+            # radia = math.radians(degrees)
+
+            # print("TURRET DESIRED ANGLE: ", Robot.shooter.set_turret_angle(radia * rad))
+
+            self.turret_zeroed = True
+
         Robot.elevator.initialized = False
         commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
         commands2.CommandScheduler.getInstance().schedule(BallPath(Robot.index))
         commands2.CommandScheduler.getInstance().schedule(TurretAim(Robot.shooter))
         commands2.CommandScheduler.getInstance().schedule(ElevatorRezero(Robot.elevator))
         Robot.index.ball_queue = 0
-
-        # This will become a command soon
-        # while not Robot.shooter.mag_sensor.get_value():
-        #     Robot.shooter.m_turret.set_raw_output(-.1)
-        #     # Manually set raw output
-        #
-        # Robot.shooter.m_turret.set_raw_output(0)
-        # Robot.shooter.m_turret.set_sensor_position(0)
-        #
-        # degrees = 125
-        # radia = math.radians(degrees)
-        #
-        # print("TURRET DESIRED ANGLE: ", Robot.shooter.set_turret_angle(radia * rad))
 
     def teleopPeriodic(self) -> None:
         # print(Robot.drivetrain.gyro.get_robot_heading())

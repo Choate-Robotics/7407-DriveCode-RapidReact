@@ -34,7 +34,7 @@ class Shooter(Subsystem):
     sensor_zero_angle = (15 * deg).asNumber(rad)
     turret_zero_units = 0
     turret_max_units = 70459 * talon_sensor_unit
-    turret_max_angle = 246 * deg
+    turret_max_angle = 246
     angle_range = (45 * deg).asNumber(rad)
     turret_range = (236 * deg).asNumber(rad)
 
