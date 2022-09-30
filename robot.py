@@ -163,11 +163,6 @@ class _Robot(wpilib.TimedRobot):
             Robot.shooter.m_turret.set_raw_output(0)
             Robot.shooter.m_turret.set_sensor_position(0)
 
-            # degrees = 125
-            # radia = math.radians(degrees)
-
-            # print("TURRET DESIRED ANGLE: ", Robot.shooter.set_turret_angle(radia * rad))
-
             self.turret_zeroed = True
 
         Robot.elevator.initialized = False
