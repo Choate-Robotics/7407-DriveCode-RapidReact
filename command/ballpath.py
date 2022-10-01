@@ -477,7 +477,7 @@ class BallPath(SubsystemCommand[Index]):
                         if not x == 30000:
                             Ball.ball[x].setPos("Stage")
 
-    def leftIntake(self):
+    def leftIntake(self, left_color):
         if Robot.intake.left_intake_down:
             '''
             Logic:
@@ -557,7 +557,7 @@ class BallPath(SubsystemCommand[Index]):
             else:
                 Robot.index.single_dinglebob_off("Left")
 
-    def rightIntake(self):
+    def rightIntake(self, right_color):
         if Robot.intake.right_intake_down:
             '''
             Logic:
@@ -720,9 +720,9 @@ class BallPath(SubsystemCommand[Index]):
             
             self.shooting(False) #if shooting (False or True for automatic shooting)
 
-            self.leftIntake() #if left intake is down
+            self.leftIntake(left_color) #if left intake is down
 
-            self.rightIntake() #if right intake is down
+            self.rightIntake(right_color) #if right intake is down
 
             self.resetBall() #if reset ball button is pressed         
 
