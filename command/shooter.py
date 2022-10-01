@@ -132,8 +132,8 @@ class TurretAim(SubsystemCommand[Shooter]):
 
             est_ty = Robot.limelight.table.getNumber('ty', None)
             true_angle = Robot.limelight.k_cam_angle + math.radians(est_ty)
-            distance = (Robot.limelight.k_h_hub_height - Robot.limelight.k_cam_height) / math.tan(true_angle)
-
+            distance = (Robot.limelight.k_h_hub_height - Robot.limelight.k_cam_height) / math.tan(true_angle) + .5 # constant for lower turret
+            wpilib.SmartDashboard.putNumber("Distance to Hub", distance)
             if self.limelight_detected_counts >= 3:
                 self.subsystem.target_stationary(distance)
             else:
