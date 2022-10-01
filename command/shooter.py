@@ -106,6 +106,8 @@ class TurretAim(SubsystemCommand[Shooter]):
 
         wpilib.SmartDashboard.putNumber("detected_counts", self.limelight_detected_counts)
 
+        wpilib.SmartDashboard.putBoolean("Shooter Ready", Robot.shooter.ready)
+
         if self.limelight_detected_counts < 3:
             self.subsystem.stop()
 
