@@ -92,6 +92,8 @@ class TurretAim(SubsystemCommand[Shooter]):
 
         self.limelight_angle_threshold = 2
 
+        self.limelight_detected_counts = 0
+
     def initialize(self) -> None:
         pass
 
@@ -101,6 +103,11 @@ class TurretAim(SubsystemCommand[Shooter]):
         wpilib.SmartDashboard.putNumber("current_angle", current_angle)
         wpilib.SmartDashboard.putNumber("limit_backward", self.limit_backward)
         wpilib.SmartDashboard.putNumber("limit_forward", self.limit_forward)
+
+        wpilib.SmartDashboard.putNumber("detected_counts", self.limelight_detected_counts)
+
+        if self.limelight_detected_counts < 3:
+            self.subsystem.stop()
 
         if current_angle <= (self.min_angle + 10):
             self.limit_backward = True
@@ -115,10 +122,25 @@ class TurretAim(SubsystemCommand[Shooter]):
         current_offset = Robot.limelight.table.getNumber('tx', None)
 
         if current_offset is not None:
+
+            if current_offset == 0:
+                self.limelight_detected_counts = 0
+
+            self.limelight_detected_counts += 1
+
             est_ty = Robot.limelight.table.getNumber('ty', None)
             true_angle = Robot.limelight.k_cam_angle + math.radians(est_ty)
             distance = (Robot.limelight.k_h_hub_height - Robot.limelight.k_cam_height) / math.tan(true_angle)
-            self.subsystem.target_stationary(distance)
+
+            if self.limelight_detected_counts >= 3:
+                self.subsystem.target_stationary(distance)
+            else:
+                self.subsystem.stop()
+
+            if self.limelight_detected_counts >= 6:
+                Robot.shooter.ready = True
+            else:
+                Robot.shooter.ready = False
 
             wpilib.SmartDashboard.putNumber("current_offset", current_offset)
             wpilib.SmartDashboard.putNumber("pid power", current_offset * self.p)
@@ -150,11 +172,7 @@ class TurretAim(SubsystemCommand[Shooter]):
                 self.subsystem.m_turret.set_raw_output(self.power)
                 wpilib.SmartDashboard.putNumber("power", self.power)
 
-            elif current_offset:
-                self.subsystem.m_turret.set_raw_output(0)
-
             else:
-                self.subsystem.stop()
                 self.subsystem.m_turret.set_raw_output(0)
 
         else:
