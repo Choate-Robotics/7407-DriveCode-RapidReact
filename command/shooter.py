@@ -137,7 +137,7 @@ class TurretAim(SubsystemCommand[Shooter]):
             else:
                 self.subsystem.stop()
 
-            if self.limelight_detected_counts >= 6:
+            if self.limelight_detected_counts >= 6 and abs(Robot.drivetrain.chassis_speeds.omega) < 0.1:
                 Robot.shooter.ready = True
             else:
                 Robot.shooter.ready = False
