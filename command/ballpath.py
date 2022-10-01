@@ -71,8 +71,9 @@ class Ball():
     def posNum(oc: str):
         x = 0
         for i in range(len(Ball.ball)):
-            if Ball.ball[i].position == oc:
-                x = i
+            if not Ball.ball[i].removed:
+                if Ball.ball[i].position == oc:
+                    x = i
             i += 1
         return x
     
@@ -227,30 +228,31 @@ class Ball():
 
                 sets raw power of dinglebobs #control of specific dinglebob movement in in index subsystem
         '''
-        nPos = pos
-        if self.findBalls(nPos) != True:
-            print(self.findBalls(nPos))
-            Robot.index.single_dinglebob_off(self.position)
-            return self.findBalls(nPos)
-        else:
-            if not self.moving:
-                y: object
-                match self.position:
-                    case "Left":
-                        y = Robot.index.left_limit
-                    case "Right":
-                        y = Robot.index.right_limit
-                    case "Stage":
-                        y = Robot.index.photo_electric
-                    case "Shoot":
-                        pass
-                if self.position != "Shoot":
-                    if not y.get_value():
-                        self.intakeInvalid(self.position)
-            self.moving = nPos
-            self.__move(nPos)
+        if self.removed == False:
+            nPos = pos
+            if self.findBalls(nPos) != True:
+                print(self.findBalls(nPos))
+                Robot.index.single_dinglebob_off(self.position)
+                return self.findBalls(nPos)
+            else:
+                if not self.moving:
+                    y: object
+                    match self.position:
+                        case "Left":
+                            y = Robot.index.left_limit
+                        case "Right":
+                            y = Robot.index.right_limit
+                        case "Stage":
+                            y = Robot.index.photo_electric
+                        case "Shoot":
+                            pass
+                    if self.position != "Shoot":
+                        if not y.get_value():
+                            self.intakeInvalid(self.position)
+                self.moving = nPos
+                self.__move(nPos)
 
-            return True
+                return True
 
     def isDone(self, pos):
         '''
