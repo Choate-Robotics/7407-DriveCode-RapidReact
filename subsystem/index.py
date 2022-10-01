@@ -47,8 +47,8 @@ class Index(Subsystem):
         self.right_oc = False
         self.staged_oc = False
 
-        self.dinglebob_speed = .75
-        self.dinglebob_eject_speed = .75
+        self.dinglebob_speed = 1
+        self.dinglebob_eject_speed = 1
         self.left_dinglebob_in = True
         self.right_dinglebob_in = True
 
