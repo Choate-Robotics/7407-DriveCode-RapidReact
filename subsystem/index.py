@@ -47,8 +47,8 @@ class Index(Subsystem):
         self.right_oc = False
         self.staged_oc = False
 
-        self.dinglebob_speed = 1
-        self.dinglebob_eject_speed = 1
+        self.dinglebob_speed = .8
+        self.dinglebob_eject_speed = .8
         self.left_dinglebob_in = True
         self.right_dinglebob_in = True
 
@@ -180,6 +180,8 @@ class Index(Subsystem):
             elif Pos == "Stage":
                 self.single_dinglebob_out(Dir)
         elif Dir == "Stage":
+            self.single_dinglebob_in(Pos)
+        elif Dir == "Shoot":
             self.single_dinglebob_in(Pos)
 
     def moveBall(self, Dir:str, pos:str = "none"):

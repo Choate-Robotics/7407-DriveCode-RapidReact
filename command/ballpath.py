@@ -99,6 +99,8 @@ class Ball():
 
         elif nPos == "Stage":
             Robot.index.staged_oc = True
+        elif nPos == "Shoot":
+            self.removed = True
     
     def findBalls(self, nPos):
         path_clear = True
@@ -187,6 +189,18 @@ class Ball():
             case "Stage":
                 print("Dinglebobs Stage")
                 InstantCommand(Robot.index.moveBall("Stage", cPos), Robot.index)
+            case "Shoot":
+                print("Dinglebobs Shoot")
+                y: str
+                if not Robot.index.left_oc:
+                    y = "Left"
+                    print("Left Not occupied, try there")
+                if not Robot.index.right_oc:
+                    y = "Right"
+                    print("right not occupied, try there")
+                else:
+                    y = "Left"
+                InstantCommand(Robot.index.moveBall("Shoot", y), Robot.index)
         self.newPos(pos)
 
     def setPos(self, pos, timeout = 5):
@@ -259,88 +273,33 @@ class Ball():
             case "Left":
                 print("Dinglebobs not left yet")
                 y = Robot.index.left_limit
-                # if Robot.intake.left_intake_down:
-                #     z = self.position
-                #     print(z)
-                #     x = 30000
-                #     c: str
-                #     for i in range(len(Ball.ball)):
-                #         if Ball.ball[i].position == z:
-                #             x = i
-                #         i += 1
-                #     if not x == 30000:
-                #         if not Robot.index.right_oc:
-                #             c = "Right"
-                #             print("Right Not occupied, try there")
-                #             Ball.ball[x].setPos(c)
-                #             return
-                #         elif not Robot.index.staged_oc:
-                #             c = "Stage"
-                #             print("Stage not occupied, try there")
-                #             Ball.ball[x].setPos(c)
-                #             return
-                # else:
-                #     y = Robot.index.left_limit
 
             case "Right":
                 print("Dinglebobs not right yet")
-                # if Robot.intake.right_intake_down:
-                #     z = self.position
-                #     print(z)
-                #     x = 30000
-                #     c: str
-                #     for i in range(len(Ball.ball)):
-                #         if Ball.ball[i].position == z:
-                #             x = i
-                #         i += 1
-                #     if not x == 30000:
-                #         if not Robot.index.left_oc:
-                #             c = "Left"
-                #             print("Left Not occupied, try there")
-                #             Ball.ball[x].setPos(c)
-                #             return
-                #         elif not Robot.index.staged_oc:
-                #             c = "Stage"
-                #             print("Stage not occupied, try there")
-                #             Ball.ball[x].setPos(c)
-                #             return
-                # else:
                 y = Robot.index.right_limit
 
             case "Stage":
                 # if Robot.index.aiming:
                 print("Stage not there yet")
                 y = Robot.index.photo_electric
-                # else:
-                #     y: str
-                #     z = self.position
-                #     print(z)
-                #     x = 30000
-                #     c: str
-                #     for i in range(len(Ball.ball)):
-                #         if Ball.ball[i].position == z:
-                #             x = i
-                #         i += 1
-                #     if not Robot.index.left_oc:
-                #         c = "Left"
-                #         print("Left Not occupied, try there")
-                #         Ball.ball[x].setPos(c)
-                #         return
-                #     if not Robot.index.right_oc:
-                #         c = "Right"
-                #         print("right not occupied, try there")
-                #         Ball.ball[x].setPos(c)
-                #         return
-                #     else:
-                #         print("No free destage")
-                #         y = Robot.index.photo_electric
-        if y.get_value():
-            print("Limit Reached")
-            Robot.index.dinglebobs_off()
-            # self.newPos(pos)
-            self.moving = False
+            case "Shoot":
+                y = Robot.index.photo_electric
+        if pos != "Shoot":
+            if y.get_value():
+                print("Limit Reached")
+                Robot.index.dinglebobs_off()
+                # self.newPos(pos)
+                self.moving = False
+            else:
+                print("Limit not reached")
         else:
-            print("Limit not reached")
+            if not y.get_value():
+                print("Limit Reached")
+                Robot.index.dinglebobs_off()
+                # self.newPos(pos)
+                self.moving = False
+            else:
+                print("Limit not reached")
    
 
     def purge(self):
@@ -350,8 +309,6 @@ class Ball():
     def remove(self):
         self.removed = True
 
-    def shoot(self):
-        x: str
         
 
 class BallPath(SubsystemCommand[Index]):
@@ -392,28 +349,36 @@ class BallPath(SubsystemCommand[Index]):
             Sensors.color_sensors.working = False
         
         #Manual Control overide hopefuly it works
-            
-        if abs(left_joy) > .5:
-            if left_joy < .5:
-                print("Left Joystick Movement In")
-                Robot.index.single_dinglebob_in("Left")
-            elif left_joy > .5:
-                print("Left Joystick Movement Out")
-                Robot.index.single_dinglebob_out("Left")
+
+        if abs(left_joy) > .5 or abs(right_joy) > .5:   
+            if abs(left_joy) > .5:
+                if left_joy < .5:
+                    print("Left Joystick Movement In")
+                    Robot.index.single_dinglebob_in("Left")
+                    Robot.intake.left_intake_motor.set_raw_output(-(left_joy))
+                elif left_joy > .5:
+                    print("Left Joystick Movement Out")
+                    Robot.index.single_dinglebob_out("Left")
+                    Robot.intake.left_intake_motor.set_raw_output(-(left_joy))
             else:
                 print("Left Joystick movement off")
                 Robot.index.single_dinglebob_off("Left")
+                Robot.intake.left_intake_motor.set_raw_output(0)
 
-        elif abs(right_joy) > .5:
-            if right_joy < .5:
-                print("Right Joystick movement in")
-                Robot.index.single_dinglebob_in("Right")
-            elif right_joy > .5:
-                print("Right Joystick movement out")
-                Robot.index.single_dinglebob_out("Right")
+            if abs(right_joy) > .5:
+                if right_joy < .5:
+                    print("Right Joystick movement in")
+                    Robot.index.single_dinglebob_in("Right")
+                    Robot.intake.right_intake_motor.set_raw_output(-(right_joy))
+                elif right_joy > .5:
+                    print("Right Joystick movement out")
+                    Robot.index.single_dinglebob_out("Right")
+                    Robot.intake.right_intake_motor.set_raw_output(-(right_joy))
             else:
                 print("Right Joystick movement off")
                 Robot.index.single_dinglebob_off("Right")
+                Robot.intake.right_intake_motor.set_raw_output(0)
+            
         else:
 
             if len(Ball.ball) > 0:
@@ -432,7 +397,7 @@ class BallPath(SubsystemCommand[Index]):
             #if Robot.intake.left_intake_down or Robot.intake.right_intake_down:
             
             if Ball.leftPress:
-                if Ball.ll < 25:
+                if Ball.ll < 2:
                     if not Robot.index.left_limit.get_value():
                         Ball.ll += 1
                 else:
@@ -440,7 +405,7 @@ class BallPath(SubsystemCommand[Index]):
                     Ball.leftPress = False
 
             if Ball.rightPress:
-                if Ball.rl < 25:
+                if Ball.rl < 2:
                     if not Robot.index.right_limit.get_value():
                         Ball.rl += 1
                 else:
@@ -448,7 +413,7 @@ class BallPath(SubsystemCommand[Index]):
                     Ball.rightPress = False
 
             if Ball.stagePress:
-                if Ball.sl < 25:
+                if Ball.sl < 2:
                     if not Robot.index.right_limit.get_value():
                         Ball.sl += 1
                 else:
@@ -533,6 +498,39 @@ class BallPath(SubsystemCommand[Index]):
                         print("No Ball in Stage")
                 Robot.index.destageBall = False
 
+            if Robot.shooter.ready:
+                if Robot.index.staged_oc:
+                    x = Ball.posNum("Stage")
+                    Ball.ball[x].setPos("Shoot")
+                else:
+                    pass
+                    # Shooting automatically
+                    # x = 30000
+                    # if Robot.intake.left_intake_down:
+                    #     x = Ball.posNum("Left")
+                    #     if x:
+                    #         Ball.ball[x].setPos("Stage")
+                    #     else:
+                    #         x = Ball.posNum("Right")
+                    #         if x:
+                    #             Ball.ball[x].setPos("Stage")
+                    # elif Robot.intake.right_intake_down:
+                    #     x = Ball.posNum("Right")
+                    #     if x:
+                    #         Ball.ball[x].setPos("Stage")
+                    #     else:
+                    #         x = Ball.posNum("Left")
+                    #         if x:
+                    #             Ball.ball[x].setPos("Stage")
+                    # else:
+                    #     x = False
+                    #     if Robot.index.left_oc:
+                    #         x = Ball.posNum("Left")
+                    #     if Robot.index.right_oc:
+                    #         x = Ball.posNum("Right")
+                    #     if not x == 30000:
+                    #         Ball.ball[x].setPos("Stage")
+            
             if Robot.intake.left_intake_down:
                 '''
                 Logic:
