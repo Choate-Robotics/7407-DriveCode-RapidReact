@@ -69,6 +69,23 @@ class DriveSwerveCustom(SubsystemCommand[Drivetrain]):
     def runsWhenDisabled(self) -> bool:
         return False
 
+class DriveSwerveEmpty(SubsystemCommand[Drivetrain]):
+
+    def initialize(self) -> None:
+        pass
+
+    def execute(self) -> None:
+        pass
+
+    def end(self, interrupted: bool) -> None:
+        pass
+
+    def isFinished(self) -> bool:
+        return False
+
+    def runsWhenDisabled(self) -> bool:
+        return False
+
 
 class ShootWhileMoving(Command):
     def __init__(self, drivetrain: Drivetrain, shooter: Shooter):

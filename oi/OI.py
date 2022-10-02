@@ -134,11 +134,17 @@ class OI:
             config.EJECT_ENABLE = not config.EJECT_ENABLE
 
         Keymap.BallPath.TOGGLE_AUTO_EJECT_COLOR().whenPressed(InstantCommand(change_team_color))
-        Keymap.BallPath.TOGGLE_AUTO_EJECT().whenPressed(InstantCommand(toggle_auto_eject))
+        Keymap.BallPath.TOGGLE_AUTO_EJECT().whenPressed(InstantCommand(toggle_auto_eject))  # .5
 
-        # Keymap.Shooter.SHOOTER_ENABLE().whileHeld(command.ShooterEnable(Robot.shooter))
-        Keymap.Shooter.SHOOTER_EJECT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, 7))  # .5
-        # Keymap.Shooter.SHOOTER_EJECT().whileHeld(command.shooter.NaiveDemoShot(Robot.shooter))
+        def set_aim_on():
+            Robot.shooter.aiming = True
+            command.DriveSwerveEmpty(Robot.drivetrain)
+
+        def set_aim_off():
+            Robot.shooter.aiming = False
+            DriveSwerveCustom(Robot.drivetrain)
+
+        Keymap.Shooter.SHOOTER_ENABLE().whenPressed(InstantCommand(set_aim_on)).whenReleased(InstantCommand(set_aim_off))
         # Keymap.Shooter.FENDER_SHOT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, .5))
         # Keymap.Shooter.SHOOTER_SHORT_EJECT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, .35))
 

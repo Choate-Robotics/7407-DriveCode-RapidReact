@@ -177,6 +177,19 @@ class _Robot(wpilib.TimedRobot):
         print("Turret current angle: ", math.degrees(Robot.shooter.get_turret_rotation_angle()))
 
         # Robot.shooter.m_turret.set_target_velocity(4)
+
+        # wpilib.SmartDashboard.putNumber("Hub Dist", math.degrees(Robot.odometry.hub_dist))
+        # wpilib.SmartDashboard.putNumber("Hub Angle", math.degrees(Robot.odometry.hub_angle))
+        print(Robot.drivetrain.odometry.getPose())
+        try:
+            wpilib.SmartDashboard.putNumber("Hub Dist", Robot.odometry.hub_dist)
+            wpilib.SmartDashboard.putNumber("Hub Angle", math.degrees(Robot.odometry.hub_angle))
+        except:
+            pass
+
+        # print("Hub Angle", Robot.odometry.hub_angle)
+        # print("Hub Dist", Robot.odometry.hub_dist)
+
         pass
 
     def autonomousInit(self) -> None:

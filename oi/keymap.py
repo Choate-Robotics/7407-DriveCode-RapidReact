@@ -41,8 +41,8 @@ class Keymap:
         TOGGLE_AUTO_EJECT_COLOR = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.X)
 
     class Shooter:
-        #SHOOTER_ENABLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.RT)
-        SHOOTER_EJECT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.A)
+        SHOOTER_ENABLE = DefaultButton(Controllers.DRIVER, controllerDRIVER.RT)
+        # SHOOTER_EJECT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.A)
         #FENDER_SHOT = DefaultButton(Controllers.DRIVER, controllerDRIVER.LT)
         #SHOOTER_SHORT_EJECT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.LT)
         #SHOOTER_OFFSET_UP = DefaultButton(Controllers.DRIVER, controllerDRIVER.LB)

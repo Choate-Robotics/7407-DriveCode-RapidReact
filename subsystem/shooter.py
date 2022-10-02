@@ -68,6 +68,7 @@ class Shooter(Subsystem):
         self.zeroed = self.left_limit.get_value()
         self.ready = False
         self.shooting_over = False
+        self.aiming = False
 
     def set_launch_angle(self, theta: radians):
         theta = math.radians(90) - theta - self.sensor_zero_angle
