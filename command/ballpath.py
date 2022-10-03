@@ -703,10 +703,18 @@ class BallPath(SubsystemCommand[Index]):
         if Robot.index.resetBall:
             Ball.reset()
 
+<<<<<<< Updated upstream
     def SmartDashboard(Self):
         wpilib.SmartDashboard.putNumber("Balls in Index", Ball.CurrentNum())
         wpilib.SmartDashboard.putNumber("Total Balls Shot", Ball.RemovedNum())
         wpilib.SmartDashboard.putNumber("Index Ball Count", Ball.ball_count)
+=======
+    def SmartDashboard(self):
+        wpilib.SmartDashboard.putBoolean("Auto Shooting", Robot.index.autoShoot)
+        wpilib.SmartDashboard.putNumber("Balls in Index", self.BallController.CurrentNum())
+        wpilib.SmartDashboard.putNumber("Total Balls Shot", self.BallController.RemovedNum())
+        wpilib.SmartDashboard.putNumber("Index Ball Count", Robot.index.ball_count)
+>>>>>>> Stashed changes
         wpilib.SmartDashboard.putBoolean("Left Side Occupied?", Robot.index.left_oc)
         wpilib.SmartDashboard.putBoolean("Right Side Occupied?", Robot.index.right_oc)
         wpilib.SmartDashboard.putBoolean("Stage Side Occupied?", Robot.index.staged_oc)
