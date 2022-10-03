@@ -136,15 +136,19 @@ class OI:
         Keymap.BallPath.TOGGLE_AUTO_EJECT_COLOR().whenPressed(InstantCommand(change_team_color))
         Keymap.BallPath.TOGGLE_AUTO_EJECT().whenPressed(InstantCommand(toggle_auto_eject))  # .5
 
-        def set_aim_on():
-            Robot.shooter.aiming = True
-            command.DriveSwerveEmpty(Robot.drivetrain)
+        def aim_on():
+            if Robot.limelight.table.getNumber('tx', None) is not None \
+                    and Robot.limelight.table.getNumber('tx', None) != 0:
+                Robot.shooter.aiming = True
+                command.DriveSwerveTurretAim(Robot.drivetrain)
+                command.TurretDriveAim(Robot.shooter)
 
-        def set_aim_off():
+        def aim_off():
             Robot.shooter.aiming = False
             DriveSwerveCustom(Robot.drivetrain)
+            command.TurretAim(Robot.shooter)
 
-        Keymap.Shooter.SHOOTER_ENABLE().whenPressed(InstantCommand(set_aim_on)).whenReleased(InstantCommand(set_aim_off))
+        Keymap.Shooter.SHOOTER_ENABLE().whenPressed(InstantCommand(aim_on)).whenReleased(InstantCommand(aim_off))
         # Keymap.Shooter.FENDER_SHOT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, .5))
         # Keymap.Shooter.SHOOTER_SHORT_EJECT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, .35))
 

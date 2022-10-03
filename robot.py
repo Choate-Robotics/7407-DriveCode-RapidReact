@@ -145,10 +145,6 @@ class _Robot(wpilib.TimedRobot):
                 config.AUTO = "two"
             else:
                 config.AUTO = "five"
-        # print(Sensors.color_sensors.get_val_left(), Sensors.color_sensors.get_val_right())
-        # print(Robot.elevator.mag_sensor.get_value())
-        # print(Robot.shooter.mag_sensor.get_value())
-        # print(Robot.index.photo_electric.get_value())
 
         # logger.info(f"TURRET CURRENT POSITION IN DEGREES: {math.degrees(Robot.shooter.m_turret.get_sensor_position()/constants.turret_angle_gear_ratio)}")
 
@@ -158,7 +154,6 @@ class _Robot(wpilib.TimedRobot):
             # This will become a command soon
             while not Robot.shooter.mag_sensor.get_value():
                 Robot.shooter.m_turret.set_raw_output(-.1)
-                # Manually set raw output
 
             Robot.shooter.m_turret.set_raw_output(0)
             Robot.shooter.m_turret.set_sensor_position(0)
@@ -173,23 +168,7 @@ class _Robot(wpilib.TimedRobot):
         Robot.index.ball_queue = 0
 
     def teleopPeriodic(self) -> None:
-        # print(Robot.drivetrain.gyro.get_robot_heading())
-        print("Turret current angle: ", math.degrees(Robot.shooter.get_turret_rotation_angle()))
-
-        # Robot.shooter.m_turret.set_target_velocity(4)
-
-        # wpilib.SmartDashboard.putNumber("Hub Dist", math.degrees(Robot.odometry.hub_dist))
-        # wpilib.SmartDashboard.putNumber("Hub Angle", math.degrees(Robot.odometry.hub_angle))
-        print(Robot.drivetrain.odometry.getPose())
-        try:
-            wpilib.SmartDashboard.putNumber("Hub Dist", Robot.odometry.hub_dist)
-            wpilib.SmartDashboard.putNumber("Hub Angle", math.degrees(Robot.odometry.hub_angle))
-        except:
-            pass
-
-        # print("Hub Angle", Robot.odometry.hub_angle)
-        # print("Hub Dist", Robot.odometry.hub_dist)
-
+        # print("Turret current angle: ", math.degrees(Robot.shooter.get_turret_rotation_angle()))
         pass
 
     def autonomousInit(self) -> None:

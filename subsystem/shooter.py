@@ -77,8 +77,6 @@ class Shooter(Subsystem):
 
     def set_turret_angle(self, theta: radians):
         self.m_turret.set_target_position(theta * constants.turret_angle_gear_ratio)
-        # self.m_turret.set_target_position(max(min(theta, self.turret_max_angle), 0) * constants.turret_angle_gear_ratio)
-        return theta * constants.turret_angle_gear_ratio
 
     def get_turret_rotation_velocity(self):
         return self.m_turret.get_sensor_velocity() / constants.turret_angle_gear_ratio

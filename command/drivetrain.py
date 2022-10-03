@@ -69,19 +69,47 @@ class DriveSwerveCustom(SubsystemCommand[Drivetrain]):
     def runsWhenDisabled(self) -> bool:
         return False
 
-class DriveSwerveEmpty(SubsystemCommand[Drivetrain]):
+
+class DriveSwerveTurretAim(SubsystemCommand[Drivetrain]):
+
+    def __init__(self, subsystem: Drivetrain):
+        super().__init__(subsystem)
+
+        self.pid_controller = ProfiledPIDControllerRadians(
+            AIM_kP, AIM_kI, AIM_kD,
+            TrapezoidProfileRadians.Constraints(
+                AIM_max_angular_vel, AIM_max_angular_accel
+            ), constants.period
+        )
+
+        self.ready = False
 
     def initialize(self) -> None:
-        pass
+        self.ready = False
 
     def execute(self) -> None:
-        pass
+
+        hub_angle = Robot.odometry.hub_angle
+        dx, dy = Robot.drivetrain.axis_dx.value, Robot.drivetrain.axis_dy.value
+
+        omega = self.pid_controller.calculate(hub_angle, 0)
+
+        dx *= constants.drivetrain_target_max_vel
+        dy *= -constants.drivetrain_target_max_vel
+
+        Robot.drivetrain.set((dx, dy), omega)
+
+        current_limelight_offset = Robot.limelight.table.getNumber('tx', None)
+
+        if current_limelight_offset is not None and current_limelight_offset != 0:
+            self.ready = True
 
     def end(self, interrupted: bool) -> None:
-        pass
+        Robot.shooter.aiming = False
+        DriveSwerveCustom(Robot.drivetrain)
 
     def isFinished(self) -> bool:
-        return False
+        return self.ready
 
     def runsWhenDisabled(self) -> bool:
         return False

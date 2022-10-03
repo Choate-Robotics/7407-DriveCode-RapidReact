@@ -78,43 +78,41 @@ class ShooterZero(SubsystemCommand[Shooter]):
         self.subsystem.stop()
         self.subsystem.m_angle.set_sensor_position(0 * talon_sensor_unit)
 
+
 class TurretAim(SubsystemCommand[Shooter]):
-    def __init__(self, subsystem, ready_counts=2):
+    def __init__(self, subsystem: Shooter):
         super().__init__(subsystem)
         self.power = 0
 
-        self.min_absolute_power = .07
-        self.max_absolute_power = .80
+        self.min_absolute_power = .07  # Minimum power of turret required to move it
+        self.max_absolute_power = .80  # Maximum movement power of turret allowed
 
+        # Soft limits for turret movement
         self.limit_backward = False
         self.limit_forward = False
 
-        self.default_movement_power = .20
+        self.default_movement_power = .20  # Default movement power of turret if not using pid
 
         self.p = .0275  # Multiplies current offset by this multiplier to get power .03
-        self.i = 0
-        self.d = 0
 
-        self.min_angle = 0
-        self.max_angle = self.subsystem.turret_max_angle
+        self.min_angle = 0  # Minimum angle of turret range
+        self.max_angle = self.subsystem.turret_max_angle  # Maximum angle of turret range
 
-        self.limelight_angle_threshold = 2
+        self.limelight_angle_threshold = 2  # Angle threshold for limelight to be considered on target
 
-        self.limelight_detected_counts = 0
+        self.limelight_detected_counts = 0  # Counts how many times limelight has detected target in a row
 
     def initialize(self) -> None:
         pass
 
     def execute(self) -> None:
         # Soft limit based on turret range
-        current_angle = math.degrees(Robot.shooter.get_turret_rotation_angle())
+        current_angle = math.degrees(self.subsystem.get_turret_rotation_angle())
         wpilib.SmartDashboard.putNumber("current_angle", current_angle)
         wpilib.SmartDashboard.putNumber("limit_backward", self.limit_backward)
         wpilib.SmartDashboard.putNumber("limit_forward", self.limit_forward)
-
         wpilib.SmartDashboard.putNumber("detected_counts", self.limelight_detected_counts)
-
-        wpilib.SmartDashboard.putBoolean("Shooter Ready", Robot.shooter.ready)
+        wpilib.SmartDashboard.putBoolean("Shooter Ready", self.subsystem.ready)
 
         if self.limelight_detected_counts < 3:
             self.subsystem.stop()
@@ -136,30 +134,6 @@ class TurretAim(SubsystemCommand[Shooter]):
 
             if current_offset == 0:
                 self.limelight_detected_counts = 0
-                if self.subsystem.aiming:
-                    AIM_kP = 3.5
-                    AIM_kI = 0
-                    AIM_kD = 0
-                    AIM_max_angular_vel = 6
-                    AIM_max_angular_accel = 6
-
-                    self.pid_controller = ProfiledPIDControllerRadians(
-                        AIM_kP, AIM_kI, AIM_kD,
-                        TrapezoidProfileRadians.Constraints(
-                            AIM_max_angular_vel, AIM_max_angular_accel
-                        ), constants.period
-                    )
-
-                    hub_angle = Robot.odometry.hub_angle
-                    dx, dy = Robot.drivetrain.axis_dx.value, Robot.drivetrain.axis_dy.value
-
-                    omega = self.pid_controller.calculate(hub_angle, 0)
-
-                    dx *= constants.drivetrain_target_max_vel
-                    dy *= -constants.drivetrain_target_max_vel
-
-                    Robot.drivetrain.set((dx, dy), omega)
-
             self.limelight_detected_counts += 1
 
             est_ty = Robot.limelight.table.getNumber('ty', None)
@@ -167,23 +141,12 @@ class TurretAim(SubsystemCommand[Shooter]):
             distance = (Robot.limelight.k_h_hub_height - Robot.limelight.k_cam_height) / math.tan(true_angle)
 
             if self.limelight_detected_counts >= 3:
-                Robot.shooter.aiming = False
                 self.subsystem.target_stationary(distance)
             else:
                 self.subsystem.stop()
 
-            wpilib.SmartDashboard.putNumber("current_offset", current_offset)
-            wpilib.SmartDashboard.putNumber("pid power", current_offset * self.p)
-            # wpilib.SmartDashboard.putNumber("cam_angle", Robot.limelight.k_cam_angle)
-            # wpilib.SmartDashboard.putNumber("est_ty", est_ty)
-            # wpilib.SmartDashboard.putNumber("est_ty_degrees", math.radians(est_ty))
-            # wpilib.SmartDashboard.putNumber("true_angle", true_angle)
-            # wpilib.SmartDashboard.putNumber("distance", distance)
-
             if abs(current_offset) > self.limelight_angle_threshold:
-                Robot.shooter.aiming = False
-
-                Robot.shooter.ready = False
+                self.subsystem.ready = False
 
                 self.power = abs(current_offset * self.p)
 
@@ -208,40 +171,41 @@ class TurretAim(SubsystemCommand[Shooter]):
             else:
                 self.subsystem.m_turret.set_raw_output(0)
                 if self.limelight_detected_counts >= 6 and abs(Robot.drivetrain.chassis_speeds.omega) < 0.1:
-                    Robot.shooter.aiming = False
-                    Robot.shooter.ready = True
+                    self.subsystem.ready = True
                 else:
-                    Robot.shooter.ready = False
+                    self.subsystem.ready = False
 
         else:
             self.subsystem.stop()
             self.subsystem.m_turret.set_raw_output(0)
-            Robot.shooter.ready = False
+            self.subsystem.ready = False
 
     def end(self, interrupted: bool) -> None:
-        Robot.shooter.ready = False
+        self.subsystem.ready = False
         Robot.limelight.ref_off()
-        Robot.shooter.stop()
-        Robot.shooter.m_turret.set_raw_output(0)
+        self.subsystem.stop()
+        self.subsystem.m_turret.set_raw_output(0)
 
     def isFinished(self) -> bool:
         return False
+
 
 class TurretDriveAim(SubsystemCommand[Shooter]):
     def __init__(self, subsystem: Shooter):
         super().__init__(subsystem)
 
     def initialize(self) -> None:
-        self.subsystem.set_launch_angle(.2)
+        self.subsystem.set_turret_angle(math.radians(125))
+        self.subsystem.target_stationary(Robot.odometry.hub_dist)
 
     def execute(self) -> None:
         pass
 
     def isFinished(self) -> bool:
-        return False
+        return not self.subsystem.aiming
 
     def end(self, interrupted: bool) -> None:
-        self.subsystem.stop()
+        TurretAim(self.subsystem)
 
 
 class NaiveDemoShot(SubsystemCommand[Shooter]):
