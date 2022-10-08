@@ -169,6 +169,11 @@ class _Robot(wpilib.TimedRobot):
 
     def teleopPeriodic(self) -> None:
         # print("Turret current angle: ", math.degrees(Robot.shooter.get_turret_rotation_angle()))
+        wpilib.SmartDashboard.putBoolean("AIMING", Robot.shooter.aiming)
+        try:
+            wpilib.SmartDashboard.putNumber("HUBBA_ANGLE", math.degrees(Robot.odometry.hub_angle))
+        except:
+            pass
         pass
 
     def autonomousInit(self) -> None:

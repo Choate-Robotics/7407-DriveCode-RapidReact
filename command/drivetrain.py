@@ -86,8 +86,10 @@ class DriveSwerveTurretAim(SubsystemCommand[Drivetrain]):
 
     def initialize(self) -> None:
         self.ready = False
+        Robot.shooter.aiming = True
 
     def execute(self) -> None:
+        print("Running DriveSwerveTurretAim.")
 
         hub_angle = Robot.odometry.hub_angle
         dx, dy = Robot.drivetrain.axis_dx.value, Robot.drivetrain.axis_dy.value
@@ -105,8 +107,9 @@ class DriveSwerveTurretAim(SubsystemCommand[Drivetrain]):
             self.ready = True
 
     def end(self, interrupted: bool) -> None:
+        print("DONE AIMING!!")
         Robot.shooter.aiming = False
-        DriveSwerveCustom(Robot.drivetrain)
+        commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
 
     def isFinished(self) -> bool:
         return self.ready

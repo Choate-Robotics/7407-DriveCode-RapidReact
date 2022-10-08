@@ -50,16 +50,17 @@ class OI:
             Robot.shooter.shooting_over = True
 
         def stage():
-            #print("Stage Keybind")
+            # print("Stage Keybind")
             Robot.index.stage = True
             Robot.index.aiming = True
-    
+
         def deStage():
-            #print("DeStage Keybind")
+            # print("DeStage Keybind")
             Robot.index.destageBall = True
             Robot.index.aiming = False
+
         def resetBall():
-            #print("Reset ball keybind")
+            # print("Reset ball keybind")
             Robot.index.resetBall = True
 
         Keymap.Drivetrain.AIM_SWERVE().whenPressed(stage).whenReleased(deStage)
@@ -114,6 +115,7 @@ class OI:
             .whenReleased(Robot.intake.right_intake_disable)
 
         Keymap.Index.RESET_BALL().whenPressed(resetBall)
+
         def auto_intake_on():
             Robot.intake.AUTO_INTAKE = True
 
@@ -137,18 +139,31 @@ class OI:
         Keymap.BallPath.TOGGLE_AUTO_EJECT().whenPressed(InstantCommand(toggle_auto_eject))  # .5
 
         def aim_on():
-            if Robot.limelight.table.getNumber('tx', None) is not None \
-                    and Robot.limelight.table.getNumber('tx', None) != 0:
-                Robot.shooter.aiming = True
-                command.DriveSwerveTurretAim(Robot.drivetrain)
-                command.TurretDriveAim(Robot.shooter)
+            if Robot.limelight.table.getNumber('tx', None) is None \
+                    or Robot.limelight.table.getNumber('tx', None) == 0:
+                print("AIMING")
+                # Robot.shooter.aiming = True
+            else:
+                print("FAILED TO AIM")
 
         def aim_off():
+            print("STOPPED AIMING")
             Robot.shooter.aiming = False
-            DriveSwerveCustom(Robot.drivetrain)
-            command.TurretAim(Robot.shooter)
 
         Keymap.Shooter.SHOOTER_ENABLE().whenPressed(InstantCommand(aim_on)).whenReleased(InstantCommand(aim_off))
+        # Keymap.Shooter.SHOOTER_ENABLE()\
+        #     .whenPressed(InstantCommand(aim_on)) \
+        #     .whenPressed(command.DriveSwerveTurretAim(Robot.drivetrain))\
+        #     .whenPressed(command.TurretDriveAim(Robot.shooter)) \
+        #     .whenReleased(InstantCommand(aim_off)) \
+        #     .whenReleased(DriveSwerveCustom(Robot.drivetrain)) \
+        #     .whenReleased(command.TurretAim(Robot.shooter))
+
+        Keymap.Shooter.SHOOTER_ENABLE()\
+            .whenPressed(command.DriveSwerveTurretAim(Robot.drivetrain))\
+            .whenReleased(DriveSwerveCustom(Robot.drivetrain)) \
+
+
         # Keymap.Shooter.FENDER_SHOT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, .5))
         # Keymap.Shooter.SHOOTER_SHORT_EJECT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, .35))
 

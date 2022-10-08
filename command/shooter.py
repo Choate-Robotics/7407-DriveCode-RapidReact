@@ -102,6 +102,8 @@ class TurretAim(SubsystemCommand[Shooter]):
 
         self.limelight_detected_counts = 0  # Counts how many times limelight has detected target in a row
 
+        self.current_shooter_angle = 0
+
     def initialize(self) -> None:
         pass
 
@@ -129,11 +131,11 @@ class TurretAim(SubsystemCommand[Shooter]):
 
         current_offset = Robot.limelight.table.getNumber('tx', None)
 
-        if current_offset is not None:
+        # Estimating stuff
+
+        if current_offset is not None and current_offset != 0:
             Robot.odometry.update()
 
-            if current_offset == 0:
-                self.limelight_detected_counts = 0
             self.limelight_detected_counts += 1
 
             est_ty = Robot.limelight.table.getNumber('ty', None)
@@ -175,10 +177,32 @@ class TurretAim(SubsystemCommand[Shooter]):
                 else:
                     self.subsystem.ready = False
 
+            self.current_shooter_angle = self.subsystem.get_turret_rotation_angle()
+
         else:
             self.subsystem.stop()
             self.subsystem.m_turret.set_raw_output(0)
             self.subsystem.ready = False
+
+            Robot.odometry.update()
+            self.limelight_detected_counts = 0
+
+            if Robot.odometry.hub_angle is not None:
+
+                hub_angle = math.degrees(Robot.odometry.hub_angle)
+                current_shooter_angle = math.degrees(self.current_shooter_angle)
+
+                if hub_angle >= 0:
+                    desired_turret_angle = current_shooter_angle + hub_angle
+                else:
+                    desired_turret_angle = current_shooter_angle + hub_angle + 360
+
+                print("DESIRED TURRET ANGLE: ", desired_turret_angle)
+                wpilib.SmartDashboard.putNumber("DESIRED_TURRET_ANGLE", desired_turret_angle % 360)
+
+                Robot.shooter.set_turret_angle(
+                    math.radians(max(min(desired_turret_angle % 360, Robot.shooter.turret_max_angle), 0))
+                )
 
     def end(self, interrupted: bool) -> None:
         self.subsystem.ready = False
@@ -199,13 +223,15 @@ class TurretDriveAim(SubsystemCommand[Shooter]):
         self.subsystem.target_stationary(Robot.odometry.hub_dist)
 
     def execute(self) -> None:
+        print("Running TurretDriveAim")
         pass
 
     def isFinished(self) -> bool:
         return not self.subsystem.aiming
 
     def end(self, interrupted: bool) -> None:
-        TurretAim(self.subsystem)
+        print("STOPPED AIMING TURRET")
+        commands2.CommandScheduler.getInstance().schedule(TurretAim(Robot.shooter))
 
 
 class NaiveDemoShot(SubsystemCommand[Shooter]):
