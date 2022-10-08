@@ -61,8 +61,13 @@ class OI:
         def resetBall():
             #print("Reset ball keybind")
             Robot.index.resetBall = True
+        
+        def autoShoot():
+            Robot.index.autoShotToggle = True
 
-        Keymap.Drivetrain.AIM_SWERVE().whenPressed(stage).whenReleased(deStage)
+        Keymap.BallPath.STAGE_BALL().whileHeld(stage).whenReleased(deStage)
+
+        Keymap.Shooter.AUTO_SHOOT().whenPressed(autoShoot)
 
         def driver_centric_enable():
             DriveSwerveCustom.driver_centric = True

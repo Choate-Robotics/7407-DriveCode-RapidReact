@@ -16,6 +16,7 @@ from robot_systems import Robot
 from robot_systems import Sensors
 from subsystem import Index
 
+pdh = wpilib.PowerDistribution()
 
 class Ball():
     #if debugging necessary, use variables if can be
@@ -30,12 +31,14 @@ class Ball():
     #Ball Specific Variables
     position: str #position of ball (While moving, position is set to the future position, IE: Ball right moving left, Ball position is Left)
     lastPosition: str #Last Position
+    lastSidePosition: str #Last Side Position [Left, Right]
     team = True #if ball is on team side
     removed = False #if ball is shot/pooped/etc
     moving = False #if ball is currently moving
-
+    waiting = False
     longLeft = 0
     longRight = 0
+
 
     def __init__(self, pos:str):
         #Sets position and occupation\
@@ -77,6 +80,8 @@ class Ball():
         Robot.index.left_oc = False
         Robot.index.right_oc = False
         Robot.index.staged_oc = False
+        self.waiting = False
+        Robot.index.traffic_oc = False
     
     def posNum(self, oc: str):
         '''
@@ -107,16 +112,16 @@ class Ball():
         x = 0
         if Robot.index.left_oc:
             x += 1
-            wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, 1)
-        else:
-            wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kLeftRumble, 0)
         if Robot.index.right_oc:
             x += 1
-            wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 1)
-        else:
-            wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 0)
         if Robot.index.staged_oc:
             x += 1
+        if x > 1:
+            wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 1)
+            wpilib.XboxController(Controllers.OPERATOR).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 1)
+        else:
+            wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 0)
+            wpilib.XboxController(Controllers.OPERATOR).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 0)
         return x
     
     def newPos(self, pos):
@@ -127,6 +132,8 @@ class Ball():
         '''
         oPos = self.position
         self.lastPosition = oPos
+        if oPos != "Stage":
+            self.lastSidePosition = oPos
         nPos = pos
         if oPos == "Left":
             Robot.index.left_oc = False
@@ -183,6 +190,8 @@ class Ball():
                 if Robot.index.staged_oc != False and cPos != "Stage":
                     path_clear = "Stage"
                     print("Stage Blocked")
+            case "Shoot":
+                pass
 
         return path_clear
 
@@ -227,6 +236,7 @@ class Ball():
                 InstantCommand(Robot.index.moveBall("Stage", cPos), Robot.index)
             case "Shoot":
                 print("Dinglebobs Shoot")
+                Robot.index.shooting = True
                 y: str
                 if not Robot.index.left_oc:
                     y = "Left"
@@ -263,31 +273,44 @@ class Ball():
 
                 sets raw power of dinglebobs #control of specific dinglebob movement in in index subsystem
         '''
-        if self.removed == False:
-            nPos = pos
-            if self.pathClear(nPos) != True:
-                print(self.pathClear(nPos))
-                Robot.index.single_dinglebob_off(self.position)
-                return self.pathClear(nPos)
-            else:
-                if not self.moving and self.position != "Shoot":
-                    
-                    y: object
-                    match self.position:
-                        case "Left":
-                            y = Robot.index.left_limit
-                        case "Right":
-                            y = Robot.index.right_limit
-                        case "Stage":
-                            y = Robot.index.photo_electric
-                        case "Shoot":
-                            pass
-                    if not y.get_value():
-                        self.intakeInvalid(self.position)
-                self.moving = nPos
-                self.__move(nPos)
+        if pos == "No Num":
+            return False
+        else:
+            if not self.removed:
+                if self.moving != False and not self.waiting:
+                        Robot.index.traffic_oc = False
+                if pos != "Shoot":
+                    if Robot.index.traffic_oc:
+                        self.waiting = True
+                        self.moving = pos
+                        return
+                    else:
+                        self.waiting = False
+                        self.moving = False
 
-                return True
+                nPos = pos
+                if self.pathClear(nPos) != True:
+                    print(self.pathClear(nPos))
+                    Robot.index.single_dinglebob_off(self.position)
+                    return self.pathClear(nPos)
+                else:
+                    if not self.moving and self.position != "Shoot":    
+                        y: object
+                        match self.position:
+                            case "Left":
+                                y = Robot.index.left_limit
+                            case "Right":
+                                y = Robot.index.right_limit
+                            case "Stage":
+                                y = Robot.index.photo_electric
+                        if not y.get_value():
+                            self.intakeInvalid(self.position)
+                    if nPos != "Shoot":
+                        Robot.index.traffic_oc = True
+                    self.moving = nPos
+                    self.__move(nPos)
+
+                    return True
 
     def isDone(self, pos):
         '''
@@ -323,6 +346,7 @@ class Ball():
                 Robot.index.dinglebobs_off()
                 # self.newPos(pos)
                 self.moving = False
+                Robot.index.traffic_oc = False
             else:
                 print("Limit not reached")
         elif pos == "Stage":
@@ -332,27 +356,22 @@ class Ball():
                 if self.PH > 3:
                     Robot.index.dinglebobs_off()
                     self.moving = False
+                    Robot.index.traffic_oc = False
                     self.PH = 0
                 else:
                     self.PH += 1
 
         elif pos == "Shoot":
-            y = Robot.index.photo_electric
             if Robot.shooter.ready:
-                if not y.get_value():
-                    print("Limit Reached")
-                    if self.ES > 10:
-                        Robot.index.single_dinglebob_off(self.lastPosition)
-                        self.ES = 0
-                    else:
-                        self.ES += 1
-                    # Robot.index.ball_count -= 1
+                Scurrent = pdh.getCurrent(11)
+                if Scurrent > 10:
+                    Robot.index.single_dinglebob_off(self.lastSidePosition)
                     self.removed = True
                     self.moving = False
-                else:
-                    print("Limit not reached")
+                    Robot.index.shooting = False
             else:
                 self.setPos(self.lastPosition)
+
    
     def purge(self):
         '''
@@ -373,6 +392,7 @@ class BallPath(SubsystemCommand[Index]):
     def __init__(self, subsystem):
         super().__init__(subsystem)
         self.BallController = Ball(None)
+        self.pdh = pdh
 
     def sensorCheck(self, left_val, right_val):
         if left_val[0] != 0 and right_val[0] != 0:
@@ -432,7 +452,10 @@ class BallPath(SubsystemCommand[Index]):
             '''
             for i in range(len(self.BallController.ball)):
                 if not self.BallController.ball[i].removed and self.BallController.ball[i].moving != False:
-                    self.BallController.ball[i].isDone(self.BallController.ball[i].moving)
+                    if self.BallController.ball[i].waiting:
+                        self.BallController.ball[i].setPos(self.BallController.ball[i].moving)
+                    elif not self.BallController.ball[i].waiting:
+                        self.BallController.ball[i].isDone(self.BallController.ball[i].moving)
                 i += 1
 
     def checkLimit(self):
@@ -472,6 +495,26 @@ class BallPath(SubsystemCommand[Index]):
                 self.BallController.li = 0
                 self.BallController.rightInvalid = False
 
+    def currentSensing(self, enabled):
+        if enabled:
+            if Robot.index.left_oc and Robot.intake.left_intake_down:
+                lIcurrent = self.pdh.getCurrent(4)
+                if lIcurrent > 7 and not Robot.intake.left_current:
+                    Robot.intake.left_current = True
+                    Robot.intake.left_intake_speed = .1
+                elif lIcurrent < 7 and Robot.intake.left_current:
+                    Robot.intake.left_current = False
+                    Robot.intake.left_intake_speed = 1
+
+            if Robot.index.right_oc and Robot.intake.right_intake_down:
+                lRcurrent = self.pdh.getCurrent(3)
+                if lRcurrent > 7 and not Robot.intake.right_current:
+                    Robot.intake.right_current = True
+                    Robot.intake.right_intake_speed = .1
+                elif lRcurrent < 7 and Robot.intake.right_current:
+                    Robot.intake.right_current = False
+                    Robot.intake.right_intake_speed = 1
+    
     def shooting(self, auto: bool):
         '''
         if shooting 
@@ -526,6 +569,30 @@ class BallPath(SubsystemCommand[Index]):
                             if y < 1:
                                 Robot.index.stage = True   
 
+        def destaging(ball):
+            if not len(ball.ball) == 0:
+                print("Destaging Ball")
+                if Robot.index.staged_oc:
+                    y: str
+                    x = ball.posNum("Stage")
+                    if Robot.intake.left_intake_down:
+                        y = "Right"
+                    elif Robot.intake.right_intake_down:
+                        y = "Left"
+                    else:
+                        if not Robot.index.left_oc:
+                            y = "Left"
+                            print("Left Not occupied, try there")
+                        elif not Robot.index.right_oc:
+                            y = "Right"
+                            print("right not occupied, try there")
+                        else:
+                            print("No free destage")
+                    ball.ball[x].setPos(y)
+                else:
+                    print("No Ball in Stage")
+            Robot.index.destageBall = False
+
         if Robot.index.autoShotToggle:
             if  Robot.index.autoShoot == True:
                 Robot.index.autoShoot = False
@@ -537,38 +604,26 @@ class BallPath(SubsystemCommand[Index]):
             staging(ball)     
         
         if Robot.index.destageBall:
-            if not len(ball.ball) == 0:
-                print("Destaging Ball")
-                if Robot.index.staged_oc:
-                    print("")
-                    y: str
-                    x = ball.posNum("Stage")
-                    if not Robot.index.left_oc:
-                        y = "Left"
-                        print("Left Not occupied, try there")
-                    if not Robot.index.right_oc:
-                        y = "Right"
-                        print("right not occupied, try there")
-                    else:
-                        print("No free destage")
-                    ball.ball[x].setPos(y)
-                else:
-                    print("No Ball in Stage")
-            Robot.index.destageBall = False
+            destaging(ball)
 
         if Robot.shooter.ready:
             if Robot.index.staged_oc and Robot.index.photo_electric.get_value():
                 x = ball.posNum("Stage")
-                ball.ball[x].setPos("Shoot")
+                if x.team:
+                    ball.ball[x].setPos("Shoot")
+                else:
+                    pass # set variable to shoot enemy ball
             else:
                 if auto:
-                    staging(ball) 
+                    # if not Robot.intake.left_intake_down and not Robot.intake.right_intake_down:
+                    #     staging(ball) 
+                    staging(ball)
 
     def leftIntake(self, left_color):
         '''
         if left intake is down -> generates new ball and positions it within the system
 
-        :Param object left_color: Left color sensor
+        :Param object left_color: Left color sensor OR [True,False] for forced team/not team
 
         LOGIC inside function 
         '''
@@ -606,60 +661,40 @@ class BallPath(SubsystemCommand[Index]):
                 self.BallController.ball[x].setPos("Right")
                 self.BallController.leftPress = True
             else:
-                Robot.index.single_dinglebob_in("Left")
-
-                if Robot.index.left_limit.get_value() and not Robot.index.left_oc and not self.BallController.leftPress and not self.BallController.leftInvalid:
-
-                    c = Robot.index.ball_count
-                    self.BallController.ball.append(Ball("Left"))
-                    print("Ball count + 1")
-                    Robot.index.ball_count += 1
-                    self.BallController.leftPress = True
-                    #print("Lefty: ", Sensors.color_sensors.get_val())
-                    #print("Left Color:", left_color)
-                    Sensors.color_sensors.multiplexer.writeBulk(bytes([0b0100])) #0100 = Left
-                    #if ball is team ball then store right, if not then stage ball
-                    if left_color != config.TEAM and left_color != "none":
-                        print("OPP BALL")
-                        self.BallController.ball[c].team = False
-                        self.BallController.ball[c].setPos("Stage")
-                    else:
-                        print("TEAM BALL")
-                        self.BallController.ball[c].team = True
-                        #if not Robot.index.right_limit.get_value(): #not sure about this. will comment out for now
-                        if not Robot.index.stage and not Robot.index.staged_oc:
+                if not Robot.index.left_oc:
+                    Robot.index.intakeBall("Left", "In")
+                    if Robot.index.left_limit.get_value() and not Robot.index.left_oc and not self.BallController.leftPress and not self.BallController.leftInvalid:
+                        c = Robot.index.ball_count
+                        self.BallController.ball.append(Ball("Left"))
+                        print("Ball count + 1")
+                        Robot.index.ball_count += 1
+                        self.BallController.leftPress = True
+                        Sensors.color_sensors.multiplexer.writeBulk(bytes([0b0100])) #0100 = Left
+                        if left_color != False and left_color != True:
+                            if left_color != config.TEAM and left_color != "none":
+                                print("OPP BALL")
+                                self.BallController.ball[c].team = False
+                                self.BallController.ball[c].setPos("Stage")
+                            else:
+                                print("TEAM BALL")
+                                self.BallController.ball[c].team = True
+                                self.BallController.ball[c].setPos("Right")
+                        elif left_color == True:
+                            self.BallController.ball[c].team = True
                             self.BallController.ball[c].setPos("Right")
-                        else:
+                        elif left_color == False:
+                            self.BallController.ball[c].team = False
                             self.BallController.ball[c].setPos("Stage")
                 
         elif not Robot.intake.left_intake_down:
-            if len(self.BallController.ball) > 0:
-                '''
-                    LOGIC:
-                    if number of current balls excede 0:
-                        search in each ball object:
-                            if ball variable moving is not False:
-                                check whether the ball is finished moving
-
-                '''
-                x = 0
-                for i in range(len(self.BallController.ball)):
-                    if not self.BallController.ball[i].removed and self.BallController.ball[i].moving != False:
-                        x +=1
-                        self.BallController.ball[i].isDone(self.BallController.ball[i].moving)
-                    i += 1
-                if x == 0:
-                    Robot.index.single_dinglebob_off("Left")
-                    
-            else:
-                Robot.index.single_dinglebob_off("Left")
-
-
+            if not Robot.index.traffic_oc and not Robot.index.shooting:
+                Robot.index.intakeBall("Left", "Off")
+    
     def rightIntake(self, right_color):
         '''
         if Right intake is down -> generates new ball and positions it within the system
 
-        :Param object right_color: Right color sensor
+        :Param object right_color: Right color sensor OR [True,False] for forced team/not team 
 
         LOGIC inside Left Intake function 
         '''
@@ -668,69 +703,61 @@ class BallPath(SubsystemCommand[Index]):
                 x = self.BallController.posNum("Right")
                 self.BallController.ball[x].setPos("Left")
                 self.BallController.rightPress = True
-
             else:
-                Robot.index.single_dinglebob_in("Right")
-                if Robot.index.right_limit.get_value() and not Robot.index.right_oc and not self.BallController.rightPress and not self.BallController.rightInvalid:
-
-                    c = Robot.index.ball_count
-                    self.BallController.ball.append(Ball("Right"))
-                    print("Ball count + 1")
-                    Robot.index.ball_count += 1
-                    self.BallController.rightPress = True
-                    #print("Lefty: ", Sensors.color_sensors.get_val())
-                    #print("Left Color:", left_color)
-                    Sensors.color_sensors.multiplexer.writeBulk(bytes([0b0100])) #0100 = Left
-                    #if ball is team ball then store right, if not then stage ball
-                    if right_color != config.TEAM and right_color != "none":
-                        print("OPP BALL")
-                        self.BallController.ball[c].team = False
-                        self.BallController.ball[c].setPos("Stage")
-                    else:
-                        print("TEAM BALL")
-                        self.BallController.ball[c].team = True
-                        #if not Robot.index.right_limit.get_value(): #not sure about this. will comment out for now
-                        self.BallController.ball[c].setPos("Left")
+                if not Robot.index.right_oc:
+                    Robot.index.intakeBall("Right", "In")
+                    if Robot.index.right_limit.get_value() and not Robot.index.right_oc and not self.BallController.rightPress and not self.BallController.rightInvalid:
+                        c = Robot.index.ball_count
+                        self.BallController.ball.append(Ball("Right"))
+                        print("Ball count + 1")
+                        Robot.index.ball_count += 1
+                        self.BallController.rightPress = True
+                        if right_color != False and right_color != True:
+                            Sensors.color_sensors.multiplexer.writeBulk(bytes([0b0100])) #0100 = Left
+                            if right_color != config.TEAM and right_color != "none":
+                                print("OPP BALL")
+                                self.BallController.ball[c].team = False
+                                self.BallController.ball[c].setPos("Stage")
+                            else:
+                                print("TEAM BALL")
+                                self.BallController.ball[c].team = True
+                                self.BallController.ball[c].setPos("Left")
+                        elif right_color == True:
+                            self.BallController.ball[c].team = True
+                            self.BallController.ball[c].setPos("Left")
+                        elif right_color == False:
+                            self.BallController.ball[c].team = False
+                            self.BallController.ball[c].setPos("Stage")
                 
         elif not Robot.intake.right_intake_down:
-            if len(self.BallController.ball) > 0:
-                '''
-                    LOGIC:
-                    if number of current balls excede 0:
-                        search in each ball object:
-                            if ball variable moving is not False:
-                                check whether the ball is finished moving
+            if not Robot.index.traffic_oc and not Robot.index.shooting:
+                Robot.index.intakeBall("Right", "Off")
 
-                '''
-                x = 0
-                for i in range(len(self.BallController.ball)):
-                    if not self.BallController.ball[i].removed and self.BallController.ball[i].moving != False:
-                        x +=1
-                        self.BallController.ball[i].isDone(self.BallController.ball[i].moving)
-                    i=+1
-                if x == 0:
-                    Robot.index.single_dinglebob_off("Right")
-                    
-            else:
-                Robot.index.single_dinglebob_off("Right")
-
-    
     def resetBall(self):
         '''
-        if reset ball button is presse d -> Empties all occupation variables and delets all balls stored in list
+        if reset ball button is pressed -> Empties all occupation variables and delets all balls stored in list
         '''
         if Robot.index.resetBall:
             self.BallController.reset()
 
     def SmartDashboard(self):
+        '''
+        inputs variables to shuffleboard for debugging and general operation
+        '''
+        lIcurrent = self.pdh.getCurrent(4)
+        lRcurrent = self.pdh.getCurrent(3)
+        Scurrent = self.pdh.getCurrent(11)
+        wpilib.SmartDashboard.putNumber("Shooter Flywheel Current", Scurrent)
+        wpilib.SmartDashboard.putNumber("Left Intake Current", lIcurrent)
+        wpilib.SmartDashboard.putNumber("Right Intake Current", lRcurrent)
+        wpilib.SmartDashboard.putBoolean("Traffic Light?", Robot.index.traffic_oc)
+        wpilib.SmartDashboard.putBoolean("Auto Shoot?", Robot.index.autoShoot)
         wpilib.SmartDashboard.putNumber("Balls in Index", self.BallController.CurrentNum())
         wpilib.SmartDashboard.putNumber("Total Balls Shot", self.BallController.RemovedNum())
-        wpilib.SmartDashboard.putNumber("Index Ball Count", Robot.index.ball_count)
+        wpilib.SmartDashboard.putNumber("Total Ball Count", Robot.index.ball_count)
         wpilib.SmartDashboard.putBoolean("Left Side Occupied?", Robot.index.left_oc)
         wpilib.SmartDashboard.putBoolean("Right Side Occupied?", Robot.index.right_oc)
         wpilib.SmartDashboard.putBoolean("Stage Side Occupied?", Robot.index.staged_oc)
-        #wpilib.SmartDashboard.putBoolean("Left Invalid", self.BallController.leftInvalid)
-        #wpilib.SmartDashboard.putBoolean("Right Invalid", self.BallController.rightInvalid)
 
     def initialize(self) -> None:
         pass
@@ -761,6 +788,8 @@ class BallPath(SubsystemCommand[Index]):
             
             self.checkLimit() #checks limits for exceptions to intaking rules -> enables or disables booleans for Intakes to generate a new ball
             
+            self.currentSensing(True) #Intake current sensing for dragging balls
+
             self.shooting(Robot.index.autoShoot) #if shooting (False or True for automatic shooting) -> uses shooter.ready to shoot balls that are staged
 
             self.leftIntake(left_color) #if left intake is down -> generates new ball and positions it within the system

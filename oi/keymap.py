@@ -39,10 +39,12 @@ class Keymap:
     class BallPath:
         TOGGLE_AUTO_EJECT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.START)
         TOGGLE_AUTO_EJECT_COLOR = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.X)
+        STAGE_BALL = DefaultButton(Controllers.DRIVER, controllerDRIVER.RT)
 
     class Shooter:
         #SHOOTER_ENABLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.RT)
         SHOOTER_EJECT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.A)
+        AUTO_SHOOT = DefaultButton(Controllers.DRIVER, controllerDRIVER.Y)
         #FENDER_SHOT = DefaultButton(Controllers.DRIVER, controllerDRIVER.LT)
         #SHOOTER_SHORT_EJECT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.LT)
         #SHOOTER_OFFSET_UP = DefaultButton(Controllers.DRIVER, controllerDRIVER.LB)

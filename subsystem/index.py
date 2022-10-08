@@ -25,6 +25,14 @@ class Index(Subsystem):
     left_oc = False
     right_oc = False 
     staged_oc = False
+    traffic_oc = False
+
+    ball_count = 0
+
+    shooting = False
+
+    autoShotToggle = False
+    autoShoot = False
 
     stage = False
     resetBall = False
@@ -47,7 +55,10 @@ class Index(Subsystem):
         self.right_oc = False
         self.staged_oc = False
 
+        
         self.dinglebob_speed = .8
+        self.left_dinglebob_speed = .8
+        self.right_dinglebob_speed = .8
         self.dinglebob_eject_speed = .8
         self.left_dinglebob_in = True
         self.right_dinglebob_in = True
@@ -66,8 +77,8 @@ class Index(Subsystem):
             self.running = False
 
     def dinglebobs_in(self):
-        self.left_dinglebob.set_raw_output(-self.dinglebob_speed)
-        self.right_dinglebob.set_raw_output(self.dinglebob_speed)
+        self.left_dinglebob.set_raw_output(-self.left_dinglebob_speed)
+        self.right_dinglebob.set_raw_output(self.right_dinglebob_speed)
         self.left_dinglebob_in = True
         self.right_dinglebob_in = True
         # if self.left_intake_down:
@@ -80,8 +91,8 @@ class Index(Subsystem):
         #     self.right_intake_motor.set_raw_output(0)
 
     def dinglebobs_out(self):
-        self.left_dinglebob.set_raw_output(self.dinglebob_speed-.3)
-        self.right_dinglebob.set_raw_output(-self.dinglebob_speed-.3)
+        self.left_dinglebob.set_raw_output(self.left_dinglebob_speed-.3)
+        self.right_dinglebob.set_raw_output(-self.right_dinglebob_speed-.3)
         self.left_dinglebob_in = True
         self.right_dinglebob_in = True
 
@@ -115,8 +126,8 @@ class Index(Subsystem):
             l = -1
             self.right_dinglebob_in = False
             r = -1
-        self.left_dinglebob.set_raw_output(l * self.dinglebob_eject_speed)
-        self.right_dinglebob.set_raw_output(r * self.dinglebob_eject_speed)
+        self.left_dinglebob.set_raw_output(l * self.left_dinglebob_speed)
+        self.right_dinglebob.set_raw_output(r * self.right_dinglebob_speed)
 
     def dinglebob_eject_right(self):
         self.left_dinglebob.set_raw_output(-self.dinglebob_eject_speed)
@@ -133,18 +144,18 @@ class Index(Subsystem):
 
     def single_dinglebob_in(self, Dir):
         if Dir == "Right":
-            self.right_dinglebob.set_raw_output(self.dinglebob_speed)
+            self.right_dinglebob.set_raw_output(self.right_dinglebob_speed)
             self.right_dinglebob_in = True
         elif Dir == "Left":
-            self.left_dinglebob.set_raw_output(-self.dinglebob_speed)
+            self.left_dinglebob.set_raw_output(-self.left_dinglebob_speed)
             self.left_dinglebob_in = True
 
     def single_dinglebob_out(self, Dir):
         if Dir == "Right":
-            self.right_dinglebob.set_raw_output(-self.dinglebob_speed)
+            self.right_dinglebob.set_raw_output(-self.right_dinglebob_speed)
             self.right_dinglebob_in = False
         elif Dir == "Left":
-            self.left_dinglebob.set_raw_output(self.dinglebob_speed)
+            self.left_dinglebob.set_raw_output(self.left_dinglebob_speed)
             self.left_dinglebob_in = False
 
     def single_dinglebob_off(self, Dir):
@@ -154,7 +165,28 @@ class Index(Subsystem):
         elif Dir == "Left":
             self.left_dinglebob.set_raw_output(0)
             self.left_dinglebob_in = False
-    
+
+    def single_dinglebob(self, pos, Dir):
+        if Dir == "In":
+            self.single_dinglebob_in(pos)
+        elif Dir == "Out":
+            self.single_dinglebob_out(pos)
+        elif Dir == "Off":
+            self.single_dinglebob_off(pos)
+
+    def Intake_Staged(self, pos):
+        if pos == "Left":
+            pos = "Right"
+        else:
+            pos = "Left"
+        self.dinglebob_travel(pos)
+
+    def opp(self, pos):
+        if pos == "Left":
+            return "Right"
+        else:
+            return "Left"
+
     def dinglebobs_control(self, Dir: str, Pos: str):
         '''
         Control Dinglebobs based on ball location
@@ -169,6 +201,8 @@ class Index(Subsystem):
 
         :Raises ValueError: if Dir str is not: Left, Right, Stage
         '''
+        self.left_dinglebob_speed = self.dinglebob_speed
+        self.right_dinglebob_speed = self.dinglebob_speed
         if Dir == "In" or Dir == "Out":
             if Dir == "In":
                 self.dinglebobs_in()
@@ -176,8 +210,9 @@ class Index(Subsystem):
                 self.dinglebobs_out()
         elif Dir == "Left" or Dir == "Right":
             if not self.staged_oc:
+                print("Turning on motor")
                 self.dinglebob_travel(Dir)
-            elif Pos == "Stage":
+            elif Pos == "Stage" or Pos ==  "Shoot":
                 self.single_dinglebob_out(Dir)
         elif Dir == "Stage":
             self.single_dinglebob_in(Pos)
@@ -186,4 +221,41 @@ class Index(Subsystem):
 
     def moveBall(self, Dir:str, pos:str = "none"):
         self.dinglebobs_control(Dir, pos)
+
+    def intakeBall(self, pos:str, Dir:str):
+        '''
+        Intaking index ball logic system
+
+        @Param: str pos: Dinglebob Position ["left", "Right"]
+
+        @Param: str Dir: Dinglebob Direction ["In", "Out", "Off"]
+        '''
+        if self.staged_oc:
+            self.left_dinglebob_speed = self.dinglebob_speed
+            self.right_dinglebob_speed = self.dinglebob_speed
+            if self.traffic_oc and Dir == "Out":
+                if pos == "Left":
+                    self.left_dinglebob_speed = .4
+                else:
+                    self.right_dinglebob_speed = .4
+                self.single_dinglebob(pos, "Out")
+            else:
+                if not self.left_oc and not self.right_oc:
+                    if Dir == "In":
+                        self.Intake_Staged(pos)
+                    if Dir == "Out":
+                        self.dinglebob_travel(pos)
+                    if Dir == "Off":
+                        self.dinglebobs_off()
+        else:
+            #self.left_dinglebob_speed = self.dinglebob_speed
+            #self.right_dinglebob_speed = self.dinglebob_speed
+            self.single_dinglebob(pos, Dir)
+            
+
+
+        
+            
+
+        
 
