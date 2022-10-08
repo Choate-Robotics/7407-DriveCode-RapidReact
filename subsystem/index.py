@@ -5,6 +5,7 @@ from robotpy_toolkit_7407.motors import TalonFX, TalonConfig
 from sensors import LimitSwitch
 from utils.can_optimizations import optimize_normal_talon_no_sensor
 import time
+import constants
 
 _MOTOR_CFG = TalonConfig(neutral_brake=True)
 
@@ -18,7 +19,6 @@ class Index(Subsystem):
     right_limit = LimitSwitch(5)
     #ctre.BaseTalon.getSupplyCurrent #input
     #ctre.BaseTalon.getStatorCurrent #output
-    dinglebob_speed: float
     left_dinglebob_in: bool
     right_dinglebob_in: bool
 
@@ -56,9 +56,8 @@ class Index(Subsystem):
         self.staged_oc = False
 
         
-        self.dinglebob_speed = .8
-        self.left_dinglebob_speed = .8
-        self.right_dinglebob_speed = .8
+        self.left_dinglebob_speed = constants.default_index_speed
+        self.right_dinglebob_speed = constants.default_index_speed
         self.dinglebob_eject_speed = .8
         self.left_dinglebob_in = True
         self.right_dinglebob_in = True
@@ -149,6 +148,16 @@ class Index(Subsystem):
         elif Dir == "Left":
             self.left_dinglebob.set_raw_output(-self.left_dinglebob_speed)
             self.left_dinglebob_in = True
+        elif Dir == "Shoot":
+            if not self.left_oc:
+                self.shooting = "Left"
+                self.left_dinglebob.set_raw_output(-self.left_dinglebob_speed)
+                self.left_dinglebob_in = True
+            elif not self.right_oc:
+                self.shooting = "Right"
+                self.right_dinglebob.set_raw_output(self.right_dinglebob_speed)
+                self.right_dinglebob_in = True
+                
 
     def single_dinglebob_out(self, Dir):
         if Dir == "Right":
@@ -157,6 +166,13 @@ class Index(Subsystem):
         elif Dir == "Left":
             self.left_dinglebob.set_raw_output(self.left_dinglebob_speed)
             self.left_dinglebob_in = False
+        elif Dir == "Shoot":
+            if not self.left_oc:
+                self.left_dinglebob.set_raw_output(self.left_dinglebob_speed)
+                self.left_dinglebob_in = False
+            elif not self.right_oc:
+                self.right_dinglebob.set_raw_output(-self.right_dinglebob_speed)
+                self.right_dinglebob_in = False
 
     def single_dinglebob_off(self, Dir):
         if Dir == "Right":
@@ -201,8 +217,8 @@ class Index(Subsystem):
 
         :Raises ValueError: if Dir str is not: Left, Right, Stage
         '''
-        self.left_dinglebob_speed = self.dinglebob_speed
-        self.right_dinglebob_speed = self.dinglebob_speed
+        self.left_dinglebob_speed = constants.default_index_speed
+        self.right_dinglebob_speed = constants.default_index_speed
         if Dir == "In" or Dir == "Out":
             if Dir == "In":
                 self.dinglebobs_in()
@@ -215,7 +231,10 @@ class Index(Subsystem):
             elif Pos == "Stage" or Pos ==  "Shoot":
                 self.single_dinglebob_out(Dir)
         elif Dir == "Stage":
-            self.single_dinglebob_in(Pos)
+            if Pos == "Shoot":
+                self.single_dinglebob_out(Pos)
+            else:
+                self.single_dinglebob_in(Pos)
         elif Dir == "Shoot":
             self.single_dinglebob_in(Pos)
 
@@ -231,8 +250,8 @@ class Index(Subsystem):
         @Param: str Dir: Dinglebob Direction ["In", "Out", "Off"]
         '''
         if self.staged_oc:
-            self.left_dinglebob_speed = self.dinglebob_speed
-            self.right_dinglebob_speed = self.dinglebob_speed
+            self.left_dinglebob_speed = constants.default_index_speed
+            self.right_dinglebob_speed = constants.default_index_speed
             if self.traffic_oc and Dir == "Out":
                 if pos == "Left":
                     self.left_dinglebob_speed = .4

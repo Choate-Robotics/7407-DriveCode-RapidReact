@@ -1,5 +1,7 @@
 #from turtle import right
+from pytest import console_main
 import wpilib
+import constants
 from robotpy_toolkit_7407 import Subsystem
 from robotpy_toolkit_7407.motors import TalonFX, TalonConfig
 
@@ -44,8 +46,8 @@ class Intake(Subsystem):
 
         self.left_intake_down = False
         self.right_intake_down = False
-        self.left_intake_speed = 1
-        self.right_intake_speed = 1
+        self.left_intake_speed = constants.default_intake_speed
+        self.right_intake_speed = constants.default_intake_speed
         self.left_current = False
         self.right_current = False
         #self.intake_speed = 1
@@ -100,7 +102,12 @@ class Intake(Subsystem):
 
     def toggle_left_intake(self):
         if not self.DISABLE_INTAKES:
-            if not self.right_intake_down:
+            if not constants.dual_intakes_down:
+                if not self.right_intake_down:
+                    self.s_left.set(wpilib.DoubleSolenoid.Value.kForward)
+                    self.left_intake_down = True
+                    self.left_intake_motor.set_raw_output(self.left_intake_speed)
+            else:
                 self.s_left.set(wpilib.DoubleSolenoid.Value.kForward)
                 self.left_intake_down = True
                 self.left_intake_motor.set_raw_output(self.left_intake_speed)
@@ -113,7 +120,12 @@ class Intake(Subsystem):
 
     def toggle_right_intake(self):
         if not self.DISABLE_INTAKES:
-            if not self.left_intake_down:
+            if not constants.dual_intakes_down:
+                if not self.left_intake_down:
+                    self.s_right.set(wpilib.DoubleSolenoid.Value.kForward)
+                    self.right_intake_down = True
+                    self.right_intake_motor.set_raw_output(self.right_intake_speed)
+            else:
                 self.s_right.set(wpilib.DoubleSolenoid.Value.kForward)
                 self.right_intake_down = True
                 self.right_intake_motor.set_raw_output(self.right_intake_speed)

@@ -49,6 +49,13 @@ minimum_shooter_angle = math.pi / 4  # radians
 max_shooter_angle = math.radians(75)
 max_shooter_velocity = 30  # m/s
 
+# --- INTAKE/INDEX ---
+
+dual_intakes_down = False #When True, enables Both Intakes to be down. WARNING, WILL mess up Ballpath logic system, expect to use operator manual controls
+default_intake_speed = 1 # as stated
+intake_current_sensing = True # Enables dragging balls while not actually intaking when full
+default_index_speed = .8 # as stated
+
 # --- ELEVATOR ---
 
 elevator_gear_ratio = (20 * rev / (5.501 * inch)).asNumber(rad/m)

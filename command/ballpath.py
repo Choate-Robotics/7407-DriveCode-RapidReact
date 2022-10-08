@@ -10,6 +10,7 @@ from robotpy_toolkit_7407.command import SubsystemCommand
 from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit
 
 import config
+import constants
 from oi.keymap import Controllers
 from oi.keymap import Keymap
 from robot_systems import Robot
@@ -240,8 +241,6 @@ class Ball():
         :Param pos str: new position of ball
         '''
         cPos = self.position
-        x: object
-        y: object
         match pos:
             case "Left":
                 print("Dinglebobs Left")
@@ -254,17 +253,17 @@ class Ball():
                 InstantCommand(Robot.index.moveBall("Stage", cPos), Robot.index)
             case "Shoot":
                 print("Dinglebobs Shoot")
-                Robot.index.shooting = True
-                y: str
-                if not Robot.index.left_oc:
-                    y = "Left"
-                    print("Left Not occupied, try there")
-                if not Robot.index.right_oc:
-                    y = "Right"
-                    print("right not occupied, try there")
-                else:
-                    y = "Left"
-                InstantCommand(Robot.index.moveBall("Shoot", y), Robot.index)
+                # Robot.index.shooting = True
+                # y: str
+                # if not Robot.index.left_oc:
+                #     y = "Left"
+                #     print("Left Not occupied, try there")
+                # if not Robot.index.right_oc:
+                #     y = "Right"
+                #     print("right not occupied, try there")
+                # else:
+                #     y = "Left"
+                InstantCommand(Robot.index.moveBall("Shoot", cPos), Robot.index)
         self.newPos(pos)
 
     def setPos(self, pos, timeout = 5):
@@ -383,11 +382,12 @@ class Ball():
             if Robot.shooter.ready:
                 Scurrent = pdh.getCurrent(11)
                 if Scurrent > 10:
-                    Robot.index.single_dinglebob_off(self.lastSidePosition)
+                    Robot.index.single_dinglebob_off(Robot.index.shooting)
                     self.removed = True
                     self.moving = False
                     Robot.index.shooting = False
             else:
+                Robot.index.single_dinglebob_off(Robot.index.shooting)
                 self.setPos(self.lastPosition)
 
    
@@ -808,7 +808,7 @@ class BallPath(SubsystemCommand[Index]):
             
             self.checkLimit() #checks limits for exceptions to intaking rules -> enables or disables booleans for Intakes to generate a new ball
             
-            self.currentSensing(True) #Intake current sensing for dragging balls
+            self.currentSensing(constants.intake_current_sensing) #Intake current sensing for dragging balls
 
             self.shooting(Robot.index.autoShoot) #if shooting (False or True for automatic shooting) -> uses shooter.ready to shoot balls that are staged
 
