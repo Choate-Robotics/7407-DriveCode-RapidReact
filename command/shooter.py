@@ -177,15 +177,14 @@ class TurretAim(SubsystemCommand[Shooter]):
                 else:
                     self.subsystem.ready = False
 
-            self.current_shooter_angle = self.subsystem.get_turret_rotation_angle()
-
         else:
-            self.subsystem.stop()
-            self.subsystem.m_turret.set_raw_output(0)
             self.subsystem.ready = False
+            self.limelight_detected_counts = 0
+
+            if self.current_shooter_angle is None:
+                self.current_shooter_angle = self.subsystem.get_turret_rotation_angle()
 
             Robot.odometry.update()
-            self.limelight_detected_counts = 0
 
             if Robot.odometry.hub_angle is not None:
 
@@ -197,11 +196,13 @@ class TurretAim(SubsystemCommand[Shooter]):
                 else:
                     desired_turret_angle = current_shooter_angle + hub_angle + 360
 
+                desired_turret_angle %= 360
+
                 print("DESIRED TURRET ANGLE: ", desired_turret_angle)
-                wpilib.SmartDashboard.putNumber("DESIRED_TURRET_ANGLE", desired_turret_angle % 360)
+                wpilib.SmartDashboard.putNumber("DESIRED_TURRET_ANGLE", desired_turret_angle)
 
                 Robot.shooter.set_turret_angle(
-                    math.radians(max(min(desired_turret_angle % 360, Robot.shooter.turret_max_angle), 0))
+                    math.radians(max(min(desired_turret_angle, Robot.shooter.turret_max_angle), 0))
                 )
 
     def end(self, interrupted: bool) -> None:
