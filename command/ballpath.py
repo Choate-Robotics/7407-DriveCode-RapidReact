@@ -71,7 +71,11 @@ class Ball():
 
     ES = 0
 
-    PH = 0
+    PH = 0 #Photo electric int
+
+    CPU = 0 #Controller Pulse Up int
+
+    CPD = 0 #Controller Pulse Down int
 
     def reset(self):
         self.ball = []
@@ -116,13 +120,27 @@ class Ball():
             x += 1
         if Robot.index.staged_oc:
             x += 1
-        if x > 1:
+        return x
+    
+    def rumble(self):
+        x = self.CurrentNum()
+        if x == 1:
+            if self.CPU < 10 and self.CPD > 10:
+                self.CPD = 0
+                wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 1)
+                wpilib.XboxController(Controllers.OPERATOR).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 1)
+                self.CPU += 1
+            elif self.CPD < 10 and self.CPU > 10:
+                self.CPU = 0
+                wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 0)
+                wpilib.XboxController(Controllers.OPERATOR).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 0)
+                self.CPU += 1
+        elif x > 1:
             wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 1)
             wpilib.XboxController(Controllers.OPERATOR).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 1)
         else:
             wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 0)
             wpilib.XboxController(Controllers.OPERATOR).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 0)
-        return x
     
     def newPos(self, pos):
         '''
@@ -439,8 +457,10 @@ class BallPath(SubsystemCommand[Index]):
     
     def checkBall(self):
         '''
+        Rumbles Controller for feedback
         checks if balls are moving within system -> checks if balls have reached its destination
         '''
+        self.BallController.rumble()
         if len(self.BallController.ball) > 0:
             '''
                 LOGIC:
@@ -488,7 +508,7 @@ class BallPath(SubsystemCommand[Index]):
                 self.BallController.leftInvalid = False
 
         if self.BallController.rightInvalid:
-            if self.BallController.rl < self.BallController.IVal:
+            if self.BallController.ri < self.BallController.IVal:
                 if Robot.index.right_limit.get_value():
                     self.BallController.rightInvalid = False
             else:
