@@ -101,8 +101,10 @@ class DriveSwerveTurretAim(SubsystemCommand[Drivetrain]):
             self.ready = True
         elif (Robot.shooter.desired_turret_angle - math.degrees(Robot.shooter.get_turret_rotation_angle())) > 5:
             Robot.drivetrain.set((dx, dy), -6)
-        elif (Robot.shooter.desired_turret_angle - math.degrees(Robot.shooter.get_turret_rotation_angle())) < 5:
+        elif (Robot.shooter.desired_turret_angle - math.degrees(Robot.shooter.get_turret_rotation_angle())) < -5:
             Robot.drivetrain.set((dx, dy), 6)
+        else:
+            self.ready = True
 
         # hub_angle = Robot.shooter.desired_turret_angle
         # current_limelight_offset = Robot.limelight.table.getNumber('tx', None)

@@ -24,10 +24,13 @@ class Shooter(Subsystem):
         0.3, 0.005, 2, 2046 * 0.1 / 917, integral_zone=1000, max_integral_accumulator=10000, # 1023 * 0.1 / 917
         neutral_brake=True, motion_cruise_velocity=6000 * ctre_motors.k_sensor_vel_to_rad_per_sec,
         motion_acceleration=10000 * ctre_motors.k_sensor_accel_to_rad_per_sec_sq))
+
+    max_turret_accel = 100000 # 100000 50000
+
     m_turret = TalonFX(20, inverted=False, config=TalonConfig(
         k_P=.2, k_I=0, k_D=0, k_F=1023 / 20101, integral_zone=10000, max_integral_accumulator=100000,
         neutral_brake=True, motion_cruise_velocity=12000 * ctre_motors.k_sensor_vel_to_rad_per_sec,
-        motion_acceleration=100000 * ctre_motors.k_sensor_accel_to_rad_per_sec_sq))
+        motion_acceleration=max_turret_accel * ctre_motors.k_sensor_accel_to_rad_per_sec_sq))
 
     # BEST ACCELERATION FOR TURRET Position PID IS 100000
 

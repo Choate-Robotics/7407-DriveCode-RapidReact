@@ -85,7 +85,7 @@ class TurretAim(SubsystemCommand[Shooter]):
         self.power = 0
 
         self.min_absolute_power = .07  # Minimum power of turret required to move it
-        self.max_absolute_power = .80  # Maximum movement power of turret allowed
+        self.max_absolute_power = .80  # Maximum movement power of turret allowed .80
 
         # Soft limits for turret movement
         self.limit_backward = False
@@ -93,7 +93,7 @@ class TurretAim(SubsystemCommand[Shooter]):
 
         self.default_movement_power = .20  # Default movement power of turret if not using pid
 
-        self.p = .0275  # Multiplies current offset by this multiplier to get power .03
+        self.p = .02  # Multiplies current offset by this multiplier to get power .0275
 
         self.min_angle = 0 + 10  # Minimum angle of turret range
         self.max_angle = self.subsystem.turret_max_angle - 10  # Maximum angle of turret range
@@ -179,7 +179,6 @@ class TurretAim(SubsystemCommand[Shooter]):
                     self.subsystem.ready = False
 
         else:
-            self.subsystem.ready = False
             self.limelight_detected_counts = 0
 
             if self.current_shooter_angle is None:
@@ -188,6 +187,9 @@ class TurretAim(SubsystemCommand[Shooter]):
             Robot.odometry.update()
 
             if Robot.odometry.hub_angle is not None:
+
+                if Robot.odometry.hub_dist is not None:
+                    self.subsystem.target_stationary(Robot.odometry.hub_dist)
 
                 hub_angle = math.degrees(Robot.odometry.hub_angle)
                 current_shooter_angle = math.degrees(self.current_shooter_angle)
@@ -208,6 +210,12 @@ class TurretAim(SubsystemCommand[Shooter]):
                 Robot.shooter.set_turret_angle(
                     math.radians(max(min(desired_turret_angle, self.max_angle), self.min_angle))
                 )
+
+                if abs(math.degrees(self.subsystem.get_turret_rotation_angle()) - math.degrees(
+                        Robot.odometry.hub_angle)) < 3:
+                    self.subsystem.ready = True
+                else:
+                    self.subsystem.ready = False
 
     def end(self, interrupted: bool) -> None:
         self.subsystem.ready = False
