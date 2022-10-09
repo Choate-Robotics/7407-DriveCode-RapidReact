@@ -47,6 +47,13 @@ class FieldOdometry:
             # print(f"hub_dist={self.hub_dist}, limelight_angle={self.hub_angle}")
             # print(f"new_pose={new_pose}, limelight_vals={self._l_tx, self._l_dist}")
 
+    def get_real_angle(self) -> float | None: # Returns angle from 0-2pi radians instead of -pi to pi radians
+        if self.hub_angle is None:
+            return None
+        elif self.hub_angle < 0:
+            return self.hub_angle + float(math.radians(180))
+        return float(self.hub_angle)
+
     def _calc_values_from_pose(self):
         offset = self._hub_pose.relativeTo(self.robot_pose)
 

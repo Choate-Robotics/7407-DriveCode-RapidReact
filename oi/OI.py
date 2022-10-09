@@ -150,7 +150,7 @@ class OI:
             print("STOPPED AIMING")
             Robot.shooter.aiming = False
 
-        Keymap.Shooter.SHOOTER_ENABLE().whenPressed(InstantCommand(aim_on)).whenReleased(InstantCommand(aim_off))
+        # Keymap.Shooter.SHOOTER_ENABLE().whenPressed(InstantCommand(aim_on)).whenReleased(InstantCommand(aim_off))
         # Keymap.Shooter.SHOOTER_ENABLE()\
         #     .whenPressed(InstantCommand(aim_on)) \
         #     .whenPressed(command.DriveSwerveTurretAim(Robot.drivetrain))\

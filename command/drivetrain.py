@@ -2,6 +2,7 @@ import math
 import time
 
 import commands2
+import wpilib
 from robotpy_toolkit_7407.command import SubsystemCommand, Command
 from robotpy_toolkit_7407.subsystem_templates.drivetrain.swerve_drivetrain import SwerveDrivetrain
 from wpimath.controller import ProfiledPIDControllerRadians
@@ -91,20 +92,33 @@ class DriveSwerveTurretAim(SubsystemCommand[Drivetrain]):
     def execute(self) -> None:
         print("Running DriveSwerveTurretAim.")
 
-        hub_angle = Robot.odometry.hub_angle
         dx, dy = Robot.drivetrain.axis_dx.value, Robot.drivetrain.axis_dy.value
-
-        omega = self.pid_controller.calculate(hub_angle, 0)
-
-        dx *= constants.drivetrain_target_max_vel
-        dy *= -constants.drivetrain_target_max_vel
-
-        Robot.drivetrain.set((dx, dy), omega)
-
         current_limelight_offset = Robot.limelight.table.getNumber('tx', None)
+
+        wpilib.SmartDashboard.putNumber("I want to go to:", Robot.shooter.desired_turret_angle)
 
         if current_limelight_offset is not None and current_limelight_offset != 0:
             self.ready = True
+        elif (Robot.shooter.desired_turret_angle - math.degrees(Robot.shooter.get_turret_rotation_angle())) > 5:
+            Robot.drivetrain.set((dx, dy), -6)
+        elif (Robot.shooter.desired_turret_angle - math.degrees(Robot.shooter.get_turret_rotation_angle())) < 5:
+            Robot.drivetrain.set((dx, dy), 6)
+
+        # hub_angle = Robot.shooter.desired_turret_angle
+        # current_limelight_offset = Robot.limelight.table.getNumber('tx', None)
+        #
+        #
+        # if hub_angle is not None:
+        #     omega = self.pid_controller.calculate(hub_angle, 0)
+        #     print("OMEGA", omega)
+        #
+        #     dx *= constants.drivetrain_target_max_vel
+        #     dy *= -constants.drivetrain_target_max_vel
+        #
+        #     Robot.drivetrain.set((dx, dy), omega)
+        #
+        # if current_limelight_offset is not None and current_limelight_offset != 0 and current_limelight_offset < 2:
+        #     self.ready = True
 
     def end(self, interrupted: bool) -> None:
         print("DONE AIMING!!")

@@ -95,8 +95,8 @@ class TurretAim(SubsystemCommand[Shooter]):
 
         self.p = .0275  # Multiplies current offset by this multiplier to get power .03
 
-        self.min_angle = 0  # Minimum angle of turret range
-        self.max_angle = self.subsystem.turret_max_angle  # Maximum angle of turret range
+        self.min_angle = 0 + 10  # Minimum angle of turret range
+        self.max_angle = self.subsystem.turret_max_angle - 10  # Maximum angle of turret range
 
         self.limelight_angle_threshold = 2  # Angle threshold for limelight to be considered on target
 
@@ -119,12 +119,12 @@ class TurretAim(SubsystemCommand[Shooter]):
         if self.limelight_detected_counts < 3:
             self.subsystem.stop()
 
-        if current_angle <= (self.min_angle + 10):
+        if current_angle <= self.min_angle:
             self.limit_backward = True
         else:
             self.limit_backward = False
 
-        if current_angle >= (self.max_angle - 10):
+        if current_angle >= self.max_angle:
             self.limit_forward = True
         else:
             self.limit_forward = False
@@ -134,6 +134,7 @@ class TurretAim(SubsystemCommand[Shooter]):
         # Estimating stuff
 
         if current_offset is not None and current_offset != 0:
+            self.current_shooter_angle = None
             Robot.odometry.update()
 
             self.limelight_detected_counts += 1
@@ -198,11 +199,14 @@ class TurretAim(SubsystemCommand[Shooter]):
 
                 desired_turret_angle %= 360
 
+                self.subsystem.desired_turret_angle = desired_turret_angle
+
                 print("DESIRED TURRET ANGLE: ", desired_turret_angle)
                 wpilib.SmartDashboard.putNumber("DESIRED_TURRET_ANGLE", desired_turret_angle)
+                wpilib.SmartDashboard.putNumber("CURRENT_TURRET_ANGLE", current_shooter_angle)
 
                 Robot.shooter.set_turret_angle(
-                    math.radians(max(min(desired_turret_angle, Robot.shooter.turret_max_angle), 0))
+                    math.radians(max(min(desired_turret_angle, self.max_angle), self.min_angle))
                 )
 
     def end(self, interrupted: bool) -> None:
