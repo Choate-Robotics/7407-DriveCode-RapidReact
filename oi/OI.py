@@ -53,9 +53,13 @@ class OI:
             # print("Stage Keybind")
             Robot.index.stage = True
             Robot.index.aiming = True
+            Robot.intake.DISABLE_INTAKES = True
+            Robot.intake.right_intake_disable()
+            Robot.intake.left_intake_disable()
 
         def deStage():
             # print("DeStage Keybind")
+            Robot.intake.DISABLE_INTAKES = False
             Robot.index.destageBall = True
             Robot.index.aiming = False
 

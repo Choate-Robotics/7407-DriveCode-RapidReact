@@ -379,19 +379,9 @@ class Ball():
                     self.PH += 1
 
         elif pos == "Shoot":
-            # if Robot.shooter.ready:
-            #     Scurrent = pdh.getCurrent(11)
-            #     if Scurrent > 10:
-            #         Robot.index.single_dinglebob_off(Robot.index.shooting)
-            #         self.removed = True
-            #         self.moving = False
-            #         Robot.index.shooting = False
-            # else:
-            #     Robot.index.single_dinglebob_off(Robot.index.shooting)
-            #     self.setPos(self.lastPosition)
 
             Scurrent = pdh.getCurrent(11)
-            if Scurrent > 10:
+            if Scurrent > 10 and not Robot.index.photo_electric.get_value():
                 Robot.index.single_dinglebob_off(Robot.index.shooting)
                 self.removed = True
                 self.moving = False
@@ -625,6 +615,7 @@ class BallPath(SubsystemCommand[Index]):
         else:
             wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 0)
             
+            
 
         if Robot.index.destageBall: 
             if Robot.index.staged_oc == True:
@@ -689,30 +680,36 @@ class BallPath(SubsystemCommand[Index]):
             else:
                 if not Robot.index.left_oc:
                     Robot.index.intakeBall("Left", "In")
-                    if Robot.index.left_limit.get_value() and not Robot.index.left_oc and not self.BallController.leftPress and not self.BallController.leftInvalid:
-                        c = Robot.index.ball_count
-                        self.BallController.ball.append(Ball("Left"))
-                        print("Ball count + 1")
-                        Robot.index.ball_count += 1
-                        self.BallController.leftPress = True
-                        Sensors.color_sensors.multiplexer.writeBulk(bytes([0b0100])) #0100 = Left
-                        if left_color != False and left_color != True:
-                            if left_color != config.TEAM and left_color != "none":
-                                print("OPP BALL")
-                                self.BallController.ball[c].team = False
-                                self.BallController.ball[c].setPos("Stage")
-                            else:
-                                print("TEAM BALL")
+                    if Robot.index.left_limit.get_value() and not Robot.index.left_oc and self.BallController.leftPress == False: # and not self.BallController.leftInvalid:
+                        if Robot.index.LDB < constants.index_photo_electric_threshold:
+                            Robot.index.LDB += 1
+                        else:
+                            Robot.index.LDB = 0
+                            c = Robot.index.ball_count
+                            self.BallController.ball.append(Ball("Left"))
+                            print("Ball count + 1")
+                            Robot.index.ball_count += 1
+                            self.BallController.leftPress = True
+                            Sensors.color_sensors.multiplexer.writeBulk(bytes([0b0100])) #0100 = Left
+                            if left_color != False and left_color != True:
+                                if left_color != config.TEAM and left_color != "none":
+                                    print("OPP BALL")
+                                    self.BallController.ball[c].team = False
+                                    self.BallController.ball[c].setPos("Stage")
+                                else:
+                                    print("TEAM BALL")
+                                    self.BallController.ball[c].team = True
+                                    self.BallController.ball[c].setPos("Right")
+                            elif left_color == True:
                                 self.BallController.ball[c].team = True
                                 self.BallController.ball[c].setPos("Right")
-                        elif left_color == True:
-                            self.BallController.ball[c].team = True
-                            self.BallController.ball[c].setPos("Right")
-                        elif left_color == False:
-                            self.BallController.ball[c].team = False
-                            self.BallController.ball[c].setPos("Stage")
-                
+                            elif left_color == False:
+                                self.BallController.ball[c].team = False
+                                self.BallController.ball[c].setPos("Stage")
+                    elif not Robot.index.left_limit.get_value():
+                        Robot.index.LDB = 0
         elif not Robot.intake.left_intake_down:
+            Robot.index.LDB = 0
             if not Robot.index.traffic_oc and Robot.index.shooting == False:
                 Robot.index.intakeBall("Left", "Off")
     
@@ -732,30 +729,36 @@ class BallPath(SubsystemCommand[Index]):
             else:
                 if not Robot.index.right_oc:
                     Robot.index.intakeBall("Right", "In")
-                    if Robot.index.right_limit.get_value() and not Robot.index.right_oc and not self.BallController.rightPress and not self.BallController.rightInvalid:
-                        c = Robot.index.ball_count
-                        self.BallController.ball.append(Ball("Right"))
-                        print("Ball count + 1")
-                        Robot.index.ball_count += 1
-                        self.BallController.rightPress = True
-                        if right_color != False and right_color != True:
-                            Sensors.color_sensors.multiplexer.writeBulk(bytes([0b0100])) #0100 = Left
-                            if right_color != config.TEAM and right_color != "none":
-                                print("OPP BALL")
-                                self.BallController.ball[c].team = False
-                                self.BallController.ball[c].setPos("Stage")
-                            else:
-                                print("TEAM BALL")
+                    if Robot.index.right_limit.get_value() and not Robot.index.right_oc and self.BallController.rightPress == False: # and not self.BallController.rightInvalid:
+                        if Robot.index.RDB < constants.index_photo_electric_threshold:
+                            Robot.index.RDB += 1
+                        else:
+                            Robot.index.RDB = 0
+                            c = Robot.index.ball_count
+                            self.BallController.ball.append(Ball("Right"))
+                            print("Ball count + 1")
+                            Robot.index.ball_count += 1
+                            self.BallController.rightPress = True
+                            if right_color != False and right_color != True:
+                                Sensors.color_sensors.multiplexer.writeBulk(bytes([0b0100])) #0100 = Left
+                                if right_color != config.TEAM and right_color != "none":
+                                    print("OPP BALL")
+                                    self.BallController.ball[c].team = False
+                                    self.BallController.ball[c].setPos("Stage")
+                                else:
+                                    print("TEAM BALL")
+                                    self.BallController.ball[c].team = True
+                                    self.BallController.ball[c].setPos("Left")
+                            elif right_color == True:
                                 self.BallController.ball[c].team = True
                                 self.BallController.ball[c].setPos("Left")
-                        elif right_color == True:
-                            self.BallController.ball[c].team = True
-                            self.BallController.ball[c].setPos("Left")
-                        elif right_color == False:
-                            self.BallController.ball[c].team = False
-                            self.BallController.ball[c].setPos("Stage")
-                
+                            elif right_color == False:
+                                self.BallController.ball[c].team = False
+                                self.BallController.ball[c].setPos("Stage")
+                    elif not Robot.index.right_limit.get_value():
+                        Robot.index.RDB = 0
         elif not Robot.intake.right_intake_down:
+            Robot.index.RDB = 0
             if not Robot.index.traffic_oc and Robot.index.shooting == False:
                 Robot.index.intakeBall("Right", "Off")
 
@@ -795,6 +798,7 @@ class BallPath(SubsystemCommand[Index]):
         left_joy = Keymap.Index.LEFT_JOY.value
         right_joy = Keymap.Index.RIGHT_JOY.value
         #Color sensors
+        print(Robot.index.right_limit.get_value())
         Sensors.color_sensors.multiplexer.writeBulk(bytes([0b0100]))
         left_color = Sensors.color_sensors.color()
         left_val = Sensors.color_sensors.get_val()

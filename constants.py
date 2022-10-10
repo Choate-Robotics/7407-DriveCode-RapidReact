@@ -57,7 +57,7 @@ intake_current_sensing = False # Enables dragging balls while not actually intak
 index_shooting_speed = .75 # shooting index speed
 default_index_speed = .7 # as stated
 index_intaking_speed = .7 # index speed when intaking ball
-index_photo_electric_threshold = 2
+index_photo_electric_threshold = 4 # the threshold check for the intake ball gereration
 # --- ELEVATOR ---
 
 elevator_gear_ratio = (20 * rev / (5.501 * inch)).asNumber(rad/m)

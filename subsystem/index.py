@@ -27,6 +27,10 @@ class Index(Subsystem):
     staged_oc = False
     traffic_oc = False
 
+    RDB = 0
+
+    LDB = 0
+
     ball_count = 0
 
     shooting = False
