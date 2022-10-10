@@ -40,11 +40,11 @@ turret_angle_gear_ratio = 50.347*(18/16) # How many motor radians in one rev of 
 
 # Targeting constants
 air_resistance_constant = 0.048187
-height_difference = 2.2  # meters # In reality about 1.76m, but a slightly higher height makes the ball bounce off the back of the HUB # 1.85
+height_difference = 2.6  # meters # In reality about 1.76m, but a slightly higher height makes the ball bounce off the back of the HUB # 1.85
 gravity = 9.80665  # m/s^2
 shooter_delay = -0.1  # seconds
 acceptable_error = 0.45 # meters twas .55
-ideal_entry_angle = -math.pi / 3  # desired angle for the ball to enter the hub
+ideal_entry_angle = -math.pi / 5  # desired angle for the ball to enter the hub
 minimum_shooter_angle = math.pi / 4  # radians
 max_shooter_angle = math.radians(75)
 max_shooter_velocity = 30  # m/s

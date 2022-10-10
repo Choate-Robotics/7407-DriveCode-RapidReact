@@ -1,6 +1,7 @@
 import math
 
 from networktables import NetworkTables
+import wpilib
 from robotpy_toolkit_7407.utils.units import m, deg, ft, inch, rad, radians, meters
 
 
@@ -12,7 +13,7 @@ class Limelight:
         self.ty = 0
         self.refs = 0
         self.k_cam_height: meters = .864  # Height from ground to camera # .813
-        self.k_cam_angle: radians = (43 * deg).asNumber(rad)  # Angle from horizontal # 43 45 48 38
+        self.k_cam_angle: radians = (42 * deg).asNumber(rad)  # Angle from horizontal # 43 45 48 38
         self.k_h_hub_height = (8 * ft + 8 * inch).asNumber(m)
 
     def led_on(self):
@@ -42,6 +43,7 @@ class Limelight:
     def calculate_distance(self) -> float:
         true_angle = self.k_cam_angle + self.ty
         distance = (self.k_h_hub_height - self.k_cam_height) / math.tan(true_angle)
+        wpilib.SmartDashboard.putNumber("Distance to hub", distance)
         return distance
 
     def get_x_offset(self) -> radians:
