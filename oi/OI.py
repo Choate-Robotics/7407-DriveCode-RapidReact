@@ -66,8 +66,7 @@ class OI:
         def autoShoot():
             Robot.index.autoShotToggle = True
 
-        Keymap.BallPath.STAGE_BALL().whileHeld(stage).whenReleased(deStage)
-
+        Keymap.BallPath.STAGE_BALL().whenPressed(command.DriveSwerveTurretAim(Robot.drivetrain)).whileHeld(stage).whenReleased(deStage).whenReleased(DriveSwerveCustom(Robot.drivetrain))
         Keymap.Shooter.AUTO_SHOOT().whenPressed(autoShoot)
 
         def driver_centric_enable():
@@ -163,10 +162,6 @@ class OI:
         #     .whenReleased(InstantCommand(aim_off)) \
         #     .whenReleased(DriveSwerveCustom(Robot.drivetrain)) \
         #     .whenReleased(command.TurretAim(Robot.shooter))
-
-        Keymap.Shooter.SHOOTER_ENABLE()\
-            .whenPressed(command.DriveSwerveTurretAim(Robot.drivetrain))\
-            .whenReleased(DriveSwerveCustom(Robot.drivetrain)) \
 
 
         # Keymap.Shooter.FENDER_SHOT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, .5))

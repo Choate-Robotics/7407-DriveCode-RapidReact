@@ -42,8 +42,8 @@ class Keymap:
         STAGE_BALL = DefaultButton(Controllers.DRIVER, controllerDRIVER.RT)
 
     class Shooter:
-        #SHOOTER_ENABLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.RT)
-        SHOOTER_EJECT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.A)
+        SHOOTER_ENABLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.RT)
+        # SHOOTER_EJECT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.A)
         AUTO_SHOOT = DefaultButton(Controllers.DRIVER, controllerDRIVER.Y)
         #FENDER_SHOT = DefaultButton(Controllers.DRIVER, controllerDRIVER.LT)
         #SHOOTER_SHORT_EJECT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.LT)

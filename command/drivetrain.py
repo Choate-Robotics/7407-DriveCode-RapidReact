@@ -97,8 +97,12 @@ class DriveSwerveTurretAim(SubsystemCommand[Drivetrain]):
 
         wpilib.SmartDashboard.putNumber("I want to go to:", Robot.shooter.desired_turret_angle)
 
-        if current_limelight_offset is not None and current_limelight_offset != 0:
+        if current_limelight_offset is not None and current_limelight_offset != 0 and abs(current_limelight_offset < 2):
             self.ready = True
+        elif current_limelight_offset < -2:
+            Robot.drivetrain.set((dx, dy), 3)
+        elif current_limelight_offset > 2:
+            Robot.drivetrain.set((dx, dy), -3)
         elif (Robot.shooter.desired_turret_angle - math.degrees(Robot.shooter.get_turret_rotation_angle())) > 5:
             Robot.drivetrain.set((dx, dy), -6)
         elif (Robot.shooter.desired_turret_angle - math.degrees(Robot.shooter.get_turret_rotation_angle())) < -5:
