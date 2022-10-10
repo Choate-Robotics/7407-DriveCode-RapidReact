@@ -1,5 +1,5 @@
 #from turtle import right
-from pytest import console_main
+#from pytest import console_main
 import wpilib
 import constants
 from robotpy_toolkit_7407 import Subsystem

@@ -28,7 +28,7 @@ class Ball():
 
     #General Variables
     ball = [] #list of stored ball objects
-
+    aimed = False
     #Ball Specific Variables
     position: str #position of ball (While moving, position is set to the future position, IE: Ball right moving left, Ball position is Left)
     lastPosition: str #Last Position
@@ -78,6 +78,10 @@ class Ball():
 
     CPD = 0 #Controller Pulse Down int
 
+    aimCoolDown = False # aim Cool down
+
+    ACDT = 0 # aim cool down threshold
+
     def reset(self):
         self.ball = []
         Robot.index.ball_count = 0
@@ -87,6 +91,7 @@ class Ball():
         Robot.index.staged_oc = False
         self.waiting = False
         Robot.index.traffic_oc = False
+        Robot.index.dinglebobs_off()
     
     def posNum(self, oc: str):
         '''
@@ -125,22 +130,9 @@ class Ball():
     
     def rumble(self):
         x = self.CurrentNum()
-        if x == 1:
-            if self.CPU < 10 and self.CPD > 10:
-                self.CPD = 0
-                wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 1)
-                wpilib.XboxController(Controllers.OPERATOR).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 1)
-                self.CPU += 1
-            elif self.CPD < 10 and self.CPU > 10:
-                self.CPU = 0
-                wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 0)
-                wpilib.XboxController(Controllers.OPERATOR).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 0)
-                self.CPU += 1
-        elif x > 1:
-            wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 1)
+        if x > 1:
             wpilib.XboxController(Controllers.OPERATOR).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 1)
         else:
-            wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 0)
             wpilib.XboxController(Controllers.OPERATOR).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 0)
     
     def newPos(self, pos):
@@ -296,14 +288,19 @@ class Ball():
             if not self.removed:
                 if self.moving != False and not self.waiting:
                         Robot.index.traffic_oc = False
-                if pos != "Shoot":
-                    if Robot.index.traffic_oc:
+                if Robot.index.traffic_oc:
+                    self.waiting = True
+                    self.moving = pos
+                    return
+                else:
+                    self.waiting = False
+                    self.moving = False
+
+                if pos == "Shoot":
+                    if not Robot.shooter.ready:
                         self.waiting = True
                         self.moving = pos
                         return
-                    else:
-                        self.waiting = False
-                        self.moving = False
 
                 nPos = pos
                 if self.pathClear(nPos) != True:
@@ -322,8 +319,7 @@ class Ball():
                                 y = Robot.index.photo_electric
                         if not y.get_value():
                             self.intakeInvalid(self.position)
-                    if nPos != "Shoot":
-                        Robot.index.traffic_oc = True
+                    Robot.index.traffic_oc = True
                     self.moving = nPos
                     self.__move(nPos)
 
@@ -379,16 +375,25 @@ class Ball():
                     self.PH += 1
 
         elif pos == "Shoot":
-            if Robot.shooter.ready:
-                Scurrent = pdh.getCurrent(11)
-                if Scurrent > 10:
-                    Robot.index.single_dinglebob_off(Robot.index.shooting)
-                    self.removed = True
-                    self.moving = False
-                    Robot.index.shooting = False
-            else:
+            # if Robot.shooter.ready:
+            #     Scurrent = pdh.getCurrent(11)
+            #     if Scurrent > 10:
+            #         Robot.index.single_dinglebob_off(Robot.index.shooting)
+            #         self.removed = True
+            #         self.moving = False
+            #         Robot.index.shooting = False
+            # else:
+            #     Robot.index.single_dinglebob_off(Robot.index.shooting)
+            #     self.setPos(self.lastPosition)
+
+            Scurrent = pdh.getCurrent(11)
+            if Scurrent > 10:
                 Robot.index.single_dinglebob_off(Robot.index.shooting)
-                self.setPos(self.lastPosition)
+                self.removed = True
+                self.moving = False
+                Robot.index.traffic_oc = False
+                Robot.index.shooting = False
+            
 
    
     def purge(self):
@@ -514,26 +519,39 @@ class BallPath(SubsystemCommand[Index]):
             else:
                 self.BallController.li = 0
                 self.BallController.rightInvalid = False
+        
+        # if self.BallController.aimCoolDown:
+        #     if self.BallController.ACDT < 100:
+        #         self.BallController.ACDT += 1
+        #     else:
+        #         self.BallController.ACDT = 0
+        #         self.BallController.aimCoolDown = False
 
     def currentSensing(self, enabled):
         if enabled:
             if Robot.index.left_oc and Robot.intake.left_intake_down:
                 lIcurrent = self.pdh.getCurrent(4)
-                if lIcurrent > 7 and not Robot.intake.left_current:
+                if lIcurrent > 10 and not Robot.intake.left_current:
                     Robot.intake.left_current = True
-                    Robot.intake.left_intake_speed = .1
-                elif lIcurrent < 7 and Robot.intake.left_current:
+                    Robot.intake.left_intake_speed = 0
+                elif lIcurrent < 10 and Robot.intake.left_current:
                     Robot.intake.left_current = False
-                    Robot.intake.left_intake_speed = 1
+                    Robot.intake.left_intake_speed = constants.default_intake_speed
+            else:
+                Robot.intake.left_current = False
+                Robot.intake.left_intake_speed = constants.default_intake_speed
 
             if Robot.index.right_oc and Robot.intake.right_intake_down:
                 lRcurrent = self.pdh.getCurrent(3)
-                if lRcurrent > 7 and not Robot.intake.right_current:
+                if lRcurrent > 10 and not Robot.intake.right_current:
                     Robot.intake.right_current = True
-                    Robot.intake.right_intake_speed = .1
-                elif lRcurrent < 7 and Robot.intake.right_current:
+                    Robot.intake.right_intake_speed = 0
+                elif lRcurrent < 10 and Robot.intake.right_current:
                     Robot.intake.right_current = False
-                    Robot.intake.right_intake_speed = 1
+                    Robot.intake.right_intake_speed = constants.default_intake_speed
+            else:
+                Robot.intake.right_current = False
+                Robot.intake.right_intake_speed = constants.default_intake_speed
     
     def shooting(self, auto: bool):
         '''
@@ -547,47 +565,23 @@ class BallPath(SubsystemCommand[Index]):
         def staging(ball):
             Robot.index.stage = False
             print("Stage Balls")
-            if  not len(ball.ball) == 0:
+            if len(ball.ball) != 0:
                 if Robot.index.staged_oc:
                     y: str
                     x = ball.posNum("Stage")
                     if ball.ball[x].team == False:
-                        if Robot.index.left_oc:
+                        if not Robot.index.left_oc:
                             y = "Left"
-                        if Robot.index.right_oc:
+                        if not Robot.index.right_oc:
                             y = "Right"
                         self.BallController.ball[x].setPos(y)
                 else:
-                    x = 30000
-                    if Robot.intake.left_intake_down:
+                    if Robot.index.left_oc:
                         x = ball.posNum("Left")
-                        if x:
-                            ball.ball[x].setPos("Stage")
-                        else:
-                            x = ball.posNum("Right")
-                            if x:
-                                ball.ball[x].setPos("Stage")
-                    elif Robot.intake.right_intake_down:
+                        ball.ball[x].setPos("Stage")
+                    elif Robot.index.right_oc:
                         x = ball.posNum("Right")
-                        if x:
-                            ball.ball[x].setPos("Stage")
-                        else:
-                            x = ball.posNum("Left")
-                            if x:
-                                ball.ball[x].setPos("Stage")
-                    else:
-                        y = 0
-                        x = False
-                        if Robot.index.left_oc:
-                            y += 1
-                            x = ball.posNum("Left")
-                        if Robot.index.right_oc:
-                            y += 1
-                            x = ball.posNum("Right")
-                        if not x == 30000:
-                            ball.ball[x].setPos("Stage")
-                            if y < 1:
-                                Robot.index.stage = True   
+                        ball.ball[x].setPos("Stage") 
 
         def destaging(ball):
             if not len(ball.ball) == 0:
@@ -621,15 +615,29 @@ class BallPath(SubsystemCommand[Index]):
             Robot.index.autoShotToggle = False
 
         if Robot.index.stage:
-            staging(ball)     
-        
-        if Robot.index.destageBall:
-            destaging(ball)
+            if Robot.index.staged_oc == False:
+                print("Attempting to stage Ball")
+                staging(ball)
+            else:
+                Robot.index.stage = False  
+
+        if Robot.index.aiming:
+            if self.BallController.CurrentNum() == 0:
+                wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 1)   
+        else:
+            wpilib.XboxController(Controllers.DRIVER).setRumble(wpilib.XboxController.RumbleType.kRightRumble, 0)
+            
+
+        if Robot.index.destageBall: 
+            if Robot.index.staged_oc == True:
+                destaging(ball)
+            else:
+                Robot.index.destageBall = False
 
         if Robot.shooter.ready:
             if Robot.index.staged_oc and Robot.index.photo_electric.get_value():
                 x = ball.posNum("Stage")
-                if x.team:
+                if ball.ball[x].team:
                     ball.ball[x].setPos("Shoot")
                 else:
                     pass # set variable to shoot enemy ball
@@ -707,7 +715,7 @@ class BallPath(SubsystemCommand[Index]):
                             self.BallController.ball[c].setPos("Stage")
                 
         elif not Robot.intake.left_intake_down:
-            if not Robot.index.traffic_oc and not Robot.index.shooting:
+            if not Robot.index.traffic_oc and Robot.index.shooting == False:
                 Robot.index.intakeBall("Left", "Off")
     
     def rightIntake(self, right_color):
@@ -750,7 +758,7 @@ class BallPath(SubsystemCommand[Index]):
                             self.BallController.ball[c].setPos("Stage")
                 
         elif not Robot.intake.right_intake_down:
-            if not Robot.index.traffic_oc and not Robot.index.shooting:
+            if not Robot.index.traffic_oc and Robot.index.shooting == False:
                 Robot.index.intakeBall("Right", "Off")
 
     def resetBall(self):
