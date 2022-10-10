@@ -206,7 +206,7 @@ class Ball():
 
         return path_clear
 
-    def intakeInvalid(self, y):
+    def __intakeInvalid(self, y):
         '''
         Disables new ball generation for intake
 
@@ -224,6 +224,19 @@ class Ball():
             case "Stage":
                 pass
     
+    def __intakeGeneration(self):
+        if not self.moving and self.position != "Shoot":    
+            y: object
+            match self.position:
+                case "Left":
+                    y = Robot.index.left_limit
+                case "Right":
+                    y = Robot.index.right_limit
+                case "Stage":
+                    y = Robot.index.photo_electric
+            if not y.get_value():
+                self.__intakeInvalid(self.position)
+
     def __move(self, pos):
         '''
         Starts dinglebob raw power through instant command
@@ -258,6 +271,23 @@ class Ball():
                 InstantCommand(Robot.index.moveBall("Shoot", cPos), Robot.index)
         self.newPos(pos)
 
+    def __traffic(self, pos):
+        if self.moving != False and not self.waiting:
+            Robot.index.traffic_oc = False
+        if Robot.index.traffic_oc:
+            self.waiting = True
+            self.moving = pos
+            return False
+        elif pos == "Shoot":
+            if not Robot.shooter.ready:
+                self.waiting = True
+                self.moving = pos
+                return False
+        else:
+            self.waiting = False
+            self.moving = False
+            return True
+    
     def setPos(self, pos, timeout = 5):
         '''
         Moves the ball based on position
@@ -286,43 +316,17 @@ class Ball():
             return False
         else:
             if not self.removed:
-                if self.moving != False and not self.waiting:
-                        Robot.index.traffic_oc = False
-                if Robot.index.traffic_oc:
-                    self.waiting = True
-                    self.moving = pos
-                    return
-                else:
-                    self.waiting = False
-                    self.moving = False
-
-                if pos == "Shoot":
-                    if not Robot.shooter.ready:
-                        self.waiting = True
-                        self.moving = pos
-                        return
-
                 nPos = pos
-                if self.pathClear(nPos) != True:
-                    print(self.pathClear(nPos))
+                if self.__traffic(nPos) == False:
+                    return self.__traffic(nPos)
+                elif self.pathClear(nPos) != True:
                     Robot.index.single_dinglebob_off(self.position)
                     return self.pathClear(nPos)
                 else:
-                    if not self.moving and self.position != "Shoot":    
-                        y: object
-                        match self.position:
-                            case "Left":
-                                y = Robot.index.left_limit
-                            case "Right":
-                                y = Robot.index.right_limit
-                            case "Stage":
-                                y = Robot.index.photo_electric
-                        if not y.get_value():
-                            self.intakeInvalid(self.position)
+                    self.__intakeGeneration()
                     Robot.index.traffic_oc = True
                     self.moving = nPos
                     self.__move(nPos)
-
                     return True
 
     def isDone(self, pos):
@@ -520,12 +524,6 @@ class BallPath(SubsystemCommand[Index]):
                 self.BallController.li = 0
                 self.BallController.rightInvalid = False
         
-        # if self.BallController.aimCoolDown:
-        #     if self.BallController.ACDT < 100:
-        #         self.BallController.ACDT += 1
-        #     else:
-        #         self.BallController.ACDT = 0
-        #         self.BallController.aimCoolDown = False
 
     def currentSensing(self, enabled):
         if enabled:
