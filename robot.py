@@ -153,7 +153,7 @@ class _Robot(wpilib.TimedRobot):
         if not self.turret_zeroed:
             # This will become a command soon
             while not Robot.shooter.mag_sensor.get_value():
-                Robot.shooter.m_turret.set_raw_output(-.1)
+                Robot.shooter.m_turret.set_raw_output(-.15)
 
             Robot.shooter.m_turret.set_raw_output(0)
             Robot.shooter.m_turret.set_sensor_position(0)

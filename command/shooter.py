@@ -85,7 +85,7 @@ class TurretAim(SubsystemCommand[Shooter]):
         self.power = 0
 
         self.min_absolute_power = .07  # Minimum power of turret required to move it
-        self.max_absolute_power = .80  # Maximum movement power of turret allowed .80
+        self.max_absolute_power = .40  # Maximum movement power of turret allowed .80
 
         # Soft limits for turret movement
         self.limit_backward = False
@@ -187,7 +187,6 @@ class TurretAim(SubsystemCommand[Shooter]):
             Robot.odometry.update()
 
             if Robot.odometry.hub_angle is not None:
-
                 if Robot.odometry.hub_dist is not None:
                     self.subsystem.target_stationary(Robot.odometry.hub_dist)
 
