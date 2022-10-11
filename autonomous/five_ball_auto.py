@@ -13,7 +13,7 @@ from command import IndexOn, IndexOff
 from command.shooter import ShooterEnableAtDistance
 from robot_systems import Robot
 
-initial_gyro_angle = -90 * deg
+initial_gyro_angle = 90 * deg
 
 old_initial_robot_pose = Pose2d(7.927611, -6.613358, initial_gyro_angle.asNumber(rad))
 initial_robot_pose = Pose2d(8, 1.7714, initial_gyro_angle.asNumber(rad))
@@ -21,7 +21,7 @@ initial_robot_pose = Pose2d(8, 1.7714, initial_gyro_angle.asNumber(rad))
 dx = (initial_robot_pose.X() - old_initial_robot_pose.X()) * m
 dy = (initial_robot_pose.Y() - old_initial_robot_pose.Y()) * m
 
-first_path_end_pose = TrajectoryEndpoint(7.927611 * m - 6 * inch + dx, -8 * m + 1.6 * ft + dy, initial_gyro_angle.asNumber(rad))
+first_path_end_pose = TrajectoryEndpoint(7.927611 * m - 6 * inch + dx, -8 * m + 1.6 * ft + dy, 180 * deg)
 
 second_path_start_pose = first_path_end_pose
 second_path_start_pose.angle = 163 * deg                       #below it should be -4                     3
@@ -148,10 +148,10 @@ final_command = SequentialCommandGroup(
             rotate_1,
             IndexOn().alongWith(InstantCommand(Robot.index.dinglebobs_in, Robot.intake))
         ),
-        ShooterEnableAtDistance(Robot.shooter, 2.4) # Was 2.7
+        ShooterEnableAtDistance(Robot.shooter, 2.4) # Was 2.7s
     ).withTimeout(1.5),
     InstantCommand(right_intake_off, Robot.intake),
-    IndexOff(), InstantCommand(Robot.index.dinglebobs_off, Robot.intake),
+    IndexOff(), InstantCommand(Robot.index.dinglebobs_off, Robot.index),
     ParallelCommandGroup(
         second_path,
         InstantCommand(left_intake_on, Robot.intake)
@@ -167,7 +167,7 @@ final_command = SequentialCommandGroup(
         ),
         ShooterEnableAtDistance(Robot.shooter, 2.8) # CHANGED FROM 3.1 - SID JUN 3 2022
     ).withTimeout(1.5),
-    IndexOff(), InstantCommand(lambda: Robot.index.dinglebobs_off(), Robot.intake),
+    IndexOff(), InstantCommand(lambda: Robot.index.dinglebobs_off(), Robot.index),
     ParallelCommandGroup(
         third_path,
         InstantCommand(left_intake_on, Robot.intake)
