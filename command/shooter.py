@@ -1,3 +1,4 @@
+from ast import Sub
 import robotpy_toolkit_7407.subsystem_templates.drivetrain.swerve_drivetrain_commands
 import wpilib
 from networktables import NetworkTables
@@ -17,6 +18,8 @@ import constants
 
 from command.drivetrain import DriveSwerveCustom
 import commands2
+
+import subsystem
 
 
 class ShooterEnable(SubsystemCommand[Shooter]):
@@ -78,6 +81,25 @@ class ShooterZero(SubsystemCommand[Shooter]):
         self.subsystem.stop()
         self.subsystem.m_angle.set_sensor_position(0 * talon_sensor_unit)
 
+class TurretZero(SubsystemCommand[Shooter]):
+    def __init__(self, subsystem: Shooter):
+        super().__init__(subsystem)
+    
+    def initialize(self) -> None:
+        if constants.turret_zeroed == False:
+            self.subsystem.m_turret.set_raw_output(-.15)
+
+    def execute(self) -> None:
+        if constants.turret_zeroed == False:
+            if self.subsystem.mag_sensor.get_value():
+                self.subsystem.m_turret.set_raw_output(0)
+                self.subsystem.m_turret.set_sensor_position(0)
+                constants.turret_zeroed = True 
+                print("YES TURRET IS ZEROED!!!!")
+            
+    
+    def isFinished(self) -> bool:
+        return constants.turret_zeroed
 
 class TurretAim(SubsystemCommand[Shooter]):
     def __init__(self, subsystem: Shooter):

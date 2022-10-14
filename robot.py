@@ -13,7 +13,7 @@ from autonomous.auto_routine import AutoRoutine
 # from autonomous import five_ball_auto, two_ball_auto, three_ball_auto # TODO: Fix this
 from command import BallPath
 from command import ElevatorRezero
-from command import TurretAim
+from command import TurretAim, TurretZero
 from command.drivetrain import DriveSwerveCustom
 from oi.OI import OI
 from robot_systems import Robot, Pneumatics, Sensors
@@ -36,6 +36,7 @@ class _Robot(wpilib.TimedRobot):
     Main robot class. Initializes OI and subsystems, and runs the command scheduler.
     """
 
+
     def __init__(self):
         super().__init__(constants.period)
 
@@ -56,7 +57,7 @@ class _Robot(wpilib.TimedRobot):
 
     def robotInit(self):
 
-        self.turret_zeroed = False
+        # self.turret_zeroed = False
 
         wpilib.LiveWindow.disableAllTelemetry()  # Disable Telemetry on Robot Startup to reduce loop time
         """
@@ -106,6 +107,8 @@ class _Robot(wpilib.TimedRobot):
 
         logger.info("initialization complete")
 
+
+
     def robotPeriodic(self):
         # print(Robot.drivetrain.odometry.getPose())
         Robot.rev_digit.update()
@@ -148,28 +151,50 @@ class _Robot(wpilib.TimedRobot):
 
         # logger.info(f"TURRET CURRENT POSITION IN DEGREES: {math.degrees(Robot.shooter.m_turret.get_sensor_position()/constants.turret_angle_gear_ratio)}")
 
+
+    def autonomousInit(self) -> None:
+        # if not self.turret_zeroed:
+        #     # This will become a command soon
+        #     while not Robot.shooter.mag_sensor.get_value():
+        #         Robot.shooter.m_turret.set_raw_output(-.15)
+
+        #     Robot.shooter.m_turret.set_raw_output(0)
+        #     Robot.shooter.m_turret.set_sensor_position(0)
+
+        #     self.turret_zeroed = True
+        commands2.CommandScheduler.getInstance().schedule(TurretZero(Robot.shooter))
+
     def teleopInit(self) -> None:
+        
 
-        if not self.turret_zeroed:
-            # This will become a command soon
-            while not Robot.shooter.mag_sensor.get_value():
-                Robot.shooter.m_turret.set_raw_output(-.15)
+        # if not self.turret_zeroed:
+        #     # This will become a command soon
+        #     while not Robot.shooter.mag_sensor.get_value():
+        #         Robot.shooter.m_turret.set_raw_output(-.15)
 
-            Robot.shooter.m_turret.set_raw_output(0)
-            Robot.shooter.m_turret.set_sensor_position(0)
+        #     Robot.shooter.m_turret.set_raw_output(0)
+        #     Robot.shooter.m_turret.set_sensor_position(0)
 
-            self.turret_zeroed = True
+        #     self.turret_zeroed = True
 
         Robot.elevator.initialized = False
+        commands2.CommandScheduler.getInstance().schedule(TurretZero(Robot.shooter))
         commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
         commands2.CommandScheduler.getInstance().schedule(BallPath(Robot.index))
-        commands2.CommandScheduler.getInstance().schedule(TurretAim(Robot.shooter))
         commands2.CommandScheduler.getInstance().schedule(ElevatorRezero(Robot.elevator))
+        commands2.CommandScheduler.getInstance().schedule(
+            commands2.SequentialCommandGroup(
+                TurretZero(Robot.shooter),
+                TurretAim(Robot.shooter)
+            )
+        )
+
         Robot.index.ball_queue = 0
 
     def teleopPeriodic(self) -> None:
         # print("Turret current angle: ", math.degrees(Robot.shooter.get_turret_rotation_angle()))
         wpilib.SmartDashboard.putBoolean("AIMING", Robot.shooter.aiming)
+        # print(Robot.odometry.robot_pose)
         try:
             wpilib.SmartDashboard.putNumber("HUBBA_ANGLE", math.degrees(Robot.odometry.hub_angle))
         except:

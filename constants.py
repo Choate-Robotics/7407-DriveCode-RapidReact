@@ -69,3 +69,5 @@ elevator_pull_down_height = (0.5 * cm).asNumber(m)
 elevator_latch_height = (2.5 * inch).asNumber(m)
 elevator_fire_height = (5.5 * inch).asNumber(m)
 elevator_more_below_extended_height = (17 * inch).asNumber(m)
+
+turret_zeroed = False
