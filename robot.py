@@ -13,7 +13,7 @@ from autonomous.auto_routine import AutoRoutine
 # from autonomous import five_ball_auto, two_ball_auto, three_ball_auto # TODO: Fix this
 from command import BallPath
 from command import ElevatorRezero
-from command import TurretAim, TurretZero
+from command import TurretAim
 from command.drivetrain import DriveSwerveCustom
 from oi.OI import OI
 from robot_systems import Robot, Pneumatics, Sensors
@@ -162,7 +162,8 @@ class _Robot(wpilib.TimedRobot):
         #     Robot.shooter.m_turret.set_sensor_position(0)
 
         #     self.turret_zeroed = True
-        commands2.CommandScheduler.getInstance().schedule(TurretZero(Robot.shooter))
+        # commands2.CommandScheduler.getInstance().schedule(TurretZero(Robot.shooter))
+        pass
 
     def teleopInit(self) -> None:
         
@@ -178,16 +179,10 @@ class _Robot(wpilib.TimedRobot):
         #     self.turret_zeroed = True
 
         Robot.elevator.initialized = False
-        commands2.CommandScheduler.getInstance().schedule(TurretZero(Robot.shooter))
+        commands2.CommandScheduler.getInstance().schedule(TurretAim(Robot.shooter))
         commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
         commands2.CommandScheduler.getInstance().schedule(BallPath(Robot.index))
         commands2.CommandScheduler.getInstance().schedule(ElevatorRezero(Robot.elevator))
-        commands2.CommandScheduler.getInstance().schedule(
-            commands2.SequentialCommandGroup(
-                TurretZero(Robot.shooter),
-                TurretAim(Robot.shooter)
-            )
-        )
 
         Robot.index.ball_queue = 0
 

@@ -11,8 +11,9 @@ from wpimath.geometry import Pose2d, Translation2d
 import constants
 from autonomous.auto_routine import AutoRoutine
 from autonomous.follow_path import FollowPathCustom, RotateInPlace
-from command.shooter import TurretAim, TurretZero
-from autonomous.trajectory import generate_trajectory_from_pose, TrajectoryEndpoint, generate_trajectory, generate_trajectory_without_unum
+from command.shooter import TurretAim
+from autonomous.trajectory import generate_trajectory_from_pose, TrajectoryEndpoint, generate_trajectory, \
+    generate_trajectory_without_unum
 from command import IndexOn, IndexOff
 from command.shooter import ShooterEnableAtDistance
 from subsystem import Index
@@ -24,11 +25,11 @@ from robot import _Robot
 # Pose2d angle: the angle the movement is towards, 0 is negative y, 90 is negative x
 
 # paths waypoints_____________
-initial_robot_pose = Pose2d(-6.75, 4.068152, 0 * deg) 
+initial_robot_pose = Pose2d(-6.75, 4.068152, 0 * deg)
 first_path_waypoint = [Translation2d(-6.75, 5.3)]
-first_path_end_pose = Pose2d(-7.25, 5.4, 90 * deg) 
+first_path_end_pose = Pose2d(-7.25, 5.4, 90 * deg)
 
-second_path_start_pose = Pose2d(-7.25, 5.4, -90 * deg) 
+second_path_start_pose = Pose2d(-7.25, 5.4, -90 * deg)
 second_path_waypoint = [Translation2d(-4.75, 5)]
 second_path_end_pose = Pose2d(-3.875, 4.2, -45 * deg)
 
@@ -39,24 +40,28 @@ third_path_end_pose = Pose2d(-1.5, 4.75, -135 * deg)
 # path commands____________
 first_path = FollowPathCustom(
     Robot.drivetrain,
-    generate_trajectory_without_unum(initial_robot_pose, first_path_waypoint, first_path_end_pose, 8 * m/s, 1.5 * m/(s*s)),
-    0 * deg, # this is what rotation the robot will be facing in the end
+    generate_trajectory_without_unum(initial_robot_pose, first_path_waypoint, first_path_end_pose, 8 * m / s,
+                                     1.5 * m / (s * s)),
+    0 * deg,  # this is what rotation the robot will be facing in the end
     period=constants.period
 )
 
 second_path = FollowPathCustom(
     Robot.drivetrain,
-    generate_trajectory_without_unum(second_path_start_pose, second_path_waypoint, second_path_end_pose, 8 * m/s, 1.5 * m/(s*s)),
+    generate_trajectory_without_unum(second_path_start_pose, second_path_waypoint, second_path_end_pose, 8 * m / s,
+                                     1.5 * m / (s * s)),
     45 * deg,
     period=constants.period
 )
 
 third_path = FollowPathCustom(
     Robot.drivetrain,
-    generate_trajectory_without_unum(third_path_start_pose, third_path_waypoint, third_path_end_pose, 8 * m/s, 1.5 * m/(s*s)),
+    generate_trajectory_without_unum(third_path_start_pose, third_path_waypoint, third_path_end_pose, 8 * m / s,
+                                     1.5 * m / (s * s)),
     -135 * deg,
     period=constants.period
 )
+
 
 # Sensor commands ______________
 def zero():
@@ -65,32 +70,41 @@ def zero():
     Robot.drivetrain.n_10.zero()
     Robot.drivetrain.n_11.zero()
 
+
 def resetGyro():
     Robot.drivetrain.gyro.reset_angle()
+
 
 # Intake commands__________
 def left_intake_on():
     Robot.intake.left_intake_enable()
 
+
 def right_intake_on():
     Robot.intake.right_intake_enable()
+
 
 def right_intake_off():
     Robot.intake.right_intake_disable()
 
+
 def left_intake_off():
     Robot.intake.left_intake_disable()
+
 
 # Dinglebob commands__________
 def left_dinglebob_in():
     Robot.index.single_dinglebob_in("Left")
 
+
 def right_dinglebob_in():
     Robot.index.single_dinglebob_in("Right")
 
-def dinglebobs_off(): 
+
+def dinglebobs_off():
     Robot.index.single_dinglebob_off("Left")
     Robot.index.single_dinglebob_off("Right")
+
 
 class LeftDinglebobRoutine(SubsystemCommand[Index]):
     def __init__(self, subsystem: T):
@@ -108,78 +122,86 @@ class LeftDinglebobRoutine(SubsystemCommand[Index]):
 
         return Robot.index.photo_electric.get_value()
 
+
 # shooter command____________
 def turn_turret():
     Robot.shooter.set_turret_angle(1.2)
-    
+
+
+def set_turret_distance(dist):
+    Robot.shooter.target_turret_dist = dist
+
+
+def set_turret_angle(angle):  # IN RADIANS
+    Robot.shooter.target_turret_angle = angle
+
 
 # the full auto sequence
+
 final_command = SequentialCommandGroup(
     InstantCommand(resetGyro),
     InstantCommand(zero),
-    TurretZero(Robot.shooter),
-    ParallelCommandGroup( # drive back to opponent ball
+    ParallelCommandGroup(  # drive back to opponent ball
         first_path,
         InstantCommand(right_intake_on),
     ),
-    ParallelDeadlineGroup( # shoot the 2 preload
+    ParallelDeadlineGroup(  # shoot the 2 preload
         SequentialCommandGroup(
             WaitCommand(0.5),
             InstantCommand(left_dinglebob_in),
             WaitCommand(0.75)
         ),
-        TurretAim(Robot.shooter),
     ),
-    InstantCommand(dinglebobs_off), 
-    ParallelCommandGroup( # shoot the opponent ball into our hangar
+    InstantCommand(dinglebobs_off),
+    ParallelCommandGroup(  # shoot the opponent ball into our hangar
         SequentialCommandGroup(
-            ParallelCommandGroup(
-                InstantCommand(turn_turret),
-                ShooterEnableAtDistance(5)
-            ),
+            InstantCommand(set_turret_distance(5)),
             InstantCommand(right_dinglebob_in)
         ),
-        WaitCommand(0.5)        
+        WaitCommand(5)
     ),
-
-
-
-
-    # ParallelCommandGroup(
-    #     InstantCommand(dinglebobs_off),
-    #     InstantCommand(right_intake_off)
-    # ),
-    # InstantCommand(left_intake_on),
-    # ParallelDeadlineGroup( # sweep through the 2 team balls on the tarmac with the left intake on
-    #     second_path,
-    #     LeftDinglebobRoutine(Robot.index)
-    # ),
-    # ParallelDeadlineGroup( # shoot the 2 balls
-    #     SequentialCommandGroup(
-    #         WaitCommand(0.25), 
-    #         InstantCommand(left_dinglebob_in),
-    #         WaitCommand(0.75)
-    #     ),
-    #     TurretAim(Robot.shooter)
-    # ),
-    # InstantCommand(left_intake_off),
-    # ParallelCommandGroup(
-    #     third_path,
-    #     SequentialCommandGroup(
-    #        WaitCommand(0.25),
-    #        InstantCommand(left_intake_on) 
-    #     )
-    # )
+    InstantCommand(dinglebobs_off),
+    InstantCommand(set_turret_distance(None)),
 )
 
-routine = AutoRoutine(initial_robot_pose, final_command)
+test_command = ParallelCommandGroup(
+    TurretAim(Robot.shooter),
+    final_command
+)
 
+# ParallelCommandGroup(
+#     InstantCommand(dinglebobs_off),
+#     InstantCommand(right_intake_off)
+# ),
+# InstantCommand(left_intake_on),
+# ParallelDeadlineGroup( # sweep through the 2 team balls on the tarmac with the left intake on
+#     second_path,
+#     LeftDinglebobRoutine(Robot.index)
+# ),
+# ParallelDeadlineGroup( # shoot the 2 balls
+#     SequentialCommandGroup(
+#         WaitCommand(0.25),
+#         InstantCommand(left_dinglebob_in),
+#         WaitCommand(0.75)
+#     ),
+#     TurretAim(Robot.shooter)
+# ),
+# InstantCommand(left_intake_off),
+# ParallelCommandGroup(
+#     third_path,
+#     SequentialCommandGroup(
+#        WaitCommand(0.25),
+#        InstantCommand(left_intake_on)
+#     )
+# )
+# )
+
+routine = AutoRoutine(initial_robot_pose, test_command)
 
 # initial_gyro_angle = 90 * deg
 
 # old_initial_robot_pose = Pose2d(7.927611, -6.613358, initial_gyro_angle.asNumber(rad))
 # initial_robot_pose = Pose2d(8, 1.7714, initial_gyro_angle.asNumber(rad))
-
 
 
 # dx = (initial_robot_pose.X() - old_initial_robot_pose.X()) * m
@@ -206,7 +228,6 @@ routine = AutoRoutine(initial_robot_pose, final_command)
 #     90 * deg, # -90 
 #     period=constants.period
 # )
-
 
 
 # rotate_1 = RotateInPlace(
@@ -272,7 +293,7 @@ routine = AutoRoutine(initial_robot_pose, final_command)
 
 # def right_intake_on():
 #     Robot.intake.right_intake_enable()
-    
+
 # def right_dinglebob_in():
 #     Robot.index.single_dinglebob_in("Right")
 
