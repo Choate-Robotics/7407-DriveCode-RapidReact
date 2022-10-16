@@ -87,14 +87,14 @@ class TurretAim(SubsystemCommand[Shooter]):
         super().__init__(subsystem)
         self.power = 0
 
-        self.min_absolute_power = .07  # Minimum power of turret required to move it
+        self.min_absolute_power = constants.min_turret_power  # Minimum power of turret required to move it
         self.max_absolute_power = constants.max_turret_power  # Maximum movement power of turret allowed .80
 
         # Soft limits for turret movement
         self.limit_backward = False
         self.limit_forward = False
 
-        self.default_movement_power = .20  # Default movement power of turret if not using pid
+        self.default_movement_power = constants.default_turret_power  # Default movement power of turret if not using pid
 
         self.p = .02  # Multiplies current offset by this multiplier to get power .0275
 
@@ -242,7 +242,7 @@ class TurretAim(SubsystemCommand[Shooter]):
                     self.subsystem.target_stationary(self.subsystem.target_turret_dist)
 
         else:
-            self.subsystem.m_turret.set_raw_output(-.15)
+            self.subsystem.m_turret.set_raw_output(-self.default_movement_power)
             self.subsystem.turret_zeroed = self.subsystem.mag_sensor.get_value()
             if self.subsystem.turret_zeroed:
                 self.subsystem.m_turret.set_raw_output(0)

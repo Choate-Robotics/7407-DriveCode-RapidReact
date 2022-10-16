@@ -38,7 +38,9 @@ shooter_angle_gear_ratio = 57.5
 # TURRET RELATED THINGS:
 turret_angle_gear_ratio = 50.347*(18/16) # How many motor radians in one rev of the turret
 max_turret_power = .50
-max_turret_positional_velocity = 50000
+min_turret_power = .07  # Minimum power required to move turret
+default_turret_power = .20  # Default power of turret
+max_turret_positional_velocity = 50000  # setting for positional pid of turret; max turret velocity
 
 # Targeting constants
 air_resistance_constant = 0.048187
