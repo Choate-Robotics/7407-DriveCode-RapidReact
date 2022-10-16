@@ -186,6 +186,9 @@ class _Robot(wpilib.TimedRobot):
 
         Robot.index.ball_queue = 0
 
+        Robot.shooter.target_turret_dist = None
+        Robot.shooter.target_turret_angle = None
+
     def teleopPeriodic(self) -> None:
         # print("Turret current angle: ", math.degrees(Robot.shooter.get_turret_rotation_angle()))
         wpilib.SmartDashboard.putBoolean("AIMING", Robot.shooter.aiming)

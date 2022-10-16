@@ -130,6 +130,7 @@ def turn_turret():
 
 def set_turret_distance(dist):
     Robot.shooter.target_turret_dist = dist
+    print("SHOOTER DIST SET TO: ", Robot.shooter.target_turret_dist)
 
 
 def set_turret_angle(angle):  # IN RADIANS
@@ -155,13 +156,15 @@ final_command = SequentialCommandGroup(
     InstantCommand(dinglebobs_off),
     ParallelCommandGroup(  # shoot the opponent ball into our hangar
         SequentialCommandGroup(
-            InstantCommand(set_turret_distance(5)),
+            # InstantCommand(set_turret_distance(5)),
+            # InstantCommand(set_turret_angle(math.radians(30))),
+            InstantCommand(set_turret_distance(None)),
+            InstantCommand(set_turret_angle(None)),
             InstantCommand(right_dinglebob_in)
         ),
-        WaitCommand(5)
+        WaitCommand(5),
     ),
     InstantCommand(dinglebobs_off),
-    InstantCommand(set_turret_distance(None)),
 )
 
 test_command = ParallelCommandGroup(

@@ -61,6 +61,9 @@ class Shooter(Subsystem):
 
     turret_zeroed: bool
 
+    target_turret_dist = None
+    target_turret_angle = None
+
     def init(self):
         self.m_top.init()
         self.m_bottom.init()
@@ -82,8 +85,8 @@ class Shooter(Subsystem):
         if self.turret_zeroed:
             self.m_turret.set_sensor_position(0)
 
-        self.target_turret_dist = None
-        self.target_turget_angle = None # (IN RADIANS)
+        # self.target_turret_dist = None
+        # self.target_turget_angle = None # (IN RADIANS)
 
     def set_launch_angle(self, theta: radians):
         theta = math.radians(90) - theta - self.sensor_zero_angle
@@ -111,14 +114,14 @@ class Shooter(Subsystem):
 
         self.m_top.set_target_velocity(self.desired_m_top)
         self.m_bottom.set_target_velocity(self.desired_m_bottom)
-        print("M_TOP_DESIRED: ", self.desired_m_top)
-        print("M_BOTTOM_DESIRED: ", self.desired_m_bottom)
+        # print("M_TOP_DESIRED: ", self.desired_m_top)
+        # print("M_BOTTOM_DESIRED: ", self.desired_m_bottom)
 
     def set_flywheels_for_ball_velocity(self, vx: meters_per_second, vy: meters_per_second):
         self.prev_flywheel_vel = (vx, vy)
         final_velocity = (-0.286 + 1.475 * (vx ** 2 + vy ** 2) ** .5)
         final_angle = math.atan(vy / vx)
-        print("FINAL ANGLE: ", final_angle)
+        # print("FINAL ANGLE: ", final_angle)
         self.set_launch_angle(final_angle)
         self.set_flywheels(final_velocity, final_velocity)
 
