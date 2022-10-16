@@ -6,10 +6,10 @@ from wpimath.geometry import Pose2d, Translation2d
 from wpimath.trajectory import TrajectoryGenerator, TrajectoryConfig, Trajectory
 
 
-def translation(x: Unum, y: Unum) -> Translation2d:
-    return Translation2d(x.asNumber(m), y.asNumber(m))
+# def translation(x: Unum, y: Unum) -> Translation2d:
+#     return Translation2d(x.asNumber(m), y.asNumber(m))
 
-
+# No longer in use
 @dataclass
 class TrajectoryEndpoint:
     x: Unum = 0 * m
@@ -20,7 +20,14 @@ class TrajectoryEndpoint:
     def as_pose(self):
         return Pose2d(self.x.asNumber(m), self.y.asNumber(m), self.angle.asNumber(rad))
 
+def generate_trajectory_without_unum(start: Pose2d, waypoints: list[Translation2d], end: Pose2d,
+                        max_vel: Unum, max_accel: Unum) -> Trajectory:
+    config = TrajectoryConfig(max_vel.asNumber(m/s), max_accel.asNumber(m/(s*s)))
+    config.setStartVelocity(0)
+    config.setEndVelocity(0)
+    return TrajectoryGenerator.generateTrajectory(start, waypoints, end, config)
 
+# No longer in use
 def generate_trajectory(start: TrajectoryEndpoint, waypoints: list[Translation2d], end: TrajectoryEndpoint,
                         max_vel: Unum, max_accel: Unum) -> Trajectory:
     config = TrajectoryConfig(max_vel.asNumber(m/s), max_accel.asNumber(m/(s*s)))
@@ -28,7 +35,7 @@ def generate_trajectory(start: TrajectoryEndpoint, waypoints: list[Translation2d
     config.setEndVelocity(end.vel.asNumber(m/s))
     return TrajectoryGenerator.generateTrajectory(start.as_pose(), waypoints, end.as_pose(), config)
 
-
+# No longer in use
 def generate_trajectory_from_pose(start: Pose2d, waypoints: list[Translation2d], end: TrajectoryEndpoint,
                                   max_vel: Unum, max_accel: Unum) -> Trajectory:
     config = TrajectoryConfig(max_vel.asNumber(m/s), max_accel.asNumber(m/(s*s)))

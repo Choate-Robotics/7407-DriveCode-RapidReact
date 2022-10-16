@@ -13,7 +13,7 @@ from command import IndexOn, IndexOff
 from command.shooter import ShooterEnableAtDistance
 from robot_systems import Robot
 
-initial_gyro_angle = -90 * deg
+initial_gyro_angle = 90 * deg
 
 old_initial_robot_pose = Pose2d(7.927611, -6.613358, initial_gyro_angle.asNumber(rad))
 initial_robot_pose = Pose2d(8, 1.7714, initial_gyro_angle.asNumber(rad))
@@ -21,7 +21,7 @@ initial_robot_pose = Pose2d(8, 1.7714, initial_gyro_angle.asNumber(rad))
 dx = (initial_robot_pose.X() - old_initial_robot_pose.X()) * m
 dy = (initial_robot_pose.Y() - old_initial_robot_pose.Y()) * m
 
-first_path_end_pose = TrajectoryEndpoint(7.927611 * m - 6 * inch + dx, -8 * m + 1.6 * ft + dy, initial_gyro_angle.asNumber(rad))
+first_path_end_pose = TrajectoryEndpoint(7.927611 * m - 6 * inch + dx, -8 * m + 1.6 * ft + dy, 180 * deg)
 
 second_path_start_pose = first_path_end_pose
 second_path_start_pose.angle = 163 * deg                       #below it should be -4                     3
@@ -106,22 +106,22 @@ fourth_path = FollowPathCustom(
 
 def right_intake_on():
     Robot.intake.right_intake_enable()
-    Robot.intake.dinglebobs_in()
+    Robot.index.dinglebobs_in()
 
 
 def right_intake_off():
     Robot.intake.right_intake_disable()
-    Robot.intake.dinglebobs_off()
+    Robot.index.dinglebobs_off()
 
 
 def left_intake_on():
     Robot.intake.left_intake_enable()
-    Robot.intake.dinglebobs_in()
+    Robot.index.dinglebobs_in()
 
 
 def left_intake_off():
     Robot.intake.left_intake_disable()
-    Robot.intake.dinglebobs_off()
+    Robot.index.dinglebobs_off()
 
 
 def zero():
@@ -146,12 +146,12 @@ final_command = SequentialCommandGroup(
     ParallelCommandGroup(
         SequentialCommandGroup(
             rotate_1,
-            IndexOn().alongWith(InstantCommand(Robot.intake.dinglebobs_in, Robot.intake))
+            IndexOn().alongWith(InstantCommand(Robot.index.dinglebobs_in, Robot.intake))
         ),
-        ShooterEnableAtDistance(Robot.shooter, 2.4) # Was 2.7
+        ShooterEnableAtDistance(Robot.shooter, 2.4) # Was 2.7s
     ).withTimeout(1.5),
     InstantCommand(right_intake_off, Robot.intake),
-    IndexOff(), InstantCommand(Robot.intake.dinglebobs_off, Robot.intake),
+    IndexOff(), InstantCommand(Robot.index.dinglebobs_off, Robot.index),
     ParallelCommandGroup(
         second_path,
         InstantCommand(left_intake_on, Robot.intake)
@@ -163,11 +163,11 @@ final_command = SequentialCommandGroup(
                 rotate_2,
                 WaitCommand(0.5).andThen(InstantCommand(left_intake_off, Robot.intake)),
             ),
-            IndexOn().alongWith(InstantCommand(lambda: Robot.intake.dinglebobs_in(), Robot.intake))
+            IndexOn().alongWith(InstantCommand(lambda: Robot.index.dinglebobs_in(), Robot.intake))
         ),
         ShooterEnableAtDistance(Robot.shooter, 2.8) # CHANGED FROM 3.1 - SID JUN 3 2022
     ).withTimeout(1.5),
-    IndexOff(), InstantCommand(lambda: Robot.intake.dinglebobs_off(), Robot.intake),
+    IndexOff(), InstantCommand(lambda: Robot.index.dinglebobs_off(), Robot.index),
     ParallelCommandGroup(
         third_path,
         InstantCommand(left_intake_on, Robot.intake)
@@ -181,16 +181,16 @@ final_command = SequentialCommandGroup(
     #             WaitCommand(0.5).andThen(InstantCommand(left_intake_off, Robot.intake)),
     #             rotate_3,
     #         ),
-    #         IndexOn().alongWith(InstantCommand(lambda: Robot.intake.dinglebobs_in(), Robot.intake)),
+    #         IndexOn().alongWith(InstantCommand(lambda: Robot.index.dinglebobs_in(), Robot.intake)),
     #     ),
     #     ShooterEnableAtDistance(Robot.shooter, (23.5 * ft - 8 * inch).asNumber(m))
     # ).withTimeout(2),
-    # IndexOff(), InstantCommand(lambda: Robot.intake.dinglebobs_off(), Robot.intake),
+    # IndexOff(), InstantCommand(lambda: Robot.index.dinglebobs_off(), Robot.intake),
     ParallelCommandGroup(
         SequentialCommandGroup(
             fourth_path,
             InstantCommand(rezero),
-            IndexOn().alongWith(InstantCommand(lambda: Robot.intake.dinglebobs_in(), Robot.intake))
+            IndexOn().alongWith(InstantCommand(lambda: Robot.index.dinglebobs_in(), Robot.intake))
         ),
         ShooterEnableAtDistance(Robot.shooter, 2.7), # Was 3
         WaitCommand(1).andThen(InstantCommand(left_intake_off)),

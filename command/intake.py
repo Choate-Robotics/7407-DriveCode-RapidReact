@@ -158,7 +158,8 @@ class IntakeToggleLeft(SubsystemCommand):
     def initialize(self):
         pass
     def execute(self):
-        self.subsystem.toggle_left_intake()
+        if not self.subsystem.right_intake_down:
+            self.subsystem.toggle_left_intake()
     def isFinished(self) -> bool:
         return True
     def end(self, interrupted=False): ...
@@ -171,7 +172,8 @@ class IntakeToggleRight(SubsystemCommand):
     def initialize(self):
         pass
     def execute(self):
-        self.subsystem.toggle_right_intake()
+        if not self.subsystem.left_intake_down:
+            self.subsystem.toggle_right_intake()
     def isFinished(self) -> bool:
         return True
     def end(self, interrupted=False): ...

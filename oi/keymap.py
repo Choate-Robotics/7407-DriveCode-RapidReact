@@ -31,15 +31,20 @@ class Keymap:
         AUTO_INTAKE_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.B)
 
     class Index:
-        INDEX_JOY = JoystickAxis(Controllers.OPERATOR, controllerOPERATOR.L_JOY[1])
+        #LEFT_JOY and RIGHT_JOY are used in ballpath command
+        LEFT_JOY = JoystickAxis(Controllers.OPERATOR, controllerOPERATOR.L_JOY[1])
+        RIGHT_JOY = JoystickAxis(Controllers.OPERATOR, controllerOPERATOR.R_JOY[1])
+        RESET_BALL = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.Y)
         
     class BallPath:
         TOGGLE_AUTO_EJECT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.START)
         TOGGLE_AUTO_EJECT_COLOR = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.X)
+        STAGE_BALL = DefaultButton(Controllers.DRIVER, controllerDRIVER.RT)
 
     class Shooter:
-        #SHOOTER_ENABLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.RT)
-        SHOOTER_EJECT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.A)
+        SHOOTER_ENABLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.RT)
+        # SHOOTER_EJECT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.A)
+        AUTO_SHOOT = DefaultButton(Controllers.DRIVER, controllerDRIVER.Y)
         #FENDER_SHOT = DefaultButton(Controllers.DRIVER, controllerDRIVER.LT)
         #SHOOTER_SHORT_EJECT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.LT)
         #SHOOTER_OFFSET_UP = DefaultButton(Controllers.DRIVER, controllerDRIVER.LB)

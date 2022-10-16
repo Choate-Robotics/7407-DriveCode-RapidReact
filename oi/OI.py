@@ -1,10 +1,8 @@
-from trace import Trace
 from commands2 import InstantCommand
 from robotpy_toolkit_7407.utils import logger
 from wpimath.geometry import Pose2d, Rotation2d
 
 import command
-from command import ballpath
 import config
 from command.drivetrain import DriveSwerveCustom, ShootWhileMoving
 from oi.keymap import Keymap
@@ -51,9 +49,29 @@ class OI:
         def stop_shooting():
             Robot.shooter.shooting_over = True
 
-        Keymap.Drivetrain.AIM_SWERVE() \
-            .whenPressed(ShootWhileMoving(Robot.drivetrain, Robot.shooter)) \
-            .whenReleased(InstantCommand(stop_shooting))
+        def stage():
+            # print("Stage Keybind")
+            Robot.index.stage = True
+            Robot.index.aiming = True
+            Robot.intake.DISABLE_INTAKES = True
+            Robot.intake.right_intake_disable()
+            Robot.intake.left_intake_disable()
+
+        def deStage():
+            # print("DeStage Keybind")
+            Robot.intake.DISABLE_INTAKES = False
+            Robot.index.destageBall = True
+            Robot.index.aiming = False
+
+        def resetBall():
+            # print("Reset ball keybind")
+            Robot.index.resetBall = True
+        
+        def autoShoot():
+            Robot.index.autoShotToggle = True
+
+        Keymap.BallPath.STAGE_BALL().whenPressed(command.DriveSwerveTurretAim(Robot.drivetrain)).whileHeld(stage).whenReleased(deStage).whenReleased(DriveSwerveCustom(Robot.drivetrain))
+        Keymap.Shooter.AUTO_SHOOT().whenPressed(autoShoot)
 
         def driver_centric_enable():
             DriveSwerveCustom.driver_centric = True
@@ -68,7 +86,8 @@ class OI:
             DriveSwerveCustom.driver_centric_reversed = False
 
         Keymap.Drivetrain.DRIVER_CENTRIC().whenPressed(driver_centric_enable).whenReleased(driver_centric_disable)
-        Keymap.Drivetrain.DRIVER_CENTRIC_REVERSED().whenPressed(driver_centric_reversed_enable).whenReleased(driver_centric_reversed_disable)
+        Keymap.Drivetrain.DRIVER_CENTRIC_REVERSED().whenPressed(driver_centric_reversed_enable).whenReleased(
+            driver_centric_reversed_disable)
 
         # Keymap.Elevator.ELEVATOR_UP().whileHeld(command.ElevatorUp)
         # Keymap.Elevator.ELEVATOR_UP().whenReleased(command.ElevatorStop)
@@ -79,28 +98,31 @@ class OI:
         Keymap.Elevator.ELEVATOR_INIT().whenPressed(command.ElevatorSetupCommand())
         Keymap.Elevator.ELEVATOR_CLIMB().whenPressed(command.ElevatorClimbCommand())
 
-
         def extend_dinglebob_runtime():
-            Robot.intake.dinglebob_run_extend = True
-            #print("extended")
+            Robot.index.dinglebob_run_extend = True
+            # print("extended")
+
         def stop_dinglebob_runtime():
-            Robot.intake.dinglebob_run_extend = False
-            #print("unextended")
+            Robot.index.dinglebob_run_extend = False
+            # print("unextended")
 
         # Keymap.Intake.LEFT_INTAKE_TOGGLE() \
         #     .whenPressed(command.IntakeToggleLeft(Robot.intake)) \
         #     .whenReleased(command.IntakeToggleLeft(Robot.intake)) \
         Keymap.Intake.LEFT_INTAKE_TOGGLE() \
-            .whenPressed(Robot.intake.left_intake_enable) \
+            .whileHeld(Robot.intake.toggle_left_intake) \
             .whenReleased(Robot.intake.left_intake_disable) \
-                    #.whenReleased( \
-            #    InstantCommand(extend_dinglebob_runtime) \
-            #    .andThen(WaitCommand(0.5).andThen(stop_dinglebob_runtime)))
-            ### TODO: CALL SID!!! - SID
-        #Keymap.Intake.RIGHT_INTAKE_TOGGLE().whenPressed(command.IntakeToggleRight(Robot.intake)).whenReleased(command.IntakeToggleRight(Robot.intake)) ### TODO: SID SAYS CALL TO FIX INTAKES!!!!!
+            # .whenReleased( \
+        #    InstantCommand(extend_dinglebob_runtime) \
+        #    .andThen(WaitCommand(0.5).andThen(stop_dinglebob_runtime)))
+        # TODO: CALL SID!!! - SID
+        # Keymap.Intake.RIGHT_INTAKE_TOGGLE().whenPressed(command.IntakeToggleRight(Robot.intake)).whenReleased(command.IntakeToggleRight(Robot.intake)) ### TODO: SID SAYS CALL TO FIX INTAKES!!!!!
+
         Keymap.Intake.RIGHT_INTAKE_TOGGLE() \
-            .whenPressed(Robot.intake.right_intake_enable) \
+            .whileHeld(Robot.intake.toggle_right_intake) \
             .whenReleased(Robot.intake.right_intake_disable)
+
+        Keymap.Index.RESET_BALL().whenPressed(resetBall)
 
         def auto_intake_on():
             Robot.intake.AUTO_INTAKE = True
@@ -117,20 +139,40 @@ class OI:
                 config.TEAM = 'blue'
             else:
                 config.TEAM = 'red'
-                
+
         def toggle_auto_eject():
             config.EJECT_ENABLE = not config.EJECT_ENABLE
 
         Keymap.BallPath.TOGGLE_AUTO_EJECT_COLOR().whenPressed(InstantCommand(change_team_color))
-        Keymap.BallPath.TOGGLE_AUTO_EJECT().whenPressed(InstantCommand(toggle_auto_eject))
+        Keymap.BallPath.TOGGLE_AUTO_EJECT().whenPressed(InstantCommand(toggle_auto_eject))  # .5
 
-        #Keymap.Shooter.SHOOTER_ENABLE().whileHeld(command.ShooterEnable(Robot.shooter))
-        Keymap.Shooter.SHOOTER_EJECT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, 5)) # .5
-        #Keymap.Shooter.FENDER_SHOT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, .5))
-        #Keymap.Shooter.SHOOTER_SHORT_EJECT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, .35))
+        def aim_on():
+            if Robot.limelight.table.getNumber('tx', None) is None \
+                    or Robot.limelight.table.getNumber('tx', None) == 0:
+                print("AIMING")
+                # Robot.shooter.aiming = True
+            else:
+                print("FAILED TO AIM")
 
-        #Keymap.Shooter.SHOOTER_OFFSET_UP().whenPressed(command.ShooterOffsetUp())
-        #Keymap.Shooter.SHOOTER_OFFSET_DOWN().whenPressed(command.ShooterOffsetDown())
+        def aim_off():
+            print("STOPPED AIMING")
+            Robot.shooter.aiming = False
+
+        # Keymap.Shooter.SHOOTER_ENABLE().whenPressed(InstantCommand(aim_on)).whenReleased(InstantCommand(aim_off))
+        # Keymap.Shooter.SHOOTER_ENABLE()\
+        #     .whenPressed(InstantCommand(aim_on)) \
+        #     .whenPressed(command.DriveSwerveTurretAim(Robot.drivetrain))\
+        #     .whenPressed(command.TurretDriveAim(Robot.shooter)) \
+        #     .whenReleased(InstantCommand(aim_off)) \
+        #     .whenReleased(DriveSwerveCustom(Robot.drivetrain)) \
+        #     .whenReleased(command.TurretAim(Robot.shooter))
+
+
+        # Keymap.Shooter.FENDER_SHOT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, .5))
+        # Keymap.Shooter.SHOOTER_SHORT_EJECT().whileHeld(command.ShooterEnableAtDistance(Robot.shooter, .35))
+
+        # Keymap.Shooter.SHOOTER_OFFSET_UP().whenPressed(command.ShooterOffsetUp())
+        # Keymap.Shooter.SHOOTER_OFFSET_DOWN().whenPressed(command.ShooterOffsetDown())
 
         # Keymap.Shooter.SHOOTER_ENABLE()\
         #     .whileHeld(ShootWhileMoving(Robot.drivetrain, Robot.shooter))\
