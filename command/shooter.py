@@ -88,7 +88,7 @@ class TurretAim(SubsystemCommand[Shooter]):
         self.power = 0
 
         self.min_absolute_power = .07  # Minimum power of turret required to move it
-        self.max_absolute_power = .40  # Maximum movement power of turret allowed .80
+        self.max_absolute_power = constants.max_turret_power  # Maximum movement power of turret allowed .80
 
         # Soft limits for turret movement
         self.limit_backward = False
@@ -124,9 +124,6 @@ class TurretAim(SubsystemCommand[Shooter]):
             wpilib.SmartDashboard.putNumber("detected_counts", self.limelight_detected_counts)
             wpilib.SmartDashboard.putBoolean("Shooter Ready", self.subsystem.ready)
 
-            if self.limelight_detected_counts < 3:
-                self.subsystem.stop()
-
             if current_angle <= self.min_angle:
                 self.limit_backward = True
             else:
@@ -142,6 +139,8 @@ class TurretAim(SubsystemCommand[Shooter]):
             # Estimating stuff
 
             if current_offset is not None and current_offset != 0:
+                self.subsystem.seen_after_drivetrain_rezero = True
+
                 self.current_shooter_angle = None
                 Robot.odometry.update()
 
@@ -150,7 +149,7 @@ class TurretAim(SubsystemCommand[Shooter]):
                 est_ty = Robot.limelight.table.getNumber('ty', None)
                 true_angle = Robot.limelight.k_cam_angle + math.radians(est_ty)
                 distance = (Robot.limelight.k_h_hub_height - Robot.limelight.k_cam_height) / math.tan(
-                    true_angle) + .5  # constant for lower turret
+                    true_angle)  # constant for lower turret
                 wpilib.SmartDashboard.putNumber("Distance to Hub", distance)
                 if self.limelight_detected_counts >= 3:
                     if self.subsystem.target_turret_dist is None:
@@ -206,7 +205,8 @@ class TurretAim(SubsystemCommand[Shooter]):
                 Robot.odometry.update()
 
                 if Robot.odometry.hub_angle is not None:
-                    if Robot.odometry.hub_dist is not None and self.subsystem.target_turret_dist is None:
+                    if Robot.odometry.hub_dist is not None and self.subsystem.target_turret_dist is None \
+                            and self.subsystem.seen_after_drivetrain_rezero:
                         self.subsystem.target_stationary(Robot.odometry.hub_dist)
 
                     hub_angle = math.degrees(Robot.odometry.hub_angle)

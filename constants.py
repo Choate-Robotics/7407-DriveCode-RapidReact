@@ -37,6 +37,8 @@ shooter_angle_gear_ratio = 57.5
 
 # TURRET RELATED THINGS:
 turret_angle_gear_ratio = 50.347*(18/16) # How many motor radians in one rev of the turret
+max_turret_power = .50
+max_turret_positional_velocity = 50000
 
 # Targeting constants
 air_resistance_constant = 0.048187
@@ -48,6 +50,7 @@ ideal_entry_angle = -math.pi / 5  # desired angle for the ball to enter the hub
 minimum_shooter_angle = math.pi / 4  # radians
 max_shooter_angle = math.radians(75)
 max_shooter_velocity = 30  # m/s
+limelight_horizontal_adjustment = .35
 
 # --- INTAKE/INDEX ---
 

@@ -36,7 +36,6 @@ class _Robot(wpilib.TimedRobot):
     Main robot class. Initializes OI and subsystems, and runs the command scheduler.
     """
 
-
     def __init__(self):
         super().__init__(constants.period)
 
@@ -107,8 +106,6 @@ class _Robot(wpilib.TimedRobot):
 
         logger.info("initialization complete")
 
-
-
     def robotPeriodic(self):
         # print(Robot.drivetrain.odometry.getPose())
         Robot.rev_digit.update()
@@ -151,7 +148,6 @@ class _Robot(wpilib.TimedRobot):
 
         # logger.info(f"TURRET CURRENT POSITION IN DEGREES: {math.degrees(Robot.shooter.m_turret.get_sensor_position()/constants.turret_angle_gear_ratio)}")
 
-
     def autonomousInit(self) -> None:
         # if not self.turret_zeroed:
         #     # This will become a command soon
@@ -166,7 +162,6 @@ class _Robot(wpilib.TimedRobot):
         pass
 
     def teleopInit(self) -> None:
-        
 
         # if not self.turret_zeroed:
         #     # This will become a command soon

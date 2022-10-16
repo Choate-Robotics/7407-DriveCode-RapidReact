@@ -23,6 +23,7 @@ class OI:
         def reset_gyro():
             Robot.drivetrain.gyro.reset_angle()
             Robot.drivetrain.odometry.resetPosition(Pose2d(0, 0, 0), Rotation2d(0))
+            Robot.shooter.seen_after_drivetrain_rezero = False
 
         Keymap.Drivetrain.RESET_GYRO().whenPressed(reset_gyro)
 

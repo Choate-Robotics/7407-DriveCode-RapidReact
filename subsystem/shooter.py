@@ -25,7 +25,7 @@ class Shooter(Subsystem):
         neutral_brake=True, motion_cruise_velocity=6000 * ctre_motors.k_sensor_vel_to_rad_per_sec,
         motion_acceleration=10000 * ctre_motors.k_sensor_accel_to_rad_per_sec_sq))
 
-    max_turret_accel = 40000  # 100000 50000 "20000 Works. 20% max works" "40000 Works. 40% max works"`
+    max_turret_accel = constants.max_turret_positional_velocity  # 100000 50000 "20000 Works. 20% max works" "40000 Works. 40% max works"`
 
     m_turret = TalonFX(20, inverted=False, config=TalonConfig(
         k_P=.2, k_I=0, k_D=0, k_F=1023 / 20101, integral_zone=10000, max_integral_accumulator=100000,
@@ -64,6 +64,11 @@ class Shooter(Subsystem):
     target_turret_dist = None
     target_turret_angle = None
 
+    seen_after_drivetrain_rezero: bool
+
+    def __init__(self):
+        super().__init__()
+
     def init(self):
         self.m_top.init()
         self.m_bottom.init()
@@ -85,6 +90,7 @@ class Shooter(Subsystem):
         if self.turret_zeroed:
             self.m_turret.set_sensor_position(0)
 
+        self.seen_after_drivetrain_rezero = False
         # self.target_turret_dist = None
         # self.target_turget_angle = None # (IN RADIANS)
 
@@ -135,6 +141,7 @@ class Shooter(Subsystem):
         return v_adj * math.cos(launch_angle), v_adj * math.sin(launch_angle)
 
     def target_stationary(self, limelight_dist):
+        limelight_dist += constants.limelight_horizontal_adjustment
         vx, vy = ShooterTargeting.stationary_aim(limelight_dist)
         self.set_flywheels_for_ball_velocity(vx, vy)
 
