@@ -57,7 +57,7 @@ limelight_horizontal_adjustment = .35
 # --- INTAKE/INDEX ---
 
 dual_intakes_down = False #When True, enables Both Intakes to be down. WARNING, WILL mess up Ballpath logic system, expect to use operator manual controls
-default_intake_speed = 1 # as stated
+default_intake_speed = .9 # as stated
 intake_current_sensing = False # Enables dragging balls while not actually intaking when full
 index_shooting_speed = .75 # shooting index speed
 default_index_speed = .7 # as stated

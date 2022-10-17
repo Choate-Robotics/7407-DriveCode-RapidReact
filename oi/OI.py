@@ -63,6 +63,7 @@ class OI:
             Robot.intake.DISABLE_INTAKES = False
             Robot.index.destageBall = True
             Robot.index.aiming = False
+            Robot.index.xMode = False
 
         def resetBall():
             # print("Reset ball keybind")

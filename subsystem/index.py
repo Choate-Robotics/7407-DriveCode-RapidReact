@@ -22,6 +22,8 @@ class Index(Subsystem):
     left_dinglebob_in: bool
     right_dinglebob_in: bool
 
+    xMode = False
+
     left_oc = False
     right_oc = False 
     staged_oc = False

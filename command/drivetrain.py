@@ -3,6 +3,7 @@ import time
 
 import commands2
 import wpilib
+from oi.keymap import Keymap
 from robotpy_toolkit_7407.command import SubsystemCommand, Command
 from robotpy_toolkit_7407.subsystem_templates.drivetrain.swerve_drivetrain import SwerveDrivetrain
 from wpimath.controller import ProfiledPIDControllerRadians
@@ -22,6 +23,11 @@ def curve(x):
         return -curve_abs(-x)
     return curve_abs(x)
 
+def xMode():
+    Robot.drivetrain.n_00.set(0, math.radians(45))
+    Robot.drivetrain.n_01.set(0, math.radians(-45))
+    Robot.drivetrain.n_10.set(0, math.radians(-45))
+    Robot.drivetrain.n_11.set(0, math.radians(45))
 
 AIM_kP = 3.5
 AIM_kI = 0
@@ -38,6 +44,7 @@ class DriveSwerveCustom(SubsystemCommand[Drivetrain]):
         pass
 
     def execute(self) -> None:
+              
         dx, dy, d_theta = self.subsystem.axis_dx.value, self.subsystem.axis_dy.value, -self.subsystem.axis_rotation.value
 
         if abs(d_theta) < 0.15:
@@ -51,7 +58,9 @@ class DriveSwerveCustom(SubsystemCommand[Drivetrain]):
         dx *= self.subsystem.max_vel
         dy *= -self.subsystem.max_vel
 
-        if DriveSwerveCustom.driver_centric:
+        if Robot.index.xMode:
+            xMode()
+        elif DriveSwerveCustom.driver_centric:
             self.subsystem.set_driver_centric((-dy, dx), d_theta * self.subsystem.max_angular_vel)
         elif DriveSwerveCustom.driver_centric_reversed:
             self.subsystem.set_driver_centric((dy, -dx), d_theta * self.subsystem.max_angular_vel)
@@ -59,6 +68,7 @@ class DriveSwerveCustom(SubsystemCommand[Drivetrain]):
             self.subsystem.set((dx, dy), d_theta * self.subsystem.max_angular_vel)
 
     def end(self, interrupted: bool) -> None:
+        # Robot.index.xMode = False
         self.subsystem.n_00.set(0, 0)
         self.subsystem.n_01.set(0, 0)
         self.subsystem.n_10.set(0, 0)
@@ -92,6 +102,11 @@ class DriveSwerveTurretAim(SubsystemCommand[Drivetrain]):
     def execute(self) -> None:
         print("Running DriveSwerveTurretAim.")
 
+        # self.subsystem.n_00.set(0, math.radians(45))
+        # self.subsystem.n_01.set(0, math.radians(-45))
+        # self.subsystem.n_10.set(0, math.radians(-45))
+        # self.subsystem.n_11.set(0, math.radians(45))
+
         dx, dy = Robot.drivetrain.axis_dx.value, Robot.drivetrain.axis_dy.value
         current_limelight_offset = Robot.limelight.table.getNumber('tx', None)
 
@@ -99,6 +114,7 @@ class DriveSwerveTurretAim(SubsystemCommand[Drivetrain]):
 
         if current_limelight_offset is not None and current_limelight_offset != 0 and abs(current_limelight_offset < 2):
             self.ready = True
+            Robot.index.xMode = True
         elif current_limelight_offset < -2:
             Robot.drivetrain.set((dx, dy), 3)
         elif current_limelight_offset > 2:
@@ -127,12 +143,15 @@ class DriveSwerveTurretAim(SubsystemCommand[Drivetrain]):
         #     self.ready = True
 
     def end(self, interrupted: bool) -> None:
+        # Robot.index.xMode = False
         print("DONE AIMING!!")
         Robot.shooter.aiming = False
+        
         commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
 
     def isFinished(self) -> bool:
         return self.ready
+
 
     def runsWhenDisabled(self) -> bool:
         return False

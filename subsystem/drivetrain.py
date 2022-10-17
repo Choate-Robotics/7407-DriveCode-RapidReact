@@ -12,6 +12,7 @@ import constants
 from oi.keymap import Keymap
 from utils.can_optimizations import optimize_normal_talon
 
+
 TURN_IZone = 1000
 TURN_kI = 0.01
 TURN_I_MaxAccum = 10000

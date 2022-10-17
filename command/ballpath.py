@@ -595,6 +595,7 @@ class BallPath(SubsystemCommand[Index]):
                     print("No Ball in Stage")
             Robot.index.destageBall = False
 
+        
         if Robot.index.autoShotToggle:
             if  Robot.index.autoShoot == True:
                 Robot.index.autoShoot = False
@@ -709,7 +710,7 @@ class BallPath(SubsystemCommand[Index]):
                     elif not Robot.index.left_limit.get_value():
                         Robot.index.LDB = 0
         elif not Robot.intake.left_intake_down:
-            Robot.index.LDB = 0
+            Robot.index.LDB -= 1
             if not Robot.index.traffic_oc and Robot.index.shooting == False:
                 Robot.index.intakeBall("Left", "Off")
     
@@ -758,7 +759,7 @@ class BallPath(SubsystemCommand[Index]):
                     elif not Robot.index.right_limit.get_value():
                         Robot.index.RDB = 0
         elif not Robot.intake.right_intake_down:
-            Robot.index.RDB = 0
+            Robot.index.RDB -= 1
             if not Robot.index.traffic_oc and Robot.index.shooting == False:
                 Robot.index.intakeBall("Right", "Off")
 
