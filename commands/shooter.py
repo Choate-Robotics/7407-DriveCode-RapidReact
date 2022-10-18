@@ -16,7 +16,7 @@ from wpimath.controller import ProfiledPIDControllerRadians
 from wpimath.trajectory import TrapezoidProfileRadians
 import constants
 
-from command.drivetrain import DriveSwerveCustom
+from commands.drivetrain.drive_swerve_custom import DriveSwerveCustom
 import commands2
 
 import subsystem

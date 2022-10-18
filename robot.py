@@ -11,10 +11,10 @@ import constants
 from autonomous import two_ball_auto, five_ball_auto, five_ball_auto_red
 from autonomous.auto_routine import AutoRoutine
 # from autonomous import five_ball_auto, two_ball_auto, three_ball_auto # TODO: Fix this
-from command import BallPath
-from command import ElevatorRezero
-from command import TurretAim
-from command.drivetrain import DriveSwerveCustom
+from commands import BallPath
+from commands import ElevatorRezero
+from commands import TurretAim
+from commands.drivetrain.drive_swerve_custom import DriveSwerveCustom
 from oi.OI import OI
 from robot_systems import Robot, Pneumatics, Sensors
 from sensors.color_sensors import ColorSensors
@@ -33,7 +33,7 @@ import math
 
 class _Robot(wpilib.TimedRobot):
     """
-    Main robot class. Initializes OI and subsystems, and runs the command scheduler.
+    Main robot class. Initializes OI and subsystems, and runs the commands scheduler.
     """
 
     def __init__(self):
@@ -150,7 +150,7 @@ class _Robot(wpilib.TimedRobot):
 
     def autonomousInit(self) -> None:
         # if not self.turret_zeroed:
-        #     # This will become a command soon
+        #     # This will become a commands soon
         #     while not Robot.shooter.mag_sensor.get_value():
         #         Robot.shooter.m_turret.set_raw_output(-.15)
 
@@ -164,7 +164,7 @@ class _Robot(wpilib.TimedRobot):
     def teleopInit(self) -> None:
 
         # if not self.turret_zeroed:
-        #     # This will become a command soon
+        #     # This will become a commands soon
         #     while not Robot.shooter.mag_sensor.get_value():
         #         Robot.shooter.m_turret.set_raw_output(-.15)
 

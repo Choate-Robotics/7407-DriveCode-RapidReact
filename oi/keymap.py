@@ -31,7 +31,7 @@ class Keymap:
         AUTO_INTAKE_TOGGLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.B)
 
     class Index:
-        #LEFT_JOY and RIGHT_JOY are used in ballpath command
+        #LEFT_JOY and RIGHT_JOY are used in ballpath commands
         LEFT_JOY = JoystickAxis(Controllers.OPERATOR, controllerOPERATOR.L_JOY[1])
         RIGHT_JOY = JoystickAxis(Controllers.OPERATOR, controllerOPERATOR.R_JOY[1])
         RESET_BALL = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.Y)

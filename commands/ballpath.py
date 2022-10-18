@@ -239,7 +239,7 @@ class Ball():
 
     def __move(self, pos):
         '''
-        Starts dinglebob raw power through instant command
+        Starts dinglebob raw power through instant commands
 
         Private Method
 

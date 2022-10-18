@@ -10,12 +10,13 @@ from wpimath.geometry import Pose2d, Translation2d
 
 import constants
 from autonomous.auto_routine import AutoRoutine
-from autonomous.follow_path import FollowPathCustom, RotateInPlace
-from command.shooter import TurretAim
+from commands.drivetrain import RotateInPlace
+from commands.drivetrain import FollowPathCustom
+from commands.shooter import TurretAim
 from autonomous.trajectory import generate_trajectory_from_pose, TrajectoryEndpoint, generate_trajectory, \
     generate_trajectory_without_unum
-from command import IndexOn, IndexOff
-from command.shooter import ShooterEnableAtDistance
+from commands import IndexOn, IndexOff
+from commands.shooter import ShooterEnableAtDistance
 from subsystem import Index
 from robot_systems import Robot
 from robot import _Robot

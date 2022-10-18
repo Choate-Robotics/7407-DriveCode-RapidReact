@@ -4,11 +4,12 @@ from wpimath.geometry import Pose2d
 
 import constants
 from autonomous.auto_routine import AutoRoutine
-from autonomous.follow_path import FollowPathCustom, RotateInPlace
+from commands.drivetrain import RotateInPlace
+from commands.drivetrain import FollowPathCustom
 from autonomous.trajectory import generate_trajectory_from_pose, TrajectoryEndpoint, generate_trajectory
-from command import IndexOn, IndexOff
-from command.intake import IntakeDinglebobOn, IntakeDinglebobOff
-from command.shooter import ShooterEnableAtDistance
+from commands import IndexOn, IndexOff
+from commands.intake import IntakeDinglebobOn, IntakeDinglebobOff
+from commands.shooter import ShooterEnableAtDistance
 from robot_systems import Robot
 
 initial_gyro_angle = -90 * deg

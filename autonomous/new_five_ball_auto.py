@@ -4,7 +4,7 @@ from wpimath.geometry import Pose2d, Translation2d
 
 import constants
 from autonomous.auto_routine import AutoRoutine
-from autonomous.follow_path import FollowPathCustom
+from commands.drivetrain import FollowPathCustom
 from autonomous.trajectory import generate_trajectory_from_pose, TrajectoryEndpoint, generate_trajectory
 from robot_systems import Robot
 
@@ -16,7 +16,7 @@ initial_robot_pose = Pose2d(8.812, -6.436, initial_gyro_angle.asNumber(rad))
 # first_path_waypoints = [Translation2d(8.733, -7.7888),
 #                         Translation2d(7.253 , -7.801)]
 # first_path_end_pose = TrajectoryEndpoint(6.547 * m - 1 * ft, -7.403 * m + 1 * ft,  120 * deg)
-# # the angle in the end pose is the final angle of path, the angle in the followPath command is the final angle of the robot
+# # the angle in the end pose is the final angle of path, the angle in the followPath commands is the final angle of the robot
 
 first_path_waypoints = [Translation2d(8.812 + 0.273, -6.436 - 1.068),
                         Translation2d(9.085 - 2.000, -7.504 - 0.260)]

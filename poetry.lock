@@ -525,7 +525,7 @@ robotpy-wpiutil = ">=2022.4.1.1,<2023.0.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "6ffdffd85ceb61792cb62753f81f89f7d63d5c05c92acf0678a4be083b5e6d96"
+content-hash = "28bd7843eda240ff323f8f69045e765d7b70854f2f52e4eecd363b98fd9797e5"
 
 [metadata.files]
 attrs = [

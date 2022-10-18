@@ -207,7 +207,7 @@ ElevatorClimbCommand = lambda: SequentialCommandGroup(
 """
 E CLimb LOGIC:
 
-1. Extend elevator to the top (Separate command that can override the climb sequence at any time)
+1. Extend elevator to the top (Separate commands that can override the climb sequence at any time)
 
 CLIMB COMMAND
 1. Retract elevator until set position - POSITION

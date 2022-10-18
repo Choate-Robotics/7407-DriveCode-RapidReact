@@ -3,7 +3,8 @@ from robotpy_toolkit_7407.utils.units import m, rad, deg, s, inch
 from wpimath.geometry import Pose2d
 
 import constants
-from autonomous.follow_path import FollowPathCustom, RotateInPlace
+from commands.drivetrain import RotateInPlace
+from commands.drivetrain import FollowPathCustom
 from autonomous.trajectory import TrajectoryEndpoint, generate_trajectory
 from robot_systems import Robot
 
