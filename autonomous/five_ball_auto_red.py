@@ -1,12 +1,14 @@
 from cgitb import reset
 import dataclasses
 import math
+from telnetlib import SE
 from urllib.parse import ParseResult
 
 from commands2 import SequentialCommandGroup, ParallelCommandGroup, InstantCommand, WaitCommand, ParallelDeadlineGroup
 from robotpy_toolkit_7407.command import SubsystemCommand, T
 from robotpy_toolkit_7407.utils.units import m, rad, deg, s, ft, inch
 from wpimath.geometry import Pose2d, Translation2d
+from command import shooter
 
 import constants
 from autonomous.auto_routine import AutoRoutine
@@ -28,13 +30,20 @@ initial_robot_pose = Pose2d(-6.75, 4.068152, 0 * deg)
 first_path_waypoint = [Translation2d(-6.75, 5.3)]
 first_path_end_pose = Pose2d(-7.25, 5.4, 90 * deg) 
 
-second_path_start_pose = Pose2d(-7.25, 5.4, -90 * deg) 
-second_path_waypoint = [Translation2d(-4.75, 5)]
-second_path_end_pose = Pose2d(-3.875, 4.2, -45 * deg)
+second_path_start_pose = Pose2d(-7.25, 5.4, -5 * deg) 
+second_path_waypoint = [Translation2d(-4.9, 5), Translation2d(-4.6, 4.2)]
+second_path_end_pose = Pose2d(-3.875, 4.2, -5 * deg)
 
 third_path_start_pose = Pose2d(-3.875, 4.2, -60 * deg)
-third_path_waypoint = [Translation2d(-3, 4)]
-third_path_end_pose = Pose2d(-1.5, 4.75, -135 * deg)
+third_path_waypoint = [Translation2d(-0.6, 3.75)]
+third_path_end_pose = Pose2d(-0.1, 4.25, -135 * deg)
+
+fourth_path_start_pose = Pose2d(-0.1, 4.25, 0 * deg)
+fourth_path_end_pose = Pose2d(-0.35, 4.00, 0 * deg)
+
+fifth_path_start_pose = Pose2d(-0.35, 4.00, 135 * deg)
+fifth_path_waypoint = [Translation2d(-0.6, 3.75)]
+fifth_path_end_pose = Pose2d(-3.875, 4.2, 60 * deg)
 
 # path commands____________
 first_path = FollowPathCustom(
@@ -47,14 +56,28 @@ first_path = FollowPathCustom(
 second_path = FollowPathCustom(
     Robot.drivetrain,
     generate_trajectory_without_unum(second_path_start_pose, second_path_waypoint, second_path_end_pose, 8 * m/s, 1.5 * m/(s*s)),
-    45 * deg,
+    0 * deg, #counter clockwise is positive
     period=constants.period
 )
 
 third_path = FollowPathCustom(
     Robot.drivetrain,
     generate_trajectory_without_unum(third_path_start_pose, third_path_waypoint, third_path_end_pose, 8 * m/s, 1.5 * m/(s*s)),
-    -135 * deg,
+    45 * deg,
+    period=constants.period
+)
+
+fourth_path = FollowPathCustom(
+    Robot.drivetrain,
+    generate_trajectory_without_unum(fourth_path_start_pose, [], fourth_path_end_pose, 10 * m/s, 2 * m/(s*s)),
+    45 * deg,
+    period=constants.period
+)
+
+fifth_path = FollowPathCustom(
+    Robot.drivetrain,
+    generate_trajectory_without_unum(fifth_path_start_pose, [], fifth_path_end_pose, 10 * m/s, 2 * m/(s*s)),
+    0 * deg,
     period=constants.period
 )
 
@@ -109,8 +132,11 @@ class LeftDinglebobRoutine(SubsystemCommand[Index]):
         return Robot.index.photo_electric.get_value()
 
 # shooter command____________
-def turn_turret():
-    Robot.shooter.set_turret_angle(1.2)
+def turn_turret_away():
+    Robot.shooter.set_turret_angle(1.4)
+
+def turn_turret_towards():
+    Robot.shooter.set_turret_angle(3)
     
 
 # the full auto sequence
@@ -118,42 +144,80 @@ final_command = SequentialCommandGroup(
     InstantCommand(resetGyro),
     InstantCommand(zero),
     TurretZero(Robot.shooter),
-    ParallelCommandGroup( # drive back to opponent ball
-        first_path,
-        InstantCommand(right_intake_on),
-    ),
-    ParallelDeadlineGroup( # shoot the 2 preload
+    ParallelDeadlineGroup(
         SequentialCommandGroup(
+            ParallelCommandGroup( # drive back to opponent ball
+                first_path,
+                InstantCommand(right_intake_on),
+            ),
+            InstantCommand(left_dinglebob_in), # shoot the 2 preload
             WaitCommand(0.5),
-            InstantCommand(left_dinglebob_in),
-            WaitCommand(0.75)
+            InstantCommand(dinglebobs_off), 
+            InstantCommand(right_intake_off)
         ),
         TurretAim(Robot.shooter),
     ),
-    InstantCommand(dinglebobs_off), 
-    ParallelCommandGroup( # shoot the opponent ball into our hangar
+    ParallelDeadlineGroup( #eject wrong ball into hangar, sweeps up the next two balls and shoot them
         SequentialCommandGroup(
             ParallelCommandGroup(
-                InstantCommand(turn_turret),
-                ShooterEnableAtDistance(5)
+                second_path,
+                InstantCommand(right_dinglebob_in),
             ),
-            InstantCommand(right_dinglebob_in)
+            InstantCommand(left_dinglebob_in),
+            WaitCommand(0.6),
+            InstantCommand(dinglebobs_off)
         ),
-        WaitCommand(0.5)        
+        InstantCommand(left_intake_on),
+        SequentialCommandGroup(
+            ParallelDeadlineGroup(
+                WaitCommand(0.35),
+                InstantCommand(turn_turret_away),
+                ShooterEnableAtDistance(Robot.shooter, 5).withTimeout(1.5),
+            ),
+            ParallelDeadlineGroup(
+                WaitCommand(0.2),
+                InstantCommand(turn_turret_towards)
+            ),
+            TurretAim(Robot.shooter)
+        )
     ),
-
-
-
+    third_path,
+    fourth_path,
+    InstantCommand(left_intake_off),
+    ParallelDeadlineGroup(
+        SequentialCommandGroup(
+            fifth_path,
+            InstantCommand(left_dinglebob_in),
+        ),
+        SequentialCommandGroup(
+            ParallelDeadlineGroup(
+                WaitCommand(1.25),
+                InstantCommand(turn_turret_towards)
+            ),
+            TurretAim(Robot.shooter)
+        )
+    )
+) 
 
     # ParallelCommandGroup(
-    #     InstantCommand(dinglebobs_off),
-    #     InstantCommand(right_intake_off)
-    # ),
+    #     third_path,
+    #     SequentialCommandGroup(
+    #        WaitCommand(0.25),
+    #        InstantCommand(left_intake_on) 
+    #     )
+    # )
+
+
+
+
+
     # InstantCommand(left_intake_on),
     # ParallelDeadlineGroup( # sweep through the 2 team balls on the tarmac with the left intake on
     #     second_path,
     #     LeftDinglebobRoutine(Robot.index)
     # ),
+
+
     # ParallelDeadlineGroup( # shoot the 2 balls
     #     SequentialCommandGroup(
     #         WaitCommand(0.25), 
@@ -170,7 +234,6 @@ final_command = SequentialCommandGroup(
     #        InstantCommand(left_intake_on) 
     #     )
     # )
-)
 
 routine = AutoRoutine(initial_robot_pose, final_command)
 

@@ -157,7 +157,7 @@ class TurretAim(SubsystemCommand[Shooter]):
 
         if current_offset is not None and current_offset != 0:
             self.current_shooter_angle = None
-            Robot.odometry.update()
+            # Robot.odometry.update()
 
             self.limelight_detected_counts += 1
 
