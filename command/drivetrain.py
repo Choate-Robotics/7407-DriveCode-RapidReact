@@ -84,9 +84,11 @@ class DriveSwerveTurretAim(SubsystemCommand[Drivetrain]):
         )
 
         self.ready = False
+        self.completely_ready = False
 
     def initialize(self) -> None:
         self.ready = False
+        self.completely_ready = False
         Robot.shooter.aiming = True
 
     def execute(self) -> None:
@@ -94,8 +96,6 @@ class DriveSwerveTurretAim(SubsystemCommand[Drivetrain]):
 
         dx, dy = Robot.drivetrain.axis_dx.value, Robot.drivetrain.axis_dy.value
         current_limelight_offset = Robot.limelight.table.getNumber('tx', None)
-
-        # wpilib.SmartDashboard.putNumber("I want to go to:", Robot.shooter.desired_turret_angle)
 
         if current_limelight_offset is not None and current_limelight_offset != 0 and abs(current_limelight_offset < 2):
             self.ready = True
@@ -110,23 +110,11 @@ class DriveSwerveTurretAim(SubsystemCommand[Drivetrain]):
         else:
             self.ready = True
 
-        # hub_angle = Robot.shooter.desired_turret_angle
-        # current_limelight_offset = Robot.limelight.table.getNumber('tx', None)
-        #
-        #
-        # if hub_angle is not None:
-        #     omega = self.pid_controller.calculate(hub_angle, 0)
-        #     print("OMEGA", omega)
-        #
-        #     dx *= constants.drivetrain_target_max_vel
-        #     dy *= -constants.drivetrain_target_max_vel
-        #
-        #     Robot.drivetrain.set((dx, dy), omega)
-        #
-        # if current_limelight_offset is not None and current_limelight_offset != 0 and current_limelight_offset < 2:
-        #     self.ready = True
-
     def end(self, interrupted: bool) -> None:
+        Robot.drivetrain.n_00.set(0, math.radians(45))
+        Robot.drivetrain.n_01.set(0, math.radians(-45))
+        Robot.drivetrain.n_10.set(0, math.radians(-45))
+        Robot.drivetrain.n_11.set(0, math.radians(45))
         print("DONE AIMING!!")
         Robot.shooter.aiming = False
         commands2.CommandScheduler.getInstance().schedule(DriveSwerveCustom(Robot.drivetrain))
