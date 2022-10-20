@@ -99,7 +99,7 @@ class Ball():
 
         :Param oc str: position to select the ball ("Left","Right","Stage")
         '''
-        x = 0
+        x = 4000000
         for i in range(len(self.ball)):
             if not self.ball[i].removed:
                 if self.ball[i].position == oc:
@@ -564,12 +564,10 @@ class BallPath(SubsystemCommand[Index]):
                             y = "Right"
                         self.BallController.ball[x].setPos(y)
                 else:
-                    if Robot.index.left_oc:
-                        x = ball.posNum("Left")
-                        ball.ball[x].setPos("Stage")
-                    elif Robot.index.right_oc:
-                        x = ball.posNum("Right")
-                        ball.ball[x].setPos("Stage") 
+                    if Robot.index.left_oc and ball.posNum("Left") != 4000000:
+                        ball.ball[ball.posNum("Left")].setPos("Stage")
+                    elif Robot.index.right_oc and ball.posNum("Right") != 4000000:
+                        ball.ball[ball.posNum("Right")].setPos("Stage") 
 
         def destaging(ball):
             if not len(ball.ball) == 0:
