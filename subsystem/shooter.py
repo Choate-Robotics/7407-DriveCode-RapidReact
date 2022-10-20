@@ -94,6 +94,8 @@ class Shooter(Subsystem):
         # self.target_turret_dist = None
         # self.target_turget_angle = None # (IN RADIANS)
 
+        self.auto_finished = True
+
     def set_launch_angle(self, theta: radians):
         theta = math.radians(90) - theta - self.sensor_zero_angle
         print("TARGET ANGLE: ", theta * constants.shooter_angle_gear_ratio)

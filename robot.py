@@ -148,20 +148,8 @@ class _Robot(wpilib.TimedRobot):
 
         # logger.info(f"TURRET CURRENT POSITION IN DEGREES: {math.degrees(Robot.shooter.m_turret.get_sensor_position()/constants.turret_angle_gear_ratio)}")
 
-    def autonomousInit(self) -> None:
-        # if not self.turret_zeroed:
-        #     # This will become a command soon
-        #     while not Robot.shooter.mag_sensor.get_value():
-        #         Robot.shooter.m_turret.set_raw_output(-.15)
-
-        #     Robot.shooter.m_turret.set_raw_output(0)
-        #     Robot.shooter.m_turret.set_sensor_position(0)
-
-        #     self.turret_zeroed = True
-        # commands2.CommandScheduler.getInstance().schedule(TurretZero(Robot.shooter))
-        pass
-
     def teleopInit(self) -> None:
+        Robot.shooter.auto_finished = True
 
         # if not self.turret_zeroed:
         #     # This will become a command soon
@@ -195,6 +183,7 @@ class _Robot(wpilib.TimedRobot):
         pass
 
     def autonomousInit(self) -> None:
+        Robot.shooter.auto_finished = False
         self.auto_routine.run()
 
     def autonomousPeriodic(self) -> None:

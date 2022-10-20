@@ -82,6 +82,26 @@ class ShooterZero(SubsystemCommand[Shooter]):
         self.subsystem.m_angle.set_sensor_position(0 * talon_sensor_unit)
 
 
+class TurretZero(SubsystemCommand[Shooter]):
+    def __init__(self, subsystem: Shooter):
+        super().__init__(subsystem)
+
+    def initialize(self) -> None:
+        if not self.subsystem.turret_zeroed:
+            self.subsystem.m_turret.set_raw_output(-.15)
+
+    def execute(self) -> None:
+        if not self.subsystem.turret_zeroed:
+            if self.subsystem.mag_sensor.get_value():
+                self.subsystem.m_turret.set_raw_output(0)
+                self.subsystem.m_turret.set_sensor_position(0)
+                self.subsystem.turret_zeroed = True
+                print("YES TURRET IS ZEROED!!!!")
+
+    def isFinished(self) -> bool:
+        return self.subsystem.turret_zeroed
+
+
 class TurretAim(SubsystemCommand[Shooter]):
     def __init__(self, subsystem: Shooter):
         super().__init__(subsystem)
@@ -142,7 +162,8 @@ class TurretAim(SubsystemCommand[Shooter]):
                 self.subsystem.seen_after_drivetrain_rezero = True
 
                 self.current_shooter_angle = None
-                Robot.odometry.update()
+                if self.subsystem.auto_finished:
+                    Robot.odometry.update()
 
                 self.limelight_detected_counts += 1
 
