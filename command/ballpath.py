@@ -600,7 +600,7 @@ class BallPath(SubsystemCommand[Index]):
         def destaging(ball):
             if not len(ball.ball) == 0:
                 print("Destaging Ball")
-                if Robot.index.staged_oc and ball.validate("Stage"):
+                if Robot.index.staged_oc and ball.validateBall("Stage"):
                     y: str
                     x = ball.posNum("Stage")
                     if Robot.intake.left_intake_down:
