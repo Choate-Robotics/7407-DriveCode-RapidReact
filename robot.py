@@ -93,8 +93,10 @@ class _Robot(wpilib.TimedRobot):
 
         Robot.limelight = Limelight()
 
-        self.auto_routine = five_ball_auto_red.routine
-        self.auto_combo = "Five RED"
+        self.auto_routine = two_ball_auto.routine
+        self.auto_combo = "Two RED"
+        # self.auto_routine = five_ball_auto_red.routine
+        # self.auto_combo = "Five RED"
         self.emergency = False
 
         self.initial_pose = self.auto_routine.initial_robot_pose
@@ -107,7 +109,6 @@ class _Robot(wpilib.TimedRobot):
         logger.info("initialization complete")
 
     def robotPeriodic(self):
-        # print(Robot.drivetrain.odometry.getPose())
         Robot.rev_digit.update()
         commands2.CommandScheduler.getInstance().run()
 
@@ -173,6 +174,7 @@ class _Robot(wpilib.TimedRobot):
         Robot.shooter.target_turret_angle = None
 
     def teleopPeriodic(self) -> None:
+        logger.info(Robot.drivetrain.odometry.getPose())
         # print("Turret current angle: ", math.degrees(Robot.shooter.get_turret_rotation_angle()))
         wpilib.SmartDashboard.putBoolean("AIMING", Robot.shooter.aiming)
         # print(Robot.odometry.robot_pose)
