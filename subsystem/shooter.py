@@ -15,10 +15,10 @@ from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit
 
 class Shooter(Subsystem):
     m_top = TalonFX(8, inverted=False, config=TalonConfig(
-        0.09, 0, 5 * 1.05, 1023 / 20369, integral_zone=1000, max_integral_accumulator=100000,
+        0.09, 0, 5 * 1.25, 1023 / 20369, integral_zone=1000, max_integral_accumulator=100000,
         neutral_brake=False))
     m_bottom = TalonFX(5, inverted=False, config=TalonConfig(
-        0.1, 0, 0.5 * 1.05, 1023 / 20101, integral_zone=1000, max_integral_accumulator=100000,
+        0.1, 0, 0.5 * 1.25, 1023 / 20101, integral_zone=1000, max_integral_accumulator=100000,
         neutral_brake=False))
     m_angle = TalonFX(9, inverted=False, config=TalonConfig(
         0.3, 0.005, 2, 2046 * 0.1 / 917, integral_zone=1000, max_integral_accumulator=10000,  # 1023 * 0.1 / 917

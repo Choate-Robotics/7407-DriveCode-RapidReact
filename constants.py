@@ -59,10 +59,10 @@ limelight_horizontal_adjustment = .35
 dual_intakes_down = False #When True, enables Both Intakes to be down. WARNING, WILL mess up Ballpath logic system, expect to use operator manual controls
 default_intake_speed = 1 # as stated
 intake_current_sensing = False # Enables dragging balls while not actually intaking when full
-index_shooting_speed = .75 # shooting index speed
+index_shooting_speed = .72 # shooting index speed
 default_index_speed = .7 # as stated
 index_intaking_speed = .7 # index speed when intaking ball
-index_photo_electric_threshold = 4 # the threshold check for the intake ball gereration #4 is sweet spot
+index_photo_electric_threshold = 2 # the threshold check for the intake ball gereration #4 is sweet spot
 # --- ELEVATOR ---
 
 elevator_gear_ratio = (20 * rev / (5.501 * inch)).asNumber(rad/m)

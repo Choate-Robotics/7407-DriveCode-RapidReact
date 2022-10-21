@@ -82,6 +82,10 @@ class Ball():
 
     ACDT = 0 # aim cool down threshold
 
+    overflowNum = 4000000
+
+    shooterTimeout = 20
+
     def reset(self):
         self.ball = []
         Robot.index.ball_count = 0
@@ -120,12 +124,28 @@ class Ball():
     
     def CurrentNum(self):
         x = 0
-        if Robot.index.left_oc:
+        if Robot.index.left_oc and self.posNum("Left") != self.overflowNum:
             x += 1
-        if Robot.index.right_oc:
+        else:
+            Robot.index.left_oc = False
+        if Robot.index.right_oc and self.posNum("Right") != self.overflowNum:
             x += 1
-        if Robot.index.staged_oc:
+        else:
+            Robot.index.right_oc = False
+        if Robot.index.staged_oc and self.posNum("Stage") != self.overflowNum:
             x += 1
+        else:
+            Robot.index.staged_oc = False
+        return x
+
+    def validate(self, oc:str):
+        x = True
+        if self.posNum(oc) != self.overflowNum:
+            if self.ball[self.posNum(oc)].removed == True:
+                x = False
+        else:
+            x = False
+
         return x
     
     def rumble(self):
@@ -381,7 +401,7 @@ class Ball():
         elif pos == "Shoot":
 
             Scurrent = pdh.getCurrent(11)
-            if Scurrent > 10 and not Robot.index.photo_electric.get_value():
+            if Scurrent > 8: # and not Robot.index.photo_electric.get_value():
                 Robot.index.single_dinglebob_off(Robot.index.shooting)
                 self.removed = True
                 self.moving = False
@@ -564,15 +584,15 @@ class BallPath(SubsystemCommand[Index]):
                             y = "Right"
                         self.BallController.ball[x].setPos(y)
                 else:
-                    if Robot.index.left_oc and ball.posNum("Left") != 4000000:
+                    if Robot.index.left_oc and ball.validate("Left"):
                         ball.ball[ball.posNum("Left")].setPos("Stage")
-                    elif Robot.index.right_oc and ball.posNum("Right") != 4000000:
+                    elif Robot.index.right_oc and ball.validate("Right"):
                         ball.ball[ball.posNum("Right")].setPos("Stage") 
 
         def destaging(ball):
             if not len(ball.ball) == 0:
                 print("Destaging Ball")
-                if Robot.index.staged_oc:
+                if Robot.index.staged_oc and ball.validate("Stage"):
                     y: str
                     x = ball.posNum("Stage")
                     if Robot.intake.left_intake_down:
@@ -705,7 +725,8 @@ class BallPath(SubsystemCommand[Index]):
                                 self.BallController.ball[c].team = False
                                 self.BallController.ball[c].setPos("Stage")
                     elif not Robot.index.left_limit.get_value():
-                        Robot.index.LDB = 0
+                        if Robot.index.LDB != 0:
+                            Robot.index.LDB -= 1
         elif not Robot.intake.left_intake_down:
             Robot.index.LDB = 0
             if not Robot.index.traffic_oc and Robot.index.shooting == False:
@@ -754,7 +775,8 @@ class BallPath(SubsystemCommand[Index]):
                                 self.BallController.ball[c].team = False
                                 self.BallController.ball[c].setPos("Stage")
                     elif not Robot.index.right_limit.get_value():
-                        Robot.index.RDB = 0
+                        if Robot.index.RDB != 0:
+                            Robot.index.RDB -= 1
         elif not Robot.intake.right_intake_down:
             Robot.index.RDB = 0
             if not Robot.index.traffic_oc and Robot.index.shooting == False:

@@ -93,10 +93,10 @@ class _Robot(wpilib.TimedRobot):
 
         Robot.limelight = Limelight()
 
-        self.auto_routine = two_ball_auto.routine
-        self.auto_combo = "Two RED"
-        # self.auto_routine = five_ball_auto_red.routine
-        # self.auto_combo = "Five RED"
+        # self.auto_routine = two_ball_auto.routine
+        # self.auto_combo = "Two RED"
+        self.auto_routine = five_ball_auto_red.routine
+        self.auto_combo = "Five RED"
         self.emergency = False
 
         self.initial_pose = self.auto_routine.initial_robot_pose
@@ -111,7 +111,6 @@ class _Robot(wpilib.TimedRobot):
     def robotPeriodic(self):
         Robot.rev_digit.update()
         commands2.CommandScheduler.getInstance().run()
-
         wpilib.SmartDashboard.putString('DB/String 0', f'Team Color: {config.TEAM}')
         wpilib.SmartDashboard.putString('DB/String 1', f'CALL 4 PRGMER HELP <3?: {self.emergency}')
         wpilib.SmartDashboard.putString('DB/String 2',
