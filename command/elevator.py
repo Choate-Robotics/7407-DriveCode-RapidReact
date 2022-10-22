@@ -70,8 +70,6 @@ class WaitUntilTiltRange(SubsystemCommand[Elevator]):
         da = a - self.prev_angle
         if self.min_angle < a < self.max_angle and da > 0:
             finished = True
-        elif a > 45 and da < 0:
-            finished = True
         else:
             finished = False
 
@@ -200,7 +198,7 @@ ElevatorClimbCommand = lambda: SequentialCommandGroup(
     ElevatorUpTillExtendedHeight(Robot.elevator),
     ElevatorSolenoidRetract(),
     InstantCommand(lambda: Robot.elevator.set_climb_speed(), Robot.elevator),
-    WaitCommand(1),
+    WaitCommand(1.5),
     ElevatorUpTillBelowExtendedHeight(Robot.elevator)
 )
 
