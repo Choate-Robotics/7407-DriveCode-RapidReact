@@ -130,6 +130,17 @@ class TurretAim(SubsystemCommand[Shooter]):
     def initialize(self) -> None:
         pass
 
+    def is_shooter_ready(self):
+        m_top_desired = self.subsystem.desired_m_top
+        m_bottom_desired = self.subsystem.desired_m_bottom
+
+        return (
+                self.limelight_detected_counts > 6
+                and abs(Robot.shooter.m_top.get_sensor_velocity() - m_top_desired) < .05 * m_top_desired
+                and abs(Robot.shooter.m_bottom.get_sensor_velocity() - m_bottom_desired) < .05 * m_bottom_desired
+                and abs(Robot.drivetrain.chassis_speeds.omega) < 0.1
+        )
+
     def execute(self) -> None:
 
         print("ROBOT SHOOTER TARGET DIST IS: ", Robot.shooter.target_turret_dist)
@@ -212,13 +223,13 @@ class TurretAim(SubsystemCommand[Shooter]):
 
                 else:
                     self.subsystem.m_turret.set_raw_output(0)
-                    if self.limelight_detected_counts >= 6 and abs(Robot.drivetrain.chassis_speeds.omega) < 0.1:
-                        self.subsystem.ready = True
-                    else:
-                        self.subsystem.ready = False
+
+                self.subsystem.ready = self.is_shooter_ready()
 
             else:
                 self.limelight_detected_counts = 0
+
+                self.subsystem.ready = False
 
                 if self.current_shooter_angle is None:
                     self.current_shooter_angle = self.subsystem.get_turret_rotation_angle()
@@ -252,12 +263,6 @@ class TurretAim(SubsystemCommand[Shooter]):
                     Robot.shooter.set_turret_angle(
                         math.radians(max(min(desired_turret_angle, self.max_angle), self.min_angle))
                     )
-
-                    if abs(math.degrees(self.subsystem.get_turret_rotation_angle()) - math.degrees(
-                            Robot.odometry.hub_angle)) < 3:
-                        self.subsystem.ready = True
-                    else:
-                        self.subsystem.ready = False
 
                 if self.subsystem.target_turret_dist is not None:
                     self.subsystem.target_stationary(self.subsystem.target_turret_dist)
