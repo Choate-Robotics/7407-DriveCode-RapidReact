@@ -1,3 +1,4 @@
+import time
 from ast import Sub
 import robotpy_toolkit_7407.subsystem_templates.drivetrain.swerve_drivetrain_commands
 import wpilib
@@ -7,6 +8,7 @@ from robotpy_toolkit_7407.motors.ctre_motors import talon_sensor_unit
 from robotpy_toolkit_7407.utils.units import deg, rad, s, m
 
 import oi.keymap
+import robot_systems
 from robot_systems import Robot
 from subsystem import Shooter
 
@@ -127,6 +129,10 @@ class TurretAim(SubsystemCommand[Shooter]):
 
         self.current_shooter_angle = 0
 
+        self.ejecting = False
+        self.start_ejection_time = time.time()
+        self.last_ball = "red"
+
     def initialize(self) -> None:
         pass
 
@@ -142,6 +148,13 @@ class TurretAim(SubsystemCommand[Shooter]):
         )
 
     def execute(self) -> None:
+
+        if robot_systems.Sensors.new_color_sensor.get_value():
+            self.ejecting = True
+            self.start_ejection_time = time.time()
+        elif Robot.index.photo_electric.get_value():
+            if time.time()-self.start_ejection_time > .25:
+                self.ejecting = False
 
         print("ROBOT SHOOTER TARGET DIST IS: ", Robot.shooter.target_turret_dist)
         print("ROBOT SHOOTER TARGET ANGLE IS: ", Robot.shooter.target_turret_angle)
@@ -182,6 +195,10 @@ class TurretAim(SubsystemCommand[Shooter]):
                 true_angle = Robot.limelight.k_cam_angle + math.radians(est_ty)
                 distance = (Robot.limelight.k_h_hub_height - Robot.limelight.k_cam_height) / math.tan(
                     true_angle)  # constant for lower turret
+
+                if self.ejecting:
+                    distance = max(distance - 1, 0)
+
                 wpilib.SmartDashboard.putNumber("Distance to Hub", distance)
                 if self.limelight_detected_counts >= 3:
                     if self.subsystem.target_turret_dist is None:
@@ -239,7 +256,10 @@ class TurretAim(SubsystemCommand[Shooter]):
                 if Robot.odometry.hub_angle is not None:
                     if Robot.odometry.hub_dist is not None and self.subsystem.target_turret_dist is None \
                             and self.subsystem.seen_after_drivetrain_rezero:
-                        self.subsystem.target_stationary(Robot.odometry.hub_dist)
+                        if self.ejecting:
+                            self.subsystem.target_stationary(Robot.odometry.hub_dist - 1)
+                        else:
+                            self.subsystem.target_stationary(Robot.odometry.hub_dist)
 
                     hub_angle = math.degrees(Robot.odometry.hub_angle)
                     current_shooter_angle = math.degrees(self.current_shooter_angle)

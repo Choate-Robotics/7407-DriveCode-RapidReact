@@ -12,6 +12,7 @@ from sensors.field_odometry import FieldOdometry
 from sensors.rev_digit import RevDigit
 from sensors.intake_cameras import IntakeCameras
 from sensors.limelight import Limelight
+from sensors.limit_switch import LimitSwitch
 
 
 class Robot:
@@ -37,3 +38,4 @@ class Pneumatics:
 
 class Sensors:
     color_sensors: ColorSensors
+    new_color_sensor: LimitSwitch

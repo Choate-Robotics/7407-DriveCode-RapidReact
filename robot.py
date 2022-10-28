@@ -8,6 +8,8 @@ from wpimath.geometry import Pose2d
 
 import config
 import constants
+import robot_systems
+import sensors
 from autonomous import two_ball_auto, five_ball_auto, five_ball_auto_red
 from autonomous.auto_routine import AutoRoutine
 # from autonomous import five_ball_auto, two_ball_auto, three_ball_auto # TODO: Fix this
@@ -108,6 +110,8 @@ class _Robot(wpilib.TimedRobot):
 
         logger.info("initialization complete")
 
+        robot_systems.Sensors.new_color_sensor = sensors.limit_switch.LimitSwitch(6, reverse=False)
+
     def robotPeriodic(self):
         Robot.rev_digit.update()
         commands2.CommandScheduler.getInstance().run()
@@ -172,6 +176,7 @@ class _Robot(wpilib.TimedRobot):
         Robot.shooter.target_turret_dist = None
         Robot.shooter.target_turret_angle = None
 
+
     def teleopPeriodic(self) -> None:
         logger.info(Robot.drivetrain.odometry.getPose())
         # print("Turret current angle: ", math.degrees(Robot.shooter.get_turret_rotation_angle()))
@@ -182,6 +187,8 @@ class _Robot(wpilib.TimedRobot):
         except:
             pass
         pass
+
+        wpilib.SmartDashboard.putBoolean("NEW COLOR SENSORS", robot_systems.Sensors.new_color_sensor.get_value())
 
     def autonomousInit(self) -> None:
         Robot.shooter.auto_finished = False

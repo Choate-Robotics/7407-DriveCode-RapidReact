@@ -52,7 +52,7 @@ ideal_entry_angle = -math.pi / 5  # desired angle for the ball to enter the hub
 minimum_shooter_angle = math.pi / 4  # radians
 max_shooter_angle = math.radians(75)
 max_shooter_velocity = 30  # m/s
-limelight_horizontal_adjustment = .1 #.35
+limelight_horizontal_adjustment = .35 #.35 .1
 
 # --- INTAKE/INDEX ---
 
