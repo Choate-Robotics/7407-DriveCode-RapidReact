@@ -61,8 +61,8 @@ class Shooter(Subsystem):
 
     turret_zeroed: bool
 
-    target_turret_dist = None
-    target_turret_angle = None
+    target_turret_dist = None # in meeters
+    target_turret_angle = None # in degrees
 
     seen_after_drivetrain_rezero: bool
 

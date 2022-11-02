@@ -41,6 +41,8 @@ max_turret_power = .50
 min_turret_power = .07  # Minimum power required to move turret
 default_turret_power = .20  # Default power of turret
 max_turret_positional_velocity = 50000  # setting for positional pid of turret; max turret velocity
+team_color = "red"
+
 
 # Targeting constants
 air_resistance_constant = 0.048187
