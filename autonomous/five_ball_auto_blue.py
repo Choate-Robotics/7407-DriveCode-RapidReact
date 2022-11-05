@@ -155,18 +155,18 @@ final_command = SequentialCommandGroup(
                 InstantCommand(right_dinglebob_in),
             ),
             InstantCommand(dinglebob_shoot),
-            WaitCommand(0.75),
+            WaitCommand(1.00), # 0.75
             InstantCommand(left_dinglebob_off),
         ),
         InstantCommand(left_intake_on),
         SequentialCommandGroup(
             ParallelDeadlineGroup(
-                WaitCommand(0.6),
+                WaitCommand(0.75), #0.6
                 SequentialCommandGroup(
                     WaitCommand(0.1),
                     InstantCommand(turn_turret_away),
                 ),
-                ShooterEnableAtDistance(Robot.shooter, 5).withTimeout(1.5),
+                ShooterEnableAtDistance(Robot.shooter, 5).withTimeout(1.75), # withTimeout(1.5)
             ),
             ParallelDeadlineGroup(
                 WaitCommand(0.2),
