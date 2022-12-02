@@ -45,7 +45,7 @@ class Keymap:
         SHOOTER_ENABLE = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.RT)
         # SHOOTER_EJECT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.A)
         AUTO_SHOOT = DefaultButton(Controllers.DRIVER, controllerDRIVER.Y)
-        #FENDER_SHOT = DefaultButton(Controllers.DRIVER, controllerDRIVER.LT)
+        FENDER_SHOT = DefaultButton(Controllers.DRIVER, controllerOPERATOR.A)
         #SHOOTER_SHORT_EJECT = DefaultButton(Controllers.OPERATOR, controllerOPERATOR.LT)
         #SHOOTER_OFFSET_UP = DefaultButton(Controllers.DRIVER, controllerDRIVER.LB)
         #SHOOTER_OFFSET_DOWN = DefaultButton(Controllers.DRIVER, controllerDRIVER.RB)
