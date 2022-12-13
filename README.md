@@ -133,9 +133,10 @@ To integrate a branch with branch **Master**,  create a pull-request with the sa
  - [7407 DriveCode-2021-Python](https://github.com/Choate-Robotics/7407-DriveCode-2021-Python) Worlds level code!
  
 ### MAC M INSTALLATION
-```bash
 In terminal:
+```bash
       softwareupdate --install-rosetta
+```
 
 Open terminal in finder (right click on terminal icon and open in finder)
 Make a copy of the terminal icon in finder.
@@ -144,6 +145,7 @@ Right click on the new copy and select "Get Info", check the box that says "Open
 Open the new Rosetta terminal. This terminal will be used to run intel python.
 
 In Rosetta terminal:
+```bash
       arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
       # Wait for homebrew to finish installation.
@@ -175,6 +177,6 @@ In Rosetta terminal:
    
       # To open virtualenv shell (Run this every time you open a new terminal in that folder)
       python86 -m poetry shell
+```
 
 Please let me know if there are any problems.
-```
