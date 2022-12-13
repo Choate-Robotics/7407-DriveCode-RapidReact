@@ -19,14 +19,14 @@ git clone git@github.com:Choate-Robotics/7407-DriveCode-2021-Python.git
 
 ### If you don't have Poetry installed already:
 
-#### Linux and Mac
+#### Linux and Mac (Intel, Not M1. If you have an M1 or M2 mac, please see "MAC M INSTALLATION" section at the bottom.
 
 ```
 
-curl -k https://install.python-poetry.org/ | python3 - 
+curl -k https://install.python-poetry.org/ | python - 
 
 ```
-You might have to replace "python" at the end with "python3" depending on how python is configured in your system.
+You might have to replace "python" at the end with "python3" or "python3.10" depending on how python is configured in your system.
 
 #### Windows Powershell
 
@@ -131,3 +131,50 @@ To integrate a branch with branch **Master**,  create a pull-request with the sa
  - [WPILib Documentation](https://docs.wpilib.org/en/stable/index.html) RobotPy is just a wrapper for the WPILib C++ Code. Most of the structure remains the same.
  - [Chief Delphi](https://www.chiefdelphi.com/) Many a sensor problem have been fixed by looking here.
  - [7407 DriveCode-2021-Python](https://github.com/Choate-Robotics/7407-DriveCode-2021-Python) Worlds level code!
+ 
+### MAC M INSTALLATION
+```bash
+In terminal:
+      softwareupdate --install-rosetta
+
+Open terminal in finder (right click on terminal icon and open in finder)
+Make a copy of the terminal icon in finder.
+Right click on the new copy and select "Get Info", check the box that says "Open with Rosetta"
+
+Open the new Rosetta terminal. This terminal will be used to run intel python.
+
+In Rosetta terminal:
+      arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+      # Wait for homebrew to finish installation.
+
+      arch -x86_64 /usr/local/bin/brew install python@3.10
+
+      # Wait for python to finish installation
+      # Try to run the following command. If it fails, replace "python3.10" with "python3" and make sure the output contains python3.10.
+
+      arch -x86_64 /usr/local/bin/python3.10
+
+      # To exit the python interpreter
+
+      exit()
+      
+      # If you want a convenient alias for intel python, run the next command with the successful python from the last command:
+
+      echo "alias python86='arch -x86_64 /usr/local/bin/python3.10'" > ~/.zshrc
+
+      # Installation of x86 poetry:
+
+      python86 -m pip install poetry
+
+      # After poetry installation is complete, change into a directory where you want python programs
+
+      git clone https://github.com/Choate-Robotics/7407-DriveCode-2021-Python.git
+      cd 7407-DriveCode-2021-Python
+      python86 -m poetry install
+   
+      # To open virtualenv shell (Run this every time you open a new terminal in that folder)
+      python86 -m poetry shell
+
+Please let me know if there are any problems.
+```
